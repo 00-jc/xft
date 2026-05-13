@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/19 01:03:47 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/13 06:14:05 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/13 06:37:20 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ char	*ft_getenv(const char *restrict const var)
 	size_t	namelen;
 	char	*value;
 
-	if (!environ)
+	if (__builtin_expect(!environ, 0))
 		return (nullptr);
 	idx = 0;
 	namelen = ft_strlen(var);
@@ -36,7 +36,7 @@ char	*ft_getenv(const char *restrict const var)
 		}
 		len = (size_t)((t_uptr)value - (t_uptr)environ[idx]);
 		if (len == namelen && !ft_strncmp(environ[idx], var, namelen))
-			return (value);
+			return (value + 1);
 		++idx;
 	}
 	return (nullptr);

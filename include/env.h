@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/19 01:02:39 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/02/19 01:18:07 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/13 06:38:54 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,6 @@
 # define ENV_H
 
 # include "mem.h"
-
-extern char		**environ;
 
 char			*ft_getenv(const char *__restrict__ const var)\
 					__attribute__((__nonnull__(1)));
