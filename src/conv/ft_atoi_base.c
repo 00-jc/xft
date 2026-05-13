@@ -6,11 +6,11 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 17:13:42 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/03/15 15:36:20 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/13 17:47:00 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "lft.h"
+#include "xft.h"
 
 static int	ft_check_in_base(char c, char *base)
 {

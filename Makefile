@@ -10,7 +10,7 @@
 # **************************************************************************** #
 
 # ── Output ────────────────────────────────────────────────────────────────────
-NAME       := libft.a
+NAME       := xft.a
 OBJDIR     := build
 
 # ── Toolchain ─────────────────────────────────────────────────────────────────
@@ -147,10 +147,19 @@ WARNS_GCC := $(WARNS_COMMON)                                                  \
 	-Wstringop-overflow=4                                                      \
 	-Wstringop-truncation
 
-CFLAGS_COMMON_OPT := -D_GNU_SOURCE -pipe -ffunction-sections -fdata-sections   \
-	-finline-functions -fvisibility=hidden -fstack-protector-strong            \
-	-fcf-protection=full -ftrivial-auto-var-init=zero -fno-common              \
-	-fstack-clash-protection -g3 -DFT_NTHREADS=$(MAXTHREADS)
+CFLAGS_COMMON_OPT := -D_GNU_SOURCE											   \
+					 -pipe													   \
+					 -ffunction-sections									   \
+					 -fdata-sections					   					   \
+					 -finline-functions 									   \
+					 -fvisibility=hidden									   \
+					 -fstack-protector-strong            					   \
+					 -fcf-protection=full									   \
+					 -ftrivial-auto-var-init=zero 							   \
+					 -fno-common              								   \
+					 -fstack-clash-protection 								   \
+					 -g3													   \
+					 -DFT_NTHREADS=$(MAXTHREADS)
  
 CFLAGS_OPT   := $(CFLAGS_COMMON_OPT) -march=native -mtune=native -flto -O3 -ffast-math
 CFLAGS_NOOPT := $(CFLAGS_COMMON_OPT)
@@ -494,7 +503,7 @@ _TBDIR  ?= build_test
 _TMARCH ?= $(MARCH)
 _TFLAGS := $(_TMARCH) $(CFLAGS_OPT) $(WARNS)
 _TOBJS  := $(patsubst src/%.c,$(_TBDIR)/%.o,$(SRCS))
-_TLIB   := libft_test_tmp.a
+_TLIB   := xft_test_tmp.a
 _FBDIR  := $(_TBDIR)/fuzz
 _FOBJS  := $(patsubst %,$(_FBDIR)/%_fuzz.o,$(FUZZ_SRCS))
 
@@ -538,7 +547,7 @@ _run_fuzz: $(_TOBJS) $(_FOBJS)
 	$(foreach t,$(FUZZ_SRCS), \
 		$(CC) $(LDFLAGS_LINK) $(_TFLAGS) $(SANITIZE) $(INCLUDES) \
 			$(_FBDIR)/$(t)_fuzz.o $(_TLIB) -o fuzz_$(t) \
-		&& ASAN_OPTIONS=detect_leaks=0 ./fuzz_$(t) && rm -f fuzz_$(t) \
+		&& ASAN_OPTIONS=detect_leaks=1 ./fuzz_$(t) && rm -f fuzz_$(t) \
 		|| { echo "FAILED: $(t)"; rm -f fuzz_$(t) $(_TLIB); exit 1; }; )
 	@rm -f $(_TLIB)
 	@rm -rf $(_TBDIR)

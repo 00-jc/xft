@@ -6,11 +6,11 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 17:13:41 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/02/23 17:12:19 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/13 17:47:00 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "lft.h"
+#include "xft.h"
 
 inline int	ft_isascii(int c)
 {
