@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/16 22:55:19 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/04/23 03:12:12 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/13 06:00:38 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,20 +16,30 @@ __attribute__((__nonnull__(1, 2), __always_inline__))
 static inline void	ft_memcpy_naive(void *restrict dest,
 	const void	*restrict const src, size_t n)
 {
-	size_t	i[5];
+	t_u8	i[7];
+	t_u8	s[7];
 
-	i[0] = -(1ULL < n) & 2;
-	i[1] = -(2ULL < n) & 3;
-	i[2] = -(3ULL < n) & 4;
-	i[3] = -(4ULL < n) & 5;
-	i[4] = -(5ULL < n) & 6;
-	((t_blk8w)dest)[0] = ((t_blk8r)src)[0];
-	((t_blk8w)dest)[0 < n] = ((t_blk8r)src)[0 < n];
-	((t_blk8w)dest)[i[0]] = ((t_blk8r)src)[i[0]];
-	((t_blk8w)dest)[i[1]] = ((t_blk8r)src)[i[1]];
-	((t_blk8w)dest)[i[2]] = ((t_blk8r)src)[i[2]];
-	((t_blk8w)dest)[i[3]] = ((t_blk8r)src)[i[3]];
-	((t_blk8w)dest)[i[4]] = ((t_blk8r)src)[i[4]];
+	i[0] = 0;
+	i[1] = 0 < n;
+	i[2] = -(1ULL < n) & 2;
+	i[3] = -(2ULL < n) & 3;
+	i[4] = -(3ULL < n) & 4;
+	i[5] = -(4ULL < n) & 5;
+	i[6] = -(5ULL < n) & 6;
+	s[0] = ((t_blk8r)src)[i[0]];
+	s[1] = ((t_blk8r)src)[i[1]];
+	s[2] = ((t_blk8r)src)[i[2]];
+	s[3] = ((t_blk8r)src)[i[3]];
+	s[4] = ((t_blk8r)src)[i[4]];
+	s[5] = ((t_blk8r)src)[i[5]];
+	s[6] = ((t_blk8r)src)[i[6]];
+	((t_blk8w)dest)[i[0]] = s[0];
+	((t_blk8w)dest)[i[1]] = s[1];
+	((t_blk8w)dest)[i[2]] = s[2];
+	((t_blk8w)dest)[i[3]] = s[3];
+	((t_blk8w)dest)[i[4]] = s[4];
+	((t_blk8w)dest)[i[5]] = s[5];
+	((t_blk8w)dest)[i[6]] = s[6];
 }
 
 __attribute__((__nonnull__(1, 2)))

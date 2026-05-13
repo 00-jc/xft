@@ -5,20 +5,24 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/17 22:33:53 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/01/19 04:38:34 by jaicastr         ###   ########.fr       */
+/*   Created: 2026/05/13 04:49:24 by jaicastr          #+#    #+#             */
+/*   Updated: 2026/05/13 05:56:05 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "str.h"
 
-__attribute__((nonnull(1)))
-int	ft_str_remove(t_str *str, size_t idx)
+__attribute__((__nonnull__(1)))
+int	ft_str_remove(t_str *restrict const v, size_t i)
 {
-	if (idx >= str->len)
+	t_u8	*start;
+	size_t	len;
+
+	if (!v->mem || v->size <= i)
 		return (0);
-	ft_memcpy(str->data + idx, str->data + idx + 1,
-		str->len - idx - 1);
-	str->data[--str->len] = 0;
+	start = v->mem + i;
+	len = v->size - i;
+	ft_memmove(start, start + 1, len);
+	--v->size;
 	return (1);
 }

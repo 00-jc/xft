@@ -5,49 +5,49 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/17 01:17:48 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/03/03 22:48:19 by jaicastr         ###   ########.fr       */
+/*   Created: 2026/05/13 04:31:22 by jaicastr          #+#    #+#             */
+/*   Updated: 2026/05/13 04:42:11 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef STR_H
 # define STR_H
 
-# include "mem.h"
+# include "types.h"
 # include "alloc.h"
 
 # ifdef __clang__
 
-typedef struct s_string
+typedef struct s_str
 {
-	size_t									len;
-	size_t									capacity;
-	t_u8 __attribute__	((counted_by(len)))	*data;
+	size_t										size;
+	size_t										capacity;
+	t_u8 __attribute__	((counted_by(size)))	*mem;
 }	t_str;
 
 # else
 
-typedef struct s_string
+typedef struct s_str
 {
-	size_t			len;
-	size_t			capacity;
-	t_u8			*data;
+	size_t		size;
+	size_t		capacity;
+	t_u8		*mem;
 }	t_str;
 
 # endif
 
-t_str		ft_str_new(size_t n);
-
-int			ft_str_push_back(t_str *__restrict__ str, const t_u8 byte)\
+t_str		ft_str(size_t size);
+void		ft_str_destroy(t_str *str)\
 				__attribute__((__nonnull__(1)));
-
-int			ft_str_extend(t_str *__restrict__ str,
-				const t_u8 *__restrict__ const data, size_t n)\
+int			ft_str_extend(t_str *restrict const str,\
+				const t_u8 *restrict const mem, size_t n)\
+				__attribute__((__nonnull__(1, 2)));
+int			ft_str_reserve(t_str *restrict const str, size_t n)\
 				__attribute__((__nonnull__(1)));
-
-int			ft_str_remove(t_str *str, size_t idx)\
-				__attribute__((nonnull(1)));
-
-void		ft_str_free(t_str *s);
+int			ft_str_push_back(t_str *restrict const str,\
+				const t_u8 byte)\
+				__attribute__((__nonnull__(1)));
+int			ft_str_remove(t_str *restrict const v, size_t i)\
+				__attribute__((__nonnull__(1)));
 
 #endif

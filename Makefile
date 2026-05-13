@@ -311,10 +311,10 @@ SRCS_VEC := \
 	src/vec/ft_vec_extend.c
 
 SRCS_STR := \
-	src/str/ft_str_remove.c \
-	src/str/ft_str_push_back.c \
+	src/str/ft_str.c \
 	src/str/ft_str_extend.c \
-	src/str/ft_str_new.c
+	src/str/ft_str_push_back.c \
+	src/str/ft_str_remove.c
 
 SRCS_BMI := \
 	src/bmi/__populate.c \
@@ -427,7 +427,7 @@ SRCS := $(foreach m,$(MODULES),$(SRCS_$(m)))
 OBJS := $(patsubst src/%.c,$(OBJDIR)/%.o,$(SRCS))
 
 # ── Test list ─────────────────────────────────────────────────────────────────
-TEST_SRCS := memchr strlen memcmp memcpy memset vec map murmur bmi xxh3 arena arena_extend
+TEST_SRCS := memchr strlen memcmp memcpy memset vec str map murmur bmi xxh3 arena arena_extend
 FUZZ_SRCS := mem vec map
 
 # ═════════════════════════════════════════════════════════════════════════════
@@ -438,10 +438,10 @@ all: $(NAME)
 
 $(OBJDIR)/%.o: src/%.c
 	@mkdir -p $(dir $@)
-	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
 $(NAME): $(OBJS)
-	@$(AR) $@ $^
+	$(AR) $@ $^
 	@$(RANLIB) $@
 
 # ── Convenience ──────────────────────────────────────────────────────────────
@@ -460,13 +460,13 @@ re: fclean all
 
 # ── Static analysis ─────────────────────────────────────────────────────────
 static_analysis:
-	@$(SCANNER) $(CC_CLANG) $(WARNS_CLANG) $(CFLAGS_OPT) $(MARCH) $(INCLUDES) \
+	$(SCANNER) $(CC_CLANG) $(WARNS_CLANG) $(CFLAGS_OPT) $(MARCH) $(INCLUDES) \
 		-Xclang -analyzer-output=text --analyze $(SRCS)
-	@$(SCANNER) $(CC_CLANG) $(WARNS_CLANG) $(CFLAGS_OPT) $(INCLUDES) \
+	$(SCANNER) $(CC_CLANG) $(WARNS_CLANG) $(CFLAGS_OPT) $(INCLUDES) \
 		-Xclang -analyzer-output=text --analyze $(SRCS)
-	@$(CC_GCC) $(WARNS_GCC) $(CFLAGS_OPT) $(MARCH) $(INCLUDES) \
+	$(CC_GCC) $(WARNS_GCC) $(CFLAGS_OPT) $(MARCH) $(INCLUDES) \
 		-fanalyzer $(SRCS) -c && rm -f *.o
-	@$(CC_GCC) $(WARNS_GCC) $(CFLAGS_OPT) $(INCLUDES) \
+	$(CC_GCC) $(WARNS_GCC) $(CFLAGS_OPT) $(INCLUDES) \
 		-fanalyzer $(SRCS) -c && rm -f *.o
 	@norminette
 
@@ -481,11 +481,11 @@ static_analysis:
 test: test_clang test_clang_no_march
 
 test_clang:
-	@$(MAKE) --no-print-directory _run_tests \
+	$(MAKE) --no-print-directory _run_tests \
 		CC=$(CC_CLANG) _TMARCH="$(MARCH)" _TBDIR=build_tc_march
 
 test_clang_no_march:
-	@$(MAKE) --no-print-directory _run_tests \
+	$(MAKE) --no-print-directory _run_tests \
 		CC=$(CC_CLANG) _TMARCH="" _TBDIR=build_tc
 
 # Internal target — never call directly.
@@ -500,14 +500,14 @@ _FOBJS  := $(patsubst %,$(_FBDIR)/%_fuzz.o,$(FUZZ_SRCS))
 
 $(_TBDIR)/%.o: src/%.c
 	@mkdir -p $(dir $@)
-	@$(CC) $(_TFLAGS) $(INCLUDES) -c $< -o $@
+	$(CC) $(_TFLAGS) $(INCLUDES) -c $< -o $@
 
 $(_FBDIR)/%_fuzz.o: fuzz/%_fuzz.c
 	@mkdir -p $(dir $@)
-	@$(CC) $(_TFLAGS) $(SANITIZE) $(INCLUDES) -c $< -o $@
+	$(CC) $(_TFLAGS) $(SANITIZE) $(INCLUDES) -c $< -o $@
 
 _run_tests: $(_TOBJS)
-	@$(AR) $(_TLIB) $(_TOBJS)
+	$(AR) $(_TLIB) $(_TOBJS)
 	@$(RANLIB) $(_TLIB)
 	@echo "── Testing [$(CC)$(if $(_TMARCH), +march,)] ──"
 	@$(foreach t,$(TEST_SRCS), \
@@ -532,8 +532,8 @@ fuzz_clang_no_march:
 		CC=$(CC_CLANG) _TMARCH="" _TBDIR=build_fc
 
 _run_fuzz: $(_TOBJS) $(_FOBJS)
-	@$(AR) $(_TLIB) $(_TOBJS)
-	@$(RANLIB) $(_TLIB)
+	$(AR) $(_TLIB) $(_TOBJS)
+	$(RANLIB) $(_TLIB)
 	@echo "── Fuzzing [$(CC)$(if $(_TMARCH), +march,)] ──"
 	$(foreach t,$(FUZZ_SRCS), \
 		$(CC) $(LDFLAGS_LINK) $(_TFLAGS) $(SANITIZE) $(INCLUDES) \

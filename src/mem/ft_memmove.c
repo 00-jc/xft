@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 17:13:42 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/03/15 15:07:34 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/13 05:35:15 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,14 +22,14 @@ void	*ft_memmove(void *dest, const void *src, size_t n)
 		return (dest);
 	bd = (t_u8 *)dest;
 	bs = (const t_u8 *)src;
-	if (bd > bs && bd < bs + n)
+	if (bd < bs)
+		ft_memcpy(dest, src, n);
+	else
 	{
 		bd += n;
 		bs += n;
 		while (n-- > 0)
 			*--bd = *--bs;
 	}
-	else
-		ft_memcpy(dest, src, n);
 	return (dest);
 }
