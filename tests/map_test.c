@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/03 00:00:00 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/03/03 00:00:00 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/13 06:14:07 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,9 @@ void	test_map_insert_lookup(void)
 	val = 42;
 	ft_pin_invariant(ft_map_insert(&m, (t_u8 *)"key1", 4, (t_u8 *)&val));
 	got = ft_map_lookup(&m, (t_u8 *)"key1", 4);
-	ft_pin_invariant(got != NULL);
+	ft_pin_invariant(got != nullptr);
 	ft_pin_invariant(*(int *)got == 42);
-	ft_pin_invariant(ft_map_lookup(&m, (t_u8 *)"nope", 4) == NULL);
+	ft_pin_invariant(ft_map_lookup(&m, (t_u8 *)"nope", 4) == nullptr);
 	ft_map_destroy(&m);
 }
 
@@ -41,9 +41,9 @@ void	test_map_delete(void)
 	m = ft_map_new();
 	val = 10;
 	ft_map_insert(&m, (t_u8 *)"del", 3, (t_u8 *)&val);
-	ft_pin_invariant(ft_map_lookup(&m, (t_u8 *)"del", 3) != NULL);
+	ft_pin_invariant(ft_map_lookup(&m, (t_u8 *)"del", 3) != nullptr);
 	ft_map_delete(&m, (t_u8 *)"del", 3);
-	ft_pin_invariant(ft_map_lookup(&m, (t_u8 *)"del", 3) == NULL);
+	ft_pin_invariant(ft_map_lookup(&m, (t_u8 *)"del", 3) == nullptr);
 	ft_map_destroy(&m);
 }
 
@@ -60,7 +60,7 @@ void	test_map_overwrite(void)
 	ft_map_insert(&m, (t_u8 *)"ow", 2, (t_u8 *)&v1);
 	ft_map_insert(&m, (t_u8 *)"ow", 2, (t_u8 *)&v2);
 	got = ft_map_lookup(&m, (t_u8 *)"ow", 2);
-	ft_pin_invariant(got != NULL);
+	ft_pin_invariant(got != nullptr);
 	ft_pin_invariant(*(int *)got == 200);
 	ft_map_destroy(&m);
 }

@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/25 19:01:06 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/04/25 19:01:08 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/13 06:14:07 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ static void	fuzz_vec_case(t_fuzzer *fz)
 	b = ft_fuzz_get_rand(fz);
 	n = fuzz_vec_len(b);
 	v = ft_vec_new(1, sizeof(int));
-	ft_pin_invariant(v.data != NULL);
+	ft_pin_invariant(v.data != nullptr);
 	ft_pin_invariant(ft_vec_extend(&v, b->mem, sizeof(int), n));
 	ft_printf("vec extend + copy test: size=%lu, capacity=%lu\n", v.size,
 		v.capacity);
@@ -53,7 +53,7 @@ int	main(void)
 	size_t		n;
 
 	fz = ft_fuzzer_new(ft_new_arena_alloc());
-	ft_pin_invariant(fz.arena.current != NULL);
+	ft_pin_invariant(fz.arena.current != nullptr);
 	ft_pin_invariant(ft_fuzzer_add_rand(&fz));
 	n = fz.buf_n * 2;
 	i = 0;

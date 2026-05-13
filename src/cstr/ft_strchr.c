@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 17:13:41 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/03/15 15:01:46 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/13 06:14:05 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,5 +23,5 @@ char	*ft_strchr(const char *s, int c)
 	}
 	if (!c && !*s)
 		return ((char *)s);
-	return (NULL);
+	return (nullptr);
 }

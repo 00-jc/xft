@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/25 19:01:06 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/04/25 19:01:08 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/13 06:14:07 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,7 @@ int	main(void)
 	size_t		n;
 
 	fz = ft_fuzzer_new(ft_new_arena_alloc());
-	ft_pin_invariant(fz.arena.current != NULL);
+	ft_pin_invariant(fz.arena.current != nullptr);
 	ft_pin_invariant(ft_fuzzer_add_rand(&fz));
 	n = fz.buf_n * 2;
 	i = 0;

@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 17:13:41 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/01/19 04:38:32 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/13 06:14:05 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ char	*ft_strtrim(const char *str, const char *set)
 		trimmed_len = e - b + 1;
 	out = ft_alloc(trimmed_len + 1);
 	if (!out)
-		return (NULL);
+		return (nullptr);
 	ft_memcpy(out, str + b, trimmed_len);
 	out[trimmed_len] = '\0';
 	return (out);

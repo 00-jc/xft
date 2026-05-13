@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 17:13:42 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/02/19 18:32:07 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/13 06:14:05 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	*ft_memformat(void *restrict const ptr, size_t size)
 	void	*fmt;
 
 	if (!size)
-		return (NULL);
+		return (nullptr);
 	fmt = ft_memclone(ptr, size);
 	return (free(ptr), fmt);
 }

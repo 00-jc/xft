@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 17:13:41 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/01/19 04:38:32 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/13 06:14:05 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,12 @@ void	*ft_recalloc(void *ptr, size_t n, size_t size)
 	void	*p;
 
 	if (!size)
-		return (ft_free(&ptr), NULL);
+		return (ft_free(&ptr), nullptr);
 	if (!ptr)
 		return (ft_calloc(size, 1));
 	p = ft_calloc(size, 1);
 	if (!p)
-		return (ft_free(&ptr), NULL);
+		return (ft_free(&ptr), nullptr);
 	if (size < n)
 		n = size;
 	ft_memcpy(p, ptr, n);

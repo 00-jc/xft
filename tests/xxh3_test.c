@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/12 08:00:01 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/04/12 15:46:38 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/13 06:14:07 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,10 @@
 #define H_ABC3_S0      0x78AF5F94892F3950
 #define H_AB2_S0       0xA873719C24D5735C
 #define H_A1_S0        0xE6C632B61E964E1F
-#define H_NULL0_S0     0x2D06800538D394C2
+#define H_nullptr0_S0     0x2D06800538D394C2
 #define H_NUL1_S0      0xC44BDFF4074EECDB
 #define H_ABCD4_S0     0x6497A96F53A89890
-#define H_NULL0_S42    12693748630217917650ULL
+#define H_nullptr0_S42    12693748630217917650ULL
 #define H_HELLO5_S1    0x74B07ED397A89E92
 #define H_HELLO5_S42   0xBAFA072F07DB7937
 #define H_HELLO5_SFF   0x241E5D5372565724
@@ -65,18 +65,18 @@ static void	test_xxh3_edge(void)
 	z[0] = '\0';
 	nul[0] = '\0';
 	ft_memcpy(abcd, "abcd", 5);
-	ft_pin_invariant_msg(ft_xxh3_64bits((t_buffer){.mem = NULL, .size = 0},
-			0) == H_NULL0_S0, (char *)"NULL len0 seed0");
+	ft_pin_invariant_msg(ft_xxh3_64bits((t_buffer){.mem = nullptr, .size = 0},
+			0) == H_nullptr0_S0, (char *)"nullptr len0 seed0");
 	ft_pin_invariant_msg(ft_xxh3_64bits((t_buffer){.mem = z, .size = 0}, 0)
-		== H_NULL0_S0, (char *)"empty len0 seed0");
+		== H_nullptr0_S0, (char *)"empty len0 seed0");
 	ft_pin_invariant_msg(ft_xxh3_64bits((t_buffer){.mem = nul, .size = 1}, 0)
 		== H_NUL1_S0, (char *)"nulbyte len1 seed0");
 	ft_pin_invariant_msg(ft_xxh3_64bits((t_buffer){.mem = abcd, .size = 4},
 			0) == H_ABCD4_S0, (char *)"abcd len4 seed0");
-	ft_pin_invariant_msg(ft_xxh3_64bits((t_buffer){.mem = NULL, .size = 0},
-			42) == H_NULL0_S42, (char *)"NULL len0 seed42");
+	ft_pin_invariant_msg(ft_xxh3_64bits((t_buffer){.mem = nullptr, .size = 0},
+			42) == H_nullptr0_S42, (char *)"nullptr len0 seed42");
 	ft_pin_invariant_msg(ft_xxh3_64bits((t_buffer){.mem = z, .size = 0}, 42)
-		== H_NULL0_S42, (char *)"empty len0 seed42");
+		== H_nullptr0_S42, (char *)"empty len0 seed42");
 }
 
 static void	test_xxh3_seeds(void)

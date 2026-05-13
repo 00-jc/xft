@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 17:14:01 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/04/16 20:27:18 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/13 06:14:05 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ t_arena	ft_new_arena_alloc(void)
 
 	pagesize = ft_match_paging(1ULL << 25);
 	pageflag = ft_match_paging_flags(pagesize);
-	initial_page = new_hugepage(NULL, pagesize, pageflag);
+	initial_page = new_hugepage(nullptr, pagesize, pageflag);
 	if (!initial_page)
 		return ((t_arena){0});
 	return ((t_arena){.current = initial_page});
@@ -35,7 +35,7 @@ inline void	ft_arena_clean_fwd(const t_arena *restrict const alloc)
 	if (alloc->current)
 	{
 		next = alloc->current->next;
-		alloc->current->next = NULL;
+		alloc->current->next = nullptr;
 		while (next)
 		{
 			x = next->next;
@@ -59,7 +59,7 @@ void	ft_destroy_arena(t_arena *alloc)
 		ft_munmap(x, x->page_size);
 		x = next;
 	}
-	alloc->current = NULL;
+	alloc->current = nullptr;
 }
 
 __attribute__((nonnull(1)))
@@ -74,7 +74,7 @@ void	*ft_arena_alloc(t_arena *restrict const allocator,
 	if (__builtin_expect(align == 0 || size == 0
 			|| (align & (align - 1)) != 0
 			|| size > HUGEPAGE_16GB - sizeof(t_hugepage) - (align - 1), 0))
-		return (NULL);
+		return (nullptr);
 	pagesize = ft_match_paging(size + align - 1);
 	pageflag = ft_match_paging_flags(pagesize);
 	next_ptr = get_next_ptr(allocator->current, align);
@@ -84,7 +84,7 @@ void	*ft_arena_alloc(t_arena *restrict const allocator,
 		+ allocator->current->total)
 	{
 		if (!ft_arena_move_fwd(allocator, pagesize, pageflag))
-			return (NULL);
+			return (nullptr);
 		next_ptr = get_next_ptr(allocator->current, align);
 		waste = (size_t)((t_u8 *)next_ptr - (allocator->current->data
 					+ allocator->current->used));

@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/19 01:03:47 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/02/19 07:16:07 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/13 06:14:05 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ char	*ft_getenv(const char *restrict const var)
 	char	*value;
 
 	if (!environ)
-		return (NULL);
+		return (nullptr);
 	idx = 0;
 	namelen = ft_strlen(var);
 	while (environ[idx])
@@ -39,5 +39,5 @@ char	*ft_getenv(const char *restrict const var)
 			return (value);
 		++idx;
 	}
-	return (NULL);
+	return (nullptr);
 }

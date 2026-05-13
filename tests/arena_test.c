@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/16 00:00:00 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/04/16 20:53:08 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/13 06:14:07 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,9 @@ void	test_arena_basic(void)
 	int		i;
 
 	a = ft_new_arena_alloc();
-	ft_pin_invariant_msg(a.current != NULL, (char *)"init");
+	ft_pin_invariant_msg(a.current != nullptr, (char *)"init");
 	buf = ft_arena_alloc(&a, 4096, 16);
-	ft_pin_invariant_msg(buf != NULL, (char *)"alloc");
+	ft_pin_invariant_msg(buf != nullptr, (char *)"alloc");
 	i = -1;
 	while (++i < 4096)
 		buf[i] = (t_u8)(i * 31 + 7);
@@ -41,7 +41,7 @@ void	test_arena_basic(void)
 	while (++i < 5000)
 	{
 		p = ft_arena_alloc(&a, 64, 8);
-		ft_pin_invariant_msg(p != NULL && p != prev, (char *)"uniq");
+		ft_pin_invariant_msg(p != nullptr && p != prev, (char *)"uniq");
 		prev = p;
 	}
 	ft_destroy_arena(&a);
@@ -66,7 +66,7 @@ void	test_arena_alignment(void)
 	while (++i < 7)
 	{
 		p = ft_arena_alloc(&a, 17, aligns[i]);
-		ft_pin_invariant_msg(p != NULL, (char *)"aligned alloc");
+		ft_pin_invariant_msg(p != nullptr, (char *)"aligned alloc");
 		ft_pin_invariant_msg(((t_uptr)p & (aligns[i] - 1)) == 0,
 			(char *)"align ok");
 	}
@@ -78,15 +78,15 @@ void	test_arena_invalid(void)
 	t_arena	a;
 
 	a = ft_new_arena_alloc();
-	ft_pin_invariant_msg(ft_arena_alloc(&a, 16, 0) == NULL,
+	ft_pin_invariant_msg(ft_arena_alloc(&a, 16, 0) == nullptr,
 		(char *)"align 0");
-	ft_pin_invariant_msg(ft_arena_alloc(&a, 16, 3) == NULL,
+	ft_pin_invariant_msg(ft_arena_alloc(&a, 16, 3) == nullptr,
 		(char *)"align 3");
-	ft_pin_invariant_msg(ft_arena_alloc(&a, 16, 6) == NULL,
+	ft_pin_invariant_msg(ft_arena_alloc(&a, 16, 6) == nullptr,
 		(char *)"align 6");
-	ft_pin_invariant_msg(ft_arena_alloc(&a, 0, 8) == NULL,
+	ft_pin_invariant_msg(ft_arena_alloc(&a, 0, 8) == nullptr,
 		(char *)"size 0");
-	ft_pin_invariant_msg(ft_arena_alloc(&a, (size_t)-1, 8) == NULL,
+	ft_pin_invariant_msg(ft_arena_alloc(&a, (size_t)-1, 8) == nullptr,
 		(char *)"oversize");
 	ft_destroy_arena(&a);
 }
@@ -103,14 +103,14 @@ void	test_arena_checkpoint(void)
 	p1 = ft_arena_alloc(&a, 64, 8);
 	cp = ft_arena_checkpoint(&a);
 	p2 = ft_arena_alloc(&a, 128, 8);
-	ft_pin_invariant_msg(p2 != NULL, (char *)"after cp");
+	ft_pin_invariant_msg(p2 != nullptr, (char *)"after cp");
 	ft_arena_rewind(&a, cp);
 	p3 = ft_arena_alloc(&a, 128, 8);
 	ft_pin_invariant_msg(p3 == p2, (char *)"rewind addr");
 	(void)p1;
 	ft_arena_rewind_clean(&a, cp);
 	p3 = ft_arena_alloc(&a, 64, 8);
-	ft_pin_invariant_msg(p3 != NULL, (char *)"after clean");
+	ft_pin_invariant_msg(p3 != nullptr, (char *)"after clean");
 	ft_destroy_arena(&a);
 }
 

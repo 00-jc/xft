@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/13 04:37:39 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/13 05:16:22 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/13 06:14:07 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ inline int	ft_str_reserve(t_str *restrict const str, size_t n)
 
 	new_cap = n + str->capacity + 1;
 	newalloc = ft_alloc(new_cap);
-	if (__builtin_expect(newalloc != NULL, 1))
+	if (__builtin_expect(newalloc != nullptr, 1))
 	{
 		old = str->mem;
 		ft_memcpy(newalloc, old, str->size + 1);
@@ -39,7 +39,7 @@ int	ft_str_extend(t_str *restrict const str,
 {
 	t_u8	should_extend;
 
-	__attribute__((assume(str->mem != NULL)));
+	__attribute__((assume(str->mem != nullptr)));
 	{
 		should_extend = str->capacity < str->size + n + 1;
 		if (__builtin_expect(should_extend

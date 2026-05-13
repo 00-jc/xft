@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/13 00:00:00 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/13 05:56:26 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/13 06:14:07 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,14 +22,14 @@ void	test_str_new(void)
 	t_str	s;
 
 	s = ft_str(0);
-	ft_pin_invariant(s.mem != NULL);
+	ft_pin_invariant(s.mem != nullptr);
 	ft_pin_invariant(s.size == 0);
 	ft_pin_invariant(s.mem[0] == 0);
 	ft_str_destroy(&s);
-	ft_pin_invariant(s.mem == NULL);
+	ft_pin_invariant(s.mem == nullptr);
 	ft_pin_invariant(s.size == 0);
 	s = ft_str(5);
-	ft_pin_invariant(s.mem != NULL);
+	ft_pin_invariant(s.mem != nullptr);
 	ft_pin_invariant(s.size == 0);
 	ft_pin_invariant(s.mem[5] == 0);
 	ft_str_destroy(&s);

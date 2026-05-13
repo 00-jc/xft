@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/20 02:35:25 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/04/12 16:08:16 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/13 06:14:05 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ static inline void	*ft__map_lookup(const t_map *restrict const map,
 			mask &= mask - 1;
 		}
 		if ((t_u128a)(sse == 0xFF))
-			return (NULL);
+			return (nullptr);
 		data[GROUP] = (data[GROUP] + 1) % data[NBLK];
 		sse = ((t_blk128r)map->meta)[data[GROUP]];
 	}

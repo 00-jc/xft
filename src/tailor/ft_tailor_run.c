@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/18 21:41:16 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/04/20 11:38:59 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/13 06:14:07 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ static inline void	ft_calc_mad(t_buffer scratch, t_u64a med, t_u64a *mad)
 	t_qsort_ctx				ctx;
 
 	i = 0;
-	__attribute__((assume(scratch.mem != NULL)));
+	__attribute__((assume(scratch.mem != nullptr)));
 	while (i < scratch.size)
 	{
 		tmp = ((t_blk64ra)scratch.mem)[i];
@@ -100,7 +100,7 @@ static inline t_buffer	ft_make_surv(t_tailor *t, t_buffer sample,
 	size_t			n_surv;
 
 	surv = ft_arena_alloc(&t->arena, sizeof(*surv) * sample.size, 64);
-	if (__builtin_expect(surv == NULL, 0))
+	if (__builtin_expect(surv == nullptr, 0))
 		return ((t_buffer){0, 0});
 	src = (t_perf_sample *)sample.mem;
 	i = 0;
@@ -123,7 +123,7 @@ int	ft_tailor_benchfn(t_tailor *t, t_tailor_fn fn, t_blk8r name)
 	t_u64a		medmad[2];
 
 	sample = ft_tailor_runfn(t, fn, &plan);
-	if (__builtin_expect(sample.mem == NULL, 0))
+	if (__builtin_expect(sample.mem == nullptr, 0))
 		return (0);
 	sample.mem += K_WARMUP * sizeof(t_perf_sample);
 	sample.size -= K_WARMUP;
@@ -132,7 +132,7 @@ int	ft_tailor_benchfn(t_tailor *t, t_tailor_fn fn, t_blk8r name)
 	medmad[1] = ft_tern(medmad[1] == 0, 1, medmad[1]);
 	threshold = medmad[0] + (medmad[1] * 7413ULL) / 1000ULL;
 	sample = ft_make_surv(t, sample, threshold);
-	if (__builtin_expect(sample.mem == NULL, 0))
+	if (__builtin_expect(sample.mem == nullptr, 0))
 		return (0);
 	ft_bootstrap(t, sample, plan, name);
 	ft_arena_rewind(&t->arena, t->rpoint);

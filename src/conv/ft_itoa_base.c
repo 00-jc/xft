@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 17:13:42 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/03/15 19:00:51 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/13 06:14:05 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,12 +65,12 @@ char	*ft_itoa_base(int n, char *base)
 
 	blen = ft_ftalidate_base(base);
 	if (blen == -1)
-		return (NULL);
+		return (nullptr);
 	if (n == 0)
 		return (ft_strdup("0"));
 	out = ft_alloc(count(n, blen) + 1);
 	if (!out)
-		return (NULL);
+		return (nullptr);
 	c = count(n, blen);
 	out[c] = 0;
 	while (n != 0)

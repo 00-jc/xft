@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/22 17:53:19 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/04/23 01:25:16 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/13 06:14:07 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ static inline int	ft_fuzzer_init__internal(t_fuzzer *fuzz, size_t i,
 		len = 1 + (ft_xoshiro256ss(fuzz->xo) % (1 << 10));
 		align = 1 << (ft_xoshiro256ss(fuzz->xo) & 6);
 		fuzz->buffers[i].mem = ft_arena_alloc(&fuzz->arena, len, align);
-		if (fuzz->buffers[i].mem == NULL)
+		if (fuzz->buffers[i].mem == nullptr)
 			return (ft_arena_rewind(&fuzz->arena, c), 0);
 		fuzz->buffers[i].size = len;
 		++i;

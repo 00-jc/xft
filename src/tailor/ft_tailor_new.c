@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/18 21:07:34 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/04/19 19:13:21 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/13 06:14:07 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ int	ft_tailor_new(t_tailor *t, double warmup_sec, t_u64a min_samples)
 	actualtime = (t_u64a)(ft_dtern(warmup_sec < .75, .75, warmup_sec) * 1e9);
 	t->phase1_ns = actualtime / 5;
 	t->phase2_ns = actualtime - t->phase1_ns;
-	t->rand_buffers = ft_fatptr(NULL, 0);
+	t->rand_buffers = ft_fatptr(nullptr, 0);
 	t->min_samples = ft_tern(min_samples < 150, 150, min_samples);
 	return (1);
 }

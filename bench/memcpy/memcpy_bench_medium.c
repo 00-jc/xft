@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/20 16:22:52 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/04/20 16:43:53 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/13 06:14:07 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void	ft_memcpy_test_medium_aligned(void *ptr)
 	buffers = ft_get_all_buffers(ptr, bufn);
 	buffers += 18;
 	bufn[0] = 8;
-	ft_pin_invariant_msg(buffers != NULL, (char *)"NO BUFFERS");
+	ft_pin_invariant_msg(buffers != nullptr, (char *)"NO BUFFERS");
 	bufn[2] = 0;
 	while (n-- > 0)
 	{
@@ -52,7 +52,7 @@ void	ft_memcpy_test_medium_unaligned(void *ptr)
 	buffers = ft_get_all_buffers(ptr, bufn);
 	buffers += 4;
 	bufn[0] = 8;
-	ft_pin_invariant_msg(buffers != NULL, (char *)"NO BUFFERS");
+	ft_pin_invariant_msg(buffers != nullptr, (char *)"NO BUFFERS");
 	bufn[2] = 0;
 	while (n-- > 0)
 	{

@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 15:50:40 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/04/13 18:36:31 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/13 06:14:05 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ inline int	ft_vec_popmv(t_vec *restrict const v, void *const dest,
 	t_u8	*last;
 
 	last = ft_vec_get_last(v, type_size);
-	if (__builtin_expect(last != NULL, 1))
+	if (__builtin_expect(last != nullptr, 1))
 	{
 		ft_memcpy(dest, last, type_size);
 		ft_vec_pop(v);
@@ -41,7 +41,7 @@ inline int	ft_vec_popf(t_vec *restrict const v, size_t type_size,
 	t_u8	*last;
 
 	last = ft_vec_get_last(v, type_size);
-	if (__builtin_expect(last != NULL, 1))
+	if (__builtin_expect(last != nullptr, 1))
 	{
 		f(last);
 		ft_vec_pop(v);

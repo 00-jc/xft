@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/19 03:40:48 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/04/20 11:48:53 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/13 06:14:07 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ static inline void	*ft__handle_alignment_alloc(t_tailor *t, size_t size,
 	{
 		tmp = ft_arena_alloc(&t->arena, size + 1, 32);
 		if (!tmp)
-			return (NULL);
+			return (nullptr);
 		tmp = (t_u8 *)tmp + 1;
 	}
 	else

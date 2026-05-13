@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 17:14:01 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/04/16 20:23:48 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/13 06:14:05 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ t_hugepage	*new_hugepage(t_hugepage *restrict const prev,
 		return ((void)(page = prev->next), (void)(page->used = 0), page);
 	page = ft_mmap(size, 0, flag);
 	if (page == MAP_FAILED)
-		return (NULL);
+		return (nullptr);
 	page->page_size = size;
 	page->prev = prev;
 	page->total = size - sizeof(t_hugepage);
@@ -81,7 +81,7 @@ t_hugepage	*new_hugepage(t_hugepage *restrict const prev,
 	}
 	else
 	{
-		page->next = NULL;
+		page->next = nullptr;
 		if (prev)
 			prev->next = page;
 	}

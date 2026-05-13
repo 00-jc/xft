@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/15 19:24:22 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/03/16 16:40:36 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/13 06:14:05 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void	ft_threadpool_destroy(t_threadpool *tp, size_t i)
 	while (i-- > 0)
 	{
 		pthread_cancel(tp->threads[i]);
-		pthread_join(tp->threads[i], NULL);
+		pthread_join(tp->threads[i], nullptr);
 	}
 	pthread_mutex_destroy(&tp->mutex);
 	pthread_cond_destroy(&tp->start);
@@ -84,12 +84,12 @@ t_u32a	ft_threadpool_new(t_threadpool *tp, t_thread_arg *arg)
 	tp->alive = 0;
 	ft_pin_invariant_msg(FT_NTHREADS,
 		(char *)__FILE__":NTHREADS cannot be 0");
-	pthread_mutex_init(&tp->mutex, NULL);
-	pthread_cond_init(&tp->start, NULL);
-	pthread_cond_init(&tp->done, NULL);
+	pthread_mutex_init(&tp->mutex, nullptr);
+	pthread_cond_init(&tp->start, nullptr);
+	pthread_cond_init(&tp->done, nullptr);
 	while (i < FT_NTHREADS)
 	{
-		if (pthread_create(tp->threads + i, NULL, ft_thread_run, (void *)arg))
+		if (pthread_create(tp->threads + i, nullptr, ft_thread_run, (void *)arg))
 			return ((void)(pthread_mutex_unlock(&tp->mutex)),
 				ft_threadpool_destroy(tp, i), 0);
 		++i;

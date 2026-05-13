@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/16 00:00:00 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/04/16 20:54:02 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/13 06:14:07 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,13 +27,13 @@ void	test_extend_trigger(void)
 
 	a = ft_new_arena_alloc();
 	first = a.current;
-	ft_pin_invariant_msg(first->next == NULL, (char *)"no next yet");
+	ft_pin_invariant_msg(first->next == nullptr, (char *)"no next yet");
 	big = first->total - first->used - 128;
 	p = ft_arena_alloc(&a, big, 16);
-	ft_pin_invariant_msg(p != NULL, (char *)"fill page");
+	ft_pin_invariant_msg(p != nullptr, (char *)"fill page");
 	ft_pin_invariant_msg(a.current == first, (char *)"still first");
 	p = ft_arena_alloc(&a, 4096, 16);
-	ft_pin_invariant_msg(p != NULL, (char *)"overflow alloc");
+	ft_pin_invariant_msg(p != nullptr, (char *)"overflow alloc");
 	ft_pin_invariant_msg(a.current != first, (char *)"moved fwd");
 	ft_pin_invariant_msg(a.current->prev == first, (char *)"prev link");
 	ft_pin_invariant_msg(first->next == a.current, (char *)"next link");
@@ -77,12 +77,12 @@ void	test_extend_rewind_grow(void)
 	ft_arena_alloc(&a, big, 16);
 	cp = ft_arena_checkpoint(&a);
 	p = ft_arena_alloc(&a, 4096, 16);
-	ft_pin_invariant_msg(p != NULL, (char *)"first grow");
+	ft_pin_invariant_msg(p != nullptr, (char *)"first grow");
 	pages[1] = a.current;
 	ft_arena_rewind(&a, cp);
 	ft_pin_invariant_msg(a.current == pages[0], (char *)"rewound");
 	p = ft_arena_alloc(&a, 4096, 16);
-	ft_pin_invariant_msg(p != NULL, (char *)"realloc");
+	ft_pin_invariant_msg(p != nullptr, (char *)"realloc");
 	ft_pin_invariant_msg(a.current == pages[1], (char *)"reuse");
 	ft_destroy_arena(&a);
 }
@@ -105,8 +105,8 @@ void	test_extend_clean_releases(void)
 		ft_arena_alloc(&a, 4096, 16);
 	ft_arena_rewind_clean(&a, cp);
 	ft_pin_invariant_msg(a.current == base, (char *)"back to base");
-	ft_pin_invariant_msg(base->next == NULL, (char *)"chain cleared");
-	ft_pin_invariant_msg(ft_arena_alloc(&a, 64, 8) != NULL,
+	ft_pin_invariant_msg(base->next == nullptr, (char *)"chain cleared");
+	ft_pin_invariant_msg(ft_arena_alloc(&a, 64, 8) != nullptr,
 		(char *)"alloc after clean");
 	ft_destroy_arena(&a);
 }

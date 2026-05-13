@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/03 00:00:00 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/04/13 18:50:36 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/13 06:14:07 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	test_vec_push_get(void)
 	const int	*got;
 
 	v = ft_vec_new(4, sizeof(int));
-	ft_pin_invariant(v.data != NULL);
+	ft_pin_invariant(v.data != nullptr);
 	ft_pin_invariant(ft_vec_len(&v, sizeof(int)) == 0);
 	val = 42;
 	ft_pin_invariant(ft_vec_push_back(&v, (t_u8 *)&val, sizeof(int)));
@@ -35,7 +35,7 @@ void	test_vec_push_get(void)
 	ft_pin_invariant(got && *got == 42);
 	got = ft_vec_get(&v, 1, sizeof(int));
 	ft_pin_invariant(got && *got == 99);
-	ft_pin_invariant(ft_vec_get(&v, 2, sizeof(int)) == NULL);
+	ft_pin_invariant(ft_vec_get(&v, 2, sizeof(int)) == nullptr);
 	ft_vec_free(&v);
 }
 

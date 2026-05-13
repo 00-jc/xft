@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/22 19:19:46 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/03/04 00:00:33 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/13 06:14:05 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,13 +20,13 @@ inline t_eaterset	get_eaterset(t_eater_select selection)
 {
 	static const t_eaterset	set[] = {
 	[set_alpha] = {.eater128 = ft_isalpha128,
-		.eater256 = NULL, .eater512 = NULL, .eater8 = ft_isalpha},
+		.eater256 = nullptr, .eater512 = nullptr, .eater8 = ft_isalpha},
 	[set_digit] = {.eater128 = ft_isdigit128,
-		.eater256 = NULL, .eater512 = NULL, .eater8 = ft_isdigit},
+		.eater256 = nullptr, .eater512 = nullptr, .eater8 = ft_isdigit},
 	[set_xdigit] = {.eater128 = ft_isxdigit128,
-		.eater256 = NULL, .eater512 = NULL, .eater8 = ft_isxdigit},
+		.eater256 = nullptr, .eater512 = nullptr, .eater8 = ft_isxdigit},
 	[set_blank] = {.eater128 = ft_isspace128,
-		.eater256 = NULL, .eater512 = NULL, .eater8 = ft_isspace},
+		.eater256 = nullptr, .eater512 = nullptr, .eater8 = ft_isspace},
 	};
 
 	return (set[selection]);
@@ -40,16 +40,16 @@ inline t_eaterset	get_eaterset(t_eater_select selection)
 	static const t_eaterset	set[] = {
 	[set_alpha] = {
 		.eater128 = ft_isalpha128, .eater256 = ft_isalpha256,
-		.eater512 = NULL, .eater8 = ft_isalpha},
+		.eater512 = nullptr, .eater8 = ft_isalpha},
 	[set_digit] = {
 		.eater128 = ft_isdigit128, .eater256 = ft_isdigit256,
-		.eater512 = NULL, .eater8 = ft_isdigit},
+		.eater512 = nullptr, .eater8 = ft_isdigit},
 	[set_xdigit] = {
 		.eater128 = ft_isxdigit128, .eater256 = ft_isxdigit256,
-		.eater512 = NULL, .eater8 = ft_isxdigit},
+		.eater512 = nullptr, .eater8 = ft_isxdigit},
 	[set_blank] = {
 		.eater128 = ft_isspace128, .eater256 = ft_isspace256,
-		.eater512 = NULL, .eater8 = ft_isspace},
+		.eater512 = nullptr, .eater8 = ft_isspace},
 	};
 
 	return (set[selection]);

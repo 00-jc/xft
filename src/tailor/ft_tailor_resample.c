@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/19 23:40:09 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/04/20 01:31:01 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/13 06:14:07 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,10 +37,10 @@ static inline int	ft_bootstrap_ci(t_tailor *t, t_buffer surv, t_u64a hilo[2],
 	size_t				ij[2];
 	t_qsort_ctx			ctx;
 
-	__attribute__((assume(surv.mem != NULL)));
+	__attribute__((assume(surv.mem != nullptr)));
 	medres[0] = ft_arena_alloc(&t->arena, sizeof(t_u64a) * plan.b, 64);
 	medres[1] = ft_arena_alloc(&t->arena, sizeof(t_u64a) * surv.size, 64);
-	if (__builtin_expect(medres[0] == NULL || medres[1] == NULL, 0))
+	if (__builtin_expect(medres[0] == nullptr || medres[1] == nullptr, 0))
 		return (0);
 	ft_xoshiro_init(xo);
 	src = (t_perf_sample *)surv.mem;
@@ -68,9 +68,9 @@ static inline int	ft_getpost_med(t_tailor *t, t_buffer surv,
 	size_t			i;
 	t_qsort_ctx		ctx;
 
-	__attribute__((assume(surv.mem != NULL)));
+	__attribute__((assume(surv.mem != nullptr)));
 	arr = ft_arena_alloc(&t->arena, sizeof(t_u64a) * surv.size, 64);
-	if (__builtin_expect(arr == NULL, 0))
+	if (__builtin_expect(arr == nullptr, 0))
 		return (0);
 	src = (t_perf_sample *)surv.mem;
 	i = 0;
@@ -95,7 +95,7 @@ int	ft_bootstrap(t_tailor *t, t_buffer surv, t_plankb plan, t_blk8r name)
 	t_u64a	med;
 	t_u64a	min;
 
-	__attribute__((assume(surv.mem != NULL)));
+	__attribute__((assume(surv.mem != nullptr)));
 	if (__builtin_expect(ft_bootstrap_ci(t, surv, hilo, plan) == 0, 0))
 		return (0);
 	if (__builtin_expect(ft_getpost_med(t, surv, &med, &min) == 0, 0))

@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/12 02:28:42 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/04/12 15:09:05 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/13 06:14:05 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ void	ft_xxh3_init_custom_secret(void *custom_secret, t_u64a seed)
 	t_buffer		secret;
 
 	secret = ft_xxh3_get_secret();
-	__attribute__((assume(secret.mem != NULL)));
+	__attribute__((assume(secret.mem != nullptr)));
 	__attribute__((assume((XXH3_SECRET_DEF_SIZE & 63) == 0)));
 	__attribute__((assume(((t_uptr)custom_secret & 63) == 0)));
 	{

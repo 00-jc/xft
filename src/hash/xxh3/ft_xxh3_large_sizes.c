@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/12 04:21:11 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/04/12 16:55:22 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/13 06:14:06 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@ inline void	ft_xxh3_hashlong_internal_loop(t_blk8r acc, t_buffer input,
 	size_t	nb_stripes;
 	size_t	n;
 
-	__attribute__((assume(input.mem != NULL && secret.mem != NULL)));
+	__attribute__((assume(input.mem != nullptr && secret.mem != nullptr)));
 	__attribute__((assume(input.size > XXH3_STRIPE_LEN)));
 	nb_str_blk = (secret.size - XXH3_STRIPE_LEN) / XXH3_SECRET_CONSUME_RATE;
 	blen = XXH3_STRIPE_LEN * nb_str_blk;
@@ -123,7 +123,7 @@ t_u64a	ft_xxh3_hashlong_64b(t_buffer input, t_u64a seed)
 	ft_xxh3_init_custom_secret(custom_secret, seed);
 	secret = (t_buffer){.mem = (t_u8 *)custom_secret,
 		.size = XXH3_SECRET_DEF_SIZE};
-	__attribute__((assume(input.mem != NULL && secret.mem != NULL)));
+	__attribute__((assume(input.mem != nullptr && secret.mem != nullptr)));
 	__attribute__((assume(secret.size >= sizeof(acc)
 				+ XXH3_SECRET_MERGEACCS_START)));
 	ft_xxh3_hashlong_internal_loop((t_blk8r) & acc, input, secret);

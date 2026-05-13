@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   memset_bench_short.c                               :::      ::::::::   */
-/*                                                    +:+ +:+         +:      */
+/*   memset_bench_short.c                               :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#    +:+     +#          */
-/*                                                +#++#+#++#+   +#++#++#++#  */
+/*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/20 16:22:01 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/04/20 16:48:59 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/13 06:14:07 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void	ft_memset_test_short_aligned(void *ptr)
 	buffers = ft_get_all_buffers(ptr, bufn);
 	buffers += 14;
 	bufn[0] = 4;
-	ft_pin_invariant_msg(buffers != NULL, (char *)"NO BUFFERS");
+	ft_pin_invariant_msg(buffers != nullptr, (char *)"NO BUFFERS");
 	bufn[2] = 0;
 	while (n-- > 0)
 	{
@@ -48,7 +48,7 @@ void	ft_memset_test_short_unaligned(void *ptr)
 	n = ft_tailor_getcount(ptr);
 	buffers = ft_get_all_buffers(ptr, bufn);
 	bufn[0] = 4;
-	ft_pin_invariant_msg(buffers != NULL, (char *)"NO BUFFERS");
+	ft_pin_invariant_msg(buffers != nullptr, (char *)"NO BUFFERS");
 	bufn[2] = 0;
 	while (n-- > 0)
 	{

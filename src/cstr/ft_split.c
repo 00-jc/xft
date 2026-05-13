@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 17:13:41 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/03/15 15:03:21 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/13 06:14:05 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ static char	*eat_literal(char *str, char set)
 		i++;
 	out = (char *)ft_alloc((size_t)i + 1);
 	if (!out)
-		return (NULL);
+		return (nullptr);
 	i = 0;
 	while (str[i] && str[i] != set)
 	{
@@ -90,9 +90,9 @@ char	**ft_split(const char *str, char set)
 	wc = count_words((char *)str, set);
 	out = (char **)ft_alloc((wc + 1) * sizeof(char *));
 	if (!out)
-		return (NULL);
-	out[wc] = NULL;
+		return (nullptr);
+	out[wc] = nullptr;
 	if (!fill_words(str, set, out))
-		return (ft_free_array((void ***)&out), NULL);
+		return (ft_free_array((void ***)&out), nullptr);
 	return (out);
 }
