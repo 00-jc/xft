@@ -1,5 +1,5 @@
 ```
-libft
+xft
 
 A C library.
 
