@@ -163,6 +163,7 @@ CFLAGS_COMMON_OPT := -D_GNU_SOURCE											   \
  
 CFLAGS_OPT   := $(CFLAGS_COMMON_OPT) -march=native -mtune=native -flto -O3 -ffast-math
 CFLAGS_NOOPT := $(CFLAGS_COMMON_OPT)
+CFLAGS_NOLTO := $(CFLAGS_COMMON_OPT) -march=native -mtune=native -O3 -ffast-math
 
 SANITIZE   := -fsanitize=address,alignment,undefined -fsanitize-recover=null
 
@@ -456,6 +457,9 @@ $(NAME): $(OBJS)
 # ── Convenience ──────────────────────────────────────────────────────────────
 base:
 	@$(MAKE) fclean all CFLAGS="$(CFLAGS_NOOPT) $(WARNS)"
+
+nolto:
+	@$(MAKE) fclean all CFLAGS="$(CFLAGS_NOLTO) $(WARNS)"
 
 bonus: all
 
