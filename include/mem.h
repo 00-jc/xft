@@ -39,9 +39,9 @@ void			ft_memtake(void *__restrict__ dest,
 					void *__restrict__ src, size_t n)\
 					__attribute__((__nonnull__(1, 2)));
 
-void			*ft_memmove(void *__restrict__ dest,
+void			ft_memmove(void *__restrict__ dest,
 					const void *__restrict__ src, size_t n)\
-					__attribute__((__nonnull__(1, 2), returns_nonnull));
+					__attribute__((__nonnull__(1, 2)));
 
 void			*ft_memchr(const void *__restrict__ ptr, int c, size_t n)\
 					__attribute__((__nonnull__(1)));

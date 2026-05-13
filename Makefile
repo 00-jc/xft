@@ -294,7 +294,7 @@ SRCS_MEM := \
 	src/mem/avx512/ft_memset_avx512.c \
 	src/mem/avx512/ft_memcmp_avx512.c \
 	src/mem/avx512/ft_memchr_avx512.c \
-	src/mem/ft_memmove.c \
+	src/mem/dynamic/ft_memmove.c \
 	src/mem/ft_overlap.c \
 	src/mem/ft_fatptr.c \
 	src/mem/ft_movsb.c \
@@ -304,6 +304,7 @@ SRCS_MEM := \
 	src/mem/avx256/ft_memcmp_avx256.c \
 	src/mem/avx256/ft_memchr_avx256.c \
 	src/mem/hugebranches/ft_memcpy_huge.c \
+	src/mem/hugebranches/ft_memmove_huge.c \
 	src/mem/ft_prefetch_intrin.c
 
 SRCS_THREADPOOL := \

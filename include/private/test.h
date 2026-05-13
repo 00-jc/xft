@@ -6,14 +6,14 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/19 00:00:00 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/13 05:00:48 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/14 00:46:26 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef TEST_H
 # define TEST_H
 
-# include "lft.h"
+# include "xft.h"
 # include "str.h"
 # include "hint.h"
 # include <string.h>

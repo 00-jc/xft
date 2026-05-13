@@ -22,7 +22,17 @@ typedef struct s_t_f64_size
 	size_t		blks;
 }	t_t_f64_size;
 
+void			ft_memcpy_naive(void *__restrict__ dest,
+					const void	*__restrict__ const src,
+					size_t n)\
+					__attribute__((__nonnull__(1, 2)));
+
 void			ft_memcpy_512_huge(void *__restrict__ dest,\
+					const void	*__restrict__ const src,\
+					size_t n)\
+					__attribute__((__nonnull__(1, 2)));
+
+void			ft_memmove_512_huge(void *__restrict__ dest,\
 					const void	*__restrict__ const src,\
 					size_t n)\
 					__attribute__((__nonnull__(1, 2)));
