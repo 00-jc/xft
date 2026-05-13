@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/18 21:51:49 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/04/20 10:35:14 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/13 23:49:02 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,10 +21,10 @@ typedef struct s_datapoint
 	size_t		n;
 	size_t		iters;
 	size_t		bytes_processed;
-	double		mu;
-	double		m2;
-	double		min;
-	double		max;
+	t_f64		mu;
+	t_f64		m2;
+	t_f64		min;
+	t_f64		max;
 }	t_datapoint;
 
 typedef struct s_tailor_calib

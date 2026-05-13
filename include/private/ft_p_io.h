@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/19 17:58:03 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/03/03 18:49:34 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/13 23:49:02 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void			putx(int fd, size_t n, char or);
 void			putd(int fd, ssize_t n);
 void			puti(int fd, int n);
 void			pputs(int fd, const char *__restrict__ const str);
-void			pflt(int fd, double d);
+void			pflt(int fd, t_f64 d);
 void			putc_(char c, int fd);
 
 #endif

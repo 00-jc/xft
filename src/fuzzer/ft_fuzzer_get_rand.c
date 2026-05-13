@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/22 18:11:51 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/04/22 23:44:18 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/13 23:49:02 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ t_u64a	ft_fuzz_get_rand_u(t_fuzzer *fuzz)
 }
 
 __attribute__((__nonnull__(1)))
-double	ft_fuzz_get_rand_d(t_fuzzer *fuzz)
+t_f64	ft_fuzz_get_rand_d(t_fuzzer *fuzz)
 {
 	fuzz->lastgen = (t_lastgen){.type = UNSIGNED,
 		.as = (t_lastgenval){.d = (t_dp){.i = ft_xoshiro256ss(fuzz->xo)}.f}};

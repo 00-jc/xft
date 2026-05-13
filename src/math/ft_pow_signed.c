@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 17:13:41 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/02/23 17:14:38 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/13 23:49:02 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,9 +45,9 @@ inline long long	ft_lpow(long long x, t_u64 n)
 }
 
 __attribute__((__always_inline__, const))
-inline float	ft_fpow(float x, t_u64 n)
+inline t_f32	ft_fpow(t_f32 x, t_u64 n)
 {
-	float	res;
+	t_f32	res;
 
 	res = 1;
 	while (n)
@@ -61,9 +61,9 @@ inline float	ft_fpow(float x, t_u64 n)
 }
 
 __attribute__((__always_inline__, const))
-inline double	ft_dpow(double x, t_u64 n)
+inline t_f64	ft_dpow(t_f64 x, t_u64 n)
 {
-	double	res;
+	t_f64	res;
 
 	res = 1.0;
 	while (n)

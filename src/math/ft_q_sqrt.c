@@ -6,20 +6,20 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 05:28:56 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/02/24 00:58:08 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/13 23:49:02 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "math.h"
 
 __attribute__ ((__always_inline__, const))
-inline float	ft_q_sqrt(float number)
+inline t_f32	ft_q_sqrt(t_f32 number)
 {
 	t_u32a		i;
-	float		x2;
-	float		y;
+	t_f32		x2;
+	t_f32		y;
 	t_fp		fp;
-	float		threehalfs;
+	t_f32		threehalfs;
 
 	if (number < 0)
 		return (-1);
@@ -37,13 +37,13 @@ inline float	ft_q_sqrt(float number)
 }
 
 __attribute__ ((__always_inline__, const))
-inline double	ft_q_dsqrt(double number)
+inline t_f64	ft_q_dsqrt(t_f64 number)
 {
 	t_u64a	i;
-	double	x2;
-	double	y;
+	t_f64	x2;
+	t_f64	y;
 	t_dp	fp;
-	double	threehalfs;
+	t_f64	threehalfs;
 
 	if (number < 0)
 		return (-1);
@@ -61,13 +61,13 @@ inline double	ft_q_dsqrt(double number)
 }
 
 __attribute__ ((__always_inline__, const))
-inline float	ft_q_sqrt_round(float number, t_u8 n)
+inline t_f32	ft_q_sqrt_round(t_f32 number, t_u8 n)
 {
 	return (ft_roundf(ft_q_sqrt(number), n));
 }
 
 __attribute__ ((__always_inline__, const))
-inline float	ft_q_sqrt_fround(float number)
+inline t_f32	ft_q_sqrt_fround(t_f32 number)
 {
 	return (ft_roundff(ft_q_sqrt(number)));
 }

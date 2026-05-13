@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/20 02:53:03 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/04/12 16:10:45 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/13 23:49:02 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ t_u32a	ft_map_insert(t_map	*restrict const map,
 	size_t		nblks;
 	size_t		group;
 
-	if (((double)map->count / (double)map->table_size >= 0.85)
+	if (((t_f64)map->count / (t_f64)map->table_size >= 0.85)
 		&& !ft_map_rehash(map))
 		return (0);
 	hash = ft_xxh3_64bits(ft_fatptr(key, keylen), 0);

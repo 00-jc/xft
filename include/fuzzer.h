@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/22 17:49:07 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/04/23 00:03:08 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/13 23:49:02 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ typedef enum e_lastgentype
 typedef struct s_lastgenval
 {
 	t_u64a		u;
-	double		d;
+	t_f64		d;
 	t_buffer	*b;
 }	t_lastgenval;
 
@@ -57,7 +57,7 @@ t_buffer	*ft_fuzz_get_rand(t_fuzzer *fuzz)\
 				__attribute__((__nonnull__(1)));
 t_u64a		ft_fuzz_get_rand_u(t_fuzzer *fuzz)\
 				__attribute__((__nonnull__(1)));
-double		ft_fuzz_get_rand_d(t_fuzzer *fuzz)\
+t_f64		ft_fuzz_get_rand_d(t_fuzzer *fuzz)\
 				__attribute__((__nonnull__(1)));
 
 void		ft_fuzzer_destroy(t_fuzzer *f)\

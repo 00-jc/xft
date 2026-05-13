@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 17:14:01 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/03/15 15:17:04 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/13 23:49:02 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,40 +17,40 @@
 
 typedef union u_fp
 {
-	float	f;
+	t_f32	f;
 	t_u32	i;
 }	t_fp;
 
 typedef union u_dp
 {
-	double	f;
+	t_f64	f;
 	t_u64	i;
 }	t_dp;
 
 typedef struct s_2packd
 {
-	double	x;
-	double	y;
+	t_f64	x;
+	t_f64	y;
 } __attribute__((aligned(16)))	t_2packd;
 
 typedef struct s_4packd
 {
-	double	x;
-	double	y;
-	double	z;
-	double	w;
+	t_f64	x;
+	t_f64	y;
+	t_f64	z;
+	t_f64	w;
 } __attribute__((aligned(32)))	t_4packd;
 
 typedef struct s_8packd
 {
-	double	x;
-	double	y;
-	double	z;
-	double	w;
-	double	a;
-	double	b;
-	double	c;
-	double	d;
+	t_f64	x;
+	t_f64	y;
+	t_f64	z;
+	t_f64	w;
+	t_f64	a;
+	t_f64	b;
+	t_f64	c;
+	t_f64	d;
 } __attribute__((aligned(64)))	t_8packd;
 
 typedef t_4packd	t_3dcoords;
@@ -67,23 +67,23 @@ typedef struct s_3dcoordsx8
 	t_3dcoords	h;
 } __attribute__((aligned(64)))	t_3dcoordsx8;
 
-float			ft_q_sqrt(float x)\
+t_f32			ft_q_sqrt(t_f32 x)\
 					__attribute__((const));
-double			ft_q_dsqrt(double number)\
+t_f64			ft_q_dsqrt(t_f64 number)\
 					__attribute__((const));
-float			ft_sqrt(float number)\
+t_f32			ft_sqrt(t_f32 number)\
 					__attribute__((const));
-double			ft_dsqrt(double number)\
+t_f64			ft_dsqrt(t_f64 number)\
 					__attribute__((const));
-float			ft_q_sqrt_round(float number, t_u8 n)\
+t_f32			ft_q_sqrt_round(t_f32 number, t_u8 n)\
 					__attribute__((const));
-float			ft_q_sqrt_fround(float number)\
+t_f32			ft_q_sqrt_fround(t_f32 number)\
 					__attribute__((const));
-float			ft_roundf(float x, t_u8 n)\
+t_f32			ft_roundf(t_f32 x, t_u8 n)\
 					__attribute__((const));
-float			ft_floorf(float x)\
+t_f32			ft_floorf(t_f32 x)\
 					__attribute__((const));
-float			ft_ceilf(float x)\
+t_f32			ft_ceilf(t_f32 x)\
 					__attribute__((const));
 t_u128			ft_pow_u128(t_u128 x, t_u128 n)\
 					__attribute__((const));
@@ -97,17 +97,17 @@ int				ft_ipow(int x, t_u64 n)\
 					__attribute__((const));
 long long		ft_lpow(long long x, t_u64 n)\
 					__attribute__((const));
-float			ft_fpow(float x, t_u64 n)\
+t_f32			ft_fpow(t_f32 x, t_u64 n)\
 					__attribute__((const));
-double			ft_dpow(double x, t_u64 n)\
+t_f64			ft_dpow(t_f64 x, t_u64 n)\
 					__attribute__((const));
-float			ft_roundff(float x)\
+t_f32			ft_roundff(t_f32 x)\
 					__attribute__((const));
-double			ft_fabs(double x)\
+t_f64			ft_fabs(t_f64 x)\
 					__attribute__((const));
-float			ft_rsqrt(float number)\
+t_f32			ft_rsqrt(t_f32 number)\
 					__attribute__((const));
-double			ft_drsqrt(double number)\
+t_f64			ft_drsqrt(t_f64 number)\
 					__attribute__((const));
 t_8packd		ft_drsqrt_x8(t_8packd d1)\
 					__attribute__ ((const));
@@ -119,9 +119,9 @@ t_3dcoords		ft_3dsub(t_3dcoords a, t_3dcoords b)\
 					__attribute__((const));
 t_3dcoords		ft_3dadd(t_3dcoords a, t_3dcoords b)\
 					__attribute__((const));
-double			ft_3dnorm(t_3dcoords c)\
+t_f64			ft_3dnorm(t_3dcoords c)\
 					__attribute__((const));
-double			ft_3ddot(t_3dcoords a, t_3dcoords b)\
+t_f64			ft_3ddot(t_3dcoords a, t_3dcoords b)\
 					__attribute__((const));
 t_3dcoords		ft_3dunit(t_3dcoords c)\
 					__attribute__((const));

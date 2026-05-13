@@ -6,17 +6,17 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 17:13:42 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/03/07 01:33:47 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/13 23:49:02 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "conv.h"
 #include "ctype.h"
 
-static inline double	__eat_decimal(const char *s, size_t n)
+static inline t_f64	__eat_decimal(const char *s, size_t n)
 {
-	double	c;
-	double	out;
+	t_f64	c;
+	t_f64	out;
 
 	c = 0.1;
 	out = 0;
@@ -29,10 +29,10 @@ static inline double	__eat_decimal(const char *s, size_t n)
 }
 
 __attribute__((__nonnull__(1)))
-double	ft_atod_bounded(const char *s, size_t n)
+t_f64	ft_atod_bounded(const char *s, size_t n)
 {
 	int		neg;
-	double	out;
+	t_f64	out;
 
 	out = 0;
 	neg = 1;

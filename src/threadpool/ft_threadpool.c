@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/15 19:24:22 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/13 18:19:10 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/14 00:04:14 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,8 @@ t_u32a	ft_threadpool_new(t_threadpool *tp, t_thread_arg *arg)
 	pthread_cond_init(&tp->done, nullptr);
 	while (i < FT_NTHREADS)
 	{
-		if (pthread_create(tp->threads + i, nullptr, ft_thread_run, (void *)arg))
+		if (pthread_create(tp->threads + i, nullptr,
+				ft_thread_run, (void *)arg))
 			return ((void)(pthread_mutex_unlock(&tp->mutex)),
 				ft_threadpool_destroy(tp, i), 0);
 		++i;

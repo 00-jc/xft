@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/19 00:41:01 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/04/20 10:46:12 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/13 23:49:02 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,18 +56,18 @@ static inline t_phase1	ft_tailor_calibrate_mu(t_tailor *t, t_tailor_fn fn)
 }
 
 __attribute__((__nonnull__(1), __always_inline__))
-static inline double	ft__welford(t_datapoint *dp, t_u64a sample, t_u64a n)
+static inline t_f64	ft__welford(t_datapoint *dp, t_u64a sample, t_u64a n)
 {
-	double	x;
-	double	d1;
-	double	d2;
-	double	s;
-	double	ci;
+	t_f64	x;
+	t_f64	d1;
+	t_f64	d2;
+	t_f64	s;
+	t_f64	ci;
 
 	++dp->n;
-	x = (double)sample / (double)n;
+	x = (t_f64)sample / (t_f64)n;
 	d1 = x - dp->mu;
-	dp->mu += d1 / (double)dp->n;
+	dp->mu += d1 / (t_f64)dp->n;
 	d2 = x - dp->mu;
 	dp->m2 += d1 * d2;
 	dp->min = ft_dtern(x < dp->min, x, dp->min);
@@ -75,7 +75,7 @@ static inline double	ft__welford(t_datapoint *dp, t_u64a sample, t_u64a n)
 	ci = 1000.0;
 	if ((dp->n & 15) == 0)
 	{
-		s = (dp->m2 / (double)(dp->n - 1)) / (double)dp->n;
+		s = (dp->m2 / (t_f64)(dp->n - 1)) / (t_f64)dp->n;
 		ci = 1.96 * ft_dsqrt(s) / dp->mu;
 	}
 	return (ft_dtern(ci < 0.01, ci, 1000.0));
@@ -88,15 +88,15 @@ static inline t_datapoint	ft_tailor_calibrate_welford(t_tailor *t,
 	t_datapoint		dp;
 	t_phase1		p1;
 	t_u64a			deadline;
-	double			fpv[3];
+	t_f64			fpv[3];
 	t_tailor_arg	arg;
 
 	dp = (t_datapoint){0, 0, 0, 0, 0, DBL_MAX, 0};
 	p1 = ft_tailor_calibrate_mu(t, fn);
 	ft_xoshiro_init(arg.xoshiro);
 	arg.buffers = t->rand_buffers;
-	fpv[0] = (double)p1.sum / (double)p1.n;
-	fpv[1] = (double)t->phase2_ns / (double)(t->min_samples << 1);
+	fpv[0] = (t_f64)p1.sum / (t_f64)p1.n;
+	fpv[1] = (t_f64)t->phase2_ns / (t_f64)(t->min_samples << 1);
 	fpv[2] = 50000.0 / fpv[0];
 	fpv[0] = fpv[1] / fpv[0];
 	arg.iters = (size_t)ft_dtern(fpv[0] < fpv[2], fpv[0], fpv[2]);
@@ -116,12 +116,12 @@ __attribute__((__nonnull__(1, 2)))
 t_plankb	ft_get_kb(t_tailor *t, t_tailor_fn fn)
 {
 	t_datapoint		dp;
-	double			cv;
-	double			ktmp;
+	t_f64			cv;
+	t_f64			ktmp;
 	t_u64a			kb[2];
 
 	dp = ft_tailor_calibrate_welford(t, fn);
-	cv = ft_dsqrt(dp.m2 / (double)(dp.n - 1)) / dp.mu;
+	cv = ft_dsqrt(dp.m2 / (t_f64)(dp.n - 1)) / dp.mu;
 	ktmp = 1.96 * (cv / K_REL_CI);
 	ktmp = 1.5 * ktmp * ktmp;
 	kb[0] = ((t->phase1_ns + t->phase2_ns) << 2) / ((t_u64a)dp.mu * dp.iters);

@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 04:38:46 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/02/24 03:19:42 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/13 23:49:02 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,19 +15,19 @@
 #ifdef __x86_64__
 
 __attribute__((__always_inline__, const))
-inline float	ft_rsqrt(float number)
+inline t_f32	ft_rsqrt(t_f32 number)
 {
 	__asm__("rsqrtss %1, %0" : "=x"(number) : "x"(number));
 	return (number);
 }
 
 __attribute__ ((__always_inline__, const))
-inline double	ft_drsqrt(double number)
+inline t_f64	ft_drsqrt(t_f64 number)
 {
 	t_u64a	i;
-	double	x2;
-	double	y;
-	double	threehalfs;
+	t_f64	x2;
+	t_f64	y;
+	t_f64	threehalfs;
 
 	threehalfs = 1.5;
 	x2 = number * 0.5;
@@ -43,12 +43,12 @@ inline double	ft_drsqrt(double number)
 #else
 
 __attribute__ ((__always_inline__, const))
-inline float	ft_rsqrt(float number)
+inline t_f32	ft_rsqrt(t_f32 number)
 {
 	t_u32a		i;
-	float		x2;
-	float		y;
-	float		threehalfs;
+	t_f32		x2;
+	t_f32		y;
+	t_f32		threehalfs;
 
 	threehalfs = 1.5F;
 	x2 = number * 0.5F;
@@ -62,12 +62,12 @@ inline float	ft_rsqrt(float number)
 }
 
 __attribute__ ((__always_inline__, const))
-inline double	ft_drsqrt(double number)
+inline t_f64	ft_drsqrt(t_f64 number)
 {
 	t_u64a	i;
-	double	x2;
-	double	y;
-	double	threehalfs;
+	t_f64	x2;
+	t_f64	y;
+	t_f64	threehalfs;
 
 	threehalfs = 1.5;
 	x2 = number * 0.5;

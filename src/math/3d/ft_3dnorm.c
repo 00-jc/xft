@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 00:06:31 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/03/14 20:21:11 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/13 23:49:02 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ inline t_8packd	ft_3dnorm8(t_3dcoordsx8 c)
 }
 
 __attribute__((__always_inline__, const))
-inline double	ft_3dnorm(t_3dcoords c)
+inline t_f64	ft_3dnorm(t_3dcoords c)
 {
 	t_v4da	vec;
 

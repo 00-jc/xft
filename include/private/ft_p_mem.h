@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/19 18:23:58 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/04/17 14:59:37 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/13 23:49:02 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,11 @@
 # include "mem.h"
 # include "private/ft_p_bmi.h"
 
-typedef struct s_double_size
+typedef struct s_t_f64_size
 {
 	size_t		i;
 	size_t		blks;
-}	t_double_size;
+}	t_t_f64_size;
 
 void			ft_memcpy_512_huge(void *__restrict__ dest,\
 					const void	*__restrict__ const src,\

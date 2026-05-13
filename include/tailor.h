@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/18 19:32:06 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/04/20 11:49:09 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/13 23:50:08 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include "perf.h"
 # include "alloc.h"
 # include "rng.h"
+# include "types.h"
 # include "mem.h"
 
 typedef void	(*t_tailor_fn)(void *);
@@ -46,7 +47,7 @@ typedef struct s_tailor
 	t_u64a				swap;
 }	t_tailor;
 
-int			ft_tailor_new(t_tailor *t, double warmup_sec, t_u64a min_samples)\
+int			ft_tailor_new(t_tailor *t, t_f64 warmup_sec, t_u64a min_samples)\
 					__attribute__((nonnull(1)));
 
 int			ft_tailor_bench(t_tailor *t, t_tailor_bench benches[],\

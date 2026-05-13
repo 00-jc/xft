@@ -6,12 +6,12 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 17:14:00 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/13 17:46:27 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/14 00:04:37 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LFT_H
-# define LFT_H
+#ifndef XFT_H
+# define XFT_H
 
 # include "types.h"
 # include "cstr.h"

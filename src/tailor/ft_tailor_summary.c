@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/20 00:24:50 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/13 06:14:07 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/14 00:03:07 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "private/ft_p_tailor.h"
@@ -40,10 +40,10 @@ static inline void	ft_sum_counters(t_perf_sample *src, t_perf_sample *sum,
 static void	ft_print_head(t_perf_sample sum, t_plankb plan, t_blk8r name,
 	t_u64a total_iters)
 {
-	double	bps;
+	t_f64	bps;
 
 	bps = ft_dtern(sum.ns != 0,
-			(double)plan.dp.bytes_processed / (double)sum.ns * 1e9, 0.0) / 1e9;
+			(t_f64)plan.dp.bytes_processed / (t_f64)sum.ns * 1e9, 0.0) / 1e9;
 	ft_printf(ANSI_BCYAN" * %s"ANSI_RESET"\n"
 		" ├─ time         = %f ns per_call\n"
 		" ├─ ipc          = %f\n"
@@ -52,12 +52,12 @@ static void	ft_print_head(t_perf_sample sum, t_plankb plan, t_blk8r name,
 		" ├─ instr        = %f per_call\n",
 		name,
 		ft_dtern(total_iters != 0,
-			(double)sum.ns / (double)total_iters, 0.0),
+			(t_f64)sum.ns / (t_f64)total_iters, (t_f64)0.0),
 		ft_dtern(sum.cycles != 0,
-			(double)sum.instr / (double)sum.cycles, 0.0),
+			(t_f64)sum.instr / (t_f64)sum.cycles, (t_f64)0.0),
 		bps,
-		(double)sum.cycles / (double)plan.dp.iters,
-		(double)sum.instr / (double)plan.dp.iters);
+		(t_f64)sum.cycles / (t_f64)plan.dp.iters,
+		(t_f64)sum.instr / (t_f64)plan.dp.iters);
 }
 
 static void	ft_print_tail(t_perf_sample sum)
@@ -73,10 +73,10 @@ static void	ft_print_tail(t_perf_sample sum)
 		" ├─ align faults = %lu\n"
 		" └─ page  faults = %lu\n",
 		ft_dtern(sum.branches > 0,
-			(double)sum.branch_miss / (double)sum.branches * 100.0, 0.0),
+			(t_f64)sum.branch_miss / (t_f64)sum.branches * 100.0, 0.0),
 		sum.branch_miss, sum.branches,
 		ft_dtern(sum.cache_ll > 0,
-			(double)sum.cache_miss / (double)sum.cache_ll * 100.0, 0.0),
+			(t_f64)sum.cache_miss / (t_f64)sum.cache_ll * 100.0, 0.0),
 		sum.cache_miss, sum.cache_ll,
 		sum.alignment_faults, sum.page_faults);
 }
