@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/15 19:24:22 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/13 06:14:05 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/13 18:19:10 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,9 +35,9 @@ void	ft_threadpool_destroy(t_threadpool *tp, size_t i)
 __attribute__((__nonnull__(1)))
 void	*ft_thread_run(void *arg)
 {
-	t_thread_arg	*ta;
-	size_t			gen;
-	void			*ret;
+	t_thread_arg			*ta;
+	volatile size_t			gen;
+	void					*ret;
 
 	ta = (t_thread_arg *)arg;
 	ret = (void *)1;

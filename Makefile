@@ -162,7 +162,7 @@ CFLAGS_COMMON_OPT := -D_GNU_SOURCE											   \
 					 -DFT_NTHREADS=$(MAXTHREADS)
  
 CFLAGS_OPT   := $(CFLAGS_COMMON_OPT) -march=native -mtune=native -flto -O3 -ffast-math
-CFLAGS_NOOPT := $(CFLAGS_COMMON_OPT)
+CFLAGS_NOOPT := $(CFLAGS_COMMON_OPT) -march=native -mtune=native -O3 -ffast-math
 
 SANITIZE   := -fsanitize=address,alignment,undefined -fsanitize-recover=null
 
