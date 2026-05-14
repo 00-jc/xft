@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/25 19:01:06 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/13 06:14:07 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/14 07:38:29 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ static void	fuzz_mem_scan(t_fuzzer *fz)
 	n = a->size;
 	if (b->size < n)
 		n = b->size;
-	c = ((t_u8 *)b->mem)[0];
+	c = b->mem[0];
 	ft_pin_invariant(ft_memchr(a->mem, c, a->size)
 		== memchr(a->mem, c, a->size));
 	ft_pin_invariant(((ft_memcmp(a->mem, b->mem, n) > 0)
@@ -61,7 +61,7 @@ static void	fuzz_mem_fill(t_fuzzer *fz)
 	t_u8		c;
 
 	a = ft_fuzz_get_rand(fz);
-	c = ((t_u8 *)a->mem)[0];
+	c = a->mem[0];
 	ft_memcpy(x, a->mem, a->size);
 	ft_memset(x, c, a->size);
 	ft_pin_invariant(ft_memchr(x, c, a->size) == x);
@@ -80,7 +80,7 @@ static void	fuzz_strlen_case(t_fuzzer *fz)
 	i = 0;
 	while (i < b->size)
 	{
-		x[i] = (((char *)b->mem)[i] | 1);
+		x[i] = (b->mem[i] | 1);
 		++i;
 	}
 	n = ft_fuzz_get_rand_u(fz) % (b->size + 1);

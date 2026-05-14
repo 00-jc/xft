@@ -535,15 +535,13 @@ _run_tests: $(_TOBJS)
 analyze: all static_analysis test
 
 # ── Fuzz ─────────────────────────────────────────────────────────────────────
-fuzz: fuzz_clang fuzz_clang_no_march
-
-fuzz_clang:
+fuzz:  fuzz_no_march
 	@$(MAKE) --no-print-directory _run_fuzz \
-		CC=$(CC_CLANG) _TMARCH="$(MARCH)" _TBDIR=build_fc_march
+		 _TMARCH="$(MARCH)" _TBDIR=build_fc_march
 
-fuzz_clang_no_march:
+fuzz_no_march:
 	@$(MAKE) --no-print-directory _run_fuzz \
-		CC=$(CC_CLANG) _TMARCH="" _TBDIR=build_fc
+		 _TMARCH="" _TBDIR=build_fc
 
 _run_fuzz: $(_TOBJS) $(_FOBJS)
 	$(AR) $(_TLIB) $(_TOBJS)
@@ -567,15 +565,13 @@ BMARCH      ?= $(MARCH)
 BFLAGS       = $(BMARCH) $(CFLAGS_OPT) $(WARNS)
 BINCS       := $(INCLUDES) -Ibench/include
 
-bench: bench_clang
-
-bench_clang:
-	@$(MAKE) --no-print-directory _run_bench CC=$(CC_CLANG) BMARCH="$(MARCH)" BTAG="+march"
+bench:
+	@$(MAKE) --no-print-directory _run_bench BMARCH="$(MARCH)" BTAG="+march"
 
 _run_bench: fclean $(NAME)
 	@mkdir -p $(BBDIR)
 	@echo "── Running benchmarks [$(CC) $(BTAG)] ──"
-	@set -e; for b in $(BENCH_NAMES); do \
+	set -e; for b in $(BENCH_NAMES); do \
 		echo "▶ $$b"; \
 		$(CC) $(LDFLAGS_LINK) $(BFLAGS) $(BINCS) bench/$$b/*.c $(NAME) -o $(BBDIR)/$${b}_bench; \
 		$(BENCH_PIN) $(BBDIR)/$${b}_bench $(BENCH_ARGS); \
@@ -584,5 +580,5 @@ _run_bench: fclean $(NAME)
 
 .PHONY: all base bonus clean fclean re \
         static_analysis analyze test test_clang test_clang_no_march _run_tests \
-        fuzz fuzz_clang fuzz_clang_no_march _run_fuzz \
-        bench bench_clang bench_clang_no_march _run_bench
+        fuzz fuzz_no_march _run_fuzz \
+        bench bench_no_march _run_bench

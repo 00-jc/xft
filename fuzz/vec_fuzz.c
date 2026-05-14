@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/25 19:01:06 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/13 06:14:07 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/14 07:38:48 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ static void	fuzz_vec_case(t_fuzzer *fz)
 	ft_pin_invariant(ft_vec_len(&v, sizeof(int)) == n);
 	if (n != 0)
 	{
-		ft_memcpy(&last, (t_u8 *)b->mem + (n - 1) * sizeof(int), sizeof(int));
+		ft_memcpy(&last, b->mem + (n - 1) * sizeof(int), sizeof(int));
 		ft_pin_invariant(ft_vec_popmv(&v, &last, sizeof(int)));
 		ft_pin_invariant(ft_vec_len(&v, sizeof(int)) == n - 1);
 	}
