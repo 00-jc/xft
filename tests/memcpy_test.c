@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/03 00:00:00 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/04/17 02:56:02 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/14 01:27:23 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,14 +64,20 @@ void	test_memcpy_misaligned(void)
 
 void	test_memmove_backward(void)
 {
-	char	a[20];
-	char	b[20];
+	char	a[512];
+	char	b[512];
+	int		i;
 
-	memcpy(a, "hello world!", 13);
-	memcpy(b, "hello world!", 13);
-	ft_memmove(a + 2, a, 10);
-	memmove(b + 2, b, 10);
-	ft_pin_invariant(memcmp(a, b, 12) == 0);
+	i = 0;
+	while (i < 512)
+	{
+		a[i] = (char)(i & 0xFF);
+		b[i] = (char)(i & 0xFF);
+		i++;
+	}
+	ft_memmove(a + 10, a + 3, 200);
+	memmove(b + 10, b + 3, 200);
+	ft_pin_invariant(memcmp(a, b, 512) == 0);
 }
 
 void	test_memcpy_large(void)

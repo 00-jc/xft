@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/16 22:55:19 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/14 01:13:12 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/14 02:56:07 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,12 +20,12 @@ inline void	ft_memcpy_naive(void *restrict dest,
 	t_u8	s[7];
 
 	i[0] = 0;
-	i[1] = 0 < n;
-	i[2] = -(1ULL < n) & 2;
-	i[3] = -(2ULL < n) & 3;
-	i[4] = -(3ULL < n) & 4;
-	i[5] = -(4ULL < n) & 5;
-	i[6] = -(5ULL < n) & 6;
+	i[1] = -(1ULL < n) & 1;
+	i[2] = -(2ULL < n) & 2;
+	i[3] = -(3ULL < n) & 3;
+	i[4] = -(4ULL < n) & 4;
+	i[5] = -(5ULL < n) & 5;
+	i[6] = -(6ULL < n) & 6;
 	s[0] = ((t_blk8r)src)[i[0]];
 	s[1] = ((t_blk8r)src)[i[1]];
 	s[2] = ((t_blk8r)src)[i[2]];

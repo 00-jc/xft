@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/13 00:05:58 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/14 00:47:58 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/14 02:59:01 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,21 +16,22 @@ __attribute__((__nonnull__(1, 2), __always_inline__))
 inline void	ft_memcpy_hugetail(void *restrict dest,
 	const void	*restrict const src, size_t n)
 {
-	size_t		i[2];
+	size_t		i[3];
 	t_vu512a	x[4];
 
 	if (__builtin_expect(63 < n, 1))
 	{
-		i[0] = -(127ULL < n) & 2;
-		i[1] = -(191ULL < n) & 3;
+		i[0] = -(128ULL < n) & 1;
+		i[1] = -(192ULL < n) & 2;
+		i[2] = -(256ULL < n) & 3;
 		x[0] = ((t_blk512r)src)[0];
-		x[1] = ((t_blk512r)src)[63 < n];
-		x[2] = ((t_blk512r)src)[i[0]];
-		x[3] = ((t_blk512r)src)[i[1]];
+		x[1] = ((t_blk512r)src)[i[0]];
+		x[2] = ((t_blk512r)src)[i[1]];
+		x[3] = ((t_blk512r)src)[i[2]];
 		((t_blk512wa)dest)[0] = x[0];
-		((t_blk512wa)dest)[63 < n] = x[1];
-		((t_blk512wa)dest)[i[0]] = x[2];
-		((t_blk512wa)dest)[i[1]] = x[3];
+		((t_blk512wa)dest)[i[0]] = x[1];
+		((t_blk512wa)dest)[i[1]] = x[2];
+		((t_blk512wa)dest)[i[2]] = x[3];
 	}
 	if (__builtin_expect(n != 0, 1))
 	{
