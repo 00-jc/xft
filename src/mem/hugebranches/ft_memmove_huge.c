@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/13 00:05:58 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/14 02:54:27 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/14 06:55:44 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,8 +67,12 @@ inline void	ft_memmove_512_huge(void *restrict dest,
 		n2 -= 4;
 		s = (t_blk8w)s - (sizeof(t_vu512a) << 2);
 		d = (t_blk8w)d - (sizeof(t_vu512a) << 2);
+		ft_prefetch0(d, 0);
+		ft_prefetch0(s, 0);
 		ft_memmove_512_cascade(d, s, x);
 	}
+	ft_prefetch0(dest, 0);
+	ft_prefetch0(src, 0);
 	ft_memmove_512_tail(d, s, n2);
 	*(t_blk512w)ft_overlap(dest, sizeof(t_vu512a), n) = x[4];
 	*((t_blk512w)dest) = x[5];
