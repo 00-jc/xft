@@ -29,4 +29,14 @@ void	ft_memcpy_test_medium_unaligned(void *ptr);
 void	ft_memcpy_test_large_aligned(void *ptr);
 void	ft_memcpy_test_large_unaligned(void *ptr);
 
+void	ft_memmove_overlap(t_buffer *buffer, size_t shift, size_t invert,
+			size_t *bytes);
+void	ft_memmove_test_varied(void *ptr);
+void	ft_memmove_test_short_aligned(void *ptr);
+void	ft_memmove_test_short_unaligned(void *ptr);
+void	ft_memmove_test_medium_aligned(void *ptr);
+void	ft_memmove_test_medium_unaligned(void *ptr);
+void	ft_memmove_test_large_aligned(void *ptr);
+void	ft_memmove_test_large_unaligned(void *ptr);
+
 #endif

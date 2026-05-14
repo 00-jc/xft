@@ -559,7 +559,9 @@ _run_fuzz: $(_TOBJS) $(_FOBJS)
 	@echo "All fuzz targets passed!"
 
 # ── Bench config ──────────────────────────────────────────────────────────────
-BENCH_NAMES := $(filter-out include,$(notdir $(patsubst %/,%,$(wildcard bench/*/))))
+BENCH_CORE_NAMES := memcpy memmove memset
+BENCH_NAMES := $(BENCH_CORE_NAMES) $(filter-out include $(BENCH_CORE_NAMES),\
+	$(notdir $(patsubst %/,%,$(wildcard bench/*/))))
 BBDIR       := $(OBJDIR)/bench/bin
 BMARCH      ?= $(MARCH)
 BFLAGS       = $(BMARCH) $(CFLAGS_OPT) $(WARNS)
