@@ -26,4 +26,7 @@ Notes:
 - Uses -march=native by default
 - Uses src/tailor/ for the bench target
 - Uses src/fuzz/ for the fuzzer
+- Test/Benches regarding to strlen in gcc might fail,
+  gcc's sanitizer is too aggressive redzoning, clang
+  works fine.
 ```
