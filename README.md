@@ -1,12 +1,13 @@
 ```
 xft
 
-A C library.
+A C library (ex-libft, still norm compliant).
 
 Build:
 
     make          # -O3 + LTO + march=native
     make base     # no opts
+    make noflto   # -O3 + march=native - LTO (to inspect dissasembly)
     make test     # run tests
     make analyze  # static analysis + tests
     make bench    # runs the benchmarks (self-hosted)
