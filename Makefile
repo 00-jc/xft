@@ -277,10 +277,11 @@ SRCS_MEM := \
 	src/mem/ft_membroadcast.c \
 	src/mem/ft_memtake.c \
 	src/mem/ft_memclone.c \
-	src/mem/dynamic/ft_memcpy.c \
-	src/mem/dynamic/ft_memset.c \
-	src/mem/dynamic/ft_memchr.c \
-	src/mem/dynamic/ft_memcmp.c \
+	src/mem/arch/ft_memcpy.c \
+	src/mem/arch/ft_memset.c \
+	src/mem/arch/ft_memchr.c \
+	src/mem/arch/ft_memcmp.c \
+	src/mem/arch/ft_memmove.c \
 	src/mem/ft_memformat.c \
 	src/mem/ft_bzero.c \
 	src/mem/portable/ft_memcpy.c \
@@ -294,7 +295,6 @@ SRCS_MEM := \
 	src/mem/avx512/ft_memset_avx512.c \
 	src/mem/avx512/ft_memcmp_avx512.c \
 	src/mem/avx512/ft_memchr_avx512.c \
-	src/mem/dynamic/ft_memmove.c \
 	src/mem/ft_overlap.c \
 	src/mem/ft_fatptr.c \
 	src/mem/ft_movsb.c \
