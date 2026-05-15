@@ -12,13 +12,11 @@ Build (zig):
     zig build test                     # run tests (sanitized)
     zig build bench                    # runs the benchmarks (self-hosted)
     zig build fuzz                     # runs the fuzzers (sanitized, self-hosted)
+    zig build analyze                  # runs clang's static analyzer
 
     zig build -Doptimize=ReleaseFast   # override optimize mode
     zig build -Dcpu=native             # -march=native alternative
     zig build -Dtarget=...             # cross-compile target
-
-The legacy Makefile can be found in `legacy/`, it was stripped of test/bench targets,
-but it has static anaalysis for clang and gcc.
 
 Notes:
 
