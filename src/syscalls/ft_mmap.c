@@ -6,15 +6,16 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 17:14:01 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/13 06:14:20 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/15 04:32:40 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "alloc.h"
+#include "syscalls.h"
 
 #ifdef __x86_64__
 
-void	*ft_mmap(size_t size, long prot_extra, long flags_extra)
+__attribute__((__always_inline__))
+inline void	*ft_mmap(size_t size, long prot_extra, long flags_extra)
 {
 	void				*ret;
 	register long r10	__asm__("r10");
@@ -37,8 +38,8 @@ void	*ft_mmap(size_t size, long prot_extra, long flags_extra)
 	return (ret);
 }
 
-__attribute__((nonnull(1)))
-void	ft_munmap(void *restrict const mem, size_t size)
+__attribute__((nonnull(1), __always_inline__))
+inline void	ft_munmap(void *restrict const mem, size_t size)
 {
 	__asm__ volatile (
 		"syscall"
@@ -52,18 +53,23 @@ void	ft_munmap(void *restrict const mem, size_t size)
 
 #else
 
+__attribute__((__always_inline__))
 void	*ft_mmap(size_t size, long prot_extra, long flags_extra)
 {
-	(void)prot_extra;
-	(void)flags_extra;
-	return (ft_alloc(size));
+	return ((void *)syscall(SYS_mmap,
+			size,
+			NULL,
+			PROT_READ | PROT_WRITE | prot_extra,
+			0,
+			-1,
+			MAP_ANONYMOUS | MAP_PRIVATE | flags_extra
+		));
 }
 
-__attribute__((nonnull(1)))
-void	ft_munmap(void *restrict const mem, size_t size)
+__attribute__((nonnull(1), __always_inline__))
+inline void	ft_munmap(void *restrict const mem, size_t size)
 {
-	(void)size;
-	ft_free((void **)&(void *){mem});
+	syscall(SYS_munmap, mem, size);
 }
 
 #endif

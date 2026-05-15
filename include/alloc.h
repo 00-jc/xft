@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 17:14:01 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/04/16 18:24:50 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/15 04:23:13 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,12 @@
 
 # include <stdlib.h>
 # include <sys/types.h>
+# include <unistd.h>
 # include <stdint.h>
 # include <stdarg.h>
 # include <syscall.h>
 # include <sys/mman.h>
+# include "syscalls.h"
 # include "mem.h"
 
 typedef struct s_hugepage
@@ -88,9 +90,6 @@ void				*ft_extend(void *ptr, size_t n, size_t size);
 void				*ft_extend_zero(void *ptr, size_t n, size_t size);
 void				*ft_realloc(void *ptr, size_t n, size_t size);
 void				*ft_recalloc(void *ptr, size_t n, size_t size);
-void				*ft_mmap(size_t size, long prot_extra, long flags_extra);
-void				ft_munmap(void *__restrict__ const mem, size_t size)\
-						__attribute__((nonnull(1)));
 t_arena				ft_new_arena_alloc(void);
 void				*ft_arena_alloc(t_arena *__restrict__ const allocator,
 						size_t size, size_t align)\

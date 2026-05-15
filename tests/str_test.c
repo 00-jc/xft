@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/13 00:00:00 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/13 06:14:07 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/15 07:01:43 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void	test_str_new(void)
 {
 	t_str	s;
 
-	s = ft_str(0);
+	s = ft_str(1);
 	ft_pin_invariant(s.mem != nullptr);
 	ft_pin_invariant(s.size == 0);
 	ft_pin_invariant(s.mem[0] == 0);
@@ -39,7 +39,7 @@ void	test_str_push_back(void)
 {
 	t_str	s;
 
-	s = ft_str(0);
+	s = ft_str(1);
 	ft_pin_invariant(ft_str_push_back(&s, 'h'));
 	ft_pin_invariant(ft_str_push_back(&s, 'i'));
 	ft_pin_invariant(s.size == 2);
@@ -55,7 +55,7 @@ void	test_str_extend(void)
 	const t_u8	*hello;
 
 	hello = (const t_u8 *)"hello";
-	s = ft_str(0);
+	s = ft_str(1);
 	ft_pin_invariant(ft_str_extend(&s, hello, 5));
 	ft_pin_invariant(s.size == 5);
 	ft_pin_invariant(ft_memcmp(s.mem, "hello", 6) == 0);
@@ -71,7 +71,7 @@ void	test_str_remove(void)
 	const t_u8	*src;
 
 	src = (const t_u8 *)"abc";
-	s = ft_str(0);
+	s = ft_str(1);
 	ft_pin_invariant(ft_str_extend(&s, src, 3));
 	ft_pin_invariant(s.size == 3);
 	ft_pin_invariant(ft_str_remove(&s, 1));

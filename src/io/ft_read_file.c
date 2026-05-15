@@ -6,53 +6,13 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/20 02:23:38 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/13 06:14:37 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/15 04:29:50 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "io.h"
 
 #ifdef __x86_64__
-
-__attribute__((__always_inline__))
-static inline void	*ft_fmap(size_t size, int fd)
-{
-	void				*ret;
-	register long r10	__asm__("r10");
-	register long r8	__asm__("r8");
-	register long r9	__asm__("r9");
-
-	r10 = MAP_PRIVATE;
-	r8 = (long)fd;
-	r9 = 0;
-	__asm__ volatile (
-		"syscall"
-		: "=a"(ret)
-		: "0"(SYS_mmap),
-		"D"((long) NULL),
-		"S"((long) size),
-		"d"((long) PROT_READ),
-		"r"(r10), "r"(r8), "r"(r9)
-		: "rcx", "r11", "memory"
-	);
-	return (ret);
-}
-
-__attribute__((__nonnull__(1), __always_inline__))
-static inline int	ft_stat(const char *restrict path, struct stat *statbuf)
-{
-	int	ret;
-
-	__asm__ volatile (
-		"syscall"
-		: "=a"(ret)
-		: "0"(4L),
-		"D"(path),
-		"S"(statbuf)
-		: "rcx", "r11", "memory"
-	);
-	return (ret);
-}
 
 __attribute__((__nonnull__(1)))
 t_file	ft_read_file(const char *restrict const fname)

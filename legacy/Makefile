@@ -9,25 +9,18 @@
 #    Updated: 2026/03/16 17:00:58 by jaicastr         ###   ########.fr        #
 # **************************************************************************** #
 
-# ── Output ────────────────────────────────────────────────────────────────────
 NAME       := xft.a
 OBJDIR     := build
 
-# ── Toolchain ─────────────────────────────────────────────────────────────────
 CC_CLANG   := clang
 CC_GCC     := gcc
 CC_ID	   := $(shell $(CC) --version 2>/dev/null | head -1)
 MAXTHREADS := $(shell nproc)
 SCANNER    := scan-build
 
-# ── Flags ─────────────────────────────────────────────────────────────────────
 MARCH      := -march=native
 INCLUDES   := -Iinclude
 
-# ─────────────────────────────────────────────────────────────────────────────
-# Warnings: flags supported by BOTH GCC and Clang go in COMMON.
-# Compiler-specific additions go in WARNS_CLANG / WARNS_GCC.
-# ─────────────────────────────────────────────────────────────────────────────
 
 WARNS_COMMON := -Wall -Wextra -Werror -Wpedantic -std=c23                      \
 	-fstrict-aliasing -Wstrict-aliasing                                        \
@@ -71,9 +64,6 @@ WARNS_COMMON := -Wall -Wextra -Werror -Wpedantic -std=c23                      \
 	-Wcast-function-type
 	# -Wdouble-promotion                                                         \
 
-# ── Clang-only extras ────────────────────────────────────────────────────────
-# Clang-specific diagnostics that have no GCC equivalent, plus Clang
-# equivalents for GCC-only flags where the spelling differs.
 WARNS_CLANG := $(WARNS_COMMON)                                                \
 	-Wbitwise-instead-of-logical                                               \
 	-Wnull-pointer-arithmetic                                                  \
@@ -107,8 +97,6 @@ WARNS_CLANG := $(WARNS_COMMON)                                                \
 	-Wdangling																   \
 	# -Wunsafe-buffer-usage                                                      \
 
-# ── GCC-only extras ──────────────────────────────────────────────────────────
-# GCC-specific diagnostics with no Clang equivalent.
 WARNS_GCC := $(WARNS_COMMON)                                                  \
 	-Whardened                                                                 \
 	-Wshift-overflow                                                           \
@@ -167,7 +155,6 @@ CFLAGS_NOLTO := $(CFLAGS_COMMON_OPT) -march=native -mtune=native -O3 -ffast-math
 
 SANITIZE   := -fsanitize=address,alignment,undefined -fsanitize-recover=null
 
-# ── Compiler auto-detection ──────────────────────────────────────────────────
 ifeq ($(findstring clang,$(CC_ID)),clang)
   WARNS  := $(WARNS_CLANG)
   AR     := llvm-ar rcs
@@ -182,7 +169,6 @@ endif
 
 CFLAGS := $(MARCH) $(CFLAGS_OPT) $(WARNS)
 
-# ── Sources ───────────────────────────────────────────────────────────────────
 SRCS_ALLOC := \
 	src/alloc/arena/ft_arena_alloc_utils.c \
 	src/alloc/arena/ft_arena_alloc_scopes.c \
@@ -193,7 +179,6 @@ SRCS_ALLOC := \
 	src/alloc/ft_extend_zero.c \
 	src/alloc/ft_realloc.c \
 	src/alloc/ft_recalloc.c \
-	src/alloc/ft_mmap.c \
 	src/alloc/ft_free.c
 
 SRCS_CONV := \
@@ -246,12 +231,17 @@ SRCS_CTYPE := \
 	src/ctype/ft_isalpha.c \
 	src/ctype/ft_isdigit.c
 
+SRCS_SYSCALLS := \
+	src/syscalls/ft_fmap.c \
+	src/syscalls/ft_lockf.c \
+	src/syscalls/ft_mmap.c \
+	src/syscalls/ft_stat.c
+
 SRCS_IO := \
 	src/io/ft_printf_helpers2.c \
 	src/io/ft_read_file_portable.c \
 	src/io/ft_read_file.c \
 	src/io/ft_printf_helpers.c \
-	src/io/ft_lockf.c \
 	src/io/ft_printf.c
 
 SRCS_MATH := \
@@ -431,19 +421,16 @@ SRCS_FUZZ := \
 	src/fuzzer/ft_fuzzer_initrand.c \
 	src/fuzzer/ft_fuzzer.c 
 
-# ── Aggregate ─────────────────────────────────────────────────────────────────
-MODULES := ALLOC CONV CSTR CTYPE IO MATH MEM HASH VEC STR BMI ENV MAP HINT TOK THREADPOOL TIME PERF RNG TAILOR SORT FUZZ
+MODULES := SYSCALLS ALLOC CONV CSTR CTYPE IO MATH MEM 	\
+		   HASH VEC STR BMI ENV MAP HINT TOK THREADPOOL	\
+		   TIME PERF RNG TAILOR SORT FUZZ
 
 SRCS := $(foreach m,$(MODULES),$(SRCS_$(m)))
 OBJS := $(patsubst src/%.c,$(OBJDIR)/%.o,$(SRCS))
 
-# ── Test list ─────────────────────────────────────────────────────────────────
 TEST_SRCS := memchr strlen memcmp memcpy memset vec str map murmur bmi xxh3 arena arena_extend
 FUZZ_SRCS := mem vec map
 
-# ═════════════════════════════════════════════════════════════════════════════
-#  Targets
-# ═════════════════════════════════════════════════════════════════════════════
 
 all: $(NAME)
 
@@ -455,7 +442,6 @@ $(NAME): $(OBJS)
 	$(AR) $@ $^
 	@$(RANLIB) $@
 
-# ── Convenience ──────────────────────────────────────────────────────────────
 base:
 	@$(MAKE) fclean all CFLAGS="$(CFLAGS_NOOPT) $(WARNS)"
 
@@ -472,7 +458,6 @@ fclean: clean
 
 re: fclean all
 
-# ── Static analysis ─────────────────────────────────────────────────────────
 static_analysis:
 	$(SCANNER) $(CC_CLANG) $(WARNS_CLANG) $(CFLAGS_OPT) $(MARCH) $(INCLUDES) \
 		-Xclang -analyzer-output=text --analyze $(SRCS)
@@ -483,6 +468,8 @@ static_analysis:
 	$(CC_GCC) $(WARNS_GCC) $(CFLAGS_OPT) $(INCLUDES) \
 		-fanalyzer $(SRCS) -c && rm -f *.o
 	@norminette
+
+# FROM HERE ON build.zig takes it
 
 # ── Tests ────────────────────────────────────────────────────────────────────
 #  Each test_* target does a full rebuild with its own flags via recursive make,

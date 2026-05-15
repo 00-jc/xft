@@ -1,21 +1,23 @@
-```
+```txt
 xft
 
 A C library (ex-libft, still norm compliant).
 
-Build:
+Build (zig):
 
-    make          # -O3 + LTO + march=native
-    make base     # no opts
-    make noflto   # -O3 + march=native - LTO (to inspect dissasembly)
-    make test     # run tests
-    make analyze  # static analysis + tests
-    make bench    # runs the benchmarks (self-hosted)
-    make fuzz     # runs the fuzzers (self-hosted)
+    zig build core                     # -O3 + LTO
+    zig build nolto                    # -O3 - LTO (to inspect disassembly)
+    zig build san                      # debug + sanitizers (UBSan)
+    zig build tsan                     # thread sanitizer
+    zig build test                     # run tests (sanitized)
+    zig build bench                    # runs the benchmarks (self-hosted)
+    zig build fuzz                     # runs the fuzzers (sanitized, self-hosted)
 
-    make clean
-    make fclean
-    make re
+    zig build -Doptimize=ReleaseFast   # override optimize mode
+    zig build -Dcpu=native             # -march=native alternative
+    zig build -Dtarget=...             # cross-compile target
+
+Legacy Makefile can be found in `legacy/`.
 
 Notes:
 

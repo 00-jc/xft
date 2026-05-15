@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 17:14:00 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/14 00:04:37 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/15 04:24:24 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,10 +27,11 @@
 # include "macros.h"
 # include "tokenizer.h"
 # include "hint.h"
-# include "time.h"
+# include "timing.h"
 # include "perf.h"
 # include "tailor.h"
 # include "str.h"
 # include "env.h"
+# include "syscall.h"
 
 #endif

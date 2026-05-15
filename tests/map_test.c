@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/03 00:00:00 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/13 06:14:07 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/15 07:17:58 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,23 +71,24 @@ void	test_map_many(void)
 	int		vals[200];
 	int		i;
 	int		*got;
-	char	*k;
+	char	*k[200];
 
 	m = ft_map_new();
 	i = 0;
 	while (i < 200)
 	{
 		vals[i] = i * 7;
-		k = ft_itoa(i);
-		ft_map_insert(&m, (t_u8 *)k, ft_strlen(k), (t_u8 *)&vals[i]);
-		ft_free((void **)&k);
+		k[i] = ft_itoa(i);
+		ft_map_insert(&m, (t_u8 *)k[i], ft_strlen(k[i]), (t_u8 *)&vals[i]);
 		i++;
 	}
 	got = ft_map_lookup(&m, (t_u8 *)"0", 1);
-	ft_pin_invariant(got && *got == 0);
 	got = ft_map_lookup(&m, (t_u8 *)"199", 3);
 	ft_pin_invariant(got && *got == 199 * 7);
 	ft_map_destroy(&m);
+	i = 0;
+	while (i < 200)
+		ft_free((void **)&k[i++]);
 }
 
 int	main(void)

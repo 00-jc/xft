@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/13 04:33:09 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/13 05:03:06 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/15 07:06:25 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,12 +16,14 @@ t_str	ft_str(size_t size)
 {
 	t_str	str;
 
+	if (__builtin_expect(size == 0, 1))
+		return ((t_str){0});
 	str.mem = ft_alloc(size + 1);
 	if (__builtin_expect(!str.mem, 0))
 		return ((t_str){0});
-	str.size = 0;
 	str.capacity = size + 1;
-	str.mem[size] = 0;
+	str.mem[0] = 0;
+	str.size = 0;
 	return (str);
 }
 
