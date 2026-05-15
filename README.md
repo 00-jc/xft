@@ -17,18 +17,18 @@ Build (zig):
     zig build -Dcpu=native             # -march=native alternative
     zig build -Dtarget=...             # cross-compile target
 
-Legacy Makefile can be found in `legacy/`.
+The legacy Makefile can be found in `legacy/`, it was stripped of test/bench targets,
+but it has static anaalysis for clang and gcc.
 
 Notes:
 
 - Requires GCC or Clang with C23 and C99 support
-- Only tested with GCC >14.0 or Clang >20.1
+- Only tested with GCC >14.0 and Clang >20.1
 - Linux only
 - Targets Norminette >3.3.59
-- Uses -march=native by default
 - Uses src/tailor/ for the bench target
 - Uses src/fuzz/ for the fuzzer
 - Test/Benches regarding to strlen in gcc might fail,
   gcc's sanitizer is too aggressive redzoning, clang
-  works fine.
+  works fine, zig tests are stricter than clang but pass.
 ```

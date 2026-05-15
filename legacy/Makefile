@@ -469,4 +469,4 @@ static_analysis:
 		-fanalyzer $(SRCS) -c && rm -f *.o
 	@norminette
 
-.PHONY: all base bonus clean fclean re static_analysis analyze 
+.PHONY: all base bonus clean fclean re static_analysis 
