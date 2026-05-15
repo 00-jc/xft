@@ -6,7 +6,7 @@
 //   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2026/05/15 07:20:25 by jaicastr          #+#    #+#             //
-//   Updated: 2026/05/15 08:04:10 by jaicastr         ###   ########.fr       //
+//   Updated: 2026/05/15 08:06:32 by jaicastr         ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 const std = @import("std");
@@ -63,9 +63,6 @@ const WARNS_COMMON = &[_][]const u8{
     "-Wformat-truncation",
     "-Wcast-function-type",
     "-Wdouble-promotion",
-};
-
-const WARNS_CLANG = WARNS_COMMON ++ &[_][]const u8{
     "-Wbitwise-instead-of-logical",
     "-Wnull-pointer-arithmetic",
     "-Wcast-function-type-strict",
@@ -96,49 +93,6 @@ const WARNS_CLANG = WARNS_COMMON ++ &[_][]const u8{
     "-Wno-extra-semi-stmt",
     "-Wthread-safety",
     "-Wdangling",
-    // "-Wunsafe-buffer-usage", // cannot use this bc the
-                                // arena allocator var_sized structs
-};
-
-// these are not used bc aro doesn't like them
-// but in case leave them here
-const WARNS_GCC = WARNS_COMMON ++ &[_][]const u8{
-    "-Whardened",
-    "-Wshift-overflow",
-    "-Wunused-but-set-parameter",
-    "-Wstrict-overflow=5",
-    "-Wmissing-attributes",
-    "-Wmismatched-dealloc",
-    "-Wtrivial-auto-var-init",
-    "-Wuse-after-free=3",
-    "-Wuseless-cast",
-    "--strict-flex-arrays=3",
-    "-Wsuggest-attribute=pure",
-    "-Wsuggest-attribute=const",
-    "-Wsuggest-attribute=noreturn",
-    "-Wsuggest-attribute=malloc",
-    "-Wsuggest-attribute=format",
-    "-Wsuggest-attribute=cold",
-    "-Walloc-size",
-    "-Walloca",
-    "-Warith-conversion",
-    "-Warray-bounds=2",
-    "-Warray-compare",
-    "-Warray-parameter",
-    "-Wattribute-alias=2",
-    "-Wduplicated-branches",
-    "-Wduplicated-cond",
-    "-Wzero-length-bounds",
-    "-Wunsafe-loop-optimizations",
-    "-Wtype-limits",
-    "-Wdangling-pointer",
-    "-Wsizeof-pointer-memaccess",
-    "-Wpacked",
-    "-Wrestrict",
-    "-Winit-self",
-    "-Wlogical-op",
-    "-Wstringop-overflow=4",
-    "-Wstringop-truncation",
 };
 
 const CFLAGS_COMMON = &[_][]const u8{
@@ -155,7 +109,7 @@ const CFLAGS_COMMON = &[_][]const u8{
     "-fstack-clash-protection",
     "-g3",
     "-DFT_NTHREADS=" ++ THREADS,
-};
+} ++ WARNS_COMMON;
 
 const SRCS_ALLOC = &[_][]const u8{
     "src/alloc/arena/ft_arena_alloc_utils.c",
@@ -522,7 +476,7 @@ const XFT = struct {
     tsan: bool,
 };
 
-fn make_lib(b: *std.Build, comptime cfg: XFT, opt: Opts) *std.Build.Step.Compile
+inline fn make_lib(b: *std.Build, comptime cfg: XFT, opt: Opts) *std.Build.Step.Compile
 {
     var mod = b.createModule(.{
         .optimize        = if (cfg.san) .Debug else opt.optimize,
@@ -540,7 +494,7 @@ fn make_lib(b: *std.Build, comptime cfg: XFT, opt: Opts) *std.Build.Step.Compile
     mod.addIncludePath(b.path(INCLUDES));
     mod.addCSourceFiles(.{
         .files = MODULES,
-        .flags = WARNS_CLANG ++ CFLAGS_COMMON
+        .flags = CFLAGS_COMMON
     });
     const lib = b.addLibrary(.{
         .name        = NAME,
@@ -559,7 +513,7 @@ fn make_lib(b: *std.Build, comptime cfg: XFT, opt: Opts) *std.Build.Step.Compile
     return lib;
 }
 
-fn make_test_exe(
+inline fn make_test_exe(
     b:        *std.Build,
     opt:      Opts,
     xft_san:  *std.Build.Step.Compile,
@@ -577,7 +531,7 @@ fn make_test_exe(
     mod.addIncludePath(b.path(INCLUDES));
     mod.addCSourceFiles(.{
         .files = &.{src_path},
-        .flags = WARNS_CLANG ++ CFLAGS_COMMON,
+        .flags = CFLAGS_COMMON,
     });
     mod.linkLibrary(xft_san);
     const exe = b.addExecutable(.{
@@ -634,7 +588,7 @@ pub fn build(b: *std.Build) void
         mod.addIncludePath(b.path("bench/include"));
         mod.addCSourceFiles(.{
             .files = t.srcs,
-            .flags = WARNS_CLANG ++ CFLAGS_COMMON ++ .{"-march=native", "-mtune=native", "-O3"},
+            .flags = CFLAGS_COMMON ++ .{"-march=native", "-mtune=native", "-O3"},
         });
         mod.linkLibrary(xft);
         const exe = b.addExecutable(.{
