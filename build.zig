@@ -6,7 +6,7 @@
 //   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2026/05/15 07:20:25 by jaicastr          #+#    #+#             //
-//   Updated: 2026/05/15 07:35:24 by jaicastr         ###   ########.fr       //
+//   Updated: 2026/05/15 08:04:10 by jaicastr         ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 const std = @import("std");
@@ -62,7 +62,7 @@ const WARNS_COMMON = &[_][]const u8{
     "-Wformat-overflow",
     "-Wformat-truncation",
     "-Wcast-function-type",
-    // "-Wdouble-promotion",
+    "-Wdouble-promotion",
 };
 
 const WARNS_CLANG = WARNS_COMMON ++ &[_][]const u8{
