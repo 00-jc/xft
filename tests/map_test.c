@@ -88,7 +88,7 @@ void	test_map_many(void)
 	ft_map_destroy(&m);
 	i = 0;
 	while (i < 200)
-		ft_free((void **)&k[i++]);
+		free(k[i++]);
 }
 
 int	main(void)

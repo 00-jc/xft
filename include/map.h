@@ -45,6 +45,8 @@ typedef struct s_map
 	size_t												count;
 	t_bucket __attribute__	((counted_by(table_size)))	*buckets;
 	t_u8												*meta;
+	t_buffer											bucket_buf;
+	t_buffer											meta_buf;
 }	t_map;
 
 # else
@@ -62,6 +64,8 @@ typedef struct s_map
 	size_t		count;
 	t_bucket	*buckets;
 	t_u8		*meta;
+	t_buffer	bucket_buf;
+	t_buffer	meta_buf;
 }	t_map;
 
 # endif

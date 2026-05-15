@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 17:14:01 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/04/17 06:10:42 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/15 20:55:32 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,12 +49,6 @@ void			*ft_memchr(const void *__restrict__ ptr, int c, size_t n)\
 ssize_t			ft_memcmp(const void *__restrict__ const dest,
 					const void *__restrict__ src, size_t n)\
 					__attribute__((__nonnull__(1, 2)));
-
-void			*ft_memclone(void *__restrict__ ptr, size_t size)\
-					__attribute__((__nonnull__(1)));
-
-void			*ft_memformat(void *__restrict__ const ptr, size_t size)\
-					__attribute__((__nonnull__(1)));
 
 void			ft_membroadcast(void *dst, void *src, size_t chunks, size_t n)\
 					__attribute__((__nonnull__(1, 2)));

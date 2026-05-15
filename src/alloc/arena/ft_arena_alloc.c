@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "private/ft_p_arena.h"
+#include "private/ft_p_hugepage.h"
 
 t_arena	ft_new_arena_alloc(void)
 {
@@ -19,7 +20,7 @@ t_arena	ft_new_arena_alloc(void)
 	int				pageflag;
 
 	pagesize = ft_match_paging(1ULL << 25);
-	pageflag = ft_match_paging_flags(pagesize);
+	pageflag = ft_match_hugepage_flags(pagesize);
 	initial_page = new_hugepage(nullptr, pagesize, pageflag);
 	if (!initial_page)
 		return ((t_arena){0});
@@ -76,7 +77,7 @@ void	*ft_arena_alloc(t_arena *restrict const allocator,
 			|| size > HUGEPAGE_16GB - sizeof(t_hugepage) - (align - 1), 0))
 		return (nullptr);
 	pagesize = ft_match_paging(size + align - 1);
-	pageflag = ft_match_paging_flags(pagesize);
+	pageflag = ft_match_hugepage_flags(pagesize);
 	next_ptr = get_next_ptr(allocator->current, align);
 	waste = (size_t)((t_u8 *)next_ptr - (allocator->current->data
 				+ allocator->current->used));

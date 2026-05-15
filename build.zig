@@ -6,7 +6,7 @@
 //   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2026/05/15 07:20:25 by jaicastr          #+#    #+#             //
-//   Updated: 2026/05/15 11:23:20 by jaicastr         ###   ########.fr       //
+//   Updated: 2026/05/15 18:43:36 by jaicastr         ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 const std = @import("std");
@@ -114,16 +114,11 @@ const CFLAGS_COMMON = &[_][]const u8{
 } ++ WARNS_COMMON;
 
 const SRCS_ALLOC = &[_][]const u8{
+    "src/alloc/huge_matcher/ft_huge_matcher.c",
+    "src/alloc/palloc/ft_palloc.c",
     "src/alloc/arena/ft_arena_alloc_utils.c",
     "src/alloc/arena/ft_arena_alloc_scopes.c",
     "src/alloc/arena/ft_arena_alloc.c",
-    "src/alloc/ft_alloc.c",
-    "src/alloc/ft_calloc.c",
-    "src/alloc/ft_extend.c",
-    "src/alloc/ft_extend_zero.c",
-    "src/alloc/ft_realloc.c",
-    "src/alloc/ft_recalloc.c",
-    "src/alloc/ft_free.c",
 };
 
 const SRCS_CONV = &[_][]const u8{
@@ -181,6 +176,7 @@ const SRCS_CTYPE = &[_][]const u8{
 
 const SRCS_SYSCALLS = &[_][]const u8{
     "src/syscalls/ft_fmap.c",
+    "src/syscalls/ft_mremap.c",
     "src/syscalls/ft_lockf.c",
     "src/syscalls/ft_mmap.c",
     "src/syscalls/ft_stat.c",
@@ -217,13 +213,11 @@ const SRCS_MATH = &[_][]const u8{
 const SRCS_MEM = &[_][]const u8{
     "src/mem/ft_membroadcast.c",
     "src/mem/ft_memtake.c",
-    "src/mem/ft_memclone.c",
     "src/mem/arch/ft_memcpy.c",
     "src/mem/arch/ft_memset.c",
     "src/mem/arch/ft_memchr.c",
     "src/mem/arch/ft_memcmp.c",
     "src/mem/arch/ft_memmove.c",
-    "src/mem/ft_memformat.c",
     "src/mem/ft_bzero.c",
     "src/mem/portable/ft_memcpy.c",
     "src/mem/portable/ft_memset.c",

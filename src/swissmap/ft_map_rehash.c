@@ -33,8 +33,8 @@ t_u32a	ft_map_rehash(t_map *restrict const map)
 				map->buckets[i].value);
 		++i;
 	}
-	ft_free(&(void *){map->meta});
-	ft_free(&(void *){map->buckets});
+	ft_palloc_free(map->meta_buf);
+	ft_palloc_free(map->bucket_buf);
 	*map = new;
 	return (1);
 }

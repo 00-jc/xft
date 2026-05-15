@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/19 22:43:01 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/03/17 04:10:52 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/15 19:00:00 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,22 +14,24 @@
 
 t_map	ft_map_with(size_t capacity)
 {
-	t_u8		*meta;
-	t_bucket	*buckets;
+	t_buffer	meta_buf;
+	t_buffer	bucket_buf;
 
 	if (capacity & 15)
 		return ((t_map){0});
-	meta = ft_alloc(capacity);
-	if (!meta)
+	meta_buf = ft_palloc(capacity);
+	if (meta_buf.mem == MAP_FAILED)
 		return ((t_map){0});
-	ft_memset(meta, MAP_EMPTY, capacity);
-	buckets = ft_calloc(capacity, sizeof(t_bucket));
-	if (!buckets)
-		return (ft_free(&(void *){meta}), (t_map){0});
+	ft_memset(meta_buf.mem, MAP_EMPTY, capacity);
+	bucket_buf = ft_palloc(capacity * sizeof(t_bucket));
+	if (bucket_buf.mem == MAP_FAILED)
+		return (ft_palloc_free(meta_buf), (t_map){0});
 	return ((t_map)
 		{
-			.buckets = buckets,
-			.meta = meta,
+			.buckets = (t_bucket *)bucket_buf.mem,
+			.meta = meta_buf.mem,
+			.bucket_buf = bucket_buf,
+			.meta_buf = meta_buf,
 			.count = 0,
 			.table_size = capacity,
 		});
@@ -50,6 +52,6 @@ t_map	ft_map_new(void)
 __attribute__((__nonnull__(1)))
 void	ft_map_destroy(t_map *restrict const map)
 {
-	ft_free(&(void *){map->buckets});
-	ft_free(&(void *){map->meta});
+	ft_palloc_free(map->bucket_buf);
+	ft_palloc_free(map->meta_buf);
 }

@@ -16,7 +16,12 @@ __attribute__((__nonnull__(1)))
 char	*ft_strdup(const char *str)
 {
 	size_t	n;
+	char	*out;
 
 	n = ft_strlen(str);
-	return (ft_memclone((void *)str, n + 1));
+	out = malloc(n + 1);
+	if (!out)
+		return (nullptr);
+	ft_memcpy(out, str, n + 1);
+	return (out);
 }

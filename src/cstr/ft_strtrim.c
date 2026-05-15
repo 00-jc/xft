@@ -47,7 +47,7 @@ char	*ft_strtrim(const char *str, const char *set)
 		trimmed_len = 0;
 	else
 		trimmed_len = e - b + 1;
-	out = ft_alloc(trimmed_len + 1);
+	out = malloc(trimmed_len + 1);
 	if (!out)
 		return (nullptr);
 	ft_memcpy(out, str + b, trimmed_len);

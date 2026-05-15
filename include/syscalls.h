@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/15 04:10:00 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/15 04:33:52 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/15 18:12:46 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,5 +33,9 @@ t_u32a	ft_lockf(int fd);
 t_u32a	ft_unlockf(int fd);
 int		ft_stat(const char *__restrict__ path, struct stat *statbuf)\
 			__attribute__((__nonnull__(1)));
+
+void	*ft_mremap(size_t size, size_t new_size,\
+			void *addr, long flags_extra)\
+			__attribute__((__nonnull__(3)));
 
 #endif

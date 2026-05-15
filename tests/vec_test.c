@@ -24,7 +24,7 @@ void	test_vec_push_get(void)
 	const int	*got;
 
 	v = ft_vec_new(4, sizeof(int));
-	ft_pin_invariant(v.data != nullptr);
+	ft_pin_invariant(v.buf.mem != nullptr);
 	ft_pin_invariant(ft_vec_len(&v, sizeof(int)) == 0);
 	val = 42;
 	ft_pin_invariant(ft_vec_push_back(&v, (t_u8 *)&val, sizeof(int)));

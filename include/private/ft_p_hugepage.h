@@ -1,28 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_memclone.c                                      :+:      :+:    :+:   */
+/*   ft_p_hugepage.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/16 17:13:42 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/13 06:14:05 by jaicastr         ###   ########.fr       */
+/*   Created: 2026/05/15 19:00:00 by jaicastr          #+#    #+#             */
+/*   Updated: 2026/05/15 19:00:00 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "mem.h"
-#include "alloc.h"
+#ifndef FT_P_HUGEPAGE_H
+# define FT_P_HUGEPAGE_H
 
-__attribute__((__nonnull__(1)))
-void	*ft_memclone(void *restrict ptr, size_t size)
-{
-	void	*new_reg;
+# include "alloc.h"
 
-	if (size == 0)
-		return (nullptr);
-	new_reg = ft_alloc(size);
-	if (!new_reg)
-		return (nullptr);
-	ft_memmove(new_reg, ptr, size);
-	return (new_reg);
-}
+size_t	ft_match_hugepage(size_t size)\
+			__attribute__((const));
+int		ft_match_hugepage_flags(size_t page_size)\
+			__attribute__((const));
+
+#endif

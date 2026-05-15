@@ -24,7 +24,7 @@ inline int	ft_vec_popmv(t_vec *restrict const v, void *const dest,
 {
 	t_u8	*last;
 
-	if (v->data == nullptr)
+	if (v->buf.mem == nullptr)
 		__builtin_unreachable();
 	last = ft_vec_get_last(v, type_size);
 	if (__builtin_expect(last != nullptr, 1))
@@ -42,7 +42,7 @@ inline int	ft_vec_popf(t_vec *restrict const v, size_t type_size,
 {
 	t_u8	*last;
 
-	if (v->data == nullptr)
+	if (v->buf.mem == nullptr)
 		__builtin_unreachable();
 	last = ft_vec_get_last(v, type_size);
 	if (__builtin_expect(last != nullptr, 1))

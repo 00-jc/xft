@@ -62,7 +62,7 @@ char	*ft_utoa_base(size_t n, char *base)
 	blen = (size_t) blen1;
 	if (n == 0)
 		return (ft_strdup("0"));
-	out = ft_alloc(count(n, blen) + 1);
+	out = malloc(count(n, blen) + 1);
 	if (!out)
 		return (nullptr);
 	c = count(n, blen);

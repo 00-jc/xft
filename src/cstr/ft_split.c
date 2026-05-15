@@ -43,7 +43,7 @@ static char	*eat_literal(char *str, char set)
 	i = 0;
 	while (str[i] && str[i] != set)
 		i++;
-	out = (char *)ft_alloc((size_t)i + 1);
+	out = malloc((size_t)i + 1);
 	if (!out)
 		return (nullptr);
 	i = 0;
@@ -70,7 +70,11 @@ static int	fill_words(const char *str, char set, char **out)
 		{
 			out[j] = eat_literal((char *)str + i, set);
 			if (!out[j])
-				return (ft_free_array((void ***)&out), 0);
+			{
+				while (j--)
+					free(out[j]);
+				return (0);
+			}
 			j++;
 			while (str[i] && str[i] != set)
 				i++;
@@ -88,11 +92,11 @@ char	**ft_split(const char *str, char set)
 	unsigned int	wc;
 
 	wc = count_words((char *)str, set);
-	out = (char **)ft_alloc((wc + 1) * sizeof(char *));
+	out = malloc((wc + 1) * sizeof(char *));
 	if (!out)
 		return (nullptr);
 	out[wc] = nullptr;
 	if (!fill_words(str, set, out))
-		return (ft_free_array((void ***)&out), nullptr);
+		return (free(out), nullptr);
 	return (out);
 }

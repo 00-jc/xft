@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/13 04:37:39 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/15 11:15:38 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/15 21:22:41 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,22 +15,19 @@
 __attribute__((__nonnull__(1), __always_inline__))
 inline int	ft_str_reserve(t_str *restrict const str, size_t n)
 {
-	t_u8	*newalloc;
-	t_u8	*old;
-	size_t	new_cap;
+	t_buffer	new_buf;
+	size_t		new_cap;
 
+	if (str->mem == nullptr)
+		__builtin_unreachable();
 	new_cap = n + str->capacity + 1;
-	newalloc = ft_alloc(new_cap);
-	if (__builtin_expect(newalloc != nullptr, 1))
-	{
-		old = str->mem;
-		ft_memcpy(newalloc, old, str->size + 1);
-		ft_free((void **)&old);
-		str->mem = newalloc;
-		str->capacity = new_cap;
-		return (1);
-	}
-	return (0);
+	new_buf = ft_palloc_resize(
+				ft_fatptr(str->mem, str->capacity), new_cap);
+	if (__builtin_expect(new_buf.mem == MAP_FAILED, 0))
+		return (0);
+	str->mem = new_buf.mem;
+	str->capacity = new_buf.size;
+	return (1);
 }
 
 __attribute__((__nonnull__(1, 2)))

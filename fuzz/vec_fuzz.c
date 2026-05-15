@@ -32,7 +32,7 @@ static void	fuzz_vec_case(t_fuzzer *fz)
 	b = ft_fuzz_get_rand(fz);
 	n = fuzz_vec_len(b);
 	v = ft_vec_new(1, sizeof(int));
-	ft_pin_invariant(v.data != nullptr);
+	ft_pin_invariant(v.buf.mem != nullptr);
 	ft_pin_invariant(ft_vec_extend(&v, b->mem, sizeof(int), n));
 	ft_printf("vec extend + copy test: size=%lu, capacity=%lu\n", v.size,
 		v.capacity);

@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/13 04:33:09 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/15 08:06:09 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/15 19:00:00 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,22 +14,21 @@
 
 t_str	ft_str(size_t size)
 {
-	t_str	str;
+	t_buffer	buf;
 
-	if (__builtin_expect(size == 0, 1))
+	if (__builtin_expect(size == 0, 0))
 		return ((t_str){0});
-	str.mem = ft_alloc(size + 1);
-	if (__builtin_expect(!str.mem, 0))
+	buf = ft_palloc(size + 1);
+	if (__builtin_expect(buf.mem == MAP_FAILED, 0))
 		return ((t_str){0});
-	str.capacity = size + 1;
-	str.mem[0] = 0;
-	str.size = 0;
-	return (str);
+	buf.mem[0] = 0;
+	return ((t_str){.size = 0, .capacity = buf.size, .mem = buf.mem});
 }
 
 __attribute__((__nonnull__(1)))
 void	ft_str_destroy(t_str *str)
 {
-	ft_free((void **)&str->mem);
-	str->size = 0;
+	if (str->mem)
+		ft_palloc_free((t_buffer){.size = str->capacity, .mem = str->mem});
+	*str = (t_str){0};
 }

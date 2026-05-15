@@ -44,7 +44,7 @@ char	*ft_itoa(int n)
 
 	cc = count(n);
 	neg = 1;
-	out = ft_alloc(cc + 1);
+	out = malloc(cc + 1);
 	if (!out)
 		return (nullptr);
 	if (n < 0)

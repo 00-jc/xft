@@ -28,9 +28,6 @@ t_hugepage			*new_hugepage(t_hugepage *prev,\
 void				ft_arena_clean_fwd(const t_arena *alloc)\
 						__attribute__((__nonnull__(1)));
 
-int					ft_match_paging_flags(size_t page_size)\
-						__attribute__((const));
-
 size_t				ft_match_paging(size_t page_size)\
 						__attribute__((const));
 

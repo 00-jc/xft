@@ -18,7 +18,7 @@ int	ft_vec_remove(t_vec *restrict const v, size_t i, size_t type_size)
 	t_u8		*elem;
 	const t_u8	*last;
 
-	if (v->data == nullptr)
+	if (v->buf.mem == nullptr)
 		__builtin_unreachable();
 	elem = ft_vec_get_mut(v, i, type_size);
 	last = ft_vec_peek_last(v, type_size);
@@ -36,7 +36,7 @@ int	ft_vec_removef(t_vec *restrict const v, size_t i, size_t type_size,
 	t_u8		*elem;
 	const t_u8	*last;
 
-	if (v->data == nullptr)
+	if (v->buf.mem == nullptr)
 		__builtin_unreachable();
 	elem = ft_vec_get_mut(v, i, type_size);
 	last = ft_vec_peek_last(v, type_size);

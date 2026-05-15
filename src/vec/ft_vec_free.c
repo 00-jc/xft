@@ -15,7 +15,7 @@
 __attribute__((__nonnull__(1)))
 void	ft_vec_free(t_vec *v)
 {
-	ft_free((void **)&v->data);
+	ft_palloc_free(v->buf);
 	*v = (t_vec){0};
 }
 

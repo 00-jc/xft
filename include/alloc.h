@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 17:14:01 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/15 04:23:13 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/15 22:35:07 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,8 +44,34 @@ typedef struct s_checkpoint
 	t_hugepage		*location;
 }	t_arena_checkpoint;
 
+typedef void	(*t_free)(void *alloc, t_buffer old)\
+				__attribute__((__nonnull__(1)));
+
+typedef void	(*t_reallocate)(void *alloc, t_buffer old, size_t new_size)\
+				__attribute__((__nonnull__(1)));
+
+typedef void	(*t_allocate)(void *alloc, size_t size, size_t align)\
+				__attribute__((__nonnull__(1)));
+
+typedef void	(*t_destroy)(void *alloc)\
+				__attribute__((__nonnull__(1)));
+
+typedef struct e_alloc_interface
+{
+	t_free			free;
+	t_reallocate	realloc;
+	t_allocate		allocate;
+	t_destroy		destroy;
+}	t_alloc_interface;
+
+typedef struct s_allocator
+{
+	t_alloc_interface	interface;
+	void				*allocator;
+}	t_allocator;
+
 # define HUGEPAGE_2MB    2097152UL
-# define HUGEPAGE_4MB    4194304UL
+# define HUGEPAGE_8MB    8388608UL
 # define HUGEPAGE_16MB   16777216UL
 # define HUGEPAGE_256MB  268435456UL
 # define HUGEPAGE_512MB  536870912UL
@@ -55,6 +81,9 @@ typedef struct s_checkpoint
 
 # ifndef MAP_HUGE_2MB
 #  define MAP_HUGE_2MB 0
+# endif
+# ifndef MAP_HUGE_8MB
+#  define MAP_HUGE_8MB 0
 # endif
 # ifndef MAP_HUGE_16MB
 #  define MAP_HUGE_16MB 0
@@ -75,21 +104,6 @@ typedef struct s_checkpoint
 #  define MAP_HUGE_16GB 0
 # endif
 
-# ifndef DEF_ALIGN
-#  define DEF_ALIGN 32
-# endif
-
-void				*ft_alloc_align(size_t size, size_t align);
-void				*ft_alloc(size_t size);
-void				ft_free(void **ptr)\
-						__attribute__((__nonnull__(1)));
-void				ft_free_array(void ***arr)\
-						__attribute__((__nonnull__(1)));
-void				*ft_calloc(size_t n, size_t size);
-void				*ft_extend(void *ptr, size_t n, size_t size);
-void				*ft_extend_zero(void *ptr, size_t n, size_t size);
-void				*ft_realloc(void *ptr, size_t n, size_t size);
-void				*ft_recalloc(void *ptr, size_t n, size_t size);
 t_arena				ft_new_arena_alloc(void);
 void				*ft_arena_alloc(t_arena *__restrict__ const allocator,
 						size_t size, size_t align)\
@@ -103,5 +117,8 @@ void				ft_arena_rewind_clean(t_arena *__restrict__ const arena,
 						t_arena_checkpoint checkpoint);
 void				ft_arena_rewind(t_arena *__restrict__ const arena,
 						t_arena_checkpoint checkpoint);
+t_buffer			ft_palloc(size_t size);
+t_buffer			ft_palloc_resize(t_buffer b, size_t new_size);
+void				ft_palloc_free(t_buffer b);
 
 #endif

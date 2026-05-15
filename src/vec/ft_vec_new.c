@@ -14,17 +14,17 @@
 
 t_vec	ft_vec_new(size_t size, size_t type_size)
 {
-	const t_u8	*mem;
+	t_buffer	buf;
 	size_t		mul;
 
 	mul = size * type_size;
 	if (mul == 0 || (mul / size != type_size))
 		return ((t_vec){0});
-	mem = ft_alloc(size * type_size);
+	buf = ft_palloc(mul);
 	return ((t_vec)
 		{
 			.size = 0,
-			.capacity = size,
-			.data = mem,
+			.capacity = buf.size / type_size,
+			.buf = buf,
 		});
 }
