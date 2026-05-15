@@ -6,7 +6,7 @@
 //   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2026/05/15 07:20:25 by jaicastr          #+#    #+#             //
-//   Updated: 2026/05/15 08:06:32 by jaicastr         ###   ########.fr       //
+//   Updated: 2026/05/15 08:19:26 by jaicastr         ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 const std = @import("std");
@@ -14,7 +14,6 @@ const std = @import("std");
 const NAME       = "xft";
 const OBJDIR     = "build";
 const INCLUDES   = "include";
-const THREADS    = "16";
 
 const WARNS_COMMON = &[_][]const u8{
     "-Wall",
@@ -108,7 +107,6 @@ const CFLAGS_COMMON = &[_][]const u8{
     "-fno-common",
     "-fstack-clash-protection",
     "-g3",
-    "-DFT_NTHREADS=" ++ THREADS,
 } ++ WARNS_COMMON;
 
 const SRCS_ALLOC = &[_][]const u8{
@@ -586,6 +584,7 @@ pub fn build(b: *std.Build) void
         });
         mod.addIncludePath(b.path(INCLUDES));
         mod.addIncludePath(b.path("bench/include"));
+        mod.addCMacro("FT_NTHREADS", b.fmt("{d}", .{std.Thread.getCpuCount() catch 1}));
         mod.addCSourceFiles(.{
             .files = t.srcs,
             .flags = CFLAGS_COMMON ++ .{"-march=native", "-mtune=native", "-O3"},
