@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/17 21:34:52 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/13 23:49:02 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/15 11:17:43 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ int	ft_perf_collect_sample(size_t n,
 
 	ft_perf_counters_stop(c);
 	t = ft_get_nanos();
+	ft_memset(v, 0, (SW_COUNTERS_N + HW_COUNTERS_N) * sizeof(t_u64a));
 	if (__builtin_expect(ft__get_sample_plexed(c, v) == 0, 0))
 		return (0);
 	s->n = n;

@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 16:19:12 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/13 06:14:05 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/15 11:31:01 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,8 @@ int	ft_vec_remove(t_vec *restrict const v, size_t i, size_t type_size)
 	t_u8		*elem;
 	const t_u8	*last;
 
-	if (!v->data)
-		return (0);
+	if (v->data == nullptr)
+		__builtin_unreachable();
 	elem = ft_vec_get_mut(v, i, type_size);
 	last = ft_vec_peek_last(v, type_size);
 	if (elem == nullptr || last == nullptr)
@@ -36,8 +36,8 @@ int	ft_vec_removef(t_vec *restrict const v, size_t i, size_t type_size,
 	t_u8		*elem;
 	const t_u8	*last;
 
-	if (!v->data)
-		return (0);
+	if (v->data == nullptr)
+		__builtin_unreachable();
 	elem = ft_vec_get_mut(v, i, type_size);
 	last = ft_vec_peek_last(v, type_size);
 	if (elem == nullptr || last == nullptr)

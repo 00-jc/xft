@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/20 02:53:03 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/13 23:49:02 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/15 11:24:48 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@ static inline size_t	ft__get_empty(const t_map *restrict const map,
 {
 	t_u16a		mask;
 
+	if (map->meta == nullptr || map->buckets == nullptr)
+		__builtin_unreachable();
 	while (1)
 	{
 		mask = ft_bitpack128(

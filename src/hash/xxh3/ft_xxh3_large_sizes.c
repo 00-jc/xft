@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/12 04:21:11 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/13 06:14:06 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/15 11:11:11 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,8 @@ inline void	ft_xxh3_accumulate_512(t_blk8r acc, t_blk8r input, t_blk8r secret)
 	t_vu32_512	d32;
 
 	xacc = (t_vu64_512 *)acc;
-	__attribute__((assume(((t_uptr)acc & 63) == 0)));
-	__attribute__((assume(XXH3_STRIPE_LEN == sizeof(t_vu512))));
+	if ((t_uptr)acc & 63 || XXH3_STRIPE_LEN != sizeof(t_vu512))
+		__builtin_unreachable();
 	{
 		rr[0] = *(const t_vu64_512 * const restrict)input;
 		rr[1] = *(const t_vu64_512 * const restrict)secret;
@@ -48,8 +48,8 @@ inline void	ft_xxh3_scramble_acc_512(t_blk8r acc, t_blk8r secret)
 	t_vu64_512				*xacc;
 	t_vu64_512				rr[7];
 
-	__attribute__((assume(((t_uptr)acc & 63) == 0)));
-	__attribute__((assume(XXH3_STRIPE_LEN == sizeof(t_vu512))));
+	if ((t_uptr)acc & 63 || XXH3_STRIPE_LEN != sizeof(t_vu512))
+		__builtin_unreachable();
 	{
 		xacc = (t_vu64_512 * const restrict)acc;
 		rr[0] = *xacc;
@@ -91,8 +91,9 @@ inline void	ft_xxh3_hashlong_internal_loop(t_blk8r acc, t_buffer input,
 	size_t	nb_stripes;
 	size_t	n;
 
-	__attribute__((assume(input.mem != nullptr && secret.mem != nullptr)));
-	__attribute__((assume(input.size > XXH3_STRIPE_LEN)));
+	if (input.mem == nullptr || secret.mem == nullptr
+		|| input.size < XXH3_STRIPE_LEN)
+		__builtin_unreachable();
 	nb_str_blk = (secret.size - XXH3_STRIPE_LEN) / XXH3_SECRET_CONSUME_RATE;
 	blen = XXH3_STRIPE_LEN * nb_str_blk;
 	nb_blks = (input.size - 1) / blen;
@@ -123,9 +124,9 @@ t_u64a	ft_xxh3_hashlong_64b(t_buffer input, t_u64a seed)
 	ft_xxh3_init_custom_secret(custom_secret, seed);
 	secret = (t_buffer){.mem = (t_u8 *)custom_secret,
 		.size = XXH3_SECRET_DEF_SIZE};
-	__attribute__((assume(input.mem != nullptr && secret.mem != nullptr)));
-	__attribute__((assume(secret.size >= sizeof(acc)
-				+ XXH3_SECRET_MERGEACCS_START)));
+	if (input.mem == nullptr || secret.mem == nullptr
+		|| secret.size < sizeof(acc) + XXH3_SECRET_MERGEACCS_START)
+		__builtin_unreachable();
 	ft_xxh3_hashlong_internal_loop((t_blk8r) & acc, input, secret);
 	return (ft_xxh3_merge_accs((t_u64 *) & acc,
 			secret.mem + XXH3_SECRET_MERGEACCS_START,

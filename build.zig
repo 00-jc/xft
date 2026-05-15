@@ -6,7 +6,7 @@
 //   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2026/05/15 07:20:25 by jaicastr          #+#    #+#             //
-//   Updated: 2026/05/15 08:50:37 by jaicastr         ###   ########.fr       //
+//   Updated: 2026/05/15 11:23:20 by jaicastr         ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 const std = @import("std");
@@ -609,4 +609,9 @@ pub fn build(b: *std.Build) void
         run.has_side_effects = true;
         bench_step.dependOn(&run.step);
     }
+    const analyze_step = b.step("analyze", "Run clang static analyzer");
+    const analyze_cmd = b.addSystemCommand(
+        .{"clang"} ++ CFLAGS_COMMON ++ .{ "--analyze", "--analyzer-output", "text", "-I", INCLUDES } ++ MODULES,
+    );
+    analyze_step.dependOn(&analyze_cmd.step);
 }

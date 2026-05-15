@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/13 04:37:39 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/13 06:14:07 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/15 11:15:38 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,8 @@ int	ft_str_extend(t_str *restrict const str,
 {
 	t_u8	should_extend;
 
-	__attribute__((assume(str->mem != nullptr)));
+	if (str->mem == nullptr)
+		__builtin_unreachable();
 	{
 		should_extend = str->capacity < str->size + n + 1;
 		if (__builtin_expect(should_extend

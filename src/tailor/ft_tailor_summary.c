@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/20 00:24:50 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/14 00:03:07 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/15 11:19:35 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "private/ft_p_tailor.h"
@@ -89,7 +89,8 @@ void	ft_print_summary(t_buffer surv, t_plankb plan, t_blk8r name,
 	t_u64a			total_iters;
 	t_u64a			it;
 
-	__attribute__((assume(surv.mem != nullptr)));
+	if (surv.mem == nullptr)
+		__builtin_unreachable();
 	ft_sum_counters((t_perf_sample *)surv.mem, &sum, surv.size);
 	total_iters = plan.k_runs * plan.dp.iters;
 	it = plan.dp.iters;

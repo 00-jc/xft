@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 14:32:14 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/13 18:01:54 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/15 11:14:43 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,8 @@ __attribute__((__nonnull__(1, 2), __always_inline__, hot))
 inline int	ft_vec_push_back(t_vec *restrict const vec,
 		const t_u8 *restrict const data, size_t type_size)
 {
-	__attribute__((assume(vec->data != nullptr)));
+	if (vec->data == nullptr)
+		__builtin_unreachable();
 	{
 		if (__builtin_expect(vec->size == vec->capacity
 				&& !ft_vec_reserve(vec, type_size,

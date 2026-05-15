@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/20 02:32:50 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/04/12 16:07:42 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/15 11:25:49 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@ static inline void	ft__map_insert_unchecked(t_map *restrict const map,
 	size_t		gg;
 	size_t		i;
 
+	if (map->meta == nullptr || map->buckets == nullptr)
+		__builtin_unreachable();
 	group = data[GROUP];
 	while (1)
 	{
@@ -47,6 +49,8 @@ void	ft_map_insert_unchecked(t_map *restrict const map,
 	size_t		nblks;
 	t_bucket	entry;
 
+	if (map->meta == nullptr || map->buckets == nullptr)
+		__builtin_unreachable();
 	hash = ft_xxh3_64bits(ft_fatptr(key, keylen), 0);
 	nblks = map->table_size >> 4;
 	entry = (t_bucket){

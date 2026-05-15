@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/12 03:16:31 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/13 06:14:05 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/15 11:07:04 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,9 @@ inline t_u64a	ft_xxh3_len_17to128(t_buffer input,
 	t_u64a	acc;
 	size_t	i;
 
-	__attribute__((assume(input.size >= 17 && input.size <= 128)));
-	__attribute__((assume(input.mem != nullptr && secret.mem != nullptr)));
+	if (input.size < 17 || 128 < input.size || !input.mem
+		|| !secret.mem)
+		__builtin_unreachable();
 	acc = input.size * XXH3_PRIME64_1;
 	i = (input.size - 1) >> 5;
 	while (1)
@@ -55,8 +56,9 @@ __attribute__((pure, __always_inline__))
 inline t_u64a	ft_xxh3_len_129to240__first(t_buffer input, t_buffer secret,
 	t_u64a seed, t_u64a acc)
 {
-	__attribute__((assume(input.size >= 129 && input.size <= 240)));
-	__attribute__((assume(input.mem != nullptr && secret.mem != nullptr)));
+	if (input.size < 129 || input.size > 240
+		|| input.mem == nullptr || secret.mem == nullptr)
+		__builtin_unreachable();
 	acc += ft_xxh3_mix16b(input.mem + (0 << 4), secret.mem + (0 << 4), seed);
 	acc += ft_xxh3_mix16b(input.mem + (1 << 4), secret.mem + (1 << 4), seed);
 	acc += ft_xxh3_mix16b(input.mem + (2 << 4), secret.mem + (2 << 4), seed);
@@ -98,8 +100,9 @@ inline t_u64a	ft_xxh3_len_129to240(t_buffer input,
 __attribute__((pure, __always_inline__))
 inline t_u64a	ft_xxh3_hash_short(t_buffer input, t_buffer secret, t_u64a seed)
 {
-	__attribute__((assume(input.size <= 240)));
-	__attribute__((assume(input.mem != nullptr && secret.mem != nullptr)));
+	if (input.size < 129 || input.size > 240
+		|| input.mem == nullptr || secret.mem == nullptr)
+		__builtin_unreachable();
 	if (input.size <= 16)
 		return (ft_xxh3_len_0to16(input, secret, seed));
 	else if (input.size <= 128)

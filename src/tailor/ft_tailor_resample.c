@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/19 23:40:09 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/13 06:14:07 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/15 11:18:49 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,8 @@ static inline int	ft_bootstrap_ci(t_tailor *t, t_buffer surv, t_u64a hilo[2],
 	size_t				ij[2];
 	t_qsort_ctx			ctx;
 
-	__attribute__((assume(surv.mem != nullptr)));
+	if (surv.mem == nullptr)
+		__builtin_unreachable();
 	medres[0] = ft_arena_alloc(&t->arena, sizeof(t_u64a) * plan.b, 64);
 	medres[1] = ft_arena_alloc(&t->arena, sizeof(t_u64a) * surv.size, 64);
 	if (__builtin_expect(medres[0] == nullptr || medres[1] == nullptr, 0))
@@ -54,8 +55,7 @@ static inline int	ft_bootstrap_ci(t_tailor *t, t_buffer surv, t_u64a hilo[2],
 		ft_qsort((void *)medres[1], &ctx, 0, surv.size);
 		medres[0][ij[0]++] = medres[1][surv.size >> 1];
 	}
-	ft_finalmix(medres[0], hilo, plan);
-	return (1);
+	return (ft_finalmix(medres[0], hilo, plan), 1);
 }
 
 __attribute__((__nonnull__(1, 3, 4)))
@@ -68,7 +68,8 @@ static inline int	ft_getpost_med(t_tailor *t, t_buffer surv,
 	size_t			i;
 	t_qsort_ctx		ctx;
 
-	__attribute__((assume(surv.mem != nullptr)));
+	if (surv.mem == nullptr)
+		__builtin_unreachable();
 	arr = ft_arena_alloc(&t->arena, sizeof(t_u64a) * surv.size, 64);
 	if (__builtin_expect(arr == nullptr, 0))
 		return (0);

@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/20 02:35:25 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/13 06:14:05 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/15 11:28:30 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,8 @@ void	*ft_map_lookup(const t_map *restrict const map,
 	size_t		group;
 	size_t		nblks;
 
+	if (map->buckets == nullptr || map->meta == nullptr)
+		__builtin_unreachable();
 	hash = ft_xxh3_64bits(ft_fatptr(mem, size), 0);
 	h2 = (hash >> 57) & MAP_H2_MASK;
 	nblks = map->table_size >> 4;

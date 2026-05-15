@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 14:32:14 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/13 06:14:05 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/15 11:15:05 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,8 @@ int	ft_vec_extend(t_vec *restrict const vec,
 {
 	t_u8	should_extend;
 
-	__attribute__((assume(vec->data != nullptr)));
+	if (vec->data == nullptr)
+		__builtin_unreachable();
 	{
 		should_extend = vec->capacity < vec->size + n;
 		if (__builtin_expect(should_extend
