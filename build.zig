@@ -6,7 +6,7 @@
 //   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2026/05/15 07:20:25 by jaicastr          #+#    #+#             //
-//   Updated: 2026/05/15 18:43:36 by jaicastr         ###   ########.fr       //
+//   Updated: 2026/05/16 23:55:20 by jaicastr         ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 const std = @import("std");
@@ -115,10 +115,17 @@ const CFLAGS_COMMON = &[_][]const u8{
 
 const SRCS_ALLOC = &[_][]const u8{
     "src/alloc/huge_matcher/ft_huge_matcher.c",
-    "src/alloc/palloc/ft_palloc.c",
+    "src/alloc/page_allocator/ft_palloc.c",
+    "src/alloc/page_allocator/ft_palloc_vtable.c",
     "src/alloc/arena/ft_arena_alloc_utils.c",
     "src/alloc/arena/ft_arena_alloc_scopes.c",
     "src/alloc/arena/ft_arena_alloc.c",
+    "src/alloc/arena/ft_arena_vtable.c",
+    "src/alloc/gpa/ft_gpa.c",
+    "src/alloc/gpa/ft_gpa_alloc.c",
+    "src/alloc/gpa/ft_gpa_free.c",
+    "src/alloc/gpa/ft_gpa_realloc.c",
+    "src/alloc/gpa/ft_gpa_vtable.c",
 };
 
 const SRCS_CONV = &[_][]const u8{
@@ -427,6 +434,7 @@ const SRCS_TEST = &[_][2][]const u8{
     .{ "tests/xxh3_test.c",          "test_xxh3" },
     .{ "tests/arena_test.c",         "test_arena" },
     .{ "tests/arena_extend_test.c",  "test_arena_extend" },
+    .{ "tests/test_vtables.c",       "test_vtables" },
 };
  
 const SRCS_FUZZ_TARGETS = &[_][2][]const u8{

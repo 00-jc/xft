@@ -1,34 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_str.c                                           :+:      :+:    :+:   */
+/*   ft_gpa_free.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/05/13 04:33:09 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/15 19:00:00 by jaicastr         ###   ########.fr       */
+/*   Created: 2026/05/16 22:04:40 by jaicastr          #+#    #+#             */
+/*   Updated: 2026/05/16 23:57:37 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "str.h"
-
-t_str	ft_str(size_t size)
-{
-	t_buffer	buf;
-
-	if (__builtin_expect(size == 0, 0))
-		return ((t_str){0});
-	buf = ft_palloc(size + 1);
-	if (__builtin_expect(buf.mem == nullptr, 0))
-		return ((t_str){0});
-	buf.mem[0] = 0;
-	return ((t_str){.size = 0, .capacity = buf.size, .mem = buf.mem});
-}
+#include "private/ft_p_gpa.h"
 
 __attribute__((__nonnull__(1)))
-void	ft_str_destroy(t_str *str)
+void	ft_gpa_free(void *allocator, t_buffer buf)
 {
-	if (str->mem)
-		ft_palloc_free((t_buffer){.size = str->capacity, .mem = str->mem});
-	*str = (t_str){0};
+	size_t	freelist;
+	t_gpa	*gpa;
+
+	if (buf.mem == nullptr)
+		__builtin_unreachable();
+	gpa = (t_gpa *)allocator;
+	freelist = 60 - ft_memclz_u64(buf.size);
+	if (GPA_CLASSES <= freelist)
+	{
+		ft_munmap(buf.mem, buf.size);
+		return ;
+	}
+	*(void **)buf.mem = gpa->free[freelist];
+	gpa->free[freelist] = buf.mem;
 }

@@ -21,7 +21,7 @@ inline int	ft_vec_reserve(t_vec *restrict const vec,
 
 	new_cap = n + vec->capacity;
 	new_buf = ft_palloc_resize(vec->buf, new_cap * type_size);
-	if (__builtin_expect(new_buf.mem != MAP_FAILED, 1))
+	if (__builtin_expect(new_buf.mem != nullptr, 1))
 	{
 		vec->buf = new_buf;
 		vec->capacity = new_buf.size / type_size;

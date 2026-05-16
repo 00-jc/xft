@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/13 04:37:39 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/15 21:22:41 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/17 00:08:30 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,8 @@ inline int	ft_str_reserve(t_str *restrict const str, size_t n)
 		__builtin_unreachable();
 	new_cap = n + str->capacity + 1;
 	new_buf = ft_palloc_resize(
-				ft_fatptr(str->mem, str->capacity), new_cap);
-	if (__builtin_expect(new_buf.mem == MAP_FAILED, 0))
+			ft_fatptr(str->mem, str->capacity), new_cap);
+	if (__builtin_expect(new_buf.mem == nullptr, 0))
 		return (0);
 	str->mem = new_buf.mem;
 	str->capacity = new_buf.size;

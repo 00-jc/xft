@@ -13,7 +13,9 @@
 #ifndef FT_P_ARENA_H
 # define FT_P_ARENA_H
 
-# include "alloc.h"
+# include "alloc/arena_alloc.h"
+# include "syscalls.h"
+# include "mem.h"
 
 void				*get_next_ptr(t_hugepage *slab, size_t align)\
 						__attribute__((nonnull(1), returns_nonnull));
