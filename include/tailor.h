@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/18 19:32:06 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/14 07:33:02 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/17 09:55:18 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,5 +71,8 @@ t_buffer	*ft_get_all_buffers(const void *ptr, size_t *n)\
 				__attribute__((__nonnull__(1)));
 
 void		ft_tailor_add_processed_bytes(void *ptr, const size_t bytes)\
+				__attribute__((__nonnull__(1)));
+
+size_t		ft_tailor_get_random_num(void *ptr)\
 				__attribute__((__nonnull__(1)));
 #endif

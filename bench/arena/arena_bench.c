@@ -20,13 +20,14 @@ int	main(void)
 	{ft_arena_bench_64, (t_blk8r)"arena_alloc_64"},
 	{ft_arena_bench_512, (t_blk8r)"arena_alloc_512"},
 	{ft_arena_bench_varied, (t_blk8r)"arena_alloc_varied"},
+	{ft_arena_bench_random, (t_blk8r)"arena_alloc_random"},
 	};
 	t_tailor				t;
 
 	ft_bind_process_to_cpu(0);
 	if (!ft_tailor_new(&t, 2, 2000))
 		return (1);
-	(void)ft_tailor_bench(&t, benches, 4);
+	(void)ft_tailor_bench(&t, benches, 5);
 	ft_destroy_arena(ft_get_bench_arena());
 	ft_tailor_destroy(&t);
 	return (0);

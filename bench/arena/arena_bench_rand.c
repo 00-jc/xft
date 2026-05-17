@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   gpa_bench.c                                        :+:      :+:    :+:   */
+/*   arena_bench_rand.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -13,21 +13,23 @@
 #include "tailor.h"
 #include "alloc_bench.h"
 
-int	main(void)
+void	ft_arena_bench_random(void *ptr)
 {
-	static t_tailor_bench	benches[] = {
-	{ft_gpa_bench_8, (t_blk8r)"gpa_alloc_free_8"},
-	{ft_gpa_bench_64, (t_blk8r)"gpa_alloc_free_64"},
-	{ft_gpa_bench_512, (t_blk8r)"gpa_alloc_free_512"},
-	{ft_gpa_bench_8k, (t_blk8r)"gpa_alloc_free_8k"},
-	{ft_gpa_bench_varied, (t_blk8r)"gpa_alloc_free_varied"},
-	{ft_gpa_bench_random, (t_blk8r)"gpa_alloc_free_random"},
-	};
-	t_tailor				t;
+	t_arena		*arena;
+	size_t		n;
+	size_t		bytes;
+	size_t		sz;
+	void		*p;
 
-	ft_bind_process_to_cpu(0);
-	if (!ft_tailor_new(&t, 2, 2000))
-		return (1);
-	return ((void)ft_tailor_bench(&t, benches, 6),
-		ft_gpa_destroy(ft_get_bench_gpa()), ft_tailor_destroy(&t), 0);
+	arena = ft_get_bench_arena();
+	n = ft_tailor_getcount(ptr);
+	bytes = 0;
+	while (n-- > 0)
+	{
+		sz = 8ULL << (ft_tailor_get_random_num(ptr) % 14);
+		p = ft_arena_alloc(arena, sz, 8);
+		__asm__("": "+r,m"(p) ::"memory");
+		bytes += sz;
+	}
+	ft_tailor_add_processed_bytes(ptr, bytes);
 }

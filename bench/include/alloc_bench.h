@@ -23,10 +23,12 @@ void	ft_gpa_bench_64(void *ptr);
 void	ft_gpa_bench_512(void *ptr);
 void	ft_gpa_bench_8k(void *ptr);
 void	ft_gpa_bench_varied(void *ptr);
+void	ft_gpa_bench_random(void *ptr);
 
 void	ft_arena_bench_8(void *ptr);
 void	ft_arena_bench_64(void *ptr);
 void	ft_arena_bench_512(void *ptr);
 void	ft_arena_bench_varied(void *ptr);
+void	ft_arena_bench_random(void *ptr);
 
 #endif

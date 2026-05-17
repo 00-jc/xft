@@ -367,6 +367,7 @@ const SRCS_TAILOR = &[_][]const u8{
     "src/tailor/ft_tailor_resample.c",
     "src/tailor/ft_tailor_fuzz.c",
     "src/tailor/ft_tailor_get_rand_buffer.c",
+    "src/tailor/ft_tailor_get_random_num.c",
     "src/tailor/ft_tailor_new.c",
     "src/tailor/ft_tailor_calibration.c",
     "src/tailor/ft_tailor_summary.c",
@@ -472,11 +473,13 @@ const SRCS_BENCH_GPA = &[_][]const u8{
     "bench/gpa/gpa_bench.c",
     "bench/gpa/gpa_bench_get.c",
     "bench/gpa/gpa_bench_ops.c",
+    "bench/gpa/gpa_bench_rand.c",
 };
 
 const SRCS_BENCH_ARENA = &[_][]const u8{
     "bench/arena/arena_bench.c",
     "bench/arena/arena_bench_ops.c",
+    "bench/arena/arena_bench_rand.c",
 };
 
 const BENCH_TARGETS = &[_]struct { name: []const u8, srcs: []const []const u8 }{
