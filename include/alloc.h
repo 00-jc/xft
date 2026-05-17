@@ -31,12 +31,16 @@ typedef t_buffer	(*t_allocate)(void *alloc, size_t size, size_t align)\
 typedef void		(*t_destroy)(void *alloc)\
 						__attribute__((__nonnull__(1)));
 
+typedef t_buffer	(*t_clone)(void *self, t_buffer buffer)\
+						__attribute__((__nonnull__(1)));
+
 typedef struct e_alloc_interface
 {
 	t_free			free;
 	t_reallocate	realloc;
 	t_allocate		allocate;
 	t_destroy		destroy;
+	t_clone			clone;
 }	t_alloc_interface;
 
 typedef struct s_allocator
@@ -64,9 +68,14 @@ t_buffer	ft_gpa_alloc(void *alloc, size_t size, size_t align);
 t_buffer	ft_gpa_realloc(void *alloc, t_buffer buf, size_t newsize,
 				size_t align);
 void		ft_gpa_free(void *allocator, t_buffer buf);
+t_buffer	ft_alloc_clone(void *self, t_buffer buffer)\
+				__attribute__((__nonnull__(1)));
 
-t_allocator	ft_arena_allocator(t_arena *arena);
-t_allocator	ft_gpa_allocator(t_gpa *gpa);
-t_allocator	ft_new_page_alloc(void);
+t_allocator	ft_arena_allocator(t_arena *arena)\
+				__attribute__((__nonnull__(1), __const__));
+t_allocator	ft_gpa_allocator(t_gpa *gpa)\
+				__attribute__((__nonnull__(1), __const__));
+t_allocator	ft_new_page_alloc(void)\
+				__attribute__((__const__));
 
 #endif

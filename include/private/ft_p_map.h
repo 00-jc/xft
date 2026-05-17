@@ -16,12 +16,12 @@
 # include "map.h"
 
 void		ft_map_insert_unchecked(t_map *__restrict__ const map,\
-				t_u8 *__restrict__ const key, size_t keylen,\
-				t_u8 *__restrict__ const value)\
-				__attribute__((__nonnull__(1, 2, 4)));
+				t_buffer key, t_u8 *__restrict__ const value)\
+				__attribute__((__nonnull__(1, 3)));
 
-t_u32a		ft_map_rehash(t_map *__restrict__ const map)\
-				__attribute__((__nonnull__(1)));
+t_u32a		ft_map_rehash(t_allocator allocator,\
+				t_map *__restrict__ const map)\
+				__attribute__((__nonnull__(2)));
 
 size_t		ft__map_lookup_offset(const t_map *__restrict__ const map,\
 				const t_u8 *__restrict__ const mem, size_t data[4])\

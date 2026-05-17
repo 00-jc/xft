@@ -43,9 +43,8 @@ inline size_t	ft__map_lookup_offset(const t_map *restrict const map,
 	}
 }
 
-__attribute__((__nonnull__(1, 2)))
-void	ft_map_delete(t_map	*restrict const map,
-	t_u8 *restrict const key, size_t keylen)
+__attribute__((__nonnull__(1)))
+void	ft_map_delete(t_map *restrict const map, t_buffer key)
 {
 	t_u128a		hash;
 	t_u8		h2;
@@ -53,12 +52,12 @@ void	ft_map_delete(t_map	*restrict const map,
 	size_t		nblks;
 	size_t		result;
 
-	hash = ft_xxh3_64bits(ft_fatptr(key, keylen), 0);
+	hash = ft_xxh3_64bits(key, 0);
 	h2 = (hash >> 57) & MAP_H2_MASK;
 	nblks = map->table_size >> 4;
 	group = hash % nblks;
-	result = ft__map_lookup_offset(map, key,
-			(size_t [4]){h2, nblks, group, keylen});
+	result = ft__map_lookup_offset(map, key.mem,
+			(size_t [4]){h2, nblks, group, key.size});
 	if (result > map->table_size)
 		return ;
 	map->meta[result] = MAP_DELETED;

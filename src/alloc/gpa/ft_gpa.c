@@ -37,7 +37,7 @@ void	ft_gpa_destroy(t_gpa *gpa)
 	ptr = gpa->slab;
 	while (ptr != nullptr)
 	{
-		next = *(void **)ptr;
+		next = *ptr;
 		ft_munmap(ptr, gpa->slabsize);
 		ptr = next;
 	}

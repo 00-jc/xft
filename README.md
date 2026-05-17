@@ -18,6 +18,16 @@ Build (zig):
     zig build -Dcpu=native             # -march=native alternative
     zig build -Dtarget=...             # cross-compile target
 
+Build (make fallback):
+
+    make                               # builds xft.a with the default compiler
+    make CC=clang                      # force clang
+    make CC=gcc                        # force gcc
+    make re                            # full rebuild
+    make analyze                       # clang scan-build + gcc -fanalyzer + norminette
+    make clean
+    make fclean
+
 Notes:
 
 - Requires GCC or Clang with C23 and C99 support

@@ -43,9 +43,8 @@ static inline void	*ft__map_lookup(const t_map *restrict const map,
 	}
 }
 
-__attribute__((__nonnull__(1, 2)))
-void	*ft_map_lookup(const t_map *restrict const map,
-	t_u8 *restrict const mem, size_t size)
+__attribute__((__nonnull__(1)))
+void	*ft_map_lookup(const t_map *restrict const map, t_buffer key)
 {
 	t_u128a		hash;
 	t_u8		h2;
@@ -54,10 +53,10 @@ void	*ft_map_lookup(const t_map *restrict const map,
 
 	if (map->buckets == nullptr || map->meta == nullptr)
 		__builtin_unreachable();
-	hash = ft_xxh3_64bits(ft_fatptr(mem, size), 0);
+	hash = ft_xxh3_64bits(key, 0);
 	h2 = (hash >> 57) & MAP_H2_MASK;
 	nblks = map->table_size >> 4;
 	group = hash % nblks;
-	return (ft__map_lookup(map, mem,
-			(size_t [4]){h2, nblks, group, size}));
+	return (ft__map_lookup(map, key.mem,
+			(size_t [4]){h2, nblks, group, key.size}));
 }

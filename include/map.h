@@ -70,21 +70,19 @@ typedef struct s_map
 
 # endif
 
-t_map		ft_map_with(size_t capacity);
-t_map		ft_map_new(void);
-void		*ft_map_lookup(const t_map *__restrict__ const map,
-				t_u8 *__restrict__ const mem, size_t size)\
-				__attribute__((__nonnull__(1, 2)));
-t_u32a		ft_map_insert(t_map	*__restrict__ const map,
-				t_u8 *__restrict__ const key,
-				size_t keylen,
-				t_u8 *__restrict__ const value)\
-				__attribute__((__nonnull__(1, 2, 4)));
-void		ft_map_destroy(t_map *__restrict__ const map)\
+t_map		ft_map_with(t_allocator allocator, size_t capacity);
+t_map		ft_map_new(t_allocator allocator);
+void		*ft_map_lookup(const t_map *__restrict__ const map, t_buffer key)\
 				__attribute__((__nonnull__(1)));
-void		ft_map_delete(t_map	*__restrict__ const map,
-				t_u8 *__restrict__ const key, size_t keylen)\
-				__attribute__((__nonnull__(1, 2)));
+t_u32a		ft_map_insert(t_allocator allocator,\
+				t_map *__restrict__ const map,\
+				t_buffer key, t_u8 *__restrict__ const value)\
+				__attribute__((__nonnull__(2, 4)));
+void		ft_map_destroy(t_allocator allocator,\
+				t_map *__restrict__ const map)\
+				__attribute__((__nonnull__(2)));
+void		ft_map_delete(t_map *__restrict__ const map, t_buffer key)\
+				__attribute__((__nonnull__(1)));
 void		ft_map_clear(t_map *map)\
 				__attribute__((__nonnull__(1)));
 

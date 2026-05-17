@@ -1,35 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_isnumeric.c                                     :+:      :+:    :+:   */
+/*   ft_alloc_clone.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/16 17:13:41 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/13 17:47:00 by jaicastr         ###   ########.fr       */
+/*   Created: 2026/05/17 00:00:00 by jaicastr          #+#    #+#             */
+/*   Updated: 2026/05/17 00:00:00 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "xft.h"
+#include "alloc.h"
+#include "bmi.h"
+#include "mem.h"
 
 __attribute__((__nonnull__(1)))
-inline t_u8	ft_isunum(const char *restrict s,
-	size_t size)
+t_buffer	ft_alloc_clone(void *self, t_buffer buffer)
 {
-	char	c;
+	t_buffer	mem;
 
-	if (!size)
-		return (0);
-	if (*s == '+')
-	{
-		++s;
-		--size;
-	}
-	while (size-- > 0)
-	{
-		c = *s++;
-		if (!ft_isdigit(c))
-			return (0);
-	}
-	return (1);
+	mem = ((t_allocator *)self)->interface.allocate(
+			((t_allocator *)self)->allocator, buffer.size,
+			ft_next_pow2(buffer.size));
+	if (__builtin_expect(mem.mem == nullptr, 0))
+		return (ft_fatptr(nullptr, 0));
+	ft_memcpy(mem.mem, buffer.mem, buffer.size);
+	return (mem);
 }

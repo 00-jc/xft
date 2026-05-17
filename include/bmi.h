@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/18 18:02:58 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/13 23:49:02 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/17 16:43:58 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,9 @@ t_u64a			ft_tern(t_u64a cond, t_u64a value1,\
 
 t_f64			ft_dtern(t_u64a cond, t_f64 value1,\
 					t_f64 value2)\
+					__attribute__((const));
+
+size_t			ft_next_pow2(size_t qword)\
 					__attribute__((const));
 
 #endif

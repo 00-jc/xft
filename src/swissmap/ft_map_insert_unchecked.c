@@ -40,10 +40,9 @@ static inline void	ft__map_insert_unchecked(t_map *restrict const map,
 	}
 }
 
-__attribute__((__nonnull__(1, 2, 4)))
+__attribute__((__nonnull__(1, 3)))
 void	ft_map_insert_unchecked(t_map *restrict const map,
-	t_u8 *restrict const key, size_t keylen,
-	t_u8 *restrict const value)
+	t_buffer key, t_u8 *restrict const value)
 {
 	t_u64a		hash;
 	size_t		nblks;
@@ -51,11 +50,11 @@ void	ft_map_insert_unchecked(t_map *restrict const map,
 
 	if (map->meta == nullptr || map->buckets == nullptr)
 		__builtin_unreachable();
-	hash = ft_xxh3_64bits(ft_fatptr(key, keylen), 0);
+	hash = ft_xxh3_64bits(key, 0);
 	nblks = map->table_size >> 4;
 	entry = (t_bucket){
-		.key = key,
-		.key_len = keylen,
+		.key = key.mem,
+		.key_len = key.size,
 		.value = value,
 	};
 	ft__map_insert_unchecked(map, entry,

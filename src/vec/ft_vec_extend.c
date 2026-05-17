@@ -12,15 +12,16 @@
 
 #include "vec.h"
 
-__attribute__((__nonnull__(1), __always_inline__))
-inline int	ft_vec_reserve(t_vec *restrict const vec,
+__attribute__((__nonnull__(2), __always_inline__))
+inline int	ft_vec_reserve(t_allocator allocator, t_vec *restrict const vec,
 		size_t type_size, size_t n)
 {
 	t_buffer	new_buf;
 	size_t		new_cap;
 
 	new_cap = n + vec->capacity;
-	new_buf = ft_palloc_resize(vec->buf, new_cap * type_size);
+	new_buf = allocator.interface.realloc(allocator.allocator,
+			vec->buf, new_cap * type_size, ft_next_pow2(new_cap * type_size));
 	if (__builtin_expect(new_buf.mem != nullptr, 1))
 	{
 		vec->buf = new_buf;
@@ -30,21 +31,23 @@ inline int	ft_vec_reserve(t_vec *restrict const vec,
 	return (0);
 }
 
-__attribute__((__nonnull__(1, 2)))
-int	ft_vec_extend(t_vec *restrict const vec,
-		const t_u8 *restrict const data, size_t type_size, size_t n)
+__attribute__((__nonnull__(2)))
+int	ft_vec_extend(t_allocator allocator, t_vec *restrict const vec,
+		t_buffer data, size_t type_size)
 {
+	size_t	n;
 	t_u8	should_extend;
 
+	n = data.size / type_size;
 	if (vec->buf.mem == nullptr)
 		__builtin_unreachable();
 	{
 		should_extend = vec->capacity < vec->size + n;
 		if (__builtin_expect(should_extend
-				&& !ft_vec_reserve(vec, type_size, n), 0))
+				&& !ft_vec_reserve(allocator, vec, type_size, n), 0))
 			return (0);
-		ft_memcpy((t_u8 *)vec->buf.mem + (vec->size * type_size),
-			data, n * type_size);
+		ft_memcpy(vec->buf.mem + (vec->size * type_size),
+			data.mem, data.size);
 		vec->size += n;
 	}
 	return (1);

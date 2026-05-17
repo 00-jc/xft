@@ -35,7 +35,7 @@ char	*ft_getenv(const char *restrict const var)
 			continue ;
 		}
 		len = (size_t)((t_uptr)value - (t_uptr)environ[idx]);
-		if (len == namelen && !ft_strncmp(environ[idx], var, namelen))
+		if (len == namelen && !ft_memcmp(environ[idx], var, namelen))
 			return (value + 1);
 		++idx;
 	}

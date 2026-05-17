@@ -6,7 +6,8 @@
 #    By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/01/18 03:43:49 by jaicastr          #+#    #+#              #
-#    Updated: 2026/03/16 17:00:58 by jaicastr         ###   ########.fr        #
+#    Updated: 2026/05/17 18:18:29 by codex            ###   ########.fr        #
+#                                                                              #
 # **************************************************************************** #
 
 NAME       := xft.a
@@ -170,50 +171,23 @@ endif
 CFLAGS := $(MARCH) $(CFLAGS_OPT) $(WARNS)
 
 SRCS_ALLOC := \
+	src/alloc/ft_alloc_clone.c \
+	src/alloc/huge_matcher/ft_huge_matcher.c \
+	src/alloc/page_allocator/ft_palloc.c \
+	src/alloc/page_allocator/ft_palloc_vtable.c \
 	src/alloc/arena/ft_arena_alloc_utils.c \
 	src/alloc/arena/ft_arena_alloc_scopes.c \
 	src/alloc/arena/ft_arena_alloc.c \
-	src/alloc/ft_alloc.c \
-	src/alloc/ft_calloc.c \
-	src/alloc/ft_extend.c \
-	src/alloc/ft_extend_zero.c \
-	src/alloc/ft_realloc.c \
-	src/alloc/ft_recalloc.c \
-	src/alloc/ft_free.c
-
-SRCS_CONV := \
-	src/conv/ft_itoa_base.c \
-	src/conv/ft_atoul.c \
-	src/conv/ft_atoul_bounded.c \
-	src/conv/ft_atod.c \
-	src/conv/ft_atod_bounded.c \
-	src/conv/ft_atof.c \
-	src/conv/ft_atoi.c \
-	src/conv/ft_atol.c \
-	src/conv/ft_itoa.c \
-	src/conv/ft_utoa_base.c \
-	src/conv/ft_atoi_base.c
+	src/alloc/arena/ft_arena_vtable.c \
+	src/alloc/gpa/ft_gpa.c \
+	src/alloc/gpa/ft_gpa_alloc.c \
+	src/alloc/gpa/ft_gpa_free.c \
+	src/alloc/gpa/ft_gpa_realloc.c \
+	src/alloc/gpa/ft_gpa_vtable.c
 
 SRCS_CSTR := \
-	src/cstr/ft_strchr.c \
-	src/cstr/ft_s_isblob.c \
-	src/cstr/ft_isnumeric.c \
-	src/cstr/ft_toupper.c \
-	src/cstr/ft_strcmp.c \
-	src/cstr/ft_strmapi.c \
-	src/cstr/ft_striteri.c \
-	src/cstr/ft_strlcat.c \
-	src/cstr/ft_tolower.c \
-	src/cstr/ft_strtrim.c \
-	src/cstr/ft_split.c \
-	src/cstr/ft_strnstr.c \
-	src/cstr/ft_strlcpy.c \
 	src/cstr/ft_strlen.c \
-	src/cstr/ft_substr.c \
-	src/cstr/ft_strncmp.c \
-	src/cstr/ft_strrchr.c \
-	src/cstr/ft_strdup.c \
-	src/cstr/ft_strjoin.c
+	src/cstr/ft_cstr_to_str.c
 
 SRCS_CTYPE := \
 	src/ctype/asm/ft_isalnum.c \
@@ -233,6 +207,7 @@ SRCS_CTYPE := \
 
 SRCS_SYSCALLS := \
 	src/syscalls/ft_fmap.c \
+	src/syscalls/ft_mremap.c \
 	src/syscalls/ft_lockf.c \
 	src/syscalls/ft_mmap.c \
 	src/syscalls/ft_stat.c
@@ -266,13 +241,11 @@ SRCS_MATH := \
 SRCS_MEM := \
 	src/mem/ft_membroadcast.c \
 	src/mem/ft_memtake.c \
-	src/mem/ft_memclone.c \
 	src/mem/arch/ft_memcpy.c \
 	src/mem/arch/ft_memset.c \
 	src/mem/arch/ft_memchr.c \
 	src/mem/arch/ft_memcmp.c \
 	src/mem/arch/ft_memmove.c \
-	src/mem/ft_memformat.c \
 	src/mem/ft_bzero.c \
 	src/mem/portable/ft_memcpy.c \
 	src/mem/portable/ft_memset.c \
@@ -304,7 +277,7 @@ SRCS_THREADPOOL := \
 SRCS_VEC := \
 	src/vec/ft_vec_remove.c \
 	src/vec/ft_vec_pop.c \
-	src/vec/ft_vec_new.c \
+	src/vec/ft_vec.c \
 	src/vec/ft_vec_free.c \
 	src/vec/ft_vec_push_back.c \
 	src/vec/ft_vec_get.c \
@@ -337,7 +310,8 @@ SRCS_BMI := \
 	src/bmi/ft_tern.c \
 	src/bmi/__maxs.c \
 	src/bmi/__max.c \
-	src/bmi/__hasz.c
+	src/bmi/__hasz.c \
+	src/bmi/ft_next_pow2.c
 
 SRCS_HASH := \
 	src/hash/murmur3/ft_murmur3.c \
@@ -401,6 +375,7 @@ SRCS_TAILOR := \
 	src/tailor/ft_tailor_resample.c \
 	src/tailor/ft_tailor_fuzz.c \
 	src/tailor/ft_tailor_get_rand_buffer.c \
+	src/tailor/ft_tailor_get_random_num.c \
 	src/tailor/ft_tailor_new.c \
 	src/tailor/ft_tailor_calibration.c \
 	src/tailor/ft_tailor_summary.c \
@@ -409,27 +384,17 @@ SRCS_TAILOR := \
 	src/tailor/ft_tailor_getcount.c \
 	src/tailor/ft_tailor_top.c
 
-SRCS_BENCH := \
-	bench/memcpy/memcpy_bench_large.c \
-	bench/memcpy/memcpy_bench_varied.c \
-	bench/memcpy/memcpy_bench_medium.c \
-	bench/memcpy/memcpy_bench_short.c \
-	bench/memcpy/memcpy_bench.c
-
 SRCS_FUZZ := \
 	src/fuzzer/ft_fuzzer_get_rand.c \
 	src/fuzzer/ft_fuzzer_initrand.c \
-	src/fuzzer/ft_fuzzer.c 
+	src/fuzzer/ft_fuzzer.c
 
-MODULES := SYSCALLS ALLOC CONV CSTR CTYPE IO MATH MEM 	\
+MODULES := SYSCALLS ALLOC CSTR CTYPE IO MATH MEM 		\
 		   HASH VEC STR BMI ENV MAP HINT TOK THREADPOOL	\
 		   TIME PERF RNG TAILOR SORT FUZZ
 
 SRCS := $(foreach m,$(MODULES),$(SRCS_$(m)))
 OBJS := $(patsubst src/%.c,$(OBJDIR)/%.o,$(SRCS))
-
-TEST_SRCS := memchr strlen memcmp memcpy memset vec str map murmur bmi xxh3 arena arena_extend
-FUZZ_SRCS := mem vec map
 
 
 all: $(NAME)
@@ -442,14 +407,6 @@ $(NAME): $(OBJS)
 	$(AR) $@ $^
 	@$(RANLIB) $@
 
-base:
-	@$(MAKE) fclean all CFLAGS="$(CFLAGS_NOOPT) $(WARNS)"
-
-nolto:
-	@$(MAKE) fclean all CFLAGS="$(CFLAGS_NOLTO) $(WARNS)"
-
-bonus: all
-
 clean:
 	@rm -rf $(OBJDIR)
 
@@ -458,7 +415,7 @@ fclean: clean
 
 re: fclean all
 
-static_analysis:
+analyze:
 	$(SCANNER) $(CC_CLANG) $(WARNS_CLANG) $(CFLAGS_OPT) $(MARCH) $(INCLUDES) \
 		-Xclang -analyzer-output=text --analyze $(SRCS)
 	$(SCANNER) $(CC_CLANG) $(WARNS_CLANG) $(CFLAGS_OPT) $(INCLUDES) \
@@ -469,4 +426,4 @@ static_analysis:
 		-fanalyzer $(SRCS) -c && rm -f *.o
 	@norminette
 
-.PHONY: all base bonus clean fclean re static_analysis 
+.PHONY: all clean fclean re analyze

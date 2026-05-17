@@ -40,11 +40,9 @@ static inline void	ft__interbuck(t_map *restrict const map,
 	map->meta[empty_lot] = (hash >> 57) & MAP_H2_MASK;
 }
 
-__attribute__((__nonnull__(1, 2, 4)))
-t_u32a	ft_map_insert(t_map	*restrict const map,
-	t_u8 *restrict const key,
-	size_t keylen,
-	t_u8 *restrict const value)
+__attribute__((__nonnull__(2, 4)))
+t_u32a	ft_map_insert(t_allocator allocator, t_map *restrict const map,
+	t_buffer key, t_u8 *restrict const value)
 {
 	size_t		empty_lot;
 	t_bucket	buck;
@@ -53,16 +51,16 @@ t_u32a	ft_map_insert(t_map	*restrict const map,
 	size_t		group;
 
 	if (((t_f64)map->count / (t_f64)map->table_size >= 0.85)
-		&& !ft_map_rehash(map))
+		&& !ft_map_rehash(allocator, map))
 		return (0);
-	hash = ft_xxh3_64bits(ft_fatptr(key, keylen), 0);
+	hash = ft_xxh3_64bits(key, 0);
 	nblks = map->table_size >> 4;
 	group = hash % nblks;
-	empty_lot = ft__map_lookup_offset(map, key,
-			(size_t [4]){(hash >> 57) & MAP_H2_MASK, nblks, group, keylen});
+	empty_lot = ft__map_lookup_offset(map, key.mem,
+			(size_t [4]){(hash >> 57) & MAP_H2_MASK, nblks, group, key.size});
 	buck = (t_bucket){
-		.key = key,
-		.key_len = keylen,
+		.key = key.mem,
+		.key_len = key.size,
 		.value = value,
 	};
 	if (empty_lot <= map->table_size)

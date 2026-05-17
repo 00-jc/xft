@@ -12,15 +12,15 @@
 
 #include "private/ft_p_map.h"
 
-__attribute__((__nonnull__(1)))
-t_u32a	ft_map_rehash(t_map *restrict const map)
+__attribute__((__nonnull__(2)))
+t_u32a	ft_map_rehash(t_allocator allocator, t_map *restrict const map)
 {
 	t_map	new;
 	size_t	i;
 
 	if (map->buckets == nullptr || map->meta == nullptr)
 		__builtin_unreachable();
-	new = ft_map_with(map->table_size << 1);
+	new = ft_map_with(allocator, map->table_size << 1);
 	if (!new.meta || !new.buckets)
 		return (0);
 	i = 0;
@@ -28,13 +28,12 @@ t_u32a	ft_map_rehash(t_map *restrict const map)
 	{
 		if (map->meta[i] <= MAP_H2_MASK)
 			ft_map_insert_unchecked(&new,
-				map->buckets[i].key,
-				map->buckets[i].key_len,
+				ft_fatptr(map->buckets[i].key, map->buckets[i].key_len),
 				map->buckets[i].value);
 		++i;
 	}
-	ft_palloc_free(map->meta_buf);
-	ft_palloc_free(map->bucket_buf);
+	allocator.interface.free(allocator.allocator, map->meta_buf);
+	allocator.interface.free(allocator.allocator, map->bucket_buf);
 	*map = new;
 	return (1);
 }

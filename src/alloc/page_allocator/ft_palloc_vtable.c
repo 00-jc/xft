@@ -36,6 +36,7 @@ static void	palloc_free(void *alloc, t_buffer old)
 	ft_palloc_free(old);
 }
 
+__attribute__((__const__))
 t_allocator	ft_new_page_alloc(void)
 {
 	static t_page_alloc	instance = {0};
@@ -46,6 +47,7 @@ t_allocator	ft_new_page_alloc(void)
 			.realloc = palloc_reallocate,
 			.allocate = palloc_allocate,
 			.destroy = nullptr,
+			.clone = ft_alloc_clone,
 		},
 		.allocator = &instance,
 	});

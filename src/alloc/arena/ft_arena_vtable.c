@@ -50,7 +50,7 @@ static void	arena_destroy(void *alloc)
 	ft_destroy_arena((t_arena *)alloc);
 }
 
-__attribute__((__nonnull__(1)))
+__attribute__((__nonnull__(1), __const__))
 t_allocator	ft_arena_allocator(t_arena *arena)
 {
 	return ((t_allocator){
@@ -59,6 +59,7 @@ t_allocator	ft_arena_allocator(t_arena *arena)
 			.realloc = arena_reallocate,
 			.allocate = arena_allocate,
 			.destroy = arena_destroy,
+			.clone = ft_alloc_clone,
 		},
 		.allocator = arena,
 	});

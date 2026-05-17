@@ -37,7 +37,7 @@ static t_buffer	gpa_reallocate(void *alloc, t_buffer old, size_t new_size,
 	return (ft_gpa_realloc(alloc, old, new_size, align));
 }
 
-__attribute__((__nonnull__(1)))
+__attribute__((__nonnull__(1), __const__))
 t_allocator	ft_gpa_allocator(t_gpa *gpa)
 {
 	return ((t_allocator){
@@ -46,6 +46,7 @@ t_allocator	ft_gpa_allocator(t_gpa *gpa)
 			.realloc = gpa_reallocate,
 			.allocate = gpa_allocate,
 			.destroy = gpa_destroy,
+			.clone = ft_alloc_clone,
 		},
 		.allocator = gpa,
 	});

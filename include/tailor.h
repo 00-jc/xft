@@ -74,5 +74,5 @@ void		ft_tailor_add_processed_bytes(void *ptr, const size_t bytes)\
 				__attribute__((__nonnull__(1)));
 
 size_t		ft_tailor_get_random_num(void *ptr)\
-				__attribute__((__nonnull__(1)));
+				__attribute__((__nonnull__(1), __always_inline__));
 #endif

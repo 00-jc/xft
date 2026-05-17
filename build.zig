@@ -6,7 +6,7 @@
 //   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2026/05/15 07:20:25 by jaicastr          #+#    #+#             //
-//   Updated: 2026/05/16 23:55:20 by jaicastr         ###   ########.fr       //
+//   Updated: 2026/05/17 17:06:14 by jaicastr         ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 const std = @import("std");
@@ -114,6 +114,7 @@ const CFLAGS_COMMON = &[_][]const u8{
 } ++ WARNS_COMMON;
 
 const SRCS_ALLOC = &[_][]const u8{
+    "src/alloc/ft_alloc_clone.c",
     "src/alloc/huge_matcher/ft_huge_matcher.c",
     "src/alloc/page_allocator/ft_palloc.c",
     "src/alloc/page_allocator/ft_palloc_vtable.c",
@@ -128,40 +129,9 @@ const SRCS_ALLOC = &[_][]const u8{
     "src/alloc/gpa/ft_gpa_vtable.c",
 };
 
-const SRCS_CONV = &[_][]const u8{
-    "src/conv/ft_itoa_base.c",
-    "src/conv/ft_atoul.c",
-    "src/conv/ft_atoul_bounded.c",
-    "src/conv/ft_atod.c",
-    "src/conv/ft_atod_bounded.c",
-    "src/conv/ft_atof.c",
-    "src/conv/ft_atoi.c",
-    "src/conv/ft_atol.c",
-    "src/conv/ft_itoa.c",
-    "src/conv/ft_utoa_base.c",
-    "src/conv/ft_atoi_base.c",
-};
-
 const SRCS_CSTR = &[_][]const u8{
-    "src/cstr/ft_strchr.c",
-    "src/cstr/ft_s_isblob.c",
-    "src/cstr/ft_isnumeric.c",
-    "src/cstr/ft_toupper.c",
-    "src/cstr/ft_strcmp.c",
-    "src/cstr/ft_strmapi.c",
-    "src/cstr/ft_striteri.c",
-    "src/cstr/ft_strlcat.c",
-    "src/cstr/ft_tolower.c",
-    "src/cstr/ft_strtrim.c",
-    "src/cstr/ft_split.c",
-    "src/cstr/ft_strnstr.c",
-    "src/cstr/ft_strlcpy.c",
     "src/cstr/ft_strlen.c",
-    "src/cstr/ft_substr.c",
-    "src/cstr/ft_strncmp.c",
-    "src/cstr/ft_strrchr.c",
-    "src/cstr/ft_strdup.c",
-    "src/cstr/ft_strjoin.c",
+    "src/cstr/ft_cstr_to_str.c",
 };
 
 const SRCS_CTYPE = &[_][]const u8{
@@ -258,7 +228,7 @@ const SRCS_THREADPOOL = &[_][]const u8{
 const SRCS_VEC = &[_][]const u8{
     "src/vec/ft_vec_remove.c",
     "src/vec/ft_vec_pop.c",
-    "src/vec/ft_vec_new.c",
+    "src/vec/ft_vec.c",
     "src/vec/ft_vec_free.c",
     "src/vec/ft_vec_push_back.c",
     "src/vec/ft_vec_get.c",
@@ -294,6 +264,7 @@ const SRCS_BMI = &[_][]const u8{
     "src/bmi/__maxs.c",
     "src/bmi/__max.c",
     "src/bmi/__hasz.c",
+    "src/bmi/ft_next_pow2.c",
 };
 
 const SRCS_HASH = &[_][]const u8{
@@ -393,7 +364,6 @@ const SRCS_FUZZ = &[_][]const u8{
 
 const MODULES = SRCS_SYSCALLS
                 ++ SRCS_ALLOC
-                ++ SRCS_CONV
                 ++ SRCS_CSTR
                 ++ SRCS_CTYPE
                 ++ SRCS_IO
@@ -429,6 +399,7 @@ const SRCS_TEST = &[_][2][]const u8{
     .{ "tests/memset_test.c",        "test_memset" },
     .{ "tests/vec_test.c",           "test_vec" },
     .{ "tests/str_test.c",           "test_str" },
+    .{ "tests/cstr_test.c",          "test_cstr" },
     .{ "tests/map_test.c",           "test_map" },
     .{ "tests/murmur_test.c",        "test_murmur" },
     .{ "tests/bmi_test.c",           "test_bmi" },

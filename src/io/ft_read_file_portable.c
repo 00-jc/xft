@@ -18,21 +18,23 @@
 __attribute__((__nonnull__(1)))
 t_file	ft_read_file(const char *restrict const fname)
 {
-	ssize_t				ret;
-	int					fd;
-	t_vec				buffer;
+	ssize_t		ret;
+	int			fd;
+	t_vec		buffer;
+	t_allocator	alloc;
 
-	buffer = ft_vec_new(BUFSIZE, sizeof(t_u8));
+	alloc = ft_new_page_alloc();
+	buffer = ft_vec(alloc, BUFSIZE, sizeof(t_u8));
 	if (buffer.buf.mem == nullptr)
 		return ((t_file){0});
 	fd = open(fname, O_RDONLY);
 	if (fd == -1)
-		return (ft_vec_free(&buffer), (t_file){0});
+		return (ft_vec_destroy(alloc, &buffer), (t_file){0});
 	ret = read(fd, buffer.buf.mem, BUFSIZE);
 	while (ret > 0)
 	{
 		buffer.size += ret;
-		if (!ft_vec_reserve(&buffer, sizeof(t_u8), BUFSIZE))
+		if (!ft_vec_reserve(alloc, &buffer, sizeof(t_u8), BUFSIZE))
 			return ((void)close(fd), (t_file){0});
 		ret = read(fd, (t_u8 *)buffer.buf.mem + buffer.size, BUFSIZE);
 	}
