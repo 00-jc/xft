@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/16 01:40:30 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/16 23:57:53 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/17 01:58:04 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,15 @@ __attribute__((__nonnull__(1), __always_inline__))
 static inline int	ft_advance_slab(t_gpa *gpa)
 {
 	t_buffer	buf;
+	void		**prev;
 
 	buf = ft_palloc(GPA_SLABSIZE);
 	if (__builtin_expect(buf.mem == nullptr, 0))
 		return (0);
+	prev = *(void **)gpa->slab;
 	gpa->slab = buf.mem;
+	*(void **)gpa->slab = prev;
+	gpa->bmp = (t_blk8w)gpa->slab + sizeof(void **);
 	gpa->bmp = gpa->slab;
 	return (1);
 }

@@ -89,6 +89,7 @@ static void	test_gpa_vtable(void)
 	ft_pin_invariant_msg(rbuf.mem[0] == 0xCA, (char *)"gpa: realloc data lo");
 	ft_pin_invariant_msg(rbuf.mem[63] == 0xFE, (char *)"gpa: realloc data hi");
 	alloc.interface.free(alloc.allocator, rbuf);
+	alloc.interface.destroy(alloc.allocator);
 }
 
 static void	test_gpa_freelist(void)
@@ -97,6 +98,7 @@ static void	test_gpa_freelist(void)
 	t_allocator	alloc;
 	t_buffer	buf;
 	t_buffer	buf2;
+	int			i;
 
 	gpa = ft_gpa();
 	alloc = ft_gpa_allocator(&gpa);
@@ -107,6 +109,12 @@ static void	test_gpa_freelist(void)
 	ft_pin_invariant_msg(buf2.mem != nullptr, (char *)"gpa: alloc after free");
 	ft_pin_invariant_msg(buf2.mem == buf.mem, (char *)"gpa: freelist reuse");
 	alloc.interface.free(alloc.allocator, buf2);
+	i = -1;
+	while (++i < 1000)
+		alloc.interface.allocate(alloc.allocator, 64, 8);
+	buf = alloc.interface.allocate(alloc.allocator, 64, 8);
+	ft_pin_invariant_msg(buf.mem != nullptr, (char *)"gpa: post-advance alloc");
+	alloc.interface.destroy(alloc.allocator);
 }
 
 int	main(void)

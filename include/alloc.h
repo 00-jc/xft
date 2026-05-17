@@ -58,6 +58,7 @@ typedef struct s_gpa
 }	t_gpa;
 
 t_gpa		ft_gpa(void);
+void		ft_gpa_destroy(t_gpa *gpa);
 t_buffer	ft_gpa_alloc(void *alloc, size_t size, size_t align);
 t_buffer	ft_gpa_realloc(void *alloc, t_buffer buf, size_t newsize,
 				size_t align);

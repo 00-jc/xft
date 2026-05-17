@@ -13,6 +13,12 @@
 #include "private/ft_p_gpa.h"
 
 __attribute__((__nonnull__(1)))
+static void	gpa_destroy(void *alloc)
+{
+	ft_gpa_destroy((t_gpa *)alloc);
+}
+
+__attribute__((__nonnull__(1)))
 static t_buffer	gpa_allocate(void *alloc, size_t size, size_t align)
 {
 	return (ft_gpa_alloc(alloc, size, align));
@@ -39,7 +45,7 @@ t_allocator	ft_gpa_allocator(t_gpa *gpa)
 			.free = gpa_free,
 			.realloc = gpa_reallocate,
 			.allocate = gpa_allocate,
-			.destroy = nullptr,
+			.destroy = gpa_destroy,
 		},
 		.allocator = gpa,
 	});
