@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 17:14:01 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/17 00:00:00 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/17 02:46:12 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,8 @@ typedef struct s_allocator
 
 // GPA
 
-# define GPA_CLASSES 16ULL
+# define GPA_CLASSES 	14ULL
+# define GPA_SLABSIZE	131072ULL
 
 typedef struct s_gpa
 {

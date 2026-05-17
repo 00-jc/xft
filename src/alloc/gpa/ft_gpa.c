@@ -34,7 +34,7 @@ void	ft_gpa_destroy(t_gpa *gpa)
 	void	**ptr;
 	void	**next;
 
-	ptr = *(void **)gpa->slab;
+	ptr = gpa->slab;
 	while (ptr != nullptr)
 	{
 		next = *(void **)ptr;

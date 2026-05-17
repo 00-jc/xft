@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/16 01:40:30 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/17 01:58:04 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/17 02:44:28 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,11 +21,10 @@ static inline int	ft_advance_slab(t_gpa *gpa)
 	buf = ft_palloc(GPA_SLABSIZE);
 	if (__builtin_expect(buf.mem == nullptr, 0))
 		return (0);
-	prev = *(void **)gpa->slab;
+	prev = gpa->slab;
 	gpa->slab = buf.mem;
 	*(void **)gpa->slab = prev;
 	gpa->bmp = (t_blk8w)gpa->slab + sizeof(void **);
-	gpa->bmp = gpa->slab;
 	return (1);
 }
 
@@ -35,8 +34,10 @@ static inline t_buffer	ft_return_ptr(t_gpa *gpa, size_t snapped, size_t align)
 	void	*new_ptr;
 
 	new_ptr = ft_align_fwd(gpa->bmp, align - 1);
-	if ((t_uptr)new_ptr + snapped >= (t_uptr)gpa->slab + gpa->slabsize
-		&& !ft_advance_slab(gpa))
+	if (__builtin_expect(
+			(t_uptr)new_ptr + snapped
+			>= (t_uptr)gpa->slab + gpa->slabsize
+			&& !ft_advance_slab(gpa), 0))
 		return (ft_fatptr(nullptr, 0));
 	new_ptr = ft_align_fwd(gpa->bmp, align - 1);
 	gpa->bmp = (void *)((t_blk8w)new_ptr + snapped);

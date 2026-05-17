@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/16 00:00:00 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/16 00:00:00 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/17 02:45:18 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@
 # include "syscalls.h"
 # include "mem.h"
 
-# define GPA_SLABSIZE	 64000UL
 # define HUGEPAGE_2MB    2097152UL
 # define HUGEPAGE_8MB    8388608UL
 # define HUGEPAGE_16MB   16777216UL

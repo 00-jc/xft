@@ -30,7 +30,7 @@ t_buffer	ft_gpa_realloc(void *alloc, t_buffer buf,
 	freelist[1] = 60 - ft_memclz_u64(snapped);
 	if (freelist[0] == freelist[1] || newsize <= buf.size)
 		return (buf);
-	if (GPA_CLASSES <= freelist[1])
+	if (GPA_CLASSES <= freelist[0])
 		return (ft_palloc_resize(buf, newsize));
 	buf2 = ft_gpa_alloc(gpa, newsize, align);
 	if (!buf2.mem)
