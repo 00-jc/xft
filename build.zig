@@ -407,6 +407,7 @@ const SRCS_TEST = &[_][2][]const u8{
     .{ "tests/arena_test.c",         "test_arena" },
     .{ "tests/arena_extend_test.c",  "test_arena_extend" },
     .{ "tests/test_vtables.c",       "test_vtables" },
+    .{ "tests/gpa_bulk_test.c",      "test_gpa_bulk" },
 };
  
 const SRCS_FUZZ_TARGETS = &[_][2][]const u8{
@@ -445,6 +446,7 @@ const SRCS_BENCH_GPA = &[_][]const u8{
     "bench/gpa/gpa_bench_get.c",
     "bench/gpa/gpa_bench_ops.c",
     "bench/gpa/gpa_bench_rand.c",
+    "bench/gpa/gpa_bench_bulk.c",
 };
 
 const SRCS_BENCH_ARENA = &[_][]const u8{

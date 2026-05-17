@@ -22,12 +22,15 @@ int	main(void)
 	{ft_gpa_bench_8k, (t_blk8r)"gpa_alloc_free_8k"},
 	{ft_gpa_bench_varied, (t_blk8r)"gpa_alloc_free_varied"},
 	{ft_gpa_bench_random, (t_blk8r)"gpa_alloc_free_random"},
+	{ft_gpa_bulk_bench_64, (t_blk8r)"gpa_bulk_64"},
+	{ft_gpa_bulk_bench_512, (t_blk8r)"gpa_bulk_512"},
+	{ft_gpa_bulk_bench_mixed, (t_blk8r)"gpa_bulk_mixed"},
 	};
 	t_tailor				t;
 
 	ft_bind_process_to_cpu(0);
 	if (!ft_tailor_new(&t, 2, 2000))
 		return (1);
-	return ((void)ft_tailor_bench(&t, benches, 6),
+	return ((void)ft_tailor_bench(&t, benches, 9),
 		ft_gpa_destroy(ft_get_bench_gpa()), ft_tailor_destroy(&t), 0);
 }
