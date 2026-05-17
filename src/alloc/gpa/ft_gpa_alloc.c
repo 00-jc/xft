@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/16 01:40:30 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/17 02:44:28 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/17 09:42:01 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,6 @@ t_buffer	ft_gpa_alloc(void *alloc, size_t size, size_t align)
 	if (new_ptr)
 	{
 		gpa->free[freelist] = *(void **)new_ptr;
-		ft_memset(new_ptr, 0, snapped);
 		return (ft_fatptr(new_ptr, snapped));
 	}
 	return (ft_return_ptr(gpa, snapped, align));

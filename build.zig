@@ -468,10 +468,23 @@ const SRCS_BENCH_MEMSET = &[_][]const u8{
     "bench/memset/memset_bench_varied.c",
 };
 
+const SRCS_BENCH_GPA = &[_][]const u8{
+    "bench/gpa/gpa_bench.c",
+    "bench/gpa/gpa_bench_get.c",
+    "bench/gpa/gpa_bench_ops.c",
+};
+
+const SRCS_BENCH_ARENA = &[_][]const u8{
+    "bench/arena/arena_bench.c",
+    "bench/arena/arena_bench_ops.c",
+};
+
 const BENCH_TARGETS = &[_]struct { name: []const u8, srcs: []const []const u8 }{
     .{ .name = "memcpy_bench",  .srcs = SRCS_BENCH_MEMCPY },
     .{ .name = "memmove_bench", .srcs = SRCS_BENCH_MEMMOVE },
     .{ .name = "memset_bench",  .srcs = SRCS_BENCH_MEMSET },
+    .{ .name = "gpa_bench",     .srcs = SRCS_BENCH_GPA },
+    .{ .name = "arena_bench",   .srcs = SRCS_BENCH_ARENA },
 };
 
 const XFT = struct {
