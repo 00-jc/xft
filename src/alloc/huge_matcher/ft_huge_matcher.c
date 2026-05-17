@@ -6,52 +6,11 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/15 19:00:00 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/15 22:24:25 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/17 19:54:40 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "private/ft_p_hugepage.h"
-
-__attribute__((const))
-static inline size_t	ft_snap_tiny(size_t size)
-{
-	size_t	s;
-
-	s = (-(size <= 1024) & 1024) | (-(size > 1024) & size);
-	s = (-(size <= 512) & 512) | (-(size > 512) & s);
-	s = (-(size <= 256) & 256) | (-(size > 256) & s);
-	s = (-(size <= 128) & 128) | (-(size > 128) & s);
-	s = (-(size <= 64) & 64) | (-(size > 64) & s);
-	s = (-(size <= 32) & 32) | (-(size > 32) & s);
-	s = (-(size <= 16) & 16) | (-(size > 16) & s);
-	return (ft_tern(s < 8, 8, s));
-}
-
-__attribute__((const))
-static inline size_t	ft_snap_small(size_t size)
-{
-	size_t	s;
-
-	s = (-(size <= 65536) & 65536) | (-(size > 65536) & size);
-	s = (-(size <= 32768) & 32768) | (-(size > 32768) & s);
-	s = (-(size <= 16384) & 16384) | (-(size > 16384) & s);
-	s = (-(size <= 8192) & 8192) | (-(size > 8192) & s);
-	s = (-(size <= 4096) & 4096) | (-(size > 4096) & s);
-	s = (-(size <= 2048) & 2048) | (-(size > 2048) & s);
-	return (s);
-}
-
-__attribute__((const))
-static inline size_t	ft_snap_medium(size_t size)
-{
-	size_t	s;
-
-	s = (-(size <= 1048576) & 1048576) | (-(size > 1048576) & size);
-	s = (-(size <= 524288) & 524288) | (-(size > 524288) & s);
-	s = (-(size <= 262144) & 262144) | (-(size > 262144) & s);
-	s = (-(size <= 131072) & 131072) | (-(size > 131072) & s);
-	return (s);
-}
 
 __attribute__((const))
 size_t	ft_match_hugepage(size_t requested_size)
@@ -75,12 +34,8 @@ size_t	ft_match_hugepage(size_t requested_size)
 	page_size = (-(requested_size <= HUGEPAGE_2MB) & HUGEPAGE_2MB)
 		| (-(requested_size > HUGEPAGE_2MB) & page_size);
 	page_size = ft_tern(requested_size <= 1048576,
-			ft_snap_medium(requested_size), page_size);
-	page_size = ft_tern(requested_size <= 65536,
-			ft_snap_small(requested_size), page_size);
-	page_size = ft_tern(requested_size <= 1024,
-			ft_snap_tiny(requested_size), page_size);
-	return (page_size);
+			ft_next_pow2(requested_size), page_size);
+	return (ft_tern(page_size < 8, 8, page_size));
 }
 
 __attribute__((const))
