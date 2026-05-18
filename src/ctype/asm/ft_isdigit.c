@@ -18,7 +18,7 @@ inline t_u16a	ft_isdigit128(t_vu128a c)
 	return (ft_bitpack128((c - '0') < 0xA));
 }
 
-#ifdef __AVX2__
+#if FT_HAS_256_VEC
 
 __attribute__((const, __always_inline__, hot))
 inline t_u32a	ft_isdigit256(t_vu256a c)
@@ -28,7 +28,7 @@ inline t_u32a	ft_isdigit256(t_vu256a c)
 
 #endif
 
-#ifdef __AVX512F__
+#if FT_HAS_512_VEC
 
 __attribute__((const, __always_inline__, hot))
 inline t_u64a	ft_isdigit512(t_vu512a c)

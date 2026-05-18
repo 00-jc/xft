@@ -18,7 +18,7 @@ inline t_u16a	ft_isprint128(t_vu128a c)
 	return (ft_bitpack128((c - 0x20) < 0x5F));
 }
 
-#ifdef __AVX2__
+#if FT_HAS_256_VEC
 
 __attribute__((const, __always_inline__, hot))
 inline t_u32a	ft_isprint256(t_vu256a c)
@@ -28,7 +28,7 @@ inline t_u32a	ft_isprint256(t_vu256a c)
 
 #endif
 
-#ifdef __AVX512F__
+#if FT_HAS_512_VEC
 
 __attribute__((const, __always_inline__, hot))
 inline t_u64a	ft_isprint512(t_vu512a c)

@@ -12,7 +12,7 @@
 
 #include "private/ft_p_asm.h"
 
-#ifdef __AVX2__
+#if FT_HAS_256_VEC
 
 __attribute__((const, __always_inline__))
 inline t_vu256	get_high256(void)

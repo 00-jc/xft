@@ -6,13 +6,13 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 17:13:42 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/04/12 01:50:49 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/19 01:50:21 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "private/ft_p_mem.h"
 
-#if defined(__AVX2__)
+#if FT_HAS_256_VEC
 
 __attribute__((__nonnull__(1, 2), __always_inline__))
 inline ssize_t	ft_memcmp_finalround(const void *restrict const ptr1,

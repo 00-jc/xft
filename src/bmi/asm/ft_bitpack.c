@@ -29,7 +29,7 @@ inline t_u16a	ft_bitpack128(t_vu128a vec)
 	));
 }
 
-# ifdef __AVX2__
+# if FT_HAS_256_VEC
 
 __attribute__((const, __always_inline__))
 inline t_u32a	ft_bitpack256(t_vu256a vec)
@@ -45,7 +45,7 @@ inline t_u32a	ft_bitpack256(t_vu256a vec)
 
 # endif
 
-# ifdef __AVX512F__
+# if FT_HAS_512_VEC
 
 __attribute__((const, __always_inline__))
 inline t_u64a	ft_bitpack512(t_vu512a vec)

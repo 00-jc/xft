@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/19 04:30:00 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/04/21 16:30:39 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/19 01:42:34 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,33 @@
 
 typedef t_u8 *__restrict__ const									t_blk8w;
 typedef const t_u8 *__restrict__ const								t_blk8r;
+
+# if defined(__AVX512F__)  || defined(__AVX512BW__)  || \
+    defined(__AVX512DQ__) || defined(__AVX512CD__)  || \
+    defined(__AVX512VL__) || defined(__AVX512IFMA__) || \
+    defined(__AVX512VBMI__) || defined(__AVX512VBMI2__) || \
+    defined(__AVX512VNNI__) || defined(__AVX512BITALG__) || \
+    defined(__AVX512FP16__)
+
+#  define FT_HAS_512_VEC 1
+#  define FT_HAS_256_VEC 1
+#  define FT_HAS_128_VEC 1
+
+# elif defined(__AVX__)  || defined(__AVX2__) || \
+      defined(__FMA__)  || defined(__FMA4__) || \
+      defined(__XOP__)
+
+#  define FT_HAS_512_VEC 0
+#  define FT_HAS_256_VEC 1
+#  define FT_HAS_128_VEC 1
+
+# else
+
+#  define FT_HAS_512_VEC 0
+#  define FT_HAS_256_VEC 0
+#  define FT_HAS_128_VEC 1
+
+# endif
 
 /*
  *  Misaligned

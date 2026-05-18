@@ -12,7 +12,7 @@
 
 #include "private/ft_p_mem.h"
 
-#ifdef __AVX512F__
+#if FT_HAS_512_VEC
 
 __attribute__((const, __always_inline__))
 inline t_vu512	get_high512(void)

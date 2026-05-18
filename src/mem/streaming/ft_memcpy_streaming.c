@@ -6,13 +6,13 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/18 23:50:00 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/19 01:09:19 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/19 01:44:19 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "private/ft_p_mem.h"
 
-#if defined(__AVX512F__)
+#if FT_HAS_512_VEC
 
 __attribute__((__nonnull__(1, 2), __always_inline__, __hot__))
 inline void	ft__cpykernel_stream(void *restrict d,
@@ -43,14 +43,14 @@ inline void	ft__cpykernel_stream(void *restrict d,
 		);
 }
 
-#elif defined(__AVX2__)
+#elif FT_HAS_256_VEC
 
 __attribute__((__nonnull__(1, 2), __always_inline__, __hot__))
 inline void	ft__cpykernel_stream(void *restrict d,
 	const void *restrict const s, size_t offset)
 {
-	t_vu512a	*restrict	pd;
-	t_vu512a	*restrict	ps;
+	t_vu256a	*restrict	pd;
+	t_vu256a	*restrict	ps;
 
 	pd = (t_blk256wa)((t_u8 *)d + (offset << 6));
 	ps = (t_blk256r)((const t_u8 *)s + (offset << 6));

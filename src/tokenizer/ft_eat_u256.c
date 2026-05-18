@@ -6,13 +6,13 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/21 18:10:35 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/03/15 14:53:01 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/19 01:51:49 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "private/ft_p_tok.h"
 
-#ifdef __AVX2__
+#if FT_HAS_256_VEC
 
 __attribute__((__nonnull__(1, 2)))
 static inline t_token	ft_eat_while_u256_tail(t_tokenizer *tk,

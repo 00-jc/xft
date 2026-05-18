@@ -13,7 +13,7 @@
 #include "private/ft_p_bmi.h"
 #include "cstr.h"
 
-#ifdef __AVX512F__
+#if FT_HAS_512_VEC
 
 __attribute__((pure, __nonnull__(1)))
 size_t	ft_strlen(const char *restrict str)
@@ -43,7 +43,7 @@ size_t	ft_strlen(const char *restrict str)
 	}
 }
 
-#elif defined(__AVX2__)
+#elif FT_HAS_256_VEC
 
 __attribute__((pure, __nonnull__(1)))
 size_t	ft_strlen(const char *restrict str)

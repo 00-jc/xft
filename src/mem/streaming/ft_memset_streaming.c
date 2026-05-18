@@ -6,13 +6,13 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/18 21:48:56 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/19 00:21:02 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/19 01:44:36 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "private/ft_p_mem.h"
 
-#if defined(__AVX512F__)
+#if FT_HAS_512_VEC
 
 __attribute__((__nonnull__(1), __always_inline__, __hot__))
 inline void	ft__setkernel_stream(void *restrict d,
@@ -42,7 +42,7 @@ inline void	ft__setkernel_stream(void *restrict d,
 	__asm__("sfence" ::: "memory");
 }
 
-#elif defined(__AVX2__)
+#elif FT_HAS_256_VEC
 
 __attribute__((__nonnull__(1), __always_inline__, __hot__))
 inline void	ft__setkernel_stream(void *restrict d,

@@ -12,7 +12,7 @@
 
 #include "private/ft_p_math.h"
 
-#ifdef __AVX512F__
+#if FT_HAS_512_VEC
 
 __attribute__((__always_inline__, const))
 inline t_8packd	ft_dsqrt_x8(t_8packd pck)
@@ -24,7 +24,7 @@ inline t_8packd	ft_dsqrt_x8(t_8packd pck)
 	return (*(const t_8packd * restrict const) & v);
 }
 
-#elif defined(__AVX2__)
+#elif FT_HAS_256_VEC
 
 __attribute__((__always_inline__, const))
 inline t_8packd	ft_dsqrt_x8(t_8packd pck)

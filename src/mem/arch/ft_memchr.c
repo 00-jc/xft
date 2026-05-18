@@ -6,13 +6,13 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/22 17:21:46 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/03/03 22:51:23 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/19 01:45:44 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "private/ft_p_mem.h"
 
-#if defined(__AVX512VL__)
+#if FT_HAS_512_VEC
 
 __attribute__((__nonnull__ (1), pure))
 void	*ft_memchr(const void *restrict ptr, int c, size_t n)
@@ -27,7 +27,7 @@ void	*ft_memchr(const void *restrict ptr, int c, size_t n)
 		return (ft_memchr_minimal(ptr, (t_u8)c, n));
 }
 
-#elif defined(__AVX2__)
+#elif FT_HAS_256_VEC
 
 __attribute__((__nonnull__ (1), pure))
 void	*ft_memchr(const void *restrict ptr, int c, size_t n)

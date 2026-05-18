@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/20 03:17:51 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/03/15 07:23:09 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/19 01:49:06 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ inline t_u16a	ft_bitpack128(t_vu128a vec)
 	return ((t_u16a)result);
 }
 
-# ifdef __AVX2__
+# if FT_HAS_256_VEC
 
 __attribute__((const, __always_inline__))
 inline t_u32a	ft_bitpack256(t_vu256a vec)
@@ -44,7 +44,7 @@ inline t_u32a	ft_bitpack256(t_vu256a vec)
 
 # endif
 
-# ifdef __AVX512F__
+# if FT_HAS_512_VEC
 
 __attribute__((const, used, __always_inline__))
 inline t_u64a	ft_bitpack512(t_vu512a vec)
