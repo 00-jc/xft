@@ -6,7 +6,7 @@
 //   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2026/05/15 07:20:25 by jaicastr          #+#    #+#             //
-//   Updated: 2026/05/18 21:26:41 by jaicastr         ###   ########.fr       //
+//   Updated: 2026/05/19 00:41:08 by jaicastr         ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 const std = @import("std");
@@ -223,7 +223,10 @@ const SRCS_MEM = &[_][]const u8{
     "src/mem/hugebranches/ft_memcpy_huge.c",
     "src/mem/hugebranches/ft_memmove_huge.c",
     "src/mem/hugebranches/ft_memset_huge.c",
+    "src/mem/streaming/ft_memcpy_streaming.c",
+    "src/mem/streaming/ft_memset_streaming.c",
     "src/mem/ft_prefetch_intrin.c",
+    "src/mem/ft_memfence.c",
 };
 
 const SRCS_THREADPOOL = &[_][]const u8{
@@ -403,6 +406,7 @@ const SRCS_TEST = &[_][2][]const u8{
     .{ "tests/memcmp_test.c",        "test_memcmp" },
     .{ "tests/memcpy_test.c",        "test_memcpy" },
     .{ "tests/memset_test.c",        "test_memset" },
+    .{ "tests/streaming_mem_test.c", "test_streaming_mem" },
     .{ "tests/vec_test.c",           "test_vec" },
     .{ "tests/str_test.c",           "test_str" },
     .{ "tests/cstr_test.c",          "test_cstr" },
@@ -430,6 +434,11 @@ const SRCS_BENCH_MEMCPY = &[_][]const u8{
     "bench/memcpy/memcpy_bench_varied.c",
 };
 
+const SRCS_BENCH_MEMCPY_STREAM = &[_][]const u8{
+    "bench/memcpy/memcpy_stream_bench.c",
+    "bench/memcpy/memcpy_bench_stream.c",
+};
+
 const SRCS_BENCH_MEMMOVE = &[_][]const u8{
     "bench/memmove/memmove_bench.c",
     "bench/memmove/memmove_bench_large.c",
@@ -447,6 +456,11 @@ const SRCS_BENCH_MEMSET = &[_][]const u8{
     "bench/memset/memset_bench_varied.c",
 };
 
+const SRCS_BENCH_MEMSET_STREAM = &[_][]const u8{
+    "bench/memset/memset_stream_bench.c",
+    "bench/memset/memset_bench_stream.c",
+};
+
 const SRCS_BENCH_GPA = &[_][]const u8{
     "bench/gpa/gpa_bench.c",
     "bench/gpa/gpa_bench_get.c",
@@ -462,11 +476,13 @@ const SRCS_BENCH_ARENA = &[_][]const u8{
 };
 
 const BENCH_TARGETS = &[_]struct { name: []const u8, srcs: []const []const u8 }{
-    .{ .name = "memcpy_bench",  .srcs = SRCS_BENCH_MEMCPY },
-    .{ .name = "memmove_bench", .srcs = SRCS_BENCH_MEMMOVE },
-    .{ .name = "memset_bench",  .srcs = SRCS_BENCH_MEMSET },
-    .{ .name = "gpa_bench",     .srcs = SRCS_BENCH_GPA },
-    .{ .name = "arena_bench",   .srcs = SRCS_BENCH_ARENA },
+    .{ .name = "memcpy_bench",        .srcs = SRCS_BENCH_MEMCPY },
+    .{ .name = "memcpy_stream_bench", .srcs = SRCS_BENCH_MEMCPY_STREAM },
+    .{ .name = "memmove_bench",       .srcs = SRCS_BENCH_MEMMOVE },
+    .{ .name = "memset_bench",        .srcs = SRCS_BENCH_MEMSET },
+    .{ .name = "memset_stream_bench", .srcs = SRCS_BENCH_MEMSET_STREAM },
+    .{ .name = "gpa_bench",           .srcs = SRCS_BENCH_GPA },
+    .{ .name = "arena_bench",         .srcs = SRCS_BENCH_ARENA },
 };
 
 const XFT = struct {
@@ -475,7 +491,11 @@ const XFT = struct {
     tsan: bool,
 };
 
-inline fn make_lib(b: *std.Build, comptime cfg: XFT, opt: Opts) *std.Build.Step.Compile
+inline fn make_lib(
+    b:              *std.Build,
+    comptime cfg:   XFT,
+    opt:            Opts,
+) *std.Build.Step.Compile
 {
     var mod = b.createModule(.{
         .optimize        = if (cfg.san) .Debug else opt.optimize,
@@ -543,12 +563,20 @@ inline fn make_test_exe(
     return exe;
 }
  
-pub fn build(b: *std.Build) void
+pub fn build(b: *std.Build) !void
 {
+
+    var io_th = std.Io.Threaded.init(b.allocator, .{});
+    defer io_th.deinit();
+    const io = io_th.io();
     const opts = Opts{
         .target   = b.standardTargetOptions(.{}),
         .optimize = b.standardOptimizeOption(.{}),
     };
+
+    const llc_cmd = try std.process.run(b.allocator, io, .{.argv = &.{"getconf", "LEVEL3_CACHE_SIZE"}});
+    const llc_trim = std.mem.trim(u8, llc_cmd.stdout, &std.ascii.whitespace);
+    const llc_out = try std.fmt.parseInt(usize, llc_trim, 10);
 
     const xft           = make_lib(b, .{.tsan = false, .san = false, .lto = true  }, opts);
     const xft_san       = make_lib(b, .{.tsan = false, .san = true,  .lto = false }, opts);
@@ -586,6 +614,7 @@ pub fn build(b: *std.Build) void
         mod.addIncludePath(b.path(INCLUDES));
         mod.addIncludePath(b.path("bench/include"));
         mod.addCMacro("FT_NTHREADS", b.fmt("{d}", .{std.Thread.getCpuCount() catch 1}));
+        mod.addCMacro("FT_LLC", b.fmt("{d}", .{llc_out}));
         mod.addCSourceFiles(.{
             .files = t.srcs,
             .flags = CFLAGS_COMMON ++ .{"-march=native", "-mtune=native", "-O3"},

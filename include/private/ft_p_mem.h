@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/19 18:23:58 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/13 23:49:02 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/19 00:40:57 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,10 @@
 
 # include "mem.h"
 # include "private/ft_p_bmi.h"
+
+# ifndef FT_LLC_SIZE
+#  define FT_LLC_SIZE 16777216ULL
+# endif
 
 typedef struct s_t_f64_size
 {
@@ -113,6 +117,15 @@ ssize_t			ft_memcmp_avx256(const void *__restrict__ const ptr1,
 
 ssize_t			ft_memcmp_avx512(const void *__restrict__ const ptr1,
 					const void	*__restrict__ const ptr2, size_t n)\
+					__attribute__((__nonnull__(1, 2)));
+
+void			ft_memset_512_streaming(void *restrict dest,
+					const t_u8 c, size_t n)\
+					__attribute__((__nonnull__(1)));
+
+void			ft_memcpy_512_streaming(void *__restrict__ dest,\
+					const void	*__restrict__ const src,\
+					size_t n)\
 					__attribute__((__nonnull__(1, 2)));
 
 #endif

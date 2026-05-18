@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/13 00:05:58 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/14 02:59:01 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/18 23:43:01 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ inline void	ft_memcpy_hugetail(void *restrict dest,
 }
 
 __attribute__((__nonnull__(1, 2, 4), __always_inline__))
-inline void	ft__cascade_cpy(void *restrict dest,
+inline void	ft__huge_kernel_cpy(void *restrict dest,
 	const void	*restrict const src, const size_t i,
 	t_vu512a *restrict const x)
 {
@@ -77,7 +77,7 @@ inline void	ft_memcpy_512_huge(void *restrict dest,
 	s.i = 0;
 	while (s.i + 4 <= s.blks)
 	{
-		ft__cascade_cpy(d, sr, s.i, x);
+		ft__huge_kernel_cpy(d, sr, s.i, x);
 		s.i += 4;
 	}
 	s.i <<= 6;

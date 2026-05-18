@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/13 00:05:58 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/14 07:29:26 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/18 23:43:38 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ inline void	ft_memmove_512_tail(void *restrict d,
 }
 
 __attribute__((__nonnull__(1, 2, 3), __always_inline__))
-inline void	ft_memmove_512_cascade(void *restrict d,
+inline void	ft__hugekernel_move(void *restrict d,
 	const void	*restrict const s, t_vu512a	x[4])
 {
 	x[0] = ((t_blk512r)s)[0];
@@ -67,7 +67,7 @@ inline void	ft_memmove_512_huge(void *restrict dest,
 		n2 -= 4;
 		s = (t_blk8w)s - (sizeof(t_vu512a) << 2);
 		d = (t_blk8w)d - (sizeof(t_vu512a) << 2);
-		ft_memmove_512_cascade(d, s, x);
+		ft__hugekernel_move(d, s, x);
 	}
 	ft_memmove_512_tail(d, s, n2);
 	*(t_blk512w)ft_overlap(dest, sizeof(t_vu512a), n) = x[4];

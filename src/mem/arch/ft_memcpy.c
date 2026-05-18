@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/16 22:55:19 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/18 20:30:44 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/19 00:40:47 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,8 @@ void	ft_memcpy(void *restrict dest,
 		ft_memcpy_256(dest, src, n);
 	else if (n < 128)
 		ft_memcpy_512(dest, src, n);
-	else
+	else if (n < FT_LLC_SIZE)
 		ft_memcpy_512_huge(dest, src, n);
+	else
+		ft_memcpy_512_streaming(dest, src, n);
 }
