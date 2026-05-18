@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/16 01:40:30 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/17 09:42:01 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/18 16:09:12 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ t_buffer	ft_gpa_alloc(void *alloc, size_t size, size_t align)
 	if (GPA_CLASSES <= freelist)
 	{
 		new_ptr = ft_mmap(snapped, 0, ft_match_hugepage_flags(snapped));
+		new_ptr = (void *)ft_tern(new_ptr == MAP_FAILED, 0, (t_uptr)new_ptr);
 		return (ft_fatptr(new_ptr, snapped));
 	}
 	new_ptr = gpa->free[freelist];

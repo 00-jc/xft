@@ -71,12 +71,11 @@ void	ft_gpa_bulk_bench_512(void *ptr)
 
 void	ft_gpa_bulk_bench_mixed(void *ptr)
 {
-	static const size_t	sizes[4] = {8, 64, 512, 4096};
-	static t_buffer		bufs[BULK_BATCH];
-	t_gpa				*gpa;
-	size_t				n;
-	size_t				bytes;
-	size_t				i;
+	static t_buffer	bufs[BULK_BATCH];
+	t_gpa			*gpa;
+	size_t			n;
+	size_t			bytes;
+	size_t			i;
 
 	gpa = ft_get_bench_gpa();
 	n = ft_tailor_getcount(ptr);
@@ -86,7 +85,7 @@ void	ft_gpa_bulk_bench_mixed(void *ptr)
 		i = 0;
 		while (i < BULK_BATCH)
 		{
-			bufs[i] = ft_gpa_alloc(gpa, sizes[i & 3], 8);
+			bufs[i] = ft_gpa_alloc(gpa, (size_t)8 << ((i & 3) * 3), 8);
 			bytes += bufs[i++].size;
 		}
 		i = BULK_BATCH;

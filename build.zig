@@ -127,6 +127,11 @@ const SRCS_ALLOC = &[_][]const u8{
     "src/alloc/gpa/ft_gpa_free.c",
     "src/alloc/gpa/ft_gpa_realloc.c",
     "src/alloc/gpa/ft_gpa_vtable.c",
+    "src/alloc/report/ft_report.c",
+    "src/alloc/report/ft_report_alloc.c",
+    "src/alloc/report/ft_report_free.c",
+    "src/alloc/report/ft_report_realloc.c",
+    "src/alloc/report/ft_report_vtable.c",
 };
 
 const SRCS_CSTR = &[_][]const u8{

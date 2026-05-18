@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 17:14:01 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/17 02:46:12 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/18 15:55:28 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,22 @@ typedef struct s_gpa
 	void	*free[GPA_CLASSES];
 }	t_gpa;
 
+typedef struct s_reporta
+{
+	void	*slab;
+	size_t	slabsize;
+	void	*bmp;
+	void	*free[GPA_CLASSES];
+	size_t	n_allocs;
+	size_t	n_frees;
+	size_t	slabs;
+	size_t	reuses;
+	size_t	misses;
+	size_t	free_depth[GPA_CLASSES];
+	size_t	paged;
+	t_f64	avg_frag;
+}	t_reporta;
+
 t_gpa		ft_gpa(void);
 void		ft_gpa_destroy(t_gpa *gpa);
 t_buffer	ft_gpa_alloc(void *alloc, size_t size, size_t align);
@@ -71,9 +87,22 @@ void		ft_gpa_free(void *allocator, t_buffer buf);
 t_buffer	ft_alloc_clone(void *self, t_buffer buffer)\
 				__attribute__((__nonnull__(1)));
 
+t_reporta	ft_reporta(void);
+void		ft_reporta_destroy(t_reporta *gpa)\
+				__attribute__((__nonnull__(1)));
+t_buffer	ft_reporta_alloc(void *alloc, size_t size, size_t align)\
+				__attribute__((__nonnull__(1)));
+t_buffer	ft_reporta_realloc(void *alloc, t_buffer buf, size_t newsize,
+				size_t align)\
+				__attribute__((__nonnull__(1)));
+void		ft_reporta_free(void *allocator, t_buffer buf)\
+				__attribute__((__nonnull__(1)));
+
 t_allocator	ft_arena_allocator(t_arena *arena)\
 				__attribute__((__nonnull__(1), __const__));
 t_allocator	ft_gpa_allocator(t_gpa *gpa)\
+				__attribute__((__nonnull__(1), __const__));
+t_allocator	ft_reporta_allocator(t_reporta *gpa)\
 				__attribute__((__nonnull__(1), __const__));
 t_allocator	ft_new_page_alloc(void)\
 				__attribute__((__const__));
