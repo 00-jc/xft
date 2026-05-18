@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/15 22:47:10 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/18 19:14:07 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/18 19:49:19 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,8 +51,7 @@ static inline void	ft_reporta_report(t_reporta *gpa)
 		"  avg frag:  %f bytes\n"
 		"  leaks:     %lu\n"
 		"  owned:     %lu bytes\n",
-		gpa,
-		gpa->n_allocs, gpa->n_frees, gpa->reuses,
+		gpa, gpa->n_allocs, gpa->n_frees, gpa->reuses,
 		gpa->misses, gpa->paged, gpa->slabs,
 		gpa->avg_frag, gpa->n_allocs - gpa->n_frees,
 		gpa->slabsize * gpa->slabs);
@@ -60,7 +59,8 @@ static inline void	ft_reporta_report(t_reporta *gpa)
 	while (i < GPA_CLASSES)
 	{
 		ft_fprintf(STDERR_FILENO,
-			"  free[%lu]: %lu chained at exit\n", 1 << (i + 3), gpa->free_depth[i]);
+			"  free[%lu]: %lu chained at exit\n",
+			1 << (i + 3), gpa->free_depth[i]);
 		i++;
 	}
 }
