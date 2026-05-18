@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/15 22:47:10 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/18 16:31:21 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/18 19:14:07 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,8 @@ t_reporta	ft_reporta(void)
 __attribute__((__nonnull__(1), __always_inline__))
 static inline void	ft_reporta_report(t_reporta *gpa)
 {
+	size_t	i;
+
 	ft_fprintf(STDERR_FILENO,
 		"reporta (%lx) report:\n"
 		"  allocs:    %lu\n"
@@ -54,6 +56,13 @@ static inline void	ft_reporta_report(t_reporta *gpa)
 		gpa->misses, gpa->paged, gpa->slabs,
 		gpa->avg_frag, gpa->n_allocs - gpa->n_frees,
 		gpa->slabsize * gpa->slabs);
+	i = 0;
+	while (i < GPA_CLASSES)
+	{
+		ft_fprintf(STDERR_FILENO,
+			"  free[%lu]: %lu chained at exit\n", 1 << (i + 3), gpa->free_depth[i]);
+		i++;
+	}
 }
 
 __attribute__((__nonnull__(1)))
