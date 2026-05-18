@@ -6,7 +6,7 @@
 //   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2026/05/15 07:20:25 by jaicastr          #+#    #+#             //
-//   Updated: 2026/05/17 17:06:14 by jaicastr         ###   ########.fr       //
+//   Updated: 2026/05/18 21:26:41 by jaicastr         ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 const std = @import("std");
@@ -222,6 +222,7 @@ const SRCS_MEM = &[_][]const u8{
     "src/mem/avx256/ft_memchr_avx256.c",
     "src/mem/hugebranches/ft_memcpy_huge.c",
     "src/mem/hugebranches/ft_memmove_huge.c",
+    "src/mem/hugebranches/ft_memset_huge.c",
     "src/mem/ft_prefetch_intrin.c",
 };
 

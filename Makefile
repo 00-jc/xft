@@ -147,6 +147,10 @@ CFLAGS_COMMON_OPT := -D_GNU_SOURCE											   \
 					 -ftrivial-auto-var-init=zero 							   \
 					 -fno-common              								   \
 					 -fstack-clash-protection 								   \
+					 -fslp-vectorize									   \
+					 -ftree-slp-vectorize 								   \
+					 -ftree-vectorize 									   \
+					 -fvectorize 										   \
 					 -g3													   \
 					 -DFT_NTHREADS=$(MAXTHREADS)
  
@@ -183,7 +187,12 @@ SRCS_ALLOC := \
 	src/alloc/gpa/ft_gpa_alloc.c \
 	src/alloc/gpa/ft_gpa_free.c \
 	src/alloc/gpa/ft_gpa_realloc.c \
-	src/alloc/gpa/ft_gpa_vtable.c
+	src/alloc/gpa/ft_gpa_vtable.c \
+	src/alloc/report/ft_report.c \
+	src/alloc/report/ft_report_alloc.c \
+	src/alloc/report/ft_report_free.c \
+	src/alloc/report/ft_report_realloc.c \
+	src/alloc/report/ft_report_vtable.c
 
 SRCS_CSTR := \
 	src/cstr/ft_strlen.c \
@@ -268,6 +277,7 @@ SRCS_MEM := \
 	src/mem/avx256/ft_memchr_avx256.c \
 	src/mem/hugebranches/ft_memcpy_huge.c \
 	src/mem/hugebranches/ft_memmove_huge.c \
+	src/mem/hugebranches/ft_memset_huge.c \
 	src/mem/ft_prefetch_intrin.c
 
 SRCS_THREADPOOL := \

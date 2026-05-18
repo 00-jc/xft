@@ -78,6 +78,10 @@ void			ft_memset_512(void *__restrict__ dest,
 					const t_u8 b, size_t n)\
 					__attribute__((__nonnull__(1)));
 
+void			ft_memset_512_huge(void *__restrict__ dest,
+					const t_u8 b, size_t n)\
+					__attribute__((__nonnull__(1)));
+
 void			*ft_memchr_minimal(const void *ptr,
 					t_u8 c, size_t n)\
 					__attribute__((__nonnull__(1)));
