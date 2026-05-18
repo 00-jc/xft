@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 17:13:42 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/15 08:54:03 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/18 20:33:48 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,8 @@
  *		 So we reuse those.
  */
 
-__attribute__((__nonnull__(1, 2)))
-void	ft_memmove(void *dest, const void *src, size_t n)
+__attribute__((__nonnull__(1, 2), __hot__))
+void	ft_memmove(void *restrict dest, const void *restrict src, size_t n)
 {
 	if (__builtin_expect(dest == src || n == 0, 0))
 		return ;
