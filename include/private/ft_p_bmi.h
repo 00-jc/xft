@@ -13,6 +13,13 @@
 #ifndef FT_P_BMI_H
 # define FT_P_BMI_H
 
+# ifdef __cplusplus
+
+extern "C"
+{
+
+# endif
+
 # include "private/ft_p_asm.h"
 
 t_u64a		ft_bitpack512(t_vu512a vec)\
@@ -20,5 +27,9 @@ t_u64a		ft_bitpack512(t_vu512a vec)\
 
 t_u32a		ft_bitpack256(t_vu256a vec)\
 				__attribute__((const));
+
+# ifdef __cplusplus
+}
+# endif
 
 #endif

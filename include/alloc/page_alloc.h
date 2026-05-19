@@ -13,6 +13,13 @@
 #ifndef PAGE_ALLOC_H
 # define PAGE_ALLOC_H
 
+# ifdef __cplusplus
+
+extern "C"
+{
+
+# endif
+
 # include <stddef.h>
 # include "syscalls.h"
 # include "mem.h"
@@ -59,5 +66,9 @@ typedef struct s_page_alloc
 t_buffer	ft_palloc(size_t size);
 t_buffer	ft_palloc_resize(t_buffer b, size_t new_size);
 void		ft_palloc_free(t_buffer b);
+
+# ifdef __cplusplus
+}
+# endif
 
 #endif

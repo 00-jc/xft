@@ -13,6 +13,13 @@
 #ifndef SORT_H
 # define SORT_H
 
+# ifdef __cplusplus
+
+extern "C"
+{
+
+# endif
+
 # include "types.h"
 # include "mem.h"
 
@@ -28,5 +35,9 @@ void	ft_qsort(t_u8 *arr, t_qsort_ctx *c, size_t l, size_t h)\
 
 int		ft_cmp_u64(const void *a, const void *b)\
 			__attribute__((__nonnull__(1, 2)));
+
+# ifdef __cplusplus
+}
+# endif
 
 #endif

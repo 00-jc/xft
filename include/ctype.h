@@ -12,6 +12,14 @@
 
 #ifndef CTYPE_H
 # define CTYPE_H
+
+# ifdef __cplusplus
+
+extern "C"
+{
+
+# endif
+
 # include "mem.h"
 
 int				ft_isalpha(int c);
@@ -21,5 +29,9 @@ int				ft_isascii(int c);
 int				ft_isxdigit(int c);
 int				ft_isprint(int c);
 int				ft_isspace(int c);
+
+# ifdef __cplusplus
+}
+# endif
 
 #endif

@@ -13,6 +13,13 @@
 #ifndef FT_P_MEM_H
 # define FT_P_MEM_H
 
+# ifdef __cplusplus
+
+extern "C"
+{
+
+# endif
+
 # include "mem.h"
 # include "private/ft_p_bmi.h"
 
@@ -133,5 +140,9 @@ void			ft_memcpy_512_streaming(void *__restrict__ dest,\
 					const void	*__restrict__ const src,\
 					size_t n)\
 					__attribute__((__nonnull__(1, 2)));
+
+# ifdef __cplusplus
+}
+# endif
 
 #endif

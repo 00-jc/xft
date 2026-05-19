@@ -13,6 +13,13 @@
 #ifndef FT_P_TAILOR_H
 # define FT_P_TAILOR_H
 
+# ifdef __cplusplus
+
+extern "C"
+{
+
+# endif
+
 # include "tailor.h"
 # include "sort.h"
 
@@ -69,5 +76,9 @@ void			ft_print_summary(t_buffer surv, t_plankb plan, t_blk8r name,\
 
 int				ft_tailor_benchfn(t_tailor *t, t_tailor_fn fn, t_blk8r name)\
 					__attribute__((__nonnull__(1)));
+
+# ifdef __cplusplus
+}
+# endif
 
 #endif

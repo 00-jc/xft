@@ -13,6 +13,13 @@
 #ifndef PERF_H
 # define PERF_H
 
+# ifdef __cplusplus
+
+extern "C"
+{
+
+# endif
+
 # include <linux/perf_event.h>
 # include <linux/bpf_perf_event.h>
 # include <sys/syscall.h>
@@ -78,5 +85,9 @@ int				ft_perf_collect_sample(size_t n,\
 					__attribute__((__nonnull__(2, 3)));
 void			ft_perf_destroy_counters(t_perf_counters c)\
 					__attribute__((__nonnull__(1)));
+
+# ifdef __cplusplus
+}
+# endif
 
 #endif

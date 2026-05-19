@@ -13,6 +13,13 @@
 #ifndef BMI_H
 # define BMI_H
 
+# ifdef __cplusplus
+
+extern "C"
+{
+
+# endif
+
 # include "private/ft_p_asm.h"
 # include "types.h"
 
@@ -81,5 +88,9 @@ size_t			ft_next_pow2(size_t qword)\
 
 size_t			ft_last_pow2(size_t qword)\
 					__attribute__((const, __hot__));
+
+# ifdef __cplusplus
+}
+# endif
 
 #endif

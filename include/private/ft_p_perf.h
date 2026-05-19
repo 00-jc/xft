@@ -13,6 +13,13 @@
 #ifndef FT_P_PERF_H
 # define FT_P_PERF_H
 
+# ifdef __cplusplus
+
+extern "C"
+{
+
+# endif
+
 # include "perf.h"
 
 typedef struct s_perf_read
@@ -28,5 +35,9 @@ const t_hw_counters		*get_hw_counters(void)\
 
 const t_sw_counters		*get_sw_counters(void)\
 							__attribute__((const));
+
+# ifdef __cplusplus
+}
+# endif
 
 #endif

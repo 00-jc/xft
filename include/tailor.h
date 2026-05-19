@@ -13,6 +13,13 @@
 #ifndef TAILOR_H
 # define TAILOR_H
 
+# ifdef __cplusplus
+
+extern "C"
+{
+
+# endif
+
 # include "perf.h"
 # include "alloc.h"
 # include "rng.h"
@@ -75,4 +82,9 @@ void		ft_tailor_add_processed_bytes(void *ptr, const size_t bytes)\
 
 size_t		ft_tailor_get_random_num(void *ptr)\
 				__attribute__((__nonnull__(1), __always_inline__));
+
+# ifdef __cplusplus
+}
+# endif
+
 #endif

@@ -13,6 +13,13 @@
 #ifndef FT_P_TOK_H
 # define FT_P_TOK_H
 
+# ifdef __cplusplus
+
+extern "C"
+{
+
+# endif
+
 # include "tokenizer.h"
 # include "private/ft_p_bmi.h"
 
@@ -61,5 +68,9 @@ t_token			ft_eat_until_u512(t_tokenizer *tk,\
 					__attribute__((__nonnull__(1, 2)));
 
 t_eaterset		get_eaterset(t_eater_select selection);
+
+# ifdef __cplusplus
+}
+# endif
 
 #endif

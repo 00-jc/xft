@@ -13,6 +13,13 @@
 #ifndef TOKENIZER_H
 # define TOKENIZER_H
 
+# ifdef __cplusplus
+
+extern "C"
+{
+
+# endif
+
 # include "mem.h"
 # include "ctype.h"
 
@@ -49,4 +56,9 @@ t_tokenizer	ft_tokenizer_over(void *mem, size_t size)\
 				__attribute__((__nonnull__(1), const));
 t_u32a		ft_match_next(t_tokenizer *tk, t_u8 expected)\
 				__attribute__((__nonnull__(1)));
+
+# ifdef __cplusplus
+}
+# endif
+
 #endif

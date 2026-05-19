@@ -13,6 +13,13 @@
 #ifndef FT_P_MATH_H
 # define FT_P_MATH_H
 
+# ifdef __cplusplus
+
+extern "C"
+{
+
+# endif
+
 # include "math.h"
 
 /*
@@ -71,5 +78,9 @@ typedef union u_v8di
 	t_v8u64a	i;
 	t_v8da		d;
 }	t_v8di;
+
+# ifdef __cplusplus
+}
+# endif
 
 #endif

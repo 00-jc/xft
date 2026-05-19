@@ -12,6 +12,13 @@
 #ifndef IO_H
 # define IO_H
 
+# ifdef __cplusplus
+
+extern "C"
+{
+
+# endif
+
 # include <stdarg.h>
 # include <stdbool.h>
 # include <unistd.h>
@@ -47,5 +54,9 @@ t_file			ft_read_file(const char *__restrict__ const fname)\
 					__attribute__((__nonnull__(1)));
 void			ft_close_file(t_file *__restrict__ const f)\
 					__attribute__((__nonnull__(1)));
+
+# ifdef __cplusplus
+}
+# endif
 
 #endif

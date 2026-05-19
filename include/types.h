@@ -13,6 +13,13 @@
 #ifndef TYPES_H
 # define TYPES_H
 
+# ifdef __cplusplus
+
+extern "C"
+{
+
+# endif
+
 # include <sys/types.h>
 # include <stdint.h>
 
@@ -67,5 +74,9 @@ typedef struct s_span
 	size_t	typesize;
 	size_t	n;
 }	t_span;
+
+# ifdef __cplusplus
+}
+# endif
 
 #endif

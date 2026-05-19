@@ -13,7 +13,18 @@
 #ifndef FT_P_PALLOC_H
 # define FT_P_PALLOC_H
 
+# ifdef __cplusplus
+
+extern "C"
+{
+
+# endif
+
 # include "alloc.h"
 # include "private/ft_p_hugepage.h"
+
+# ifdef __cplusplus
+}
+# endif
 
 #endif

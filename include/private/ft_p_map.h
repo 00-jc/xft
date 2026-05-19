@@ -13,6 +13,13 @@
 #ifndef FT_P_MAP_H
 # define FT_P_MAP_H
 
+# ifdef __cplusplus
+
+extern "C"
+{
+
+# endif
+
 # include "map.h"
 
 void		ft_map_insert_unchecked(t_map *__restrict__ const map,\
@@ -26,5 +33,9 @@ t_u32a		ft_map_rehash(t_allocator allocator,\
 size_t		ft__map_lookup_offset(const t_map *__restrict__ const map,\
 				const t_u8 *__restrict__ const mem, size_t data[4])\
 				__attribute__((__nonnull__(1, 2, 3)));
+
+# ifdef __cplusplus
+}
+# endif
 
 #endif

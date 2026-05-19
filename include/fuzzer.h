@@ -13,6 +13,13 @@
 #ifndef FUZZER_H
 # define FUZZER_H
 
+# ifdef __cplusplus
+
+extern "C"
+{
+
+# endif
+
 # include "alloc.h"
 # include "rng.h"
 # include "mem.h"
@@ -62,5 +69,9 @@ t_f64		ft_fuzz_get_rand_d(t_fuzzer *fuzz)\
 
 void		ft_fuzzer_destroy(t_fuzzer *f)\
 				__attribute__((__nonnull__(1)));
+
+# ifdef __cplusplus
+}
+# endif
 
 #endif
