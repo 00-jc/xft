@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/19 18:23:58 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/19 00:40:57 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/19 05:11:35 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,8 +65,14 @@ void			ft_memcpy_512(void *__restrict__ dest,
 					const void	*__restrict__ const src,
 					size_t n)\
 					__attribute__((__nonnull__(1, 2)));
+
 void			ft_movsb(void *__restrict__ dest,
-					const void	*__restrict__ const src,
+					const void	*__restrict__ src,
+					size_t n)\
+					__attribute__((__nonnull__(1, 2)));
+
+void			ft_movsq(void *__restrict__ dest,
+					const void	*__restrict__ src,
 					size_t n)\
 					__attribute__((__nonnull__(1, 2)));
 

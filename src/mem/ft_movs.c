@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_movsb.c                                         :+:      :+:    :+:   */
+/*   ft_movs.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/17 00:01:18 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/04/17 02:50:25 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/19 05:12:21 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,12 +16,24 @@
 
 __attribute__((__nonnull__(1, 2), __always_inline__))
 inline void	ft_movsb(void *restrict dest,
-	const void	*restrict const src, size_t n)
+	const void	*restrict src, size_t n)
 {
 	__asm__ volatile (
 		"rep movsb"
-		: "+D"(dest), "+c"(n)
-		: "S"(src)
+		: "+D"(dest), "+S"(src), "+c"(n)
+		:
+		: "memory"
+	);
+}
+
+__attribute__((__nonnull__(1, 2), __always_inline__))
+inline void	ft_movsq(void *restrict dest,
+	const void	*restrict src, size_t qw)
+{
+	__asm__ volatile (
+		"rep movsq"
+		: "+D"(dest), "+S"(src), "+c"(qw)
+		:
 		: "memory"
 	);
 }
@@ -30,7 +42,7 @@ inline void	ft_movsb(void *restrict dest,
 
 __attribute__((__nonnull__(1, 2), __always_inline__))
 inline void	ft_movsb(void *restrict dest,
-	const void	*restrict const src, size_t n)
+	const void	*restrict src, size_t n)
 {
 	size_t	i;
 
@@ -42,4 +54,17 @@ inline void	ft_movsb(void *restrict dest,
 	}
 }
 
+__attribute__((__nonnull__(1, 2), __always_inline__))
+inline void	ft_movsq(void *restrict dest,
+	const void	*restrict src, size_t n)
+{
+	size_t	i;
+
+	i = 0;
+	while (i < n)
+	{
+		((t_blk64w)dest)[i] = ((t_blk64r)src)[i];
+		++i;
+	}
+}
 #endif

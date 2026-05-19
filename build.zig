@@ -6,7 +6,7 @@
 //   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2026/05/15 07:20:25 by jaicastr          #+#    #+#             //
-//   Updated: 2026/05/19 00:41:08 by jaicastr         ###   ########.fr       //
+//   Updated: 2026/05/19 05:15:47 by jaicastr         ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 const std = @import("std");
@@ -214,7 +214,7 @@ const SRCS_MEM = &[_][]const u8{
     "src/mem/vec512/ft_memchr_vec512.c",
     "src/mem/ft_overlap.c",
     "src/mem/ft_fatptr.c",
-    "src/mem/ft_movsb.c",
+    "src/mem/ft_movs.c",
     "src/mem/ft_align.c",
     "src/mem/vec256/ft_memcpy_vec256.c",
     "src/mem/vec256/ft_memset_vec256.c",
