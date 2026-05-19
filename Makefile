@@ -6,7 +6,7 @@
 #    By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/01/18 03:43:49 by jaicastr          #+#    #+#              #
-#    Updated: 2026/05/19 02:36:17 by jaicastr         ###   ########.fr        #
+#    Updated: 2026/05/19 22:41:20 by jaicastr         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -213,6 +213,8 @@ SRCS_CTYPE := \
 	src/ctype/ft_isdigit.c
 
 SRCS_SYSCALLS := \
+	src/syscalls/ft_read.c \
+	src/syscalls/ft_write.c \
 	src/syscalls/ft_fmap.c \
 	src/syscalls/ft_mremap.c \
 	src/syscalls/ft_lockf.c \
@@ -267,7 +269,7 @@ SRCS_MEM := \
 	src/mem/vec512/ft_memchr_vec512.c \
 	src/mem/ft_overlap.c \
 	src/mem/ft_fatptr.c \
-	src/mem/ft_movsb.c \
+	src/mem/ft_movs.c \
 	src/mem/ft_align.c \
 	src/mem/vec256/ft_memcpy_vec256.c \
 	src/mem/vec256/ft_memset_vec256.c \

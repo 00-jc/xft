@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 23:54:41 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/19 20:56:08 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/19 22:45:09 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,5 +130,5 @@ inline void	pflt(int fd, t_f64 d)
 		frac /= 10;
 	}
 	buffer[--i] = '.';
-	i = (size_t)ft_write(fd, (t_u8 *)buffer + i, 32 - i);
+	unused = ft_write(fd, (t_u8 *)buffer + i, 32 - i);
 }
