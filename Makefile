@@ -6,7 +6,7 @@
 #    By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/01/18 03:43:49 by jaicastr          #+#    #+#              #
-#    Updated: 2026/05/17 18:18:29 by codex            ###   ########.fr        #
+#    Updated: 2026/05/19 02:02:54 by jaicastr         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -147,10 +147,6 @@ CFLAGS_COMMON_OPT := -D_GNU_SOURCE											   \
 					 -ftrivial-auto-var-init=zero 							   \
 					 -fno-common              								   \
 					 -fstack-clash-protection 								   \
-					 -fslp-vectorize									   \
-					 -ftree-slp-vectorize 								   \
-					 -ftree-vectorize 									   \
-					 -fvectorize 										   \
 					 -g3													   \
 					 -DFT_NTHREADS=$(MAXTHREADS)
  
@@ -258,27 +254,30 @@ SRCS_MEM := \
 	src/mem/ft_bzero.c \
 	src/mem/portable/ft_memcpy.c \
 	src/mem/portable/ft_memset.c \
-	src/mem/sse/ft_memcpy.c \
-	src/mem/sse/ft_memset.c \
-	src/mem/sse/ft_memcmp.c \
-	src/mem/sse/ft_memchr.c \
+	src/mem/vec128/ft_memcpy.c \
+	src/mem/vec128/ft_memset.c \
+	src/mem/vec128/ft_memcmp.c \
+	src/mem/vec128/ft_memchr.c \
 	src/mem/ft_prefetch_noop.c \
-	src/mem/avx512/ft_memcpy_avx512.c \
-	src/mem/avx512/ft_memset_avx512.c \
-	src/mem/avx512/ft_memcmp_avx512.c \
-	src/mem/avx512/ft_memchr_avx512.c \
+	src/mem/vec512/ft_memcpy_vec512.c \
+	src/mem/vec512/ft_memset_vec512.c \
+	src/mem/vec512/ft_memcmp_vec512.c \
+	src/mem/vec512/ft_memchr_vec512.c \
 	src/mem/ft_overlap.c \
 	src/mem/ft_fatptr.c \
 	src/mem/ft_movsb.c \
 	src/mem/ft_align.c \
-	src/mem/avx256/ft_memcpy_avx256.c \
-	src/mem/avx256/ft_memset_avx256.c \
-	src/mem/avx256/ft_memcmp_avx256.c \
-	src/mem/avx256/ft_memchr_avx256.c \
+	src/mem/vec256/ft_memcpy_vec256.c \
+	src/mem/vec256/ft_memset_vec256.c \
+	src/mem/vec256/ft_memcmp_vec256.c \
+	src/mem/vec256/ft_memchr_vec256.c \
 	src/mem/hugebranches/ft_memcpy_huge.c \
 	src/mem/hugebranches/ft_memmove_huge.c \
 	src/mem/hugebranches/ft_memset_huge.c \
-	src/mem/ft_prefetch_intrin.c
+	src/mem/streaming/ft_memcpy_streaming.c \
+	src/mem/streaming/ft_memset_streaming.c \
+	src/mem/ft_prefetch_intrin.c \
+	src/mem/ft_memfence.c
 
 SRCS_THREADPOOL := \
 	src/threadpool/ft_threadpool.c \

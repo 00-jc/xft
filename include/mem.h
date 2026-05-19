@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 17:14:01 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/19 00:20:51 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/19 02:03:56 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,6 @@ void			*ft_align_bkw(void *ptr, const size_t align)\
 					__attribute__((const, __nonnull__(1),\
 					__returns_nonnull__));
 
-void			ft_fence(void)\
-					__attribute__((__always_inline__));
+void			ft_fence(void);
+
 #endif
