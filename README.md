@@ -39,4 +39,5 @@ Notes:
 - Test/Benches regarding to strlen in gcc might fail,
   gcc's sanitizer is too aggressive redzoning, clang
   works fine, zig tests are stricter than clang but pass.
+- All allocators are NOT thread safe.
 ```
