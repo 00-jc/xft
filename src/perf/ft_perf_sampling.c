@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/17 21:34:52 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/15 11:17:43 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/19 21:02:43 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,8 @@ static inline int	ft__get_sample_plexed(t_perf_counters c, t_u64 *v)
 	t_f64			scale;
 
 	i = 0;
-	if (__builtin_expect(read((int)c[i],
-				&t, sizeof(t)) != sizeof(t)
+	if (__builtin_expect(ft_read((int)c[i],
+				(t_u8 *)&t, sizeof(t)) != sizeof(t)
 			|| t.running == 0, 0))
 		return (0);
 	adjust = t.running != t.enabled;

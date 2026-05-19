@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/17 15:15:00 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/04/18 20:36:11 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/19 21:02:31 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,13 +18,14 @@
 # include <sys/syscall.h>
 # include <sched.h>
 # include <unistd.h>
-# include "types.h"
 # include <linux/prctl.h>
 # include <sys/prctl.h>
 # include <sys/ioctl.h>
+# include "types.h"
 # include "mem.h"
 # include "timing.h"
 # include "hint.h"
+# include "syscalls.h"
 
 typedef struct s_perf_sample
 {

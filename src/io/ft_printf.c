@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 23:58:49 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/13 23:49:02 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/19 20:56:35 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,13 +83,13 @@ inline void	ft_vfprintf(int fd, const char *restrict const fmt, va_list args)
 	subst = ft_memchr(fmt, '%', len);
 	while (subst && start && (t_uptr)subst < maxptr)
 	{
-		unused = write(fd, start, (t_uptr)subst - (t_uptr)start);
+		unused = ft_write(fd, (t_u8 *)start, (t_uptr)subst - (t_uptr)start);
 		subst += manage(fd, subst + 1, maxptr - (t_uptr)(subst + 1), args);
 		start = subst;
 		len = maxptr - (t_uptr)start;
 		subst = ft_memchr(start, '%', len);
 	}
-	unused = write(fd, start, maxptr - (t_uptr)start);
+	unused = ft_write(fd, (t_u8 *)start, maxptr - (t_uptr)start);
 	(void)unused;
 }
 

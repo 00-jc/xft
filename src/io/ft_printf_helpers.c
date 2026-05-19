@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 23:54:41 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/13 23:49:02 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/19 20:56:08 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ inline void	putu(int fd, size_t n)
 		buffer[--i] = (char)((n % 10) + '0');
 		n = (t_u128a)n * 0xCCCCCCCCCCCCCCCDULL >> 67;
 	}
-	i = (size_t)write(fd, buffer + i, 32 - i);
+	i = (size_t)ft_write(fd, (t_u8 *)buffer + i, 32 - i);
 	(void)i;
 }
 
@@ -47,7 +47,7 @@ inline void	putx(int fd, size_t n, char or)
 		buffer[--i] = (char)((h + '0' + ((h + 6) >> 4) * 7) | or);
 		n >>= 4;
 	}
-	i = (size_t)write(fd, buffer + i, 32 - i);
+	i = (size_t)ft_write(fd, (t_u8 *)buffer + i, 32 - i);
 	(void)i;
 }
 
@@ -74,7 +74,7 @@ inline void	putd(int fd, ssize_t n)
 	}
 	if (neg)
 		buffer[--i] = '-';
-	i = (size_t)write(fd, buffer + i, 32 - i);
+	i = (size_t)ft_write(fd, (t_u8 *)buffer + i, 32 - i);
 	(void)i;
 }
 
@@ -104,7 +104,7 @@ inline void	puti(int fd, int n)
 	}
 	if (neg)
 		buffer[--i] = '-';
-	i = (size_t)write(fd, buffer + i, 32 - i);
+	i = (size_t)ft_write(fd, (t_u8 *)buffer + i, 32 - i);
 	(void)i;
 }
 
@@ -130,5 +130,5 @@ inline void	pflt(int fd, t_f64 d)
 		frac /= 10;
 	}
 	buffer[--i] = '.';
-	unused = write(fd, buffer + i, 32 - i);
+	i = (size_t)ft_write(fd, (t_u8 *)buffer + i, 32 - i);
 }

@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/18 02:52:15 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/03/03 18:50:22 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/19 20:55:28 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,9 @@ inline void	pputs(int fd, const char *restrict const str)
 	ssize_t		unused;
 
 	if (!str)
-		unused = write(fd, "(nil)", 5);
+		unused = ft_write(fd, (t_u8 *)"(nil)", 5);
 	else
-		unused = write(fd, str, ft_strlen(str));
+		unused = ft_write(fd, (t_u8 *)str, ft_strlen(str));
 	(void)(unused == 0);
 }
 
@@ -29,6 +29,6 @@ inline void	putc_(char c, int fd)
 {
 	ssize_t		unused;
 
-	unused = write(fd, &c, 1);
+	unused = ft_write(fd, (t_u8 *)&c, 1);
 	(void)(unused == 0);
 }

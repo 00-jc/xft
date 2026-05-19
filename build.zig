@@ -6,7 +6,7 @@
 //   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2026/05/15 07:20:25 by jaicastr          #+#    #+#             //
-//   Updated: 2026/05/19 05:15:47 by jaicastr         ###   ########.fr       //
+//   Updated: 2026/05/19 20:59:24 by jaicastr         ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 const std = @import("std");
@@ -157,6 +157,8 @@ const SRCS_CTYPE = &[_][]const u8{
 };
 
 const SRCS_SYSCALLS = &[_][]const u8{
+    "src/syscalls/ft_write.c",
+    "src/syscalls/ft_read.c",
     "src/syscalls/ft_fmap.c",
     "src/syscalls/ft_mremap.c",
     "src/syscalls/ft_lockf.c",

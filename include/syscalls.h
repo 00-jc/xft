@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/15 04:10:00 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/15 18:12:46 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/19 20:59:07 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,5 +37,11 @@ int		ft_stat(const char *__restrict__ path, struct stat *statbuf)\
 void	*ft_mremap(size_t size, size_t new_size,\
 			void *addr, long flags_extra)\
 			__attribute__((__nonnull__(3)));
+
+ssize_t	ft_write(int fd, t_u8 *restrict const buffer, size_t len)\
+			__attribute__((__nonnull__(2)));
+
+ssize_t	ft_read(int fd, t_u8 *restrict const buffer, size_t len)\
+			__attribute__((__nonnull__(2)));
 
 #endif
