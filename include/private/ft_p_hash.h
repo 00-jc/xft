@@ -13,13 +13,6 @@
 #ifndef FT_P_HASH_H
 # define FT_P_HASH_H
 
-# ifdef __cplusplus
-
-extern "C"
-{
-
-# endif
-
 # include "mem.h"
 # include "hash.h"
 
@@ -28,9 +21,5 @@ t_u64a	rotl(t_u64a x, size_t r)\
 
 t_u64a	fmix64(t_u64a k)\
 			__attribute__((const));
-
-# ifdef __cplusplus
-}
-# endif
 
 #endif

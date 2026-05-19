@@ -13,13 +13,6 @@
 #ifndef ALLOC_H
 # define ALLOC_H
 
-# ifdef __cplusplus
-
-extern "C"
-{
-
-# endif
-
 # include "alloc/page_alloc.h"
 # include "alloc/arena_alloc.h"
 
@@ -113,9 +106,5 @@ t_allocator	ft_reporta_allocator(t_reporta *gpa)\
 				__attribute__((__nonnull__(1), __const__));
 t_allocator	ft_new_page_alloc(void)\
 				__attribute__((__const__));
-
-# ifdef __cplusplus
-}
-# endif
 
 #endif

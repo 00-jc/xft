@@ -12,18 +12,6 @@
 
 #ifndef PUT_H
 # define PUT_H
-
-# ifdef __cplusplus
-
-extern "C"
-{
-
-# endif
-
 # include <unistd.h>
-
-# ifdef __cplusplus
-}
-# endif
 
 #endif

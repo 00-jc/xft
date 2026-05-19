@@ -13,13 +13,6 @@
 #ifndef CSTR_H
 # define CSTR_H
 
-# ifdef __cplusplus
-
-extern "C"
-{
-
-# endif
-
 # include "str.h"
 
 size_t			ft_strlen(const char *__restrict__ str)\
@@ -27,9 +20,5 @@ size_t			ft_strlen(const char *__restrict__ str)\
 
 t_str			ft_cstr_to_str(t_allocator allocator, const char *cstr)\
 					__attribute__((__nonnull__(2)));
-
-# ifdef __cplusplus
-}
-# endif
 
 #endif

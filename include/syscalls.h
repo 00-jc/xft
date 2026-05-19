@@ -13,13 +13,6 @@
 #ifndef SYSCALLS_H
 # define SYSCALLS_H
 
-# ifdef __cplusplus
-
-extern "C"
-{
-
-# endif
-
 # include <sys/mman.h>
 # include <sys/stat.h>
 # include <fcntl.h>
@@ -44,9 +37,5 @@ int		ft_stat(const char *__restrict__ path, struct stat *statbuf)\
 void	*ft_mremap(size_t size, size_t new_size,\
 			void *addr, long flags_extra)\
 			__attribute__((__nonnull__(3)));
-
-# ifdef __cplusplus
-}
-# endif
 
 #endif

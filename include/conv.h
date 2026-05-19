@@ -13,13 +13,6 @@
 #ifndef CONV_H
 # define CONV_H
 
-# ifdef __cplusplus
-
-extern "C"
-{
-
-# endif
-
 # include "types.h"
 # include <unistd.h>
 # include <stdlib.h>
@@ -38,9 +31,4 @@ t_f64			ft_atod_bounded(const char *s, size_t n)\
 					__attribute__((__nonnull__(1)));
 size_t			ft_atoul_bounded(const char *__restrict__ const str,\
 					size_t n) __attribute__((__nonnull__(1)));
-
-# ifdef __cplusplus
-}
-# endif
-
 #endif

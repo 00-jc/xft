@@ -13,13 +13,6 @@
 #ifndef VEC_H
 # define VEC_H
 
-# ifdef __cplusplus
-
-extern "C"
-{
-
-# endif
-
 # include "mem.h"
 # include "alloc.h"
 # include <stddef.h>
@@ -87,9 +80,5 @@ int				ft_vec_removef(t_vec *__restrict__ const v, size_t i,\
 
 void			ft_vec_clear(t_vec *__restrict__ const v)\
 					__attribute__((__nonnull__(1)));
-
-# ifdef __cplusplus
-}
-# endif
 
 #endif

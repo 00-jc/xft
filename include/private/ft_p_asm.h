@@ -13,13 +13,6 @@
 #ifndef FT_P_ASM_H
 # define FT_P_ASM_H
 
-# ifdef __cplusplus
-
-extern "C"
-{
-
-# endif
-
 # include "types.h"
 # include <sys/types.h>
 
@@ -142,9 +135,5 @@ t_vu128			get_mask128(t_u8 x)\
 
 t_u16a			ft_bitpack128(t_vu128a vec)\
 					__attribute__((const));
-
-# ifdef __cplusplus
-}
-# endif
 
 #endif

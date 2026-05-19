@@ -13,13 +13,6 @@
 #ifndef RNG_H
 # define RNG_H
 
-# ifdef __cplusplus
-
-extern "C"
-{
-
-# endif
-
 # include "types.h"
 # include "bmi.h"
 
@@ -29,9 +22,5 @@ void		ft_xoshiro_init(t_xoshiro xoshiro)\
 				__attribute__((__nonnull__(1)));
 t_u64a		ft_xoshiro256ss(t_xoshiro xoshiro)\
 				__attribute__((__nonnull__(1)));
-
-# ifdef __cplusplus
-}
-# endif
 
 #endif

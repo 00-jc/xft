@@ -13,20 +13,9 @@
 #ifndef ENV_H
 # define ENV_H
 
-# ifdef __cplusplus
-
-extern "C"
-{
-
-# endif
-
 # include "mem.h"
 
 char			*ft_getenv(const char *__restrict__ const var)\
 					__attribute__((__nonnull__(1)));
-
-# ifdef __cplusplus
-}
-# endif
 
 #endif

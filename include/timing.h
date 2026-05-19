@@ -13,20 +13,9 @@
 #ifndef TIMING_H
 # define TIMING_H
 
-# ifdef __cplusplus
-
-extern "C"
-{
-
-# endif
-
 # include <time.h>
 # include "types.h"
 
 t_u64a		ft_get_nanos(void);
-
-# ifdef __cplusplus
-}
-# endif
 
 #endif

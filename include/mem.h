@@ -13,13 +13,6 @@
 #ifndef MEM_H
 # define MEM_H
 
-# ifdef __cplusplus
-
-extern "C"
-{
-
-# endif
-
 # include <sys/types.h>
 # include <stdlib.h>
 # include <limits.h>
@@ -85,9 +78,5 @@ void			*ft_align_bkw(void *ptr, const size_t align)\
 					__returns_nonnull__));
 
 void			ft_fence(void);
-
-# ifdef __cplusplus
-}
-# endif
 
 #endif

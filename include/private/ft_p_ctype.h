@@ -13,13 +13,6 @@
 #ifndef FT_P_CTYPE_H
 # define FT_P_CTYPE_H
 
-# ifdef __cplusplus
-
-extern "C"
-{
-
-# endif
-
 # include "private/ft_p_bmi.h"
 
 t_u16a		ft_isalpha128(t_vu128a c)\
@@ -63,9 +56,5 @@ t_u32a		ft_isprint256(t_vu256a c)\
 				__attribute__((const, hot));
 t_u64a		ft_isprint512(t_vu512a c)\
 				__attribute__((const, hot));
-
-# ifdef __cplusplus
-}
-# endif
 
 #endif

@@ -13,13 +13,6 @@
 #ifndef TEST_H
 # define TEST_H
 
-# ifdef __cplusplus
-
-extern "C"
-{
-
-# endif
-
 # include "xft.h"
 # include "str.h"
 # include "hint.h"
@@ -34,9 +27,5 @@ typedef t_u8		t_al4_buffer[1024]		__attribute__((__aligned__(4)));
 typedef t_u8		t_al8_buffer[1024]		__attribute__((__aligned__(4)));
 typedef t_u8		t_al64_buffer[1024]		__attribute__((__aligned__(64)));
 typedef t_u8		t_al32_buffer[1024]		__attribute__((__aligned__(32)));
-
-# ifdef __cplusplus
-}
-# endif
 
 #endif

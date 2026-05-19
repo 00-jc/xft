@@ -13,13 +13,6 @@
 #ifndef STR_H
 # define STR_H
 
-# ifdef __cplusplus
-
-extern "C"
-{
-
-# endif
-
 # include "types.h"
 # include "alloc.h"
 
@@ -45,9 +38,5 @@ int			ft_str_push_back(t_allocator allocator,\
 				__attribute__((__nonnull__(2)));
 int			ft_str_remove(t_str *restrict const v, size_t i)\
 				__attribute__((__nonnull__(1)));
-
-# ifdef __cplusplus
-}
-# endif
 
 #endif

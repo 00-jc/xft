@@ -13,13 +13,6 @@
 #ifndef FT_P_ARENA_H
 # define FT_P_ARENA_H
 
-# ifdef __cplusplus
-
-extern "C"
-{
-
-# endif
-
 # include "alloc/arena_alloc.h"
 # include "syscalls.h"
 # include "mem.h"
@@ -39,9 +32,5 @@ void				ft_arena_clean_fwd(const t_arena *alloc)\
 
 size_t				ft_match_paging(size_t page_size)\
 						__attribute__((const));
-
-# ifdef __cplusplus
-}
-# endif
 
 #endif

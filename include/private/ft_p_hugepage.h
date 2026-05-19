@@ -13,13 +13,6 @@
 #ifndef FT_P_HUGEPAGE_H
 # define FT_P_HUGEPAGE_H
 
-# ifdef __cplusplus
-
-extern "C"
-{
-
-# endif
-
 # include "alloc/page_alloc.h"
 # include "bmi.h"
 
@@ -27,9 +20,5 @@ size_t	ft_match_hugepage(size_t size)\
 			__attribute__((const));
 int		ft_match_hugepage_flags(size_t page_size)\
 			__attribute__((const));
-
-# ifdef __cplusplus
-}
-# endif
 
 #endif

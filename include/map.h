@@ -13,13 +13,6 @@
 #ifndef MAP_H
 # define MAP_H
 
-# ifdef __cplusplus
-
-extern "C"
-{
-
-# endif
-
 # include "vec.h"
 # include "hash.h"
 # include "private/ft_p_asm.h"
@@ -92,9 +85,5 @@ void		ft_map_delete(t_map *__restrict__ const map, t_buffer key)\
 				__attribute__((__nonnull__(1)));
 void		ft_map_clear(t_map *map)\
 				__attribute__((__nonnull__(1)));
-
-# ifdef __cplusplus
-}
-# endif
 
 #endif

@@ -13,13 +13,6 @@
 #ifndef THREADPOOL_H
 # define THREADPOOL_H
 
-# ifdef __cplusplus
-
-extern "C"
-{
-
-# endif
-
 # include "types.h"
 # include <pthread.h>
 
@@ -60,9 +53,5 @@ t_u32a		ft_threadpool_new(t_threadpool *tp, t_thread_arg *arg)\
 				__attribute__((__nonnull__(1, 2)));
 void		ft_threadpool_wait(t_threadpool *tp)\
 				__attribute__((__nonnull__(1)));
-
-# ifdef __cplusplus
-}
-# endif
 
 #endif

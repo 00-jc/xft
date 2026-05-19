@@ -13,13 +13,6 @@
 #ifndef ARENA_ALLOC_H
 # define ARENA_ALLOC_H
 
-# ifdef __cplusplus
-
-extern "C"
-{
-
-# endif
-
 # include <stddef.h>
 # include "types.h"
 
@@ -56,9 +49,5 @@ void				ft_arena_rewind_clean(t_arena *__restrict__ const arena,
 						t_arena_checkpoint checkpoint);
 void				ft_arena_rewind(t_arena *__restrict__ const arena,
 						t_arena_checkpoint checkpoint);
-
-# ifdef __cplusplus
-}
-# endif
 
 #endif

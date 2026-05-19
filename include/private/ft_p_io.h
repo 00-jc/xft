@@ -13,13 +13,6 @@
 #ifndef FT_P_IO_H
 # define FT_P_IO_H
 
-# ifdef __cplusplus
-
-extern "C"
-{
-
-# endif
-
 # include "io.h"
 
 void			putu(int fd, size_t n);
@@ -29,9 +22,5 @@ void			puti(int fd, int n);
 void			pputs(int fd, const char *__restrict__ const str);
 void			pflt(int fd, t_f64 d);
 void			putc_(char c, int fd);
-
-# ifdef __cplusplus
-}
-# endif
 
 #endif

@@ -13,20 +13,9 @@
 #ifndef FT_P_GPA_H
 # define FT_P_GPA_H
 
-# ifdef __cplusplus
-
-extern "C"
-{
-
-# endif
-
 # include "alloc.h"
 # include "private/ft_p_hugepage.h"
 # include "syscalls.h"
 # include "mem.h"
-
-# ifdef __cplusplus
-}
-# endif
 
 #endif

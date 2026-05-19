@@ -13,13 +13,6 @@
 #ifndef MATH_H
 # define MATH_H
 
-# ifdef __cplusplus
-
-extern "C"
-{
-
-# endif
-
 # include "mem.h"
 
 typedef union u_fp
@@ -154,9 +147,4 @@ t_8packd		ft_3dnorm8(t_3dcoordsx8 c)\
 					__attribute__((const));
 t_8packd		ft_3ddot8(t_3dcoordsx8 a, t_3dcoordsx8 b)\
 					__attribute__((const));
-
-# ifdef __cplusplus
-}
-# endif
-
 #endif

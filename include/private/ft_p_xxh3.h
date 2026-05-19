@@ -13,13 +13,6 @@
 #ifndef FT_P_XXH3_H
 # define FT_P_XXH3_H
 
-# ifdef __cplusplus
-
-extern "C"
-{
-
-# endif
-
 # include "types.h"
 # include "bmi.h"
 # include "hash.h"
@@ -110,9 +103,5 @@ t_buffer	ft_xxh3_get_secret(void)\
 
 void		ft_xxh3_init_custom_secret(void *custom_secret, t_u64a seed)\
 				__attribute__((__nonnull__(1)));
-
-# ifdef __cplusplus
-}
-# endif
 
 #endif

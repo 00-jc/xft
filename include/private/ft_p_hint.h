@@ -13,13 +13,6 @@
 #ifndef FT_P_HINT_H
 # define FT_P_HINT_H
 
-# ifdef __cplusplus
-
-extern "C"
-{
-
-# endif
-
 # include "hint.h"
 
 void	ft_hardcrash(void)\
@@ -27,9 +20,5 @@ void	ft_hardcrash(void)\
 void	ft_hardcrash_with_message(char *msg)\
 			__attribute__((__noreturn__, __cold__, __noinline__,\
 			__nonnull__(1)));
-
-# ifdef __cplusplus
-}
-# endif
 
 #endif

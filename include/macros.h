@@ -12,14 +12,6 @@
 
 #ifndef MACROS_H
 # define MACROS_H
-
-# ifdef __cplusplus
-
-extern "C"
-{
-
-# endif
-
 # define ANSI_RESET			"\033[0m"
 # define ANSI_BLACK			"\033[0;30m"
 # define ANSI_RED			"\033[0;31m"
@@ -44,9 +36,4 @@ extern "C"
 # define ANSI_BG_MAGENTA	"\033[45m"
 # define ANSI_BG_CYAN		"\033[46m"
 # define ANSI_BG_WHITE		"\033[47m"
-
-# ifdef __cplusplus
-}
-# endif
-
 #endif
