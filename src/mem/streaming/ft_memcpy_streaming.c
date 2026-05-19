@@ -6,13 +6,13 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/18 23:50:00 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/19 01:44:19 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/19 04:24:35 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "private/ft_p_mem.h"
 
-#if FT_HAS_512_VEC
+#if defined (__x86_64__) && FT_HAS_512_VEC
 
 __attribute__((__nonnull__(1, 2), __always_inline__, __hot__))
 inline void	ft__cpykernel_stream(void *restrict d,
@@ -30,7 +30,7 @@ inline void	ft__cpykernel_stream(void *restrict d,
 		"vmovntdq %%zmm2, %2\n" "vmovntdq %%zmm3, %3"
 		: "=m"(pd[0]), "=m"(pd[1]), "=m"(pd[2]), "=m"(pd[3])
 		: "m"(ps[0]), "m"(ps[1]), "m"(ps[2]), "m"(ps[3])
-		: "zmm0", "zmm1", "zmm2", "zmm3"
+		: "zmm0", "zmm1", "zmm2", "zmm3", "memory"
 		);
 	__asm__ (
 		"vmovdqu64 %4, %%zmm0\n" "vmovdqu64 %5, %%zmm1\n"
@@ -39,11 +39,11 @@ inline void	ft__cpykernel_stream(void *restrict d,
 		"vmovntdq %%zmm2, %2\n" "vmovntdq %%zmm3, %3"
 		: "=m"(pd[4]), "=m"(pd[5]), "=m"(pd[6]), "=m"(pd[7])
 		: "m"(ps[4]), "m"(ps[5]), "m"(ps[6]), "m"(ps[7])
-		: "zmm0", "zmm1", "zmm2", "zmm3"
+		: "zmm0", "zmm1", "zmm2", "zmm3", "memory"
 		);
 }
 
-#elif FT_HAS_256_VEC
+#elif defined(__x86_64__) && FT_HAS_256_VEC
 
 __attribute__((__nonnull__(1, 2), __always_inline__, __hot__))
 inline void	ft__cpykernel_stream(void *restrict d,
@@ -55,25 +55,25 @@ inline void	ft__cpykernel_stream(void *restrict d,
 	pd = (t_blk256wa)((t_u8 *)d + (offset << 6));
 	ps = (t_blk256r)((const t_u8 *)s + (offset << 6));
 	__asm__ (
-		"vmovdqu %8, %%ymm0\n" "vmovntdq %%ymm0, %0\n" "vmovdqu %9, %%ymm0\n"
-		"vmovntdq %%ymm0, %1\n" "vmovdqu %10, %%ymm0\n" "vmovntdq %%ymm0, %2\n"
-		"vmovdqu %11, %%ymm0\n" "vmovntdq %%ymm0, %3\n" "vmovdqu %12, %%ymm0\n"
-		"vmovntdq %%ymm0, %4\n" "vmovdqu %13, %%ymm0\n" "vmovntdq %%ymm0, %5\n"
-		"vmovdqu %14, %%ymm0\n" "vmovntdq %%ymm0, %6\n" "vmovdqu %15, %%ymm0\n"
-		"vmovntdq %%ymm0, %7" : "=m"(pd[0]), "=m"(pd[1]), "=m"(pd[2]),
+		"vmovdqu %8, %%ymm0\n" "vmovdqu %9, %%ymm1\n" "vmovdqu %10, %%ymm2\n"
+		"vmovdqu %11, %%ymm3\n" "vmovntdq %%ymm0, %0\n" "vmovntdq %%ymm1, %1\n"
+		"vmovntdq %%ymm2, %2\n" "vmovntdq %%ymm3, %3\n" "vmovdqu %12, %%ymm0\n"
+		"vmovdqu %13, %%ymm1\n" "vmovdqu %14, %%ymm2\n" "vmovdqu %15, %%ymm3\n"
+		"vmovntdq %%ymm0, %4\n" "vmovntdq %%ymm1, %5\n" "vmovntdq %%ymm2, %6\n"
+		"vmovntdq %%ymm3, %7" : "=m"(pd[0]), "=m"(pd[1]), "=m"(pd[2]),
 		"=m"(pd[3]), "=m"(pd[4]), "=m"(pd[5]), "=m"(pd[6]), "=m"(pd[7])
-		: "m"(ps[0]), "m"(ps[1]), "m"(ps[2]), "m"(ps[3]), "m"(ps[4]),
-		"m"(ps[5]), "m"(ps[6]), "m"(ps[7]) : "ymm0");
-	__asm__ (
-		"vmovdqu %8, %%ymm0\n" "vmovntdq %%ymm0, %0\n" "vmovdqu %9, %%ymm0\n"
-		"vmovntdq %%ymm0, %1\n" "vmovdqu %10, %%ymm0\n" "vmovntdq %%ymm0, %2\n"
-		"vmovdqu %11, %%ymm0\n" "vmovntdq %%ymm0, %3\n" "vmovdqu %12, %%ymm0\n"
-		"vmovntdq %%ymm0, %4\n" "vmovdqu %13, %%ymm0\n" "vmovntdq %%ymm0, %5\n"
-		"vmovdqu %14, %%ymm0\n" "vmovntdq %%ymm0, %6\n" "vmovdqu %15, %%ymm0\n"
-		"vmovntdq %%ymm0, %7" : "=m"(pd[8]), "=m"(pd[9]), "=m"(pd[10]),
-		"=m"(pd[11]), "=m"(pd[12]), "=m"(pd[13]), "=m"(pd[14]), "=m"(pd[15])
-		: "m"(ps[8]), "m"(ps[9]), "m"(ps[10]), "m"(ps[11]), "m"(ps[12]),
-		"m"(ps[13]), "m"(ps[14]), "m"(ps[15]) : "ymm0");
+		:"m"(ps[0]), "m"(ps[1]), "m"(ps[2]), "m"(ps[3]), "m"(ps[4]), "m"(ps[5]),
+		"m"(ps[6]), "m"(ps[7]) : "ymm0", "ymm1", "ymm2", "ymm3", "memory");
+	__asm__ ("vmovdqu %8, %%ymm0\n" "vmovdqu %9, %%ymm1\n"
+		"vmovdqu %10, %%ymm2\n" "vmovdqu %11, %%ymm3\n" "vmovntdq %%ymm0, %0\n"
+		"vmovntdq %%ymm1, %1\n" "vmovntdq %%ymm2, %2\n" "vmovntdq %%ymm3, %3\n"
+		"vmovdqu %12, %%ymm0\n" "vmovdqu %13, %%ymm1\n" "vmovdqu %14, %%ymm2\n"
+		"vmovdqu %15, %%ymm3\n" "vmovntdq %%ymm0, %4\n" "vmovntdq %%ymm1, %5\n"
+		"vmovntdq %%ymm2, %6\n" "vmovntdq %%ymm3, %7":"=m"(pd[8]), "=m"(pd[9]),
+		"=m"(pd[10]), "=m"(pd[11]), "=m"(pd[12]), "=m"(pd[13]), "=m"(pd[14]),
+		"=m"(pd[15]) :"m"(ps[8]), "m"(ps[9]), "m"(ps[10]), "m"(ps[11]),
+		"m"(ps[12]), "m"(ps[13]), "m"(ps[14]), "m"(ps[15])
+		:"ymm0", "ymm1", "ymm2", "ymm3", "memory");
 }
 
 #else

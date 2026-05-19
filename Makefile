@@ -6,7 +6,7 @@
 #    By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/01/18 03:43:49 by jaicastr          #+#    #+#              #
-#    Updated: 2026/05/19 02:02:54 by jaicastr         ###   ########.fr        #
+#    Updated: 2026/05/19 02:36:17 by jaicastr         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,6 +17,7 @@ CC_CLANG   := clang
 CC_GCC     := gcc
 CC_ID	   := $(shell $(CC) --version 2>/dev/null | head -1)
 MAXTHREADS := $(shell nproc)
+LLC 	   := $(shell getconf LEVEL3_CACHE_SIZE)
 SCANNER    := scan-build
 
 MARCH      := -march=native
@@ -148,7 +149,8 @@ CFLAGS_COMMON_OPT := -D_GNU_SOURCE											   \
 					 -fno-common              								   \
 					 -fstack-clash-protection 								   \
 					 -g3													   \
-					 -DFT_NTHREADS=$(MAXTHREADS)
+					 -DFT_NTHREADS=$(MAXTHREADS)							   \
+					 -DFT_LLC=$(LLC)
  
 CFLAGS_OPT   := $(CFLAGS_COMMON_OPT) -march=native -mtune=native -flto -O3 -ffast-math
 CFLAGS_NOOPT := $(CFLAGS_COMMON_OPT)

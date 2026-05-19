@@ -6,13 +6,13 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/18 21:48:56 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/19 01:44:36 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/19 04:24:55 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "private/ft_p_mem.h"
 
-#if FT_HAS_512_VEC
+#if defined (__x86_64__) && FT_HAS_512_VEC
 
 __attribute__((__nonnull__(1), __always_inline__, __hot__))
 inline void	ft__setkernel_stream(void *restrict d,
@@ -37,12 +37,12 @@ inline void	ft__setkernel_stream(void *restrict d,
 		"=m"(((t_blk512wa)d)[offset + 6]),
 		"=m"(((t_blk512wa)d)[offset + 7])
 		: [byte] "r"((unsigned)c)
-		: "zmm0"
+		: "zmm0", "memory"
 		);
 	__asm__("sfence" ::: "memory");
 }
 
-#elif FT_HAS_256_VEC
+#elif defined (__x86_64__) && FT_HAS_256_VEC
 
 __attribute__((__nonnull__(1), __always_inline__, __hot__))
 inline void	ft__setkernel_stream(void *restrict d,
@@ -70,7 +70,7 @@ inline void	ft__setkernel_stream(void *restrict d,
 		"=m"(p[12]), "=m"(p[13]),
 		"=m"(p[14]), "=m"(p[15])
 		: [byte] "r"((unsigned)c)
-		: "ymm0"
+		: "ymm0", "memory"
 		);
 }
 
