@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/12 03:16:31 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/15 11:07:04 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/19 23:03:15 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,8 +78,9 @@ inline t_u64a	ft_xxh3_len_129to240(t_buffer input,
 	size_t	nb_rounds;
 	size_t	i;
 
-	__attribute__((assume(input.size >= 129 && input.size <= 240)));
-	__attribute__((assume(input.mem != nullptr && secret.mem != nullptr)));
+	if (!(input.size >= 129 && input.size <= 240)
+		|| (input.mem == nullptr || secret.mem == nullptr))
+		__builtin_unreachable();
 	acc = (t_u64)input.size * XXH3_PRIME64_1;
 	acc = ft_xxh3_len_129to240__first(input, secret, seed, acc);
 	nb_rounds = input.size >> 4;
