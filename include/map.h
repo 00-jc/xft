@@ -74,7 +74,7 @@ t_map		ft_map_with(t_allocator allocator, size_t capacity);
 t_map		ft_map_new(t_allocator allocator);
 void		*ft_map_lookup(const t_map *__restrict__ const map, t_buffer key)\
 				__attribute__((__nonnull__(1)));
-t_u32a		ft_map_insert(t_allocator allocator,\
+t_result	ft_map_insert(t_allocator allocator,\
 				t_map *__restrict__ const map,\
 				t_buffer key, t_u8 *__restrict__ const value)\
 				__attribute__((__nonnull__(2, 4)));

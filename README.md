@@ -40,4 +40,6 @@ Notes:
   gcc's sanitizer is too aggressive redzoning, clang
   works fine, zig tests are stricter than clang but pass.
 - All allocators are NOT thread safe.
+- Functions that can fail return t_result {OK|KO}, but contructors
+  return 0-initialized structs for the sake of avoiding stack spills.
 ```

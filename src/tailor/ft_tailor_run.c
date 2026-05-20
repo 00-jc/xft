@@ -66,7 +66,7 @@ static inline void	ft_calc_mad(t_buffer scratch, t_u64a med, t_u64a *mad)
 }
 
 __attribute__((__nonnull__(1, 3, 4), __always_inline__))
-static inline int	ft_calc(t_tailor *t, t_buffer samples, t_u64a *med,
+static inline t_result	ft_calc(t_tailor *t, t_buffer samples, t_u64a *med,
 	t_u64a *mad)
 {
 	t_u64a					*arr;
@@ -77,7 +77,7 @@ static inline int	ft_calc(t_tailor *t, t_buffer samples, t_u64a *med,
 	c = ft_arena_checkpoint(&t->arena);
 	arr = ft_arena_alloc(&t->arena, sizeof(t_u64a) * samples.size, 64);
 	if (!arr)
-		return (0);
+		return (KO);
 	i = 0;
 	while (i < samples.size)
 	{
@@ -88,7 +88,7 @@ static inline int	ft_calc(t_tailor *t, t_buffer samples, t_u64a *med,
 	ft_qsort((void *)arr, &ctx, 0, samples.size);
 	*med = arr[samples.size >> 1];
 	ft_calc_mad(ft_fatptr((void *)arr, samples.size), *med, mad);
-	return (ft_arena_rewind(&t->arena, c), 1);
+	return (ft_arena_rewind(&t->arena, c), OK);
 }
 
 __attribute__((__nonnull__(1), __always_inline__))
@@ -116,7 +116,7 @@ static inline t_buffer	ft_make_surv(t_tailor *t, t_buffer sample,
 }
 
 __attribute__((__nonnull__(1)))
-int	ft_tailor_benchfn(t_tailor *t, t_tailor_fn fn, t_blk8r name)
+t_result	ft_tailor_benchfn(t_tailor *t, t_tailor_fn fn, t_blk8r name)
 {
 	t_plankb	plan;
 	t_buffer	sample;
@@ -125,17 +125,17 @@ int	ft_tailor_benchfn(t_tailor *t, t_tailor_fn fn, t_blk8r name)
 
 	sample = ft_tailor_runfn(t, fn, &plan);
 	if (__builtin_expect(sample.mem == nullptr, 0))
-		return (0);
+		return (KO);
 	sample.mem += K_WARMUP * sizeof(t_perf_sample);
 	sample.size -= K_WARMUP;
-	if (__builtin_expect(ft_calc(t, sample, medmad, medmad + 1) == 0, 0))
-		return (ft_arena_rewind(&t->arena, t->rpoint), 0);
+	if (__builtin_expect(ft_calc(t, sample, medmad, medmad + 1) == KO, 0))
+		return (ft_arena_rewind(&t->arena, t->rpoint), KO);
 	medmad[1] = ft_tern(medmad[1] == 0, 1, medmad[1]);
 	threshold = medmad[0] + (medmad[1] * 7413ULL) / 1000ULL;
 	sample = ft_make_surv(t, sample, threshold);
 	if (__builtin_expect(sample.mem == nullptr, 0))
-		return (0);
+		return (KO);
 	ft_bootstrap(t, sample, plan, name);
 	ft_arena_rewind(&t->arena, t->rpoint);
-	return (1);
+	return (OK);
 }

@@ -49,7 +49,7 @@ void		ft_threadpool_start(t_threadpool *tp)\
 				__attribute__((__nonnull__(1)));
 void		ft_threadpool_join(t_threadpool *tp, void **results)\
 				__attribute__((__nonnull__(1, 2)));
-t_u32a		ft_threadpool_new(t_threadpool *tp, t_thread_arg *arg)\
+t_result	ft_threadpool_new(t_threadpool *tp, t_thread_arg *arg)\
 				__attribute__((__nonnull__(1, 2)));
 void		ft_threadpool_wait(t_threadpool *tp)\
 				__attribute__((__nonnull__(1)));

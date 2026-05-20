@@ -41,7 +41,7 @@ static inline void	ft__interbuck(t_map *restrict const map,
 }
 
 __attribute__((__nonnull__(2, 4)))
-t_u32a	ft_map_insert(t_allocator allocator, t_map *restrict const map,
+t_result	ft_map_insert(t_allocator allocator, t_map *restrict const map,
 	t_buffer key, t_u8 *restrict const value)
 {
 	size_t		empty_lot;
@@ -52,7 +52,7 @@ t_u32a	ft_map_insert(t_allocator allocator, t_map *restrict const map,
 
 	if (((t_f64)map->count / (t_f64)map->table_size >= 0.85)
 		&& !ft_map_rehash(allocator, map))
-		return (0);
+		return (KO);
 	hash = ft_xxh3_64bits(key, 0);
 	nblks = map->table_size >> 4;
 	group = hash % nblks;
@@ -64,9 +64,9 @@ t_u32a	ft_map_insert(t_allocator allocator, t_map *restrict const map,
 		.value = value,
 	};
 	if (empty_lot <= map->table_size)
-		return (ft__interbuck(map, buck, empty_lot, hash), 1);
+		return (ft__interbuck(map, buck, empty_lot, hash), OK);
 	empty_lot = ft__get_empty(map, group, nblks);
 	ft__interbuck(map, buck, empty_lot, hash);
 	map->count++;
-	return (1);
+	return (OK);
 }

@@ -19,7 +19,7 @@ inline void	ft_vec_pop(t_vec *restrict const v)
 }
 
 __attribute__((__always_inline__, __nonnull__(1)))
-inline int	ft_vec_popmv(t_vec *restrict const v, void *const dest,
+inline t_result	ft_vec_popmv(t_vec *restrict const v, void *const dest,
 	size_t type_size)
 {
 	t_u8	*last;
@@ -31,13 +31,13 @@ inline int	ft_vec_popmv(t_vec *restrict const v, void *const dest,
 	{
 		ft_memcpy(dest, last, type_size);
 		ft_vec_pop(v);
-		return (1);
+		return (OK);
 	}
-	return (0);
+	return (KO);
 }
 
 __attribute__((__always_inline__, __nonnull__(1)))
-inline int	ft_vec_popf(t_vec *restrict const v, size_t type_size,
+inline t_result	ft_vec_popf(t_vec *restrict const v, size_t type_size,
 	void (*f)(void *))
 {
 	t_u8	*last;
@@ -49,7 +49,7 @@ inline int	ft_vec_popf(t_vec *restrict const v, size_t type_size,
 	{
 		f(last);
 		ft_vec_pop(v);
-		return (1);
+		return (OK);
 	}
-	return (0);
+	return (KO);
 }

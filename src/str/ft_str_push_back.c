@@ -13,7 +13,7 @@
 #include "str.h"
 
 __attribute__((__nonnull__(2)))
-int	ft_str_push_back(t_allocator allocator,
+t_result	ft_str_push_back(t_allocator allocator,
 		t_str *restrict const str, const t_u8 byte)
 {
 	if (str->mem == nullptr || allocator.allocator == nullptr)
@@ -21,8 +21,8 @@ int	ft_str_push_back(t_allocator allocator,
 	if (__builtin_expect(str->size + 1 >= str->capacity
 			&& !ft_str_reserve(allocator, str,
 				ft_tern(str->capacity, str->capacity << 1, 4)), 0))
-		return (0);
+		return (KO);
 	str->mem[str->size++] = byte;
 	str->mem[str->size] = 0;
-	return (1);
+	return (OK);
 }

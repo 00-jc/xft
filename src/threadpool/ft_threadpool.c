@@ -74,7 +74,7 @@ void	ft_threadpool_start(t_threadpool *tp)
 }
 
 __attribute__((__nonnull__(1, 2)))
-t_u32a	ft_threadpool_new(t_threadpool *tp, t_thread_arg *arg)
+t_result	ft_threadpool_new(t_threadpool *tp, t_thread_arg *arg)
 {
 	size_t			i;
 
@@ -92,9 +92,9 @@ t_u32a	ft_threadpool_new(t_threadpool *tp, t_thread_arg *arg)
 		if (pthread_create(tp->threads + i, nullptr,
 				ft_thread_run, (void *)arg))
 			return ((void)(pthread_mutex_unlock(&tp->mutex)),
-				ft_threadpool_destroy(tp, i), 0);
+				ft_threadpool_destroy(tp, i), KO);
 		++i;
 	}
 	tp->alive = 1;
-	return (1);
+	return (OK);
 }

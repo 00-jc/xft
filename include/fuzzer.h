@@ -50,7 +50,7 @@ typedef struct s_fuzzer
 }	t_fuzzer;
 
 t_fuzzer	ft_fuzzer_new(t_arena arena);
-int			ft_fuzzer_add_rand(t_fuzzer *fuzz)\
+t_result	ft_fuzzer_add_rand(t_fuzzer *fuzz)\
 				__attribute__((__nonnull__(1)));
 
 t_buffer	*ft_fuzz_get_rand(t_fuzzer *fuzz)\

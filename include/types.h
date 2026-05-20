@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 03:36:25 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/15 10:58:27 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/20 02:37:56 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,12 @@ typedef struct s_buffer
 }	t_buffer;
 
 # endif
+
+typedef enum e_result
+{
+	OK = 1,
+	KO = 0,
+}	t_result;
 
 typedef struct s_span
 {

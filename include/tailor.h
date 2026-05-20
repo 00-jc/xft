@@ -47,17 +47,17 @@ typedef struct s_tailor
 	t_u64a				swap;
 }	t_tailor;
 
-int			ft_tailor_new(t_tailor *t, t_f64 warmup_sec, t_u64a min_samples)\
+t_result	ft_tailor_new(t_tailor *t, t_f64 warmup_sec, t_u64a min_samples)\
 					__attribute__((nonnull(1)));
 
-int			ft_tailor_bench(t_tailor *t, t_tailor_bench benches[],\
+t_result	ft_tailor_bench(t_tailor *t, t_tailor_bench benches[],\
 				size_t size)\
 				__attribute__((__nonnull__(1, 2)));
 
 size_t		ft_tailor_getcount(const void *ptr)\
 				__attribute__((pure, __nonnull__(1)));
 
-int			ft_tailor_buffers(t_tailor *t, size_t *sizes,\
+t_result	ft_tailor_buffers(t_tailor *t, size_t *sizes,\
 				t_u8 *alignment, size_t n)\
 				__attribute__((__nonnull__(1, 2, 3)));
 

@@ -13,7 +13,7 @@
 #include "vec.h"
 
 __attribute__((__nonnull__(2), __always_inline__))
-inline int	ft_vec_reserve(t_allocator allocator, t_vec *restrict const vec,
+inline t_result	ft_vec_reserve(t_allocator allocator, t_vec *restrict const vec,
 		size_t type_size, size_t n)
 {
 	t_buffer	new_buf;
@@ -26,13 +26,13 @@ inline int	ft_vec_reserve(t_allocator allocator, t_vec *restrict const vec,
 	{
 		vec->buf = new_buf;
 		vec->capacity = new_buf.size / type_size;
-		return (1);
+		return (OK);
 	}
-	return (0);
+	return (KO);
 }
 
 __attribute__((__nonnull__(2)))
-int	ft_vec_extend(t_allocator allocator, t_vec *restrict const vec,
+t_result	ft_vec_extend(t_allocator allocator, t_vec *restrict const vec,
 		t_buffer data, size_t type_size)
 {
 	size_t	n;
@@ -45,10 +45,10 @@ int	ft_vec_extend(t_allocator allocator, t_vec *restrict const vec,
 		should_extend = vec->capacity < vec->size + n;
 		if (__builtin_expect(should_extend
 				&& !ft_vec_reserve(allocator, vec, type_size, n), 0))
-			return (0);
+			return (KO);
 		ft_memcpy(vec->buf.mem + (vec->size * type_size),
 			data.mem, data.size);
 		vec->size += n;
 	}
-	return (1);
+	return (OK);
 }

@@ -12,7 +12,7 @@
 
 #include "perf.h"
 
-int	ft_bind_process_to_cpu(t_u32 cpu)
+t_result	ft_bind_process_to_cpu(t_u32 cpu)
 {
 	pid_t		pid;
 	cpu_set_t	set;
@@ -21,6 +21,6 @@ int	ft_bind_process_to_cpu(t_u32 cpu)
 	CPU_ZERO(&set);
 	CPU_SET(cpu, &set);
 	if (sched_setaffinity(pid, sizeof(set), &set) == -1)
-		return (0);
-	return (1);
+		return (KO);
+	return (OK);
 }

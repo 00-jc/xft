@@ -13,7 +13,7 @@
 #include "private/ft_p_tailor.h"
 
 __attribute__((__nonnull__(1, 2)))
-int	ft_tailor_bench(t_tailor *t, t_tailor_bench benches[], size_t size)
+t_result	ft_tailor_bench(t_tailor *t, t_tailor_bench benches[], size_t size)
 {
 	size_t	i;
 
@@ -21,8 +21,8 @@ int	ft_tailor_bench(t_tailor *t, t_tailor_bench benches[], size_t size)
 	while (i < size)
 	{
 		if (!ft_tailor_benchfn(t, benches[i].fn, benches[i].name))
-			return (0);
+			return (KO);
 		++i;
 	}
-	return (1);
+	return (OK);
 }

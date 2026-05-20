@@ -21,7 +21,7 @@ void	ft_perf_start_sample(t_perf_counters c, t_perf_sample *t)
 }
 
 __attribute__((__nonnull__(1, 2), __always_inline__))
-static inline int	ft__get_sample_plexed(t_perf_counters c, t_u64 *v)
+static inline t_result	ft__get_sample_plexed(t_perf_counters c, t_u64 *v)
 {
 	size_t			i;
 	t_perf_read		t;
@@ -32,7 +32,7 @@ static inline int	ft__get_sample_plexed(t_perf_counters c, t_u64 *v)
 	if (__builtin_expect(ft_read((int)c[i],
 				(t_u8 *)&t, sizeof(t)) != sizeof(t)
 			|| t.running == 0, 0))
-		return (0);
+		return (KO);
 	adjust = t.running != t.enabled;
 	if (adjust)
 	{
@@ -45,11 +45,11 @@ static inline int	ft__get_sample_plexed(t_perf_counters c, t_u64 *v)
 	}
 	else
 		ft_memcpy(v, t.val, sizeof(t_u64) * (SW_COUNTERS_N + HW_COUNTERS_N));
-	return (1);
+	return (OK);
 }
 
 __attribute__((__nonnull__(2, 3)))
-int	ft_perf_collect_sample(size_t n,
+t_result	ft_perf_collect_sample(size_t n,
 	t_perf_counters c, t_perf_sample *s)
 {
 	t_u64a	v[SW_COUNTERS_N + HW_COUNTERS_N];
@@ -58,8 +58,8 @@ int	ft_perf_collect_sample(size_t n,
 	ft_perf_counters_stop(c);
 	t = ft_get_nanos();
 	ft_memset(v, 0, (SW_COUNTERS_N + HW_COUNTERS_N) * sizeof(t_u64a));
-	if (__builtin_expect(ft__get_sample_plexed(c, v) == 0, 0))
-		return (0);
+	if (__builtin_expect(ft__get_sample_plexed(c, v) == KO, 0))
+		return (KO);
 	s->n = n;
 	s->ns = t - s->ns;
 	s->alignment_faults = v[1];
@@ -70,5 +70,5 @@ int	ft_perf_collect_sample(size_t n,
 	s->cache_miss = v[6];
 	s->branches = v[7];
 	s->branch_miss = v[8];
-	return (1);
+	return (OK);
 }

@@ -13,7 +13,7 @@
 #include "fuzzer.h"
 
 __attribute__((__nonnull__(1), __always_inline__))
-static inline int	ft_fuzzer_init__internal(t_fuzzer *fuzz, size_t i,
+static inline t_result	ft_fuzzer_init__internal(t_fuzzer *fuzz, size_t i,
 	size_t n, t_arena_checkpoint c)
 {
 	size_t		len;
@@ -25,15 +25,15 @@ static inline int	ft_fuzzer_init__internal(t_fuzzer *fuzz, size_t i,
 		align = 1 << (ft_xoshiro256ss(fuzz->xo) & 6);
 		fuzz->buffers[i].mem = ft_arena_alloc(&fuzz->arena, len, align);
 		if (fuzz->buffers[i].mem == nullptr)
-			return (ft_arena_rewind(&fuzz->arena, c), 0);
+			return (ft_arena_rewind(&fuzz->arena, c), KO);
 		fuzz->buffers[i].size = len;
 		++i;
 	}
-	return (1);
+	return (OK);
 }
 
 __attribute__((__nonnull__(1)))
-int	ft_fuzzer_add_rand(t_fuzzer *fuzz)
+t_result	ft_fuzzer_add_rand(t_fuzzer *fuzz)
 {
 	t_arena_checkpoint	c;
 	size_t				n;
@@ -43,7 +43,7 @@ int	ft_fuzzer_add_rand(t_fuzzer *fuzz)
 	c = ft_arena_checkpoint(&fuzz->arena);
 	fuzz->buffers = ft_arena_alloc(&fuzz->arena, sizeof(t_buffer) * n, 64);
 	if (!fuzz->buffers)
-		return (0);
+		return (KO);
 	i = fuzz->buf_n;
 	fuzz->buf_n = n;
 	return (ft_fuzzer_init__internal(fuzz, i, n, c));

@@ -6,14 +6,15 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 14:32:14 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/15 18:54:16 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/20 02:50:34 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vec.h"
 
 __attribute__((__nonnull__(2, 3), __always_inline__, hot))
-inline int	ft_vec_push_back(t_allocator allocator, t_vec *restrict const vec,
+inline t_result	ft_vec_push_back(t_allocator allocator,
+		t_vec *restrict const vec,
 		const t_u8 *restrict const data, size_t type_size)
 {
 	if (vec->buf.mem == nullptr)
@@ -22,10 +23,10 @@ inline int	ft_vec_push_back(t_allocator allocator, t_vec *restrict const vec,
 		if (__builtin_expect(vec->size == vec->capacity
 				&& !ft_vec_reserve(allocator, vec, type_size,
 					ft_tern(vec->capacity, vec->capacity << 1, 4)), 0))
-			return (0);
+			return (KO);
 		ft_memcpy(vec->buf.mem + (vec->size * type_size),
 			data, type_size);
 		++vec->size;
-		return (1);
+		return (OK);
 	}
 }

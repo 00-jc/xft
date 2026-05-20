@@ -60,14 +60,14 @@ typedef struct s_plankb
 t_plankb		ft_get_kb(t_tailor *t, t_tailor_fn fn)\
 					__attribute__((__nonnull__(1, 2)));
 
-int				ft_bootstrap(t_tailor *t, t_buffer surv, t_plankb plan,\
+t_result		ft_bootstrap(t_tailor *t, t_buffer surv, t_plankb plan,\
 					t_blk8r name) __attribute__((__nonnull__(1)));
 
 void			ft_print_summary(t_buffer surv, t_plankb plan, t_blk8r name,\
 					t_u64a data[4])\
 					__attribute__((__nonnull__(3, 4)));
 
-int				ft_tailor_benchfn(t_tailor *t, t_tailor_fn fn, t_blk8r name)\
+t_result		ft_tailor_benchfn(t_tailor *t, t_tailor_fn fn, t_blk8r name)\
 					__attribute__((__nonnull__(1)));
 
 #endif

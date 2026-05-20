@@ -19,7 +19,7 @@ void		ft_map_insert_unchecked(t_map *__restrict__ const map,\
 				t_buffer key, t_u8 *__restrict__ const value)\
 				__attribute__((__nonnull__(1, 3)));
 
-t_u32a		ft_map_rehash(t_allocator allocator,\
+t_result	ft_map_rehash(t_allocator allocator,\
 				t_map *__restrict__ const map)\
 				__attribute__((__nonnull__(2)));
 

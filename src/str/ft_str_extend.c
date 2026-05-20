@@ -13,7 +13,7 @@
 #include "str.h"
 
 __attribute__((__nonnull__(2)))
-int	ft_str_reserve(t_allocator allocator,
+t_result	ft_str_reserve(t_allocator allocator,
 	t_str *restrict const str, size_t n)
 {
 	t_buffer	new_buf;
@@ -25,14 +25,14 @@ int	ft_str_reserve(t_allocator allocator,
 	new_buf = allocator.interface.realloc(allocator.allocator,
 			ft_fatptr(str->mem, str->capacity), new_cap, ft_next_pow2(new_cap));
 	if (__builtin_expect(new_buf.mem == nullptr, 0))
-		return (0);
+		return (KO);
 	str->mem = new_buf.mem;
 	str->capacity = new_buf.size;
-	return (1);
+	return (OK);
 }
 
 __attribute__((__nonnull__(2, 3)))
-int	ft_str_extend(t_allocator allocator, t_str *restrict const str,
+t_result	ft_str_extend(t_allocator allocator, t_str *restrict const str,
 		const t_u8 *restrict const mem, size_t n)
 {
 	t_u8	should_extend;
@@ -42,8 +42,8 @@ int	ft_str_extend(t_allocator allocator, t_str *restrict const str,
 	should_extend = str->capacity < str->size + n + 1;
 	if (__builtin_expect(should_extend
 			&& !ft_str_reserve(allocator, str, n), 0))
-		return (0);
+		return (KO);
 	ft_memcpy(str->mem + str->size, mem, n + 1);
 	str->size += n;
-	return (1);
+	return (OK);
 }

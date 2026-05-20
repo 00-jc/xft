@@ -13,7 +13,7 @@
 #include "private/ft_p_map.h"
 
 __attribute__((__nonnull__(2)))
-t_u32a	ft_map_rehash(t_allocator allocator, t_map *restrict const map)
+t_result	ft_map_rehash(t_allocator allocator, t_map *restrict const map)
 {
 	t_map	new;
 	size_t	i;
@@ -22,7 +22,7 @@ t_u32a	ft_map_rehash(t_allocator allocator, t_map *restrict const map)
 		__builtin_unreachable();
 	new = ft_map_with(allocator, map->table_size << 1);
 	if (!new.meta || !new.buckets)
-		return (0);
+		return (KO);
 	i = 0;
 	while (i < map->table_size)
 	{
@@ -35,5 +35,5 @@ t_u32a	ft_map_rehash(t_allocator allocator, t_map *restrict const map)
 	allocator.interface.free(allocator.allocator, map->meta_buf);
 	allocator.interface.free(allocator.allocator, map->bucket_buf);
 	*map = new;
-	return (1);
+	return (OK);
 }

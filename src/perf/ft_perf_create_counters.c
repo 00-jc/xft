@@ -38,7 +38,7 @@ static inline struct perf_event_attr	ft__getattr(t_u32a type, long conf)
 }
 
 __attribute__((__nonnull__(1)))
-static inline int	ft__init_hw(t_perf_counters c)
+static inline t_result	ft__init_hw(t_perf_counters c)
 {
 	size_t					i;
 	struct perf_event_attr	attr;
@@ -54,15 +54,15 @@ static inline int	ft__init_hw(t_perf_counters c)
 		{
 			while (i)
 				close((int)c[--i]);
-			return (0);
+			return (KO);
 		}
 		++i;
 	}
-	return (1);
+	return (OK);
 }
 
 __attribute__((__nonnull__(1)))
-static inline int	ft__init_sw(t_perf_counters c)
+static inline t_result	ft__init_sw(t_perf_counters c)
 {
 	size_t					i;
 	struct perf_event_attr	attr;
@@ -70,7 +70,7 @@ static inline int	ft__init_sw(t_perf_counters c)
 	attr = ft__getattr(PERF_TYPE_SOFTWARE, get_sw_counters()[0]);
 	c[0] = syscall(SYS_perf_event_open, &attr, 0, -1, -1, PERF_FLAG_FD_CLOEXEC);
 	if (c[0] == -1)
-		return (0);
+		return (KO);
 	i = 1;
 	while (i < SW_COUNTERS_N)
 	{
@@ -81,18 +81,18 @@ static inline int	ft__init_sw(t_perf_counters c)
 		{
 			while (i)
 				close((int)c[--i]);
-			return (0);
+			return (KO);
 		}
 		++i;
 	}
-	return (1);
+	return (OK);
 }
 
 __attribute__((__nonnull__(1)))
-int	ft_perf_create_counters(t_perf_counters c)
+t_result	ft_perf_create_counters(t_perf_counters c)
 {
-	if (__builtin_expect(ft__init_sw(c) == 0
-			|| ft__init_hw(c) == 0, 0))
-		return (0);
-	return (1);
+	if (__builtin_expect(ft__init_sw(c) == KO
+			|| ft__init_hw(c) == KO, 0))
+		return (KO);
+	return (OK);
 }

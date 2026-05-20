@@ -31,7 +31,7 @@ void			ft_vec_destroy(t_allocator allocator, t_vec *v)\
 size_t			ft_vec_len(const t_vec *__restrict__ const v, size_t type_size)\
 					__attribute__((__nonnull__(1), pure));
 
-int				ft_vec_push_back(t_allocator allocator,\
+t_result		ft_vec_push_back(t_allocator allocator,\
 					t_vec *__restrict__ const vec,\
 					const t_u8 *__restrict__ const data, size_t type_size)\
 					__attribute__((__nonnull__(2, 3)));
@@ -51,12 +51,12 @@ void			*ft_vec_get_last(const t_vec *__restrict__ const vec,\
 const void		*ft_vec_peek_last(const t_vec *__restrict__ const vec,\
 					size_t type_size) __attribute__((__nonnull__(1), pure));
 
-int				ft_vec_reserve(t_allocator allocator,\
+t_result		ft_vec_reserve(t_allocator allocator,\
 					t_vec *__restrict__ const vec,\
 					size_t type_size, size_t n)\
 					__attribute__((__nonnull__(2)));
 
-int				ft_vec_extend(t_allocator allocator,\
+t_result		ft_vec_extend(t_allocator allocator,\
 					t_vec *__restrict__ const vec,\
 					t_buffer data, size_t type_size)\
 					__attribute__((__nonnull__(2)));
@@ -64,17 +64,17 @@ int				ft_vec_extend(t_allocator allocator,\
 void			ft_vec_pop(t_vec *__restrict__ const v)\
 					__attribute__((__nonnull__(1)));
 
-int				ft_vec_popmv(t_vec *__restrict__ const v, void *const dest,
+t_result		ft_vec_popmv(t_vec *__restrict__ const v, void *const dest,
 					size_t type_size) __attribute__((__nonnull__(1)));
 
-int				ft_vec_popf(t_vec *__restrict__ const vec, size_t type_size,
+t_result		ft_vec_popf(t_vec *__restrict__ const vec, size_t type_size,
 					void (*f) (void *))\
 					__attribute__((__nonnull__(1)));
 
-int				ft_vec_remove(t_vec *__restrict__ const v, size_t i,\
+t_result		ft_vec_remove(t_vec *__restrict__ const v, size_t i,\
 					size_t type_size) __attribute__((__nonnull__(1)));
 
-int				ft_vec_removef(t_vec *__restrict__ const v, size_t i,\
+t_result		ft_vec_removef(t_vec *__restrict__ const v, size_t i,\
 					size_t type_size, void (*f)(void *))\
 					__attribute__((__nonnull__(1)));
 

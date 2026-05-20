@@ -63,8 +63,8 @@ typedef enum e_sw_counters
 
 typedef long	t_perf_counters[9];
 
-int				ft_bind_process_to_cpu(t_u32 cpu);
-int				ft_perf_create_counters(t_perf_counters c)\
+t_result		ft_bind_process_to_cpu(t_u32 cpu);
+t_result		ft_perf_create_counters(t_perf_counters c)\
 					__attribute__((__nonnull__(1)));
 void			ft_perf_counters_reset(t_perf_counters c)\
 					__attribute__((__nonnull__(1)));
@@ -74,7 +74,7 @@ void			ft_perf_counters_stop(t_perf_counters c)\
 					__attribute__((__nonnull__(1)));
 void			ft_perf_start_sample(t_perf_counters c, t_perf_sample *s)\
 					__attribute__((__nonnull__(1, 2)));
-int				ft_perf_collect_sample(size_t n,\
+t_result		ft_perf_collect_sample(size_t n,\
 					t_perf_counters c, t_perf_sample *s)\
 					__attribute__((__nonnull__(2, 3)));
 void			ft_perf_destroy_counters(t_perf_counters c)\

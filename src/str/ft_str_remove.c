@@ -13,16 +13,16 @@
 #include "str.h"
 
 __attribute__((__nonnull__(1)))
-int	ft_str_remove(t_str *restrict const v, size_t i)
+t_result	ft_str_remove(t_str *restrict const v, size_t i)
 {
 	t_u8	*start;
 	size_t	len;
 
 	if (!v->mem || v->size <= i)
-		return (0);
+		return (KO);
 	start = v->mem + i;
 	len = v->size - i;
 	ft_memmove(start, start + 1, len);
 	--v->size;
-	return (1);
+	return (OK);
 }
