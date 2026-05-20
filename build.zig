@@ -6,7 +6,7 @@
 //   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2026/05/15 07:20:25 by jaicastr          #+#    #+#             //
-//   Updated: 2026/05/20 15:36:28 by jaicastr         ###   ########.fr       //
+//   Updated: 2026/05/20 16:04:40 by jaicastr         ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 const std = @import("std");
@@ -106,6 +106,7 @@ const CFLAGS_COMMON = &[_][]const u8{
     "-ftrivial-auto-var-init=zero",
     "-fno-common",
     "-fstack-clash-protection",
+    "-fexperimental-late-parse-attributes",
     "-g3",
     if (builtin.cpu.arch == .x86) "-fcf-protection=full" else "",
 } ++ WARNS_COMMON ;
