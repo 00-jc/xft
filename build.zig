@@ -6,10 +6,11 @@
 //   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2026/05/15 07:20:25 by jaicastr          #+#    #+#             //
-//   Updated: 2026/05/20 15:31:00 by jaicastr         ###   ########.fr       //
+//   Updated: 2026/05/20 15:36:28 by jaicastr         ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 const std = @import("std");
+const builtin = @import("builtin");
 
 const NAME       = "xft";
 const OBJDIR     = "build";
@@ -102,16 +103,12 @@ const CFLAGS_COMMON = &[_][]const u8{
     "-finline-functions",
     "-fvisibility=hidden",
     "-fstack-protector-strong",
-    "-fcf-protection=full",
     "-ftrivial-auto-var-init=zero",
     "-fno-common",
     "-fstack-clash-protection",
-    "-fslp-vectorize",
-    "-ftree-slp-vectorize",
-    "-ftree-vectorize",
-    "-fvectorize",
     "-g3",
-} ++ WARNS_COMMON;
+    if (builtin.cpu.arch == .x86) "-fcf-protection=full" else "",
+} ++ WARNS_COMMON ;
 
 const SRCS_ALLOC = &[_][]const u8{
     "src/alloc/ft_alloc_clone.c",

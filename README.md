@@ -86,7 +86,10 @@ library started around april of 2025. Doesn't really impact
 the code bc there were massive rewrites but worth noting.
 
 It has only been tested on x86_64, there might be quirks about
-toolchains or flags, but hopefully they should not affect the logic
+toolchains or flags, but hopefully they should not affect logic
 and should be easily tackled.
+
+Code compiles clean for aarch64 at the very least, but cannot be
+tested due to lack of supporting hw.
 
 ```
