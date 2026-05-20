@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/15 04:03:47 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/15 04:32:49 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/20 15:29:24 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ inline int	ft_stat(const char *restrict path, struct stat *statbuf)
 __attribute__((__nonnull__(1), __always_inline__))
 inline int	ft_stat(const char *restrict path, struct stat *statbuf)
 {
-	return (syscall(SYS_stat, path, statbuf));
+	return ((int)syscall(SYS_newfstatat, AT_FDCWD, path, statbuf, 0));
 }
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 23:58:49 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/15 04:32:10 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/20 15:26:43 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ __attribute__((nonnull(3), __always_inline__))
 inline t_u32a	ft_fcntl(t_u32a fd, t_u32a cmd,
 	const t_flock *restrict const arg)
 {
-	return (syscall(SYS_fcntl, fd, cmd, arg));
+	return ((t_u32a)syscall(SYS_fcntl, fd, cmd, arg));
 }
 
 #endif
