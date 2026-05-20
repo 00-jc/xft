@@ -28,18 +28,65 @@ Build (make fallback):
     make clean
     make fclean
 
+Requirements:
+
+- Requires GCC or Clang with C23 and C99 support.
+- Linux.
+- Norminette >3.3.59 (lastest release)
+- Libc (this lib is not freestanding).
+- Zig requires clang/llvm.
+- Makefile requires one of clang or gcc.
+- Makefile requires one of each of llvm-ar/gcc-ar and
+  llvm-randlib/gcc-randlib to be installed
+
+Implementation details:
+
+- Uses src/tailor/ for the bench target
+- Uses src/fuzz/ for the fuzz target
+- No allocator is thread safe.
+- Functions that can fail return explicit errors as values,
+  t_result {OK|KO}, contructor, return 0-initialized
+  structs for the sake of avoiding stack spills,
+  and allocators return t_buffer{mem:nullptr,len:0} on failure.
+- Almost all functions assume non-null pointers and valid data,
+  the programmer is responsible for correct usage of the library.
+- The library is most likely to crash directly than return an error.
+- Any function that allocates memory will ask you for an allocator
+  Vtable interface.
+- Test/Benches regarding to strlen in gcc might fail,
+  gcc's redzoning flag it but works fine in real world
+  usage, clang/llvm runtimes pass the sanitized tests fine.
+
+Guarantees:
+
+- All assembly is written as inline `__asm__` in C files and protected
+  at compile time. No raw assembly nor hidden/extern code that the compiler
+  cannot see.
+- All vector and SIMD is done by vector types, not includes
+  or 'propietary' logic. Vectors may or may not be portable solely
+  based on the compiler and target.
+- No partial recovery or automatic cleanup of resources on
+  non-fatal failure, the programmer must account for that explicitly.
+- All files pass norminette.
+- All logic is contained in functions, no macros exist except for
+  literals, as per norminette, inlining accross translation units
+  is done via lto, no preprocessor or logic in headers magic.
+
+Philosophy:
+
+- Low latency, correctness and specialization over general code.
+- Assumes input validation at initialization. 
+- Explicit intent through type system and arguments, no state without
+  an owner, and no owners in dynamic memory.
+
 Notes:
 
-- Requires GCC or Clang with C23 and C99 support
-- Only tested with GCC >14.0 and Clang >20.1
-- Linux only
-- Targets Norminette >3.3.59
-- Uses src/tailor/ for the bench target
-- Uses src/fuzz/ for the fuzzer
-- Test/Benches regarding to strlen in gcc might fail,
-  gcc's sanitizer is too aggressive redzoning, clang
-  works fine, zig tests are stricter than clang but pass.
-- All allocators are NOT thread safe.
-- Functions that can fail return t_result {OK|KO}, but contructors
-  return 0-initialized structs for the sake of avoiding stack spills.
+~500 commits were lost when migrating to codeberg, this
+library started around april of 2025. Doesn't really impact
+the code bc there were massive rewrites but worth noting.
+
+It has only been tested on x86_64, there might be quirks about
+toolchains or flags, but hopefully they should not affect the logic
+and should be easily tackled.
+
 ```

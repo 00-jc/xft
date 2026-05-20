@@ -6,7 +6,7 @@
 #    By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/01/18 03:43:49 by jaicastr          #+#    #+#              #
-#    Updated: 2026/05/19 22:41:20 by jaicastr         ###   ########.fr        #
+#    Updated: 2026/05/20 09:41:36 by jaicastr         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -437,6 +437,6 @@ analyze:
 		-fanalyzer $(SRCS) -c && rm -f *.o
 	$(CC_GCC) $(WARNS_GCC) $(CFLAGS_OPT) $(INCLUDES) \
 		-fanalyzer $(SRCS) -c && rm -f *.o
-	@norminette
+	norminette
 
 .PHONY: all clean fclean re analyze

@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 17:14:01 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/15 04:22:55 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/20 10:19:04 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #ifndef IO_H
@@ -43,9 +43,11 @@ void			ft_fprintf(int fd, const char *__restrict__ const fmt, ...)\
 					__attribute__((__nonnull__(2)));
 void			ft_vfprintf(int fd, const char *fmt, va_list args)\
 					__attribute__((__nonnull__(2), used));
-t_file			ft_read_file(const char *__restrict__ const fname)\
-					__attribute__((__nonnull__(1)));
-void			ft_close_file(t_file *__restrict__ const f)\
-					__attribute__((__nonnull__(1)));
+t_file			ft_read_file(t_allocator alloc,\
+					const char *__restrict__ const fname)\
+					__attribute__((__nonnull__(2)));
+void			ft_close_file(t_allocator alloc,\
+					t_file *__restrict__ const f)\
+					__attribute__((__nonnull__(2)));
 
 #endif
