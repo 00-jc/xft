@@ -67,10 +67,14 @@ Guarantees:
   based on the compiler and target.
 - No partial recovery or automatic cleanup of resources on
   non-fatal failure, the programmer must account for that explicitly.
-- All files pass norminette.
-- All logic is contained in functions, no macros exist except for
-  literals, as per norminette, inlining accross translation units
-  is done via lto, no preprocessor or logic in headers magic.
+
+Style Rules:
+
+- All files MUST pass norminette.
+- All logic is MUST be contained in functions, no macros except for
+  literals (as per norminette). Inlining accross translation units
+  is done via lto and the toolchain, no preprocessor or logic in headers.
+- GNU complexity must NOT report a complexity score over 9 for any file.
 
 Philosophy:
 

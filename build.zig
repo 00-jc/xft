@@ -6,7 +6,7 @@
 //   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2026/05/15 07:20:25 by jaicastr          #+#    #+#             //
-//   Updated: 2026/05/20 16:04:40 by jaicastr         ###   ########.fr       //
+//   Updated: 2026/05/20 21:21:30 by jaicastr         ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 const std = @import("std");
@@ -637,7 +637,16 @@ pub fn build(b: *std.Build) !void
     }
     const analyze_step = b.step("analyze", "Run clang static analyzer");
     const analyze_cmd = b.addSystemCommand(
-        .{"clang"} ++ CFLAGS_COMMON ++ .{ "--analyze", "--analyzer-output", "text", "-I", INCLUDES } ++ MODULES,
+        .{"clang"} ++ CFLAGS_COMMON ++ .{ "--analyze", "--analyzer-output", "text", "-I", INCLUDES} ++ MODULES
     );
     analyze_step.dependOn(&analyze_cmd.step);
+    const complexity_cmd = b.addSystemCommand(
+        .{"complexity"} ++ .{"--threshold", "0", "--horrid", "10", "--histogram"} ++ MODULES,
+    );
+    const norminette = b.addSystemCommand(
+        &.{"norminette"},
+    );
+    const lint_step = b.step("lint", "lint code and enforce formatting");
+    lint_step.dependOn(&complexity_cmd.step);
+    lint_step.dependOn(&norminette.step);
 }
