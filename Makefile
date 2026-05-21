@@ -10,7 +10,7 @@
 #                                                                              #
 # **************************************************************************** #
 
-NAME       := xft.a
+NAME       := libxft.a
 OBJDIR     := build
 
 CC_CLANG   := clang
@@ -226,7 +226,8 @@ SRCS_IO := \
 	src/io/ft_read_file_portable.c \
 	src/io/ft_read_file.c \
 	src/io/ft_printf_helpers.c \
-	src/io/ft_printf.c
+	src/io/ft_printf.c \
+	src/io/ft_lockf.c
 
 SRCS_MATH := \
 	src/math/3d/ft_3dadd.c \
@@ -288,20 +289,20 @@ SRCS_THREADPOOL := \
 	src/threadpool/ft_threadpool_wait.c
 
 SRCS_VEC := \
-	src/vec/ft_vec_remove.c \
-	src/vec/ft_vec_pop.c \
-	src/vec/ft_vec.c \
-	src/vec/ft_vec_free.c \
-	src/vec/ft_vec_push_back.c \
-	src/vec/ft_vec_get.c \
-	src/vec/ft_vec_bytesize.c \
-	src/vec/ft_vec_extend.c
+	src/containers/vec/ft_vec_remove.c \
+	src/containers/vec/ft_vec_pop.c \
+	src/containers/vec/ft_vec.c \
+	src/containers/vec/ft_vec_free.c \
+	src/containers/vec/ft_vec_push_back.c \
+	src/containers/vec/ft_vec_get.c \
+	src/containers/vec/ft_vec_bytesize.c \
+	src/containers/vec/ft_vec_extend.c \
 
 SRCS_STR := \
-	src/str/ft_str.c \
-	src/str/ft_str_extend.c \
-	src/str/ft_str_push_back.c \
-	src/str/ft_str_remove.c
+	src/containers/str/ft_str.c \
+	src/containers/str/ft_str_extend.c \
+	src/containers/str/ft_str_push_back.c \
+	src/containers/str/ft_str_remove.c
 
 SRCS_BMI := \
 	src/bmi/__populate.c \
@@ -344,12 +345,12 @@ SRCS_ENV := \
 	src/env/ft_getenv.c
 
 SRCS_MAP := \
-	src/swissmap/ft_map_insert.c \
-	src/swissmap/ft_map_lookup.c \
-	src/swissmap/ft_map_delete.c \
-	src/swissmap/ft_map_rehash.c \
-	src/swissmap/ft_map_insert_unchecked.c \
-	src/swissmap/ft_map.c
+	src/containers/swissmap/ft_map_insert.c \
+	src/containers/swissmap/ft_map_lookup.c \
+	src/containers/swissmap/ft_map_delete.c \
+	src/containers/swissmap/ft_map_rehash.c \
+	src/containers/swissmap/ft_map_insert_unchecked.c \
+	src/containers/swissmap/ft_map.c
 
 SRCS_HINT := \
 	src/hint/ft_pin_invariant.c \
@@ -357,14 +358,14 @@ SRCS_HINT := \
 	src/hint/ft_hardcrash.c
 
 SRCS_TOK := \
-	src/tokenizer/ft_eat_u128.c \
-	src/tokenizer/ft_eat_u256.c \
-	src/tokenizer/ft_eat_u512.c \
-	src/tokenizer/ft_eat_until.c \
-	src/tokenizer/ft_eat_u8.c \
-	src/tokenizer/ft_sets.c \
-	src/tokenizer/ft_tokenizer.c \
-	src/tokenizer/ft_eat_while.c
+	src/containers/tokenizer/ft_eat_u128.c \
+	src/containers/tokenizer/ft_eat_u256.c \
+	src/containers/tokenizer/ft_eat_u512.c \
+	src/containers/tokenizer/ft_eat_until.c \
+	src/containers/tokenizer/ft_eat_u8.c \
+	src/containers/tokenizer/ft_sets.c \
+	src/containers/tokenizer/ft_tokenizer.c \
+	src/containers/tokenizer/ft_eat_while.c
 
 SRCS_TIME := \
 	src/time/ft_get_nanos.c

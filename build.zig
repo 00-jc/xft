@@ -170,6 +170,7 @@ const SRCS_IO = &[_][]const u8{
     "src/io/ft_read_file.c",
     "src/io/ft_printf_helpers.c",
     "src/io/ft_printf.c",
+    "src/io/ft_lockf.c",
 };
 
 const SRCS_MATH = &[_][]const u8{
@@ -235,21 +236,21 @@ const SRCS_THREADPOOL = &[_][]const u8{
 };
 
 const SRCS_VEC = &[_][]const u8{
-    "src/vec/ft_vec_remove.c",
-    "src/vec/ft_vec_pop.c",
-    "src/vec/ft_vec.c",
-    "src/vec/ft_vec_free.c",
-    "src/vec/ft_vec_push_back.c",
-    "src/vec/ft_vec_get.c",
-    "src/vec/ft_vec_bytesize.c",
-    "src/vec/ft_vec_extend.c",
+    "src/containers/vec/ft_vec_remove.c",
+    "src/containers/vec/ft_vec_pop.c",
+    "src/containers/vec/ft_vec.c",
+    "src/containers/vec/ft_vec_free.c",
+    "src/containers/vec/ft_vec_push_back.c",
+    "src/containers/vec/ft_vec_get.c",
+    "src/containers/vec/ft_vec_bytesize.c",
+    "src/containers/vec/ft_vec_extend.c",
 };
 
 const SRCS_STR = &[_][]const u8{
-    "src/str/ft_str.c",
-    "src/str/ft_str_extend.c",
-    "src/str/ft_str_push_back.c",
-    "src/str/ft_str_remove.c",
+    "src/containers/str/ft_str.c",
+    "src/containers/str/ft_str_extend.c",
+    "src/containers/str/ft_str_push_back.c",
+    "src/containers/str/ft_str_remove.c",
 };
 
 const SRCS_BMI = &[_][]const u8{
@@ -296,12 +297,12 @@ const SRCS_ENV = &[_][]const u8{
 };
 
 const SRCS_MAP = &[_][]const u8{
-    "src/swissmap/ft_map_insert.c",
-    "src/swissmap/ft_map_lookup.c",
-    "src/swissmap/ft_map_delete.c",
-    "src/swissmap/ft_map_rehash.c",
-    "src/swissmap/ft_map_insert_unchecked.c",
-    "src/swissmap/ft_map.c",
+    "src/containers/swissmap/ft_map_insert.c",
+    "src/containers/swissmap/ft_map_lookup.c",
+    "src/containers/swissmap/ft_map_delete.c",
+    "src/containers/swissmap/ft_map_rehash.c",
+    "src/containers/swissmap/ft_map_insert_unchecked.c",
+    "src/containers/swissmap/ft_map.c",
 };
 
 const SRCS_HINT = &[_][]const u8{
@@ -311,14 +312,14 @@ const SRCS_HINT = &[_][]const u8{
 };
 
 const SRCS_TOK = &[_][]const u8{
-    "src/tokenizer/ft_eat_u128.c",
-    "src/tokenizer/ft_eat_u256.c",
-    "src/tokenizer/ft_eat_u512.c",
-    "src/tokenizer/ft_eat_until.c",
-    "src/tokenizer/ft_eat_u8.c",
-    "src/tokenizer/ft_sets.c",
-    "src/tokenizer/ft_tokenizer.c",
-    "src/tokenizer/ft_eat_while.c",
+    "src/containers/tokenizer/ft_eat_u128.c",
+    "src/containers/tokenizer/ft_eat_u256.c",
+    "src/containers/tokenizer/ft_eat_u512.c",
+    "src/containers/tokenizer/ft_eat_until.c",
+    "src/containers/tokenizer/ft_eat_u8.c",
+    "src/containers/tokenizer/ft_sets.c",
+    "src/containers/tokenizer/ft_tokenizer.c",
+    "src/containers/tokenizer/ft_eat_while.c",
 };
 
 const SRCS_TIME = &[_][]const u8{
