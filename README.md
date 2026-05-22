@@ -51,8 +51,9 @@ zig build -Dtarget=...             # cross-compile target
 - Uses `src/fuzz/` for the fuzz target
 - No allocator is thread safe
 - Functions that can fail return explicit errors as values: `t_result {OK|KO}`; constructors return zero-initialized structs to avoid stack spills; allocators return `t_buffer{mem:nullptr,len:0}` on failure
-- Almost all functions assume non-null pointers and valid data; correct usage is the programmer's responsibility
-- The library is more likely to crash directly than return an error
+- Almost all functions assume non-null pointers and valid data; correct usage is the programmer's responsibility.
+- Will likely cause SIGSEV/SIGABRT on invalid data than return an error, errors will be returned if the function itself fails, not from the data it takes.
+- A function has one and one purpose only and it's either validation, logic or driving others.
 - Any function that allocates memory requires an allocator vtable interface
 - `strlen` tests/benches may fail under gcc due to redzoning, but work fine in real-world usage; clang/llvm runtimes pass the sanitized tests cleanly
 

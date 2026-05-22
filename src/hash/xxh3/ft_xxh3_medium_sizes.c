@@ -78,13 +78,13 @@ inline t_u64a	ft_xxh3_len_129to240(t_buffer input,
 	size_t	nb_rounds;
 	size_t	i;
 
+	nb_rounds = input.size >> 4;
 	if (!(input.size >= 129 && input.size <= 240)
-		|| (input.mem == nullptr || secret.mem == nullptr))
+		|| (input.mem == nullptr || secret.mem == nullptr)
+		|| nb_rounds < 8)
 		__builtin_unreachable();
 	acc = (t_u64)input.size * XXH3_PRIME64_1;
 	acc = ft_xxh3_len_129to240__first(input, secret, seed, acc);
-	nb_rounds = input.size >> 4;
-	ft_pin_invariant(nb_rounds >= 8);
 	i = 8;
 	while (i < nb_rounds)
 	{

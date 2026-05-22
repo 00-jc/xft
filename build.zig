@@ -650,4 +650,5 @@ pub fn build(b: *std.Build) !void
     const lint_step = b.step("lint", "lint code and enforce formatting");
     lint_step.dependOn(&complexity_cmd.step);
     lint_step.dependOn(&norminette.step);
+    b.installArtifact(xft);
 }
