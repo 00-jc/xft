@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/16 01:40:30 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/18 16:09:12 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/05/29 23:50:26 by username         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,9 @@ static inline int	ft_advance_slab(t_gpa *gpa)
 	buf = ft_palloc(GPA_SLABSIZE);
 	if (__builtin_expect(buf.mem == nullptr, 0))
 		return (0);
-	prev = gpa->slab;
+	prev = (void **)gpa->slab;
 	gpa->slab = buf.mem;
-	*(void **)gpa->slab = prev;
+	*(void **)gpa->slab = (void *)prev;
 	gpa->bmp = (t_blk8w)gpa->slab + sizeof(void **);
 	return (1);
 }
