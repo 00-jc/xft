@@ -1,26 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   __populate.c                                       :+:      :+:    :+:   */
+/*   tokenizer_types.h                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/14 02:10:01 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/02/20 05:01:36 by jaicastr         ###   ########.fr       */
+/*   Created: 2026/06/06 00:00:00 by jaicastr          #+#    #+#             */
+/*   Updated: 2026/06/06 00:00:00 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "mem.h"
+#ifndef TOKENIZER_TYPES_H
+# define TOKENIZER_TYPES_H
 
-__attribute__((hot, const, __always_inline__))
-inline t_u64	ft_populate(t_u8 y)
+# include "primitives.h"
+
+typedef struct s_tokenizer
 {
-	t_u64	x;
+	t_u8	*mem;
+	size_t	max;
+	size_t	cc;
+}	t_tokenizer;
 
-	x = (t_u64)y;
-	x |= x << 8;
-	x |= x << 16;
-	x |= x << 24;
-	x |= x << 32;
-	return (x);
-}
+typedef struct s_token
+{
+	t_u8	*mem;
+	size_t	len;
+}	t_token;
+
+typedef enum e_eater_select
+{
+	set_blank = 0,
+	set_alpha = 1,
+	set_digit = 2,
+	set_xdigit = 3,
+}	t_eater_select;
+
+#endif

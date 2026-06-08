@@ -24,7 +24,7 @@ inline void	*ft__fix_last_w(const t_u8 *restrict const ptr,
 	if (n != 0)
 	{
 		adjusted = (t_vu128 *)ft_overlap((void *)ptr, sizeof(t_vu128), n);
-		w = *(t_blk128r)adjusted == msk;
+		w = (t_vu128a)(*(t_blk128r)adjusted == msk);
 		packed = ft_bitpack128(w) & ft_roll_mask(sizeof(t_vu128a), n);
 		p = (t_uptr)adjusted + ft_memctz_u16(packed);
 		return ((void *)(-((t_uptr)(packed != 0)) & p));
@@ -61,7 +61,7 @@ inline void	*ft_memchr_sse(const void *restrict ptr, int c, size_t n)
 	while (n >= sizeof (t_vu128a))
 	{
 		ft_prefetch0(wptr, sizeof(t_vu128a) << 1);
-		w = *((t_blk128r)wptr) == (t_u8)c;
+		w = (t_vu128a)(*((t_blk128r)wptr) == (t_u8)c);
 		hasz = ft_bitpack128(w);
 		if (hasz)
 			return ((void)(hasz = (t_u16a)ft_memctz_u16(hasz)),

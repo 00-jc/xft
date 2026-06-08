@@ -16,9 +16,9 @@
 # include "private/ft_p_asm.h"
 # include "types.h"
 
-t_u64			__hasz64(t_u64 x)\
+t_u64			ft_hasz64(t_u64 x)\
 					__attribute__((const));
-t_u64			__populate(t_u8 y)\
+t_u64			ft_populate(t_u8 y)\
 					__attribute__((const));
 
 size_t			ft_memctz_u16(t_u16 x)\
@@ -39,15 +39,15 @@ size_t			ft_memclz_u64(t_u64 x)\
 size_t			ft_memclz_u128(t_u128 x)\
 					__attribute__((const));
 
-size_t			__max_s(size_t x, size_t y)\
+size_t			ft_max_s(size_t x, size_t y)\
 					__attribute__((const));
-t_u8			__maxu8(t_u8 x, t_u8 y)\
+t_u8			ft_maxu8(t_u8 x, t_u8 y)\
 					__attribute__((const));
-t_u32			__maxu32(t_u32 x, t_u32 y)\
+t_u32			ft_maxu32(t_u32 x, t_u32 y)\
 					__attribute__((const));
-t_u64			__maxu64(t_u64 x, t_u64 y)\
+t_u64			ft_maxu64(t_u64 x, t_u64 y)\
 					__attribute__((const));
-t_u128			__maxu128(t_u128 x, t_u128 y)\
+t_u128			ft_maxu128(t_u128 x, t_u128 y)\
 					__attribute__((const));
 
 t_u16a			ft_bswap16(t_u16a x)\

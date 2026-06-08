@@ -1,26 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   __populate.c                                       :+:      :+:    :+:   */
+/*   interface.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
+/*   By: username <your@mail.com>                   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/14 02:10:01 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/02/20 05:01:36 by jaicastr         ###   ########.fr       */
+/*   Created: 2026/06/06 04:19:44 by username          #+#    #+#             */
+/*   Updated: 2026/06/06 04:20:10 by username         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "mem.h"
+#ifndef INTERFACE_H
+# define INTERFACE_H
 
-__attribute__((hot, const, __always_inline__))
-inline t_u64	ft_populate(t_u8 y)
-{
-	t_u64	x;
+# include "types/interface_types.h"
 
-	x = (t_u64)y;
-	x |= x << 8;
-	x |= x << 16;
-	x |= x << 24;
-	x |= x << 32;
-	return (x);
-}
+#endif

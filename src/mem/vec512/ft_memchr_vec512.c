@@ -26,7 +26,7 @@ inline void	*ft__fix_last_w(const t_u8 *restrict const ptr,
 	if (n != 0)
 	{
 		adjusted = (t_vu512 *)ft_overlap((void *)ptr, sizeof(t_vu512), n);
-		w = *(t_blk512r)adjusted == msk;
+		w = (t_vu512a)(*(t_blk512r)adjusted == msk);
 		packed = ft_bitpack512(w) & ft_roll_mask(sizeof(t_vu512a), n);
 		p = (t_uptr)adjusted + ft_memctz_u64(packed);
 		return ((void *)(-((t_uptr)(packed != 0)) & p));
@@ -47,7 +47,7 @@ inline void	*ft_memchr_avx512(const void *restrict ptr, int c, size_t n)
 	while (n >= sizeof (t_vu512a))
 	{
 		ft_prefetch0(wptr, sizeof(t_vu512a) << 1);
-		w = *((t_blk512r)wptr) == (t_u8)c;
+		w = (t_vu512a)(*((t_blk512r)wptr) == (t_u8)c);
 		hasz = ft_bitpack512(w);
 		if (hasz)
 			return ((void)(hasz = ft_memctz_u64(hasz)),

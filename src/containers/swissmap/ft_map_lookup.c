@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/20 02:35:25 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/15 11:28:30 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/06/08 03:04:17 by username         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ static inline void	*ft__map_lookup(const t_map *restrict const map,
 	sse = ((t_blk128ra)map->meta)[data[GROUP]];
 	while (1)
 	{
-		mask = ft_bitpack128(sse == h2);
+		mask = ft_bitpack128((t_vu128)(sse == h2));
 		while (mask)
 		{
 			i = ft_memctz_u16(mask);

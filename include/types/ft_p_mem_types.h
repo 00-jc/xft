@@ -1,26 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   __populate.c                                       :+:      :+:    :+:   */
+/*   ft_p_mem_types.h                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/14 02:10:01 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/02/20 05:01:36 by jaicastr         ###   ########.fr       */
+/*   Created: 2026/06/06 00:00:00 by jaicastr          #+#    #+#             */
+/*   Updated: 2026/06/06 00:00:00 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "mem.h"
+#ifndef FT_P_MEM_TYPES_H
+# define FT_P_MEM_TYPES_H
 
-__attribute__((hot, const, __always_inline__))
-inline t_u64	ft_populate(t_u8 y)
+# include <stddef.h>
+
+typedef struct s_t_f64_size
 {
-	t_u64	x;
+	size_t		i;
+	size_t		blks;
+}	t_t_f64_size;
 
-	x = (t_u64)y;
-	x |= x << 8;
-	x |= x << 16;
-	x |= x << 24;
-	x |= x << 32;
-	return (x);
-}
+#endif

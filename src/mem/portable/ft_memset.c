@@ -16,6 +16,6 @@ __attribute__((__nonnull__(1), __always_inline__))
 inline void	ft_memset_64(void *restrict dest,
 	const t_u8 c, size_t n)
 {
-	*(t_blk64w)dest = __populate(c);
-	*(t_blk64w)ft_overlap(dest, 8, n) = __populate(c);
+	*(t_blk64w)dest = ft_populate(c);
+	*(t_blk64w)ft_overlap(dest, 8, n) = ft_populate(c);
 }

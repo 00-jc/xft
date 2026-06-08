@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_memcmp_avx256.c                                 :+:      :+:    :+:   */
+/*   ft_memcmp_vec256.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 17:13:42 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/19 01:50:21 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/06/08 03:05:40 by username         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,8 @@ inline ssize_t	ft_memcmp_finalround(const void *restrict const ptr1,
 	offst <<= 5;
 	load0 = *(t_blk256r)ft_overlap((t_blk8r)ptr1 + offst, sizeof(t_vu256a), n);
 	load1 = *(t_blk256r)ft_overlap((t_blk8r)ptr2 + offst, sizeof(t_vu256a), n);
-	mask = ft_bitpack256(load0 != load1) & ft_roll_mask(sizeof(t_vu256a), n);
+	mask = ft_bitpack256((t_vu256a)(load0 != load1))
+		& ft_roll_mask(sizeof(t_vu256a), n);
 	if (mask)
 	{
 		diffbyte = ft_memctz_u32(mask);
@@ -56,7 +57,7 @@ inline ssize_t	ft_memcmp_avx256(const void *restrict const ptr1,
 		ft_prefetch0(ptr2, sizeof(t_vu256a) << 1);
 		load0 = ((t_blk256r)ptr1)[offst];
 		load1 = ((t_blk256r)ptr2)[offst];
-		mask = ft_bitpack256(load1 != load0);
+		mask = ft_bitpack256((t_vu256a)(load1 != load0));
 		diffb = ft_memctz_u32(mask);
 		if (mask)
 			return (load0[diffb] - load1[diffb]);

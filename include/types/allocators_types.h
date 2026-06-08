@@ -1,26 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   __populate.c                                       :+:      :+:    :+:   */
+/*   allocators_types.h                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/14 02:10:01 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/02/20 05:01:36 by jaicastr         ###   ########.fr       */
+/*   Created: 2026/06/06 00:00:00 by jaicastr          #+#    #+#             */
+/*   Updated: 2026/06/06 06:00:10 by username         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "mem.h"
+#ifndef ALLOCATORS_TYPES_H
+# define ALLOCATORS_TYPES_H
 
-__attribute__((hot, const, __always_inline__))
-inline t_u64	ft_populate(t_u8 y)
-{
-	t_u64	x;
+# include "types/interface_types.h"
+# include "types/arena_alloc_types.h"
+# include "types/general_allocator_types.h"
+# include "types/page_alloc_types.h"
+# include "types/report_allocator_types.h"
 
-	x = (t_u64)y;
-	x |= x << 8;
-	x |= x << 16;
-	x |= x << 24;
-	x |= x << 32;
-	return (x);
-}
+#endif

@@ -1,26 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   __populate.c                                       :+:      :+:    :+:   */
+/*   basic.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
+/*   By: username <your@mail.com>                   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/14 02:10:01 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/02/20 05:01:36 by jaicastr         ###   ########.fr       */
+/*   Created: 2026/06/06 04:37:26 by username          #+#    #+#             */
+/*   Updated: 2026/06/06 04:37:41 by username         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "mem.h"
+#ifndef BASIC_H
+# define BASIC_H
 
-__attribute__((hot, const, __always_inline__))
-inline t_u64	ft_populate(t_u8 y)
-{
-	t_u64	x;
+# define GPA_CLASSES 	14ULL
+# define GPA_SLABSIZE	131072ULL
 
-	x = (t_u64)y;
-	x |= x << 8;
-	x |= x << 16;
-	x |= x << 24;
-	x |= x << 32;
-	return (x);
-}
+#endif

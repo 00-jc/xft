@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/20 04:36:40 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/04/12 22:16:38 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/06/08 03:04:26 by username         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ inline size_t	ft__map_lookup_offset(const t_map *restrict const map,
 	sse = ((t_blk128ra)map->meta)[data[GROUP]];
 	while (1)
 	{
-		mask = ft_bitpack128(sse == h2);
+		mask = ft_bitpack128((t_vu128)(sse == h2));
 		while (mask)
 		{
 			i = ft_memctz_u16(mask);

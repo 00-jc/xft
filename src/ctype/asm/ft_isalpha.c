@@ -15,7 +15,7 @@
 __attribute__((const, __always_inline__, hot))
 inline t_u16a	ft_isalpha128(t_vu128a c)
 {
-	return (ft_bitpack128(((c | 32) - 'a') < 26u));
+	return (ft_bitpack128((t_vu128a)(((c | 32) - 'a') < 26u)));
 }
 
 #if FT_HAS_256_VEC
@@ -23,7 +23,7 @@ inline t_u16a	ft_isalpha128(t_vu128a c)
 __attribute__((const, __always_inline__, hot))
 inline t_u32a	ft_isalpha256(t_vu256a c)
 {
-	return (ft_bitpack256(((c | 32) - 'a') < 26u));
+	return (ft_bitpack256((t_vu256a)(((c | 32) - 'a') < 26u)));
 }
 
 #endif
@@ -33,7 +33,7 @@ inline t_u32a	ft_isalpha256(t_vu256a c)
 __attribute__((const, __always_inline__, hot))
 inline t_u64a	ft_isalpha512(t_vu512a c)
 {
-	return (ft_bitpack512(((c | 32) - 'a') < 26u));
+	return (ft_bitpack512((t_vu512a)(((c | 32) - 'a') < 26u)));
 }
 
 #endif

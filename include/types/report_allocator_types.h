@@ -1,26 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   __populate.c                                       :+:      :+:    :+:   */
+/*   report_allocator_types.h                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/14 02:10:01 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/02/20 05:01:36 by jaicastr         ###   ########.fr       */
+/*   Created: 2026/06/06 00:00:00 by jaicastr          #+#    #+#             */
+/*   Updated: 2026/06/06 00:00:00 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "mem.h"
+#ifndef REPORT_ALLOCATOR_TYPES_H
+# define REPORT_ALLOCATOR_TYPES_H
 
-__attribute__((hot, const, __always_inline__))
-inline t_u64	ft_populate(t_u8 y)
+# include "primitives.h"
+# include "alloc/basic.h"
+
+typedef struct s_reporta
 {
-	t_u64	x;
+	void	*slab;
+	size_t	slabsize;
+	void	*bmp;
+	void	*free[GPA_CLASSES];
+	size_t	n_allocs;
+	size_t	n_frees;
+	size_t	slabs;
+	size_t	reuses;
+	size_t	misses;
+	size_t	free_depth[GPA_CLASSES];
+	size_t	paged;
+	t_f64	avg_frag;
+}	t_reporta;
 
-	x = (t_u64)y;
-	x |= x << 8;
-	x |= x << 16;
-	x |= x << 24;
-	x |= x << 32;
-	return (x);
-}
+#endif
