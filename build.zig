@@ -6,7 +6,7 @@
 //   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2026/05/15 07:20:25 by jaicastr          #+#    #+#             //
-//   Updated: 2026/06/08 02:55:58 by username         ###   ########.fr       //
+//   Updated: 2026/06/08 10:37:31 by username         ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 const std = @import("std");
@@ -663,6 +663,9 @@ inline fn make_test_exe(
         .target             = opt.target,
         .link_libc          = true,
         .single_threaded    = true,
+        .sanitize_c         = true,
+        .stack_protector    = true,
+        .stack_check        = true,
     });
     mod.addIncludePath(b.path(INCLUDES));
     mod.addCSourceFiles(.{
