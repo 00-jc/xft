@@ -69,7 +69,7 @@ Per artifact:
 |----------|------|------|
 | `xft` | `core` / `nolto` | Only on non-x86_64 or `-Dlibc` (freestanding otherwise) |
 | `xft_san` | `san` | Always (sanitizer build) |
-| `xft` (tsan cfg) | `tsan` | Follows the core rule — keyed on `cfg.san`, **not** `cfg.tsan`, so freestanding on x86_64 without `-Dlibc` |
+| `xft` (tsan cfg) | `tsan` | Follows the core rule |
 
 The test and bench **executables** link libc independently of the library:
 test exes always (`link_libc = true`), bench exes only on non-x86_64.
