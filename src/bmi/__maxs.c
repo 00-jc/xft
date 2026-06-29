@@ -12,9 +12,9 @@
 
 #include "mem.h"
 
-size_t	ft_max_s(size_t x, size_t y)
+t_size	ft_max_s(t_size x, t_size y)
 {
-	size_t	cnd;
+	t_size	cnd;
 
 	cnd = -(x < y);
 	return ((cnd & y) | (~cnd & x));

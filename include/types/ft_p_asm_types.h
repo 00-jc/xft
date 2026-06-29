@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_p_asm_types.h                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
+/*   By: username <your@mail.com>                   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/06/06 00:00:00 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/06/06 00:00:00 by jaicastr         ###   ########.fr       */
+/*   Created: 2026/06/28 16:02:57 by username          #+#    #+#             */
+/*   Updated: 2026/06/28 23:09:36 by username         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 # define FT_P_ASM_TYPES_H
 
 # include "primitives.h"
-# include <sys/types.h>
 
 typedef t_u8 *__restrict__ const									t_blk8w;
 typedef const t_u8 *__restrict__ const								t_blk8r;

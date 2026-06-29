@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/25 19:01:19 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/04/25 19:01:20 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/06/28 23:13:18 by username         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,7 @@
 
 # include "private/test.h"
 # include "fuzzer.h"
-# include <stdio.h>
-# include <stdlib.h>
+# include "rt.h"
 
 # define FUZZ_KEY_SLOTS 64
 # define FUZZ_MEM_CAP 1024

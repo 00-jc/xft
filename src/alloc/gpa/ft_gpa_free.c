@@ -15,7 +15,7 @@
 __attribute__((__nonnull__(1)))
 void	ft_gpa_free(void *allocator, t_buffer buf)
 {
-	size_t	freelist;
+	t_size	freelist;
 	t_gpa	*gpa;
 
 	if (buf.mem == nullptr)

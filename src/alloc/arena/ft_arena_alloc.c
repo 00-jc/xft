@@ -16,7 +16,7 @@
 t_arena	ft_new_arena_alloc(void)
 {
 	t_hugepage		*initial_page;
-	size_t			pagesize;
+	t_size			pagesize;
 	int				pageflag;
 
 	pagesize = ft_match_paging(1ULL << 25);
@@ -65,11 +65,11 @@ void	ft_destroy_arena(t_arena *alloc)
 
 __attribute__((nonnull(1)))
 void	*ft_arena_alloc(t_arena *restrict const allocator,
-	size_t size, size_t align)
+	t_size size, t_size align)
 {
 	void			*next_ptr;
-	size_t			waste;
-	size_t			pagesize;
+	t_size			waste;
+	t_size			pagesize;
 	int				pageflag;
 
 	if (__builtin_expect(align == 0 || size == 0
@@ -79,7 +79,7 @@ void	*ft_arena_alloc(t_arena *restrict const allocator,
 	pagesize = ft_match_paging(size + align - 1);
 	pageflag = ft_match_hugepage_flags(pagesize);
 	next_ptr = get_next_ptr(allocator->current, align);
-	waste = (size_t)((t_u8 *)next_ptr - (allocator->current->data
+	waste = (t_size)((t_u8 *)next_ptr - (allocator->current->data
 				+ allocator->current->used));
 	if ((t_u8 *)next_ptr + size > allocator->current->data
 		+ allocator->current->total)
@@ -87,7 +87,7 @@ void	*ft_arena_alloc(t_arena *restrict const allocator,
 		if (!ft_arena_move_fwd(allocator, pagesize, pageflag))
 			return (nullptr);
 		next_ptr = get_next_ptr(allocator->current, align);
-		waste = (size_t)((t_u8 *)next_ptr - (allocator->current->data
+		waste = (t_size)((t_u8 *)next_ptr - (allocator->current->data
 					+ allocator->current->used));
 	}
 	allocator->current->used += waste + size;

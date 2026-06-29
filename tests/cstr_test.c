@@ -28,7 +28,7 @@ void	test_cstr_to_str(t_allocator a)
 	ft_pin_invariant(s.size == 0);
 }
 
-int	main(void)
+int	ft_main(t_u64a argc, t_u8 **argv, t_u8 **envp)
 {
 	t_gpa		gpa;
 	t_allocator	a;
@@ -39,5 +39,8 @@ int	main(void)
 	test_cstr_to_str(a);
 	ft_gpa_destroy(&gpa);
 	ft_printf("  ft_cstr_to_str: OK\n");
+	(void)argc;
+	(void)argv;
+	(void)envp;
 	return (0);
 }

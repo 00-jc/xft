@@ -13,7 +13,7 @@
 #include "private/ft_p_palloc.h"
 
 __attribute__((__nonnull__(1)))
-static t_buffer	palloc_allocate(void *alloc, size_t size, size_t align)
+static t_buffer	palloc_allocate(void *alloc, t_size size, t_size align)
 {
 	(void)alloc;
 	(void)align;
@@ -21,8 +21,8 @@ static t_buffer	palloc_allocate(void *alloc, size_t size, size_t align)
 }
 
 __attribute__((__nonnull__(1)))
-static t_buffer	palloc_reallocate(void *alloc, t_buffer old, size_t new_size,
-					size_t align)
+static t_buffer	palloc_reallocate(void *alloc, t_buffer old, t_size new_size,
+					t_size align)
 {
 	(void)alloc;
 	(void)align;

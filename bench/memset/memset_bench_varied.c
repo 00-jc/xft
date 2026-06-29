@@ -17,8 +17,8 @@ void	ft_memset_test_varied(void *ptr)
 {
 	t_buffer			*buffers;
 	t_buffer			*out;
-	size_t				n;
-	size_t				bufn[3];
+	t_size				n;
+	t_size				bufn[3];
 	static const t_u8	c = 0x42;
 
 	n = ft_tailor_getcount(ptr);

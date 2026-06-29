@@ -217,6 +217,9 @@ SRCS_SYSCALLS := \
 	src/syscalls/ft_write.c \
 	src/syscalls/ft_fmap.c \
 	src/syscalls/ft_mremap.c \
+	src/syscalls/ft_ioctl.c \
+	src/syscalls/ft_open.c \
+	src/syscalls/ft_close.c \
 	src/syscalls/ft_lockf.c \
 	src/syscalls/ft_mmap.c \
 	src/syscalls/ft_stat.c
@@ -282,7 +285,7 @@ SRCS_MEM := \
 	src/mem/streaming/ft_memcpy_streaming.c \
 	src/mem/streaming/ft_memset_streaming.c \
 	src/mem/ft_prefetch_intrin.c \
-	src/mem/ft_memfence.c
+	src/mem/ft_stfence.c
 
 SRCS_THREADPOOL := \
 	src/threadpool/ft_threadpool.c \

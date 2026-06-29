@@ -14,7 +14,7 @@
 
 __attribute__((__nonnull__(1), __always_inline__))
 inline void	ft_memset_naive(void *restrict dest,
-	const t_u8 b, size_t n)
+	const t_u8 b, t_size n)
 {
 	t_u8	i[7];
 
@@ -36,7 +36,7 @@ inline void	ft_memset_naive(void *restrict dest,
 
 __attribute__((__nonnull__(1), __hot__))
 void	ft_memset(void *restrict dest,
-	const t_u8 b, size_t n)
+	const t_u8 b, t_size n)
 {
 	if (__builtin_expect(n == 0, 0))
 		return ;

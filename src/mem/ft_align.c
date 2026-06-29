@@ -13,13 +13,13 @@
 #include "mem.h"
 
 __attribute__((const, __nonnull__(1), __returns_nonnull__))
-void	*ft_align_fwd(void *ptr, const size_t align)
+void	*ft_align_fwd(void *ptr, const t_size align)
 {
 	return ((void *)(((t_uptr)ptr + align) & ~align));
 }
 
 __attribute__((const, __nonnull__(1), __returns_nonnull__))
-void	*ft_align_bkw(void *ptr, const size_t align)
+void	*ft_align_bkw(void *ptr, const t_size align)
 {
 	return ((void *)((t_uptr)ptr & ~align));
 }

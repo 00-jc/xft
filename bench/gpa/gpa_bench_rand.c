@@ -16,9 +16,9 @@
 void	ft_gpa_bench_random(void *ptr)
 {
 	t_gpa		*gpa;
-	size_t		n;
-	size_t		bytes;
-	size_t		sz;
+	t_size		n;
+	t_size		bytes;
+	t_size		sz;
 	t_buffer	b;
 
 	gpa = ft_get_bench_gpa();

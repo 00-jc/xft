@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   interface_types.h                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
+/*   By: username <your@mail.com>                   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/06/06 00:00:00 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/06/06 00:00:00 by jaicastr         ###   ########.fr       */
+/*   Created: 2026/06/28 16:02:57 by username          #+#    #+#             */
+/*   Updated: 2026/06/28 16:02:59 by username         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,11 @@
 typedef void		(*t_free)(void *alloc, t_buffer old)\
 						__attribute__((__nonnull__(1)));
 
-typedef t_buffer	(*t_reallocate)(void *alloc, t_buffer old, size_t new_size,\
-						size_t align)\
+typedef t_buffer	(*t_reallocate)(void *alloc, t_buffer old, t_size new_size,\
+						t_size align)\
 						__attribute__((__nonnull__(1)));
 
-typedef t_buffer	(*t_allocate)(void *alloc, size_t size, size_t align)\
+typedef t_buffer	(*t_allocate)(void *alloc, t_size size, t_size align)\
 						__attribute__((__nonnull__(1)));
 
 typedef void		(*t_destroy)(void *alloc)\

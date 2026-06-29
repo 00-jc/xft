@@ -17,9 +17,9 @@ t_token	ft_eat_while_u8(t_tokenizer *tk,
 	int (*fn)(int c))
 {
 	t_u8	*lexeme;
-	size_t	init;
-	size_t	len;
-	size_t	i;
+	t_size	init;
+	t_size	len;
+	t_size	i;
 
 	lexeme = tk->mem + tk->cc;
 	i = tk->cc;
@@ -39,9 +39,9 @@ t_token	ft_eat_until_u8(t_tokenizer *tk,
 	int (*fn)(int c))
 {
 	t_u8	*lexeme;
-	size_t	init;
-	size_t	len;
-	size_t	i;
+	t_size	init;
+	t_size	len;
+	t_size	i;
 
 	lexeme = tk->mem + tk->cc;
 	i = tk->cc;

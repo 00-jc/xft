@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 17:14:00 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/19 07:02:12 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/06/29 09:12:23 by username         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,14 +20,21 @@ extern "C"
 
 #endif
 
-# include "types.h"
+# if !defined(__x86_64__) && !defined(FT_REQUIRES_LIBC)
+#  error "Cannot compile on non x86_64 without libc, please define FT_REQUIRES_LIBC"
+# endif
+
+# if !defined(__linux__)
+#  error "For now this library is linux only"
+# endif
+
+# include "primitives.h"
 # include "cstr.h"
 # include "mem.h"
 # include "hash.h"
 # include "math.h"
 # include "ctype.h"
 # include "io.h"
-# include "put.h"
 # include "conv.h"
 # include "vec.h"
 # include "map.h"
@@ -38,7 +45,6 @@ extern "C"
 # include "perf.h"
 # include "tailor.h"
 # include "str.h"
-# include "env.h"
 # include "syscall.h"
 
 #ifdef __cplusplus

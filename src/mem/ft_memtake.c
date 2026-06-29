@@ -14,7 +14,7 @@
 
 __attribute__((__nonnull__(1)))
 void	ft_memtake(void *restrict dst,
-	void *restrict src, size_t len)
+	void *restrict src, t_size len)
 {
 	if (!len)
 		return ;

@@ -14,12 +14,12 @@
 
 __attribute__((__nonnull__(1, 3)))
 static inline void	ft__map_insert_unchecked(t_map *restrict const map,
-	t_bucket entry, size_t data[3])
+	t_bucket entry, t_size data[3])
 {
 	t_u16a		mask;
-	size_t		group;
-	size_t		gg;
-	size_t		i;
+	t_size		group;
+	t_size		gg;
+	t_size		i;
 
 	if (map->meta == nullptr || map->buckets == nullptr)
 		__builtin_unreachable();
@@ -45,7 +45,7 @@ void	ft_map_insert_unchecked(t_map *restrict const map,
 	t_buffer key, t_u8 *restrict const value)
 {
 	t_u64a		hash;
-	size_t		nblks;
+	t_size		nblks;
 	t_bucket	entry;
 
 	if (map->meta == nullptr || map->buckets == nullptr)
@@ -58,6 +58,6 @@ void	ft_map_insert_unchecked(t_map *restrict const map,
 		.value = value,
 	};
 	ft__map_insert_unchecked(map, entry,
-		(size_t [3]){(hash >> 57) & MAP_H2_MASK,
+		(t_size [3]){(hash >> 57) & MAP_H2_MASK,
 		nblks, hash % nblks});
 }

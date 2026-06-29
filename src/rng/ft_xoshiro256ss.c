@@ -27,9 +27,9 @@ inline t_u64a	ft_splitmix(t_u64a *restrict const x)
 __attribute__((__nonnull__(1), __always_inline__))
 inline void	ft_xoshiro_init(t_xoshiro xoshiro)
 {
-	static size_t	internal = 0x165667919E3779F9ULL;
-	size_t			current;
-	size_t			x;
+	static t_size	internal = 0x165667919E3779F9ULL;
+	t_size			current;
+	t_u64a			x;
 
 	internal += ((t_uptr)xoshiro) << 3;
 	x = (t_uptr) & current ^ internal++;

@@ -13,7 +13,7 @@
 #include "private/ft_p_hash.h"
 
 __attribute__((const, __always_inline__))
-inline t_u64a	rotl(t_u64a x, size_t r)
+inline t_u64a	rotl(t_u64a x, t_size r)
 {
 	return ((x << r) | (x >> (64 - r)));
 }

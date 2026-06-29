@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fuzzer_types.h                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
+/*   By: username <your@mail.com>                   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/06/06 00:00:00 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/06/06 00:00:00 by jaicastr         ###   ########.fr       */
+/*   Created: 2026/06/28 16:02:57 by username          #+#    #+#             */
+/*   Updated: 2026/06/28 16:02:59 by username         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 # define FUZZER_TYPES_H
 
 # include "primitives.h"
-# include "types/rng_types.h"
-# include "types/arena_alloc_types.h"
+# include "types/rng_primitives.h"
+# include "types/arena_alloc_primitives.h"
 
 typedef enum e_lastgentype
 {
@@ -40,7 +40,7 @@ typedef struct s_lastgen
 typedef struct s_fuzzer
 {
 	t_xoshiro	xo;
-	size_t		buf_n;
+	t_size		buf_n;
 	t_arena		arena;
 	t_buffer	*buffers;
 	t_lastgen	lastgen;

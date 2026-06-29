@@ -16,7 +16,7 @@ __attribute__((__nonnull__(1)))
 t_buffer	ft_get_random_buffer(const void *ptr)
 {
 	t_tailor_arg	*arg;
-	size_t			idx;
+	t_size			idx;
 
 	arg = (t_tailor_arg *)ptr;
 	idx = ft_xoshiro256ss(arg->xoshiro) % arg->buffers.size;
@@ -24,7 +24,7 @@ t_buffer	ft_get_random_buffer(const void *ptr)
 }
 
 __attribute__((__nonnull__(1)))
-t_buffer	*ft_get_all_buffers(const void *ptr, size_t *n)
+t_buffer	*ft_get_all_buffers(const void *ptr, t_size *n)
 {
 	t_tailor_arg	*arg;
 

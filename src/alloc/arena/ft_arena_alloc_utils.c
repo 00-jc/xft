@@ -14,9 +14,9 @@
 #include "private/ft_p_hugepage.h"
 
 __attribute__((const, __always_inline__))
-inline size_t	ft_match_paging(size_t requested_size)
+inline t_size	ft_match_paging(t_size requested_size)
 {
-	size_t	page_size;
+	t_size	page_size;
 
 	page_size = ft_match_hugepage(requested_size + sizeof(t_hugepage));
 	if (page_size < HUGEPAGE_256MB)
@@ -25,7 +25,7 @@ inline size_t	ft_match_paging(size_t requested_size)
 }
 
 __attribute__((nonnull(1), returns_nonnull, __always_inline__))
-inline void	*get_next_ptr(t_hugepage *page, size_t align)
+inline void	*get_next_ptr(t_hugepage *page, t_size align)
 {
 	void	*addr;
 	t_u8	*base;
@@ -37,14 +37,14 @@ inline void	*get_next_ptr(t_hugepage *page, size_t align)
 
 __attribute__((__always_inline__))
 inline t_hugepage	*new_hugepage(t_hugepage *restrict const prev,
-	size_t size, int flag)
+	t_size size, int flag)
 {
 	t_hugepage	*page;
 
 	if (prev && prev->next && prev->next->page_size >= size)
 		return ((void)(page = prev->next), (void)(page->used = 0), page);
 	page = ft_mmap(size, 0, flag);
-	if (page == MAP_FAILED)
+	if (page == (void *)MAP_FAILED)
 		return (nullptr);
 	page->page_size = size;
 	page->prev = prev;
@@ -66,7 +66,7 @@ inline t_hugepage	*new_hugepage(t_hugepage *restrict const prev,
 }
 
 __attribute__((nonnull(1)))
-t_u32a	ft_arena_move_fwd(t_arena *alloc, size_t size, int flag)
+t_u32a	ft_arena_move_fwd(t_arena *alloc, t_size size, int flag)
 {
 	t_hugepage	*old;
 

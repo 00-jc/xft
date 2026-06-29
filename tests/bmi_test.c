@@ -65,7 +65,7 @@ void	test_max(void)
 	ft_pin_invariant(ft_maxu64(42, 42) == 42);
 }
 
-int	main(void)
+int	ft_main(t_u64a argc, t_u8 **argv, t_u8 **envp)
 {
 	ft_printf("Testing bmi...\n");
 	test_ctz();
@@ -73,5 +73,8 @@ int	main(void)
 	test_bswap();
 	test_max();
 	ft_printf("  bmi: OK\n");
+	(void)argc;
+	(void)argv;
+	(void)envp;
 	return (0);
 }

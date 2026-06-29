@@ -6,16 +6,17 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/15 04:05:13 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/15 04:50:51 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/06/28 14:15:04 by username         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "syscalls.h"
+#include "private/ft_p_syscalls.h"
 
 #ifdef __x86_64__
 
 __attribute__((__always_inline__))
-inline void	*ft_fmap(size_t size, int fd)
+inline void	*ft_fmap(t_size size, int fd)
 {
 	void				*ret;
 	register long r10	__asm__("r10");
@@ -28,7 +29,7 @@ inline void	*ft_fmap(size_t size, int fd)
 	__asm__ volatile (
 		"syscall"
 		: "=a"(ret)
-		: "0"(SYS_mmap),
+		: "0"(SYS_MMAP),
 		"D"((long) NULL),
 		"S"((long) size),
 		"d"((long) PROT_READ),
@@ -41,9 +42,9 @@ inline void	*ft_fmap(size_t size, int fd)
 #else
 
 __attribute__((__always_inline__))
-inline void	*ft_fmap(size_t size, int fd)
+inline void	*ft_fmap(t_size size, int fd)
 {
-	return ((void *)syscall(SYS_mmap, NULL, size, PROT_READ,
+	return ((void *)syscall(SYS_MMAP, NULL, size, PROT_READ,
 			MAP_PRIVATE, fd, 0));
 }
 

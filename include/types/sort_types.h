@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   sort_types.h                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
+/*   By: username <your@mail.com>                   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/06/06 00:00:00 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/06/06 00:00:00 by jaicastr         ###   ########.fr       */
+/*   Created: 2026/06/28 16:02:57 by username          #+#    #+#             */
+/*   Updated: 2026/06/28 16:02:59 by username         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 typedef struct s_qsort_ctx
 {
 	t_u8		*buf;
-	size_t		size;
+	t_size		size;
 	int			(*cmp)(const void *, const void *);
 }	t_qsort_ctx;
 

@@ -13,17 +13,17 @@
 #ifndef SORT_H
 # define SORT_H
 
-# include "types.h"
+# include "primitives.h"
 # include "mem.h"
 
 typedef struct s_qsort_ctx
 {
 	t_u8		*buf;
-	size_t		size;
+	t_size		size;
 	int			(*cmp)(const void *, const void *);
 }	t_qsort_ctx;
 
-void	ft_qsort(t_u8 *arr, t_qsort_ctx *c, size_t l, size_t h)\
+void	ft_qsort(t_u8 *arr, t_qsort_ctx *c, t_size l, t_size h)\
 			__attribute__((__nonnull__(1, 2)));
 
 int		ft_cmp_u64(const void *a, const void *b)\

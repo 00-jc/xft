@@ -14,11 +14,11 @@
 
 __attribute__((__nonnull__(1)))
 t_buffer	ft_reporta_realloc(void *alloc, t_buffer buf,
-	size_t newsize, size_t align)
+	t_size newsize, t_size align)
 {
 	t_reporta		*gpa;
-	size_t			freelist[2];
-	size_t			snapped;
+	t_size			freelist[2];
+	t_size			snapped;
 	t_buffer		buf2;
 
 	if (buf.mem == nullptr)

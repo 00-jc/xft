@@ -13,6 +13,6 @@
 #ifndef INTERFACE_H
 # define INTERFACE_H
 
-# include "types/interface_types.h"
+# include "types/interface_primitives.h"
 
 #endif

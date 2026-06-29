@@ -16,7 +16,7 @@
 
 static void	fill_pattern(t_buffer buf, t_u8 seed)
 {
-	size_t	i;
+	t_size	i;
 
 	i = 0;
 	while (i < buf.size)
@@ -26,8 +26,8 @@ static void	fill_pattern(t_buffer buf, t_u8 seed)
 	}
 }
 
-static void	test_streaming_ft_memcpy(t_buffer buf[3], size_t dst,
-	size_t src, size_t len)
+static void	test_streaming_ft_memcpy(t_buffer buf[3], t_size dst,
+	t_size src, t_size len)
 {
 	fill_pattern(buf[0], 17);
 	fill_pattern(buf[1], 91);
@@ -38,8 +38,8 @@ static void	test_streaming_ft_memcpy(t_buffer buf[3], size_t dst,
 			FT_LLC_SIZE + 128ULL) == 0);
 }
 
-static void	test_streaming_ft_memset(t_buffer buf[2], size_t off,
-	t_u8 byte, size_t len)
+static void	test_streaming_ft_memset(t_buffer buf[2], t_size off,
+	t_u8 byte, t_size len)
 {
 	fill_pattern(buf[0], 53);
 	fill_pattern(buf[1], 53);
@@ -49,7 +49,7 @@ static void	test_streaming_ft_memset(t_buffer buf[2], size_t off,
 			FT_LLC_SIZE + 128ULL) == 0);
 }
 
-int	main(void)
+int	ft_main(t_u64a argc, t_u8 **argv, t_u8 **envp)
 {
 	t_buffer	copy[3];
 	t_buffer	set[2];
@@ -74,5 +74,8 @@ int	main(void)
 	ft_palloc_free(set[0]);
 	ft_palloc_free(set[1]);
 	ft_printf("  streaming ft_memcpy/ft_memset: OK\n");
+	(void)argc;
+	(void)argv;
+	(void)envp;
 	return (0);
 }

@@ -28,7 +28,7 @@ inline t_u64a	ft_xxh3_len_1to3(t_buffer input, t_buffer secret, t_u64a seed)
 	t_u8	bytes[4];
 	t_u64	extended;
 	t_u64	bitflip;
-	size_t	idx;
+	t_size	idx;
 
 	if (input.size == 0 || input.size > 3
 		|| input.mem == nullptr || secret.mem == nullptr)

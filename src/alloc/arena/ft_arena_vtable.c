@@ -14,7 +14,7 @@
 #include "mem.h"
 
 __attribute__((__nonnull__(1)))
-static t_buffer	arena_allocate(void *alloc, size_t size, size_t align)
+static t_buffer	arena_allocate(void *alloc, t_size size, t_size align)
 {
 	void	*ptr;
 
@@ -30,11 +30,11 @@ static void	arena_free(void *alloc, t_buffer old)
 }
 
 __attribute__((__nonnull__(1)))
-static t_buffer	arena_reallocate(void *alloc, t_buffer old, size_t new_size,
-					size_t align)
+static t_buffer	arena_reallocate(void *alloc, t_buffer old, t_size new_size,
+					t_size align)
 {
 	void	*ptr;
-	size_t	copy_size;
+	t_size	copy_size;
 
 	ptr = ft_arena_alloc((t_arena *)alloc, new_size, align);
 	if (!ptr)

@@ -17,8 +17,8 @@ void	ft_memmove_test_short_aligned(void *ptr)
 {
 	t_buffer	*buffers;
 	t_buffer	*buf;
-	size_t		n;
-	size_t		bufn[3];
+	t_size		n;
+	t_size		bufn[3];
 
 	n = ft_tailor_getcount(ptr);
 	buffers = ft_get_all_buffers(ptr, bufn);
@@ -39,8 +39,8 @@ void	ft_memmove_test_short_unaligned(void *ptr)
 {
 	t_buffer	*buffers;
 	t_buffer	*buf;
-	size_t		n;
-	size_t		bufn[3];
+	t_size		n;
+	t_size		bufn[3];
 
 	n = ft_tailor_getcount(ptr);
 	buffers = ft_get_all_buffers(ptr, bufn);

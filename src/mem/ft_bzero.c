@@ -13,7 +13,7 @@
 #include "mem.h"
 
 __attribute__((nonnull(1), __always_inline__))
-inline void	ft_bzero(void *restrict ptr, size_t n)
+inline void	ft_bzero(void *restrict ptr, t_size n)
 {
 	ft_memset(ptr, 0, n);
 }

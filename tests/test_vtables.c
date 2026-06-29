@@ -117,7 +117,7 @@ static void	test_gpa_freelist(void)
 	alloc.interface.destroy(alloc.allocator);
 }
 
-int	main(void)
+int	ft_main(t_u64a argc, t_u8 **argv, t_u8 **envp)
 {
 	ft_printf("Testing allocator vtables...\n");
 	test_palloc_vtable();
@@ -125,5 +125,8 @@ int	main(void)
 	test_gpa_vtable();
 	test_gpa_freelist();
 	ft_printf("  vtables: OK\n");
+	(void)argc;
+	(void)argv;
+	(void)envp;
 	return (0);
 }

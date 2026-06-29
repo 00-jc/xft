@@ -63,12 +63,15 @@ void	test_strlen_long(void)
 	ft_pin_invariant(ft_strlen(buf + 63) == strlen(buf + 63));
 }
 
-int	main(void)
+int	ft_main(t_u64a argc, t_u8 **argv, t_u8 **envp)
 {
 	ft_printf("Testing ft_strlen...\n");
 	test_strlen_basic();
 	test_strlen_misaligned();
 	test_strlen_long();
 	ft_printf("  ft_strlen: OK\n");
+	(void)argc;
+	(void)argv;
+	(void)envp;
 	return (0);
 }

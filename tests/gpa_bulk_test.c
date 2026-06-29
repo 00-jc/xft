@@ -50,7 +50,7 @@ void	test_bulk_same_size(void)
 
 void	test_bulk_mixed_sizes(void)
 {
-	static const size_t	sizes[BULK_SIZES] = {16, 64, 256, 1024};
+	static const t_size	sizes[BULK_SIZES] = {16, 64, 256, 1024};
 	t_buffer			bufs[BULK_N];
 	t_gpa				gpa;
 	int					i;
@@ -102,12 +102,15 @@ void	test_bulk_reuse(void)
 	ft_gpa_destroy(&gpa);
 }
 
-int	main(void)
+int	ft_main(t_u64a argc, t_u8 **argv, t_u8 **envp)
 {
 	ft_printf("Testing gpa bulk alloc/free...\n");
 	test_bulk_same_size();
 	test_bulk_mixed_sizes();
 	test_bulk_reuse();
 	ft_printf("  gpa bulk: OK\n");
+	(void)argc;
+	(void)argv;
+	(void)envp;
 	return (0);
 }

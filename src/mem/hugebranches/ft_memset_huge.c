@@ -14,9 +14,9 @@
 
 __attribute__((__nonnull__(1), __always_inline__))
 inline void	ft_memset_hugetail(void *restrict dest,
-	size_t n, t_vu512a *x)
+	t_size n, t_vu512a *x)
 {
-	size_t				i[3];
+	t_size				i[3];
 
 	if (__builtin_expect(63 < n, 1))
 	{
@@ -34,10 +34,10 @@ inline void	ft_memset_hugetail(void *restrict dest,
 
 __attribute__((__nonnull__(1), __always_inline__))
 inline void	ft_memset_512_huge(void *restrict dest,
-	const t_u8 c, size_t n)
+	const t_u8 c, t_size n)
 {
 	t_t_f64_size			s;
-	size_t					delta;
+	t_size					delta;
 	t_u8					*d;
 	t_vu512a				x;
 

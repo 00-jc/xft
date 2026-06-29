@@ -16,11 +16,11 @@
 
 __attribute__((__nonnull__(1, 2)))
 static inline t_token	ft_eat_while_u512_tail(t_tokenizer *tk,
-	t_512eater fn, size_t i)
+	t_512eater fn, t_size i)
 {
 	t_token	exit;
-	size_t	finaloffst;
-	size_t	remaining;
+	t_size	finaloffst;
+	t_size	remaining;
 	t_u64a	mask;
 
 	remaining = tk->max - i;
@@ -49,8 +49,8 @@ t_token	ft_eat_while_u512(t_tokenizer *tk,
 	t_u64a		msk;
 	t_u8		*mem;
 	t_token		exit;
-	size_t		finaloffst;
-	size_t		i;
+	t_size		finaloffst;
+	t_size		i;
 
 	i = tk->cc;
 	mem = tk->mem;
@@ -75,11 +75,11 @@ t_token	ft_eat_while_u512(t_tokenizer *tk,
 
 __attribute__((__nonnull__(1, 2)))
 static inline t_token	ft_eat_until_u512_tail(t_tokenizer *tk,
-	t_512eater fn, size_t i)
+	t_512eater fn, t_size i)
 {
 	t_token	exit;
-	size_t	finaloffst;
-	size_t	remaining;
+	t_size	finaloffst;
+	t_size	remaining;
 	t_u64a	mask;
 
 	remaining = tk->max - i;
@@ -108,8 +108,8 @@ t_token	ft_eat_until_u512(t_tokenizer *tk,
 	t_u64a		msk;
 	t_u8		*mem;
 	t_token		exit;
-	size_t		finaloffst;
-	size_t		i;
+	t_size		finaloffst;
+	t_size		i;
 
 	i = tk->cc;
 	mem = tk->mem;

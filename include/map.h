@@ -34,15 +34,15 @@
 
 typedef struct s_bucket
 {
-	size_t										key_len;
+	t_size										key_len;
 	t_u8 __attribute__	((counted_by(key_len)))	*key;
 	t_u8										*value;
 }	t_bucket;
 
 typedef struct s_map
 {
-	size_t												table_size;
-	size_t												count;
+	t_size												table_size;
+	t_size												count;
 	t_bucket __attribute__	((counted_by(table_size)))	*buckets;
 	t_u8												*meta;
 	t_buffer											bucket_buf;
@@ -53,15 +53,15 @@ typedef struct s_map
 
 typedef struct s_bucket
 {
-	size_t		key_len;
+	t_size		key_len;
 	t_u8		*key;
 	t_u8		*value;
 }	t_bucket;
 
 typedef struct s_map
 {
-	size_t		table_size;
-	size_t		count;
+	t_size		table_size;
+	t_size		count;
 	t_bucket	*buckets;
 	t_u8		*meta;
 	t_buffer	bucket_buf;
@@ -70,7 +70,7 @@ typedef struct s_map
 
 # endif
 
-t_map		ft_map_with(t_allocator allocator, size_t capacity);
+t_map		ft_map_with(t_allocator allocator, t_size capacity);
 t_map		ft_map_new(t_allocator allocator);
 void		*ft_map_lookup(const t_map *__restrict__ const map, t_buffer key)\
 				__attribute__((__nonnull__(1)));

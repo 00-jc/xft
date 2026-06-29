@@ -18,9 +18,9 @@
 
 typedef struct s_datapoint
 {
-	size_t		n;
-	size_t		iters;
-	size_t		bytes_processed;
+	t_size		n;
+	t_size		iters;
+	t_size		bytes_processed;
 	t_f64		mu;
 	t_f64		m2;
 	t_f64		min;
@@ -30,7 +30,7 @@ typedef struct s_datapoint
 typedef struct s_tailor_calib
 {
 	t_datapoint		dp;
-	size_t			inner;
+	t_size			inner;
 	t_u64a			cold;
 }	t_tailor_calib;
 

@@ -13,24 +13,24 @@
 #include "private/ft_p_io.h"
 
 __attribute__((__nonnull__(2), __always_inline__))
-inline size_t	manage_l(int fd, const char *const c,
-		size_t remaining, va_list args)
+inline t_size	manage_l(int fd, const char *const c,
+		t_size remaining, va_list args)
 {
-	size_t	i;
+	t_size	i;
 
 	i = 1;
 	if (remaining > 1)
 	{
 		if (c[1] == 'd')
-			(putd(fd, va_arg(args, ssize_t)), i += 2);
+			(putd(fd, va_arg(args, t_ssize)), i += 2);
 		else if (c[1] == 'u')
-			(putu(fd, va_arg(args, size_t)), i += 2);
+			(putu(fd, va_arg(args, t_size)), i += 2);
 		else if ((c[1] | 32) == 'x')
-			(putx(fd, va_arg(args, size_t), (char)((c[1] == 'x') << 5)),
+			(putx(fd, va_arg(args, t_size), (char)((c[1] == 'x') << 5)),
 				i += 2);
 	}
 	else
-		(putu(fd, va_arg(args, size_t)), i += 2);
+		(putu(fd, va_arg(args, t_size)), i += 2);
 	return (i);
 }
 
@@ -40,21 +40,21 @@ inline size_t	manage_l(int fd, const char *const c,
  */
 
 __attribute__((__nonnull__(2), __always_inline__))
-inline size_t	manage(int fd, const char *const c,
-		size_t remaining, va_list args)
+inline t_size	manage(int fd, const char *const c,
+		t_size remaining, va_list args)
 {
 	char								_c;
-	size_t								i;
-	ssize_t __attribute__	((unused))	unused;
+	t_size								i;
+	t_ssize __attribute__	((unused))	unused;
 
 	i = 0;
 	_c = *c;
 	if (_c == 'x' || _c == 'X')
-		(putx(fd, va_arg(args, size_t), (char)((_c == 'x') * 32)), i += 2);
+		(putx(fd, va_arg(args, t_size), (char)((_c == 'x') * 32)), i += 2);
 	else if (_c == 'd')
 		(puti(fd, va_arg(args, int)), i += 2);
 	else if (_c == 'u')
-		(putu(fd, va_arg(args, size_t)), i += 2);
+		(putu(fd, va_arg(args, t_size)), i += 2);
 	else if (_c == 'l' || _c == 'p')
 		i += manage_l(fd, c, remaining, args);
 	else if (_c == 's')
@@ -71,11 +71,11 @@ inline size_t	manage(int fd, const char *const c,
 __attribute__((__nonnull__(2), __always_inline__, used))
 inline void	ft_vfprintf(int fd, const char *restrict const fmt, va_list args)
 {
-	size_t								len;
-	size_t								maxptr;
+	t_size								len;
+	t_size								maxptr;
 	const char	*restrict				subst;
 	const char	*restrict				start;
-	ssize_t __attribute__	((unused))	unused;
+	t_ssize __attribute__	((unused))	unused;
 
 	len = ft_strlen(fmt);
 	maxptr = (t_uptr)fmt + len;

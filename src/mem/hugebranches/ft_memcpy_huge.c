@@ -14,9 +14,9 @@
 
 __attribute__((__nonnull__(1, 2), __always_inline__))
 inline void	ft_memcpy_hugetail(void *restrict dest,
-	const void	*restrict const src, size_t n)
+	const void	*restrict const src, t_size n)
 {
-	size_t		i[3];
+	t_size		i[3];
 	t_vu512a	x[4];
 
 	if (__builtin_expect(63 < n, 1))
@@ -42,7 +42,7 @@ inline void	ft_memcpy_hugetail(void *restrict dest,
 
 __attribute__((__nonnull__(1, 2, 4), __always_inline__))
 inline void	ft__huge_kernel_cpy(void *restrict dest,
-	const void	*restrict const src, const size_t i,
+	const void	*restrict const src, const t_size i,
 	t_vu512a *restrict const x)
 {
 	x[0] = ((t_blk512r)src)[i + 0];
@@ -57,10 +57,10 @@ inline void	ft__huge_kernel_cpy(void *restrict dest,
 
 __attribute__((__nonnull__(1, 2), __always_inline__))
 inline void	ft_memcpy_512_huge(void *restrict dest,
-	const void	*restrict const src, size_t n)
+	const void	*restrict const src, t_size n)
 {
 	t_t_f64_size	s;
-	size_t			delta;
+	t_size			delta;
 	t_u8			*d;
 	const t_u8		*sr;
 	t_vu512a		x[4];

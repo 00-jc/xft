@@ -90,7 +90,7 @@ void	test_str_remove(t_allocator a)
 	ft_str_destroy(a, &s);
 }
 
-int	main(void)
+int	ft_main(t_u64a argc, t_u8 **argv, t_u8 **envp)
 {
 	t_gpa		gpa;
 	t_allocator	a;
@@ -104,5 +104,8 @@ int	main(void)
 	test_str_remove(a);
 	ft_gpa_destroy(&gpa);
 	ft_printf("  t_str: OK\n");
+	(void)argc;
+	(void)argv;
+	(void)envp;
 	return (0);
 }

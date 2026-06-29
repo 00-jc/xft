@@ -91,7 +91,7 @@ void	test_map_many(t_allocator a)
 	ft_map_destroy(a, &m);
 }
 
-int	main(void)
+int	ft_main(t_u64a argc, t_u8 **argv, t_u8 **envp)
 {
 	t_gpa		gpa;
 	t_allocator	a;
@@ -105,5 +105,8 @@ int	main(void)
 	test_map_many(a);
 	ft_gpa_destroy(&gpa);
 	ft_printf("  t_map: OK\n");
+	(void)argc;
+	(void)argv;
+	(void)envp;
 	return (0);
 }

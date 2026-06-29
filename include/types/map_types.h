@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   map_types.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
+/*   By: username <your@mail.com>                   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/06/06 00:00:00 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/06/06 00:00:00 by jaicastr         ###   ########.fr       */
+/*   Created: 2026/06/28 16:02:57 by username          #+#    #+#             */
+/*   Updated: 2026/06/28 16:02:59 by username         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,15 +19,15 @@
 
 typedef struct s_bucket
 {
-	size_t										key_len;
+	t_size										key_len;
 	t_u8 __attribute__	((counted_by(key_len)))	*key;
 	t_u8										*value;
 }	t_bucket;
 
 typedef struct s_map
 {
-	size_t												table_size;
-	size_t												count;
+	t_size												table_size;
+	t_size												count;
 	t_bucket __attribute__	((counted_by(table_size)))	*buckets;
 	t_u8												*meta;
 	t_buffer											bucket_buf;
@@ -38,15 +38,15 @@ typedef struct s_map
 
 typedef struct s_bucket
 {
-	size_t		key_len;
+	t_size		key_len;
 	t_u8		*key;
 	t_u8		*value;
 }	t_bucket;
 
 typedef struct s_map
 {
-	size_t		table_size;
-	size_t		count;
+	t_size		table_size;
+	t_size		count;
 	t_bucket	*buckets;
 	t_u8		*meta;
 	t_buffer	bucket_buf;

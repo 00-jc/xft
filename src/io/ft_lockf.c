@@ -14,9 +14,9 @@
 
 t_u32a	ft_lockf(int fd)
 {
-	struct flock	fl;
+	t_flock	fl;
 
-	fl = (struct flock)
+	fl = (t_flock)
 	{
 		.l_type = F_RDLCK,
 		.l_whence = SEEK_SET,
@@ -28,9 +28,9 @@ t_u32a	ft_lockf(int fd)
 
 t_u32a	ft_unlockf(int fd)
 {
-	struct flock	fl;
+	t_flock	fl;
 
-	fl = (struct flock)
+	fl = (t_flock)
 	{
 		.l_type = F_UNLCK,
 		.l_whence = SEEK_SET,

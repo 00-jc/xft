@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   ft_p_tok_types.h                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
+/*   By: username <your@mail.com>                   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/06/06 00:00:00 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/06/06 00:00:00 by jaicastr         ###   ########.fr       */
+/*   Created: 2026/06/28 16:02:57 by username          #+#    #+#             */
+/*   Updated: 2026/06/28 16:02:59 by username         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FT_P_TOK_TYPES_H
 # define FT_P_TOK_TYPES_H
 
-# include "types/ft_p_asm_types.h"
+# include "types/ft_p_asm_primitives.h"
 
 typedef int			(*t_8eater)(int);
 typedef t_u16a		(*t_128eater)(t_vu128a);

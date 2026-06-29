@@ -32,7 +32,7 @@ inline t_u64a	ft_xxh3_len_17to128(t_buffer input,
 	t_buffer secret, t_u64a seed)
 {
 	t_u64a	acc;
-	size_t	i;
+	t_size	i;
 
 	if (input.size < 17 || 128 < input.size || !input.mem
 		|| !secret.mem)
@@ -75,8 +75,8 @@ inline t_u64a	ft_xxh3_len_129to240(t_buffer input,
 	t_buffer secret, t_u64a seed)
 {
 	t_u64a	acc;
-	size_t	nb_rounds;
-	size_t	i;
+	t_size	nb_rounds;
+	t_size	i;
 
 	nb_rounds = input.size >> 4;
 	if (!(input.size >= 129 && input.size <= 240)

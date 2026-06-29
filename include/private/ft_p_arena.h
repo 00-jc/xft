@@ -17,20 +17,20 @@
 # include "syscalls.h"
 # include "mem.h"
 
-void				*get_next_ptr(t_hugepage *slab, size_t align)\
+void				*get_next_ptr(t_hugepage *slab, t_size align)\
 						__attribute__((nonnull(1), returns_nonnull));
 
 t_u32a				ft_arena_move_fwd(t_arena *alloc,\
-						size_t size, int flags)\
+						t_size size, int flags)\
 						__attribute__((nonnull(1)));
 
 t_hugepage			*new_hugepage(t_hugepage *prev,\
-						size_t size, int flags);
+						t_size size, int flags);
 
 void				ft_arena_clean_fwd(const t_arena *alloc)\
 						__attribute__((__nonnull__(1)));
 
-size_t				ft_match_paging(size_t page_size)\
+t_size				ft_match_paging(t_size page_size)\
 						__attribute__((const));
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/17 15:15:00 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/19 21:02:31 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/06/28 23:04:14 by username         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,17 +15,14 @@
 
 # include <linux/perf_event.h>
 # include <linux/bpf_perf_event.h>
-# include <sys/syscall.h>
-# include <sched.h>
-# include <unistd.h>
 # include <linux/prctl.h>
-# include <sys/prctl.h>
-# include <sys/ioctl.h>
-# include "types.h"
+# include "primitives.h"
 # include "mem.h"
 # include "timing.h"
 # include "hint.h"
 # include "syscalls.h"
+
+#define FT_CPU_SETSIZE	1024
 
 typedef struct s_perf_sample
 {
@@ -74,7 +71,7 @@ void			ft_perf_counters_stop(t_perf_counters c)\
 					__attribute__((__nonnull__(1)));
 void			ft_perf_start_sample(t_perf_counters c, t_perf_sample *s)\
 					__attribute__((__nonnull__(1, 2)));
-t_result		ft_perf_collect_sample(size_t n,\
+t_result		ft_perf_collect_sample(t_size n,\
 					t_perf_counters c, t_perf_sample *s)\
 					__attribute__((__nonnull__(2, 3)));
 void			ft_perf_destroy_counters(t_perf_counters c)\

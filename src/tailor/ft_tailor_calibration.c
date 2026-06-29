@@ -99,7 +99,7 @@ static inline t_datapoint	ft_tailor_calibrate_welford(t_tailor *t,
 	fpv[1] = (t_f64)t->phase2_ns / (t_f64)(t->min_samples << 1);
 	fpv[2] = 50000.0 / fpv[0];
 	fpv[0] = fpv[1] / fpv[0];
-	arg.iters = (size_t)ft_dtern(fpv[0] < fpv[2], fpv[0], fpv[2]);
+	arg.iters = (t_size)ft_dtern(fpv[0] < fpv[2], fpv[0], fpv[2]);
 	arg.iters = ft_tern(arg.iters == 0, 1, arg.iters);
 	arg.iters = ft_tern(arg.iters > TAILOR_MAX, TAILOR_MAX, arg.iters);
 	ft_tailor_run1(fn, &arg);

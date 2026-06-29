@@ -6,16 +6,17 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 17:14:01 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/15 04:32:40 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/06/28 14:14:24 by username         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "syscalls.h"
+#include "private/ft_p_syscalls.h"
 
 #ifdef __x86_64__
 
 __attribute__((__always_inline__))
-inline void	*ft_mmap(size_t size, long prot_extra, long flags_extra)
+inline void	*ft_mmap(t_size size, long prot_extra, long flags_extra)
 {
 	void				*ret;
 	register long r10	__asm__("r10");
@@ -28,7 +29,7 @@ inline void	*ft_mmap(size_t size, long prot_extra, long flags_extra)
 	__asm__ volatile (
 		"syscall"
 		: "=a"(ret)
-		: "0"(SYS_mmap),
+		: "0"(SYS_MMAP),
 		"D"((long) NULL),
 		"S"((long) size),
 		"d"((long) PROT_READ | PROT_WRITE | prot_extra),
@@ -39,12 +40,12 @@ inline void	*ft_mmap(size_t size, long prot_extra, long flags_extra)
 }
 
 __attribute__((nonnull(1), __always_inline__))
-inline void	ft_munmap(void *restrict const mem, size_t size)
+inline void	ft_munmap(void *restrict const mem, t_size size)
 {
 	__asm__ volatile (
 		"syscall"
 		:
-		: "a"(SYS_munmap),
+		: "a"(SYS_MUNMAP),
 		"D"(mem),
 		"S"(size)
 		: "rcx", "r11", "memory"
@@ -54,9 +55,9 @@ inline void	ft_munmap(void *restrict const mem, size_t size)
 #else
 
 __attribute__((__always_inline__))
-void	*ft_mmap(size_t size, long prot_extra, long flags_extra)
+void	*ft_mmap(t_size size, long prot_extra, long flags_extra)
 {
-	return ((void *)syscall(SYS_mmap,
+	return ((void *)syscall(SYS_MMAP,
 			size,
 			NULL,
 			PROT_READ | PROT_WRITE | prot_extra,
@@ -67,9 +68,9 @@ void	*ft_mmap(size_t size, long prot_extra, long flags_extra)
 }
 
 __attribute__((nonnull(1), __always_inline__))
-inline void	ft_munmap(void *restrict const mem, size_t size)
+inline void	ft_munmap(void *restrict const mem, t_size size)
 {
-	syscall(SYS_munmap, mem, size);
+	syscall(SYS_MUNMAP, mem, size);
 }
 
 #endif

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_memfence.c                                      :+:      :+:    :+:   */
+/*   ft_stfence.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 00:19:38 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/19 01:25:37 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/06/28 21:18:12 by username         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,24 +16,16 @@
 #if defined(__x86_64__) || defined(_M_X64)
 
 __attribute__((__always_inline__))
-inline void	ft_fence(void)
+inline void	ft_stfence(void)
 {
 	__asm__("sfence" ::: "memory");
-}
-
-#elif defined(__aarch64__) || defined(_M_ARM64)
-
-__attribute__((__always_inline__))
-inline void	ft_fence(void)
-{
-	__asm__ ("dsb st" ::: "memory");
 }
 
 #elif defined(__STDC_VERSION__) && __STDC_VERSION__ >= 201112L \
 	&& !defined(__STDC_NO_ATOMICS__)
 
 __attribute__((__always_inline__))
-inline void	ft_fence(void)
+inline void	ft_stfence(void)
 {
 	atomic_thread_fence(memory_order_seq_cst);
 }
@@ -41,7 +33,7 @@ inline void	ft_fence(void)
 #else
 
 __attribute__((__always_inline__))
-inline void	ft_fence(void)
+inline void	ft_stfence(void)
 {
 	__sync_synchronize();
 }

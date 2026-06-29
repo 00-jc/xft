@@ -15,13 +15,13 @@
 #if FT_HAS_256_VEC
 
 __attribute__((__nonnull__(1, 2), __always_inline__))
-inline ssize_t	ft_memcmp_finalround(const void *restrict const ptr1,
-	const void	*restrict const ptr2, size_t offst, size_t n)
+inline t_ssize	ft_memcmp_finalround(const void *restrict const ptr1,
+	const void	*restrict const ptr2, t_size offst, t_size n)
 {
 	t_u32a		mask;
 	t_vu256a	load0;
 	t_vu256a	load1;
-	size_t		diffbyte;
+	t_size		diffbyte;
 
 	if (n == 0)
 		return (0);
@@ -39,14 +39,14 @@ inline ssize_t	ft_memcmp_finalround(const void *restrict const ptr1,
 }
 
 __attribute__((__nonnull__(1, 2), __always_inline__))
-inline ssize_t	ft_memcmp_avx256(const void *restrict const ptr1,
-	const void	*restrict const ptr2, size_t n)
+inline t_ssize	ft_memcmp_avx256(const void *restrict const ptr1,
+	const void	*restrict const ptr2, t_size n)
 {
 	t_u32a		mask;
 	t_vu256a	load0;
 	t_vu256a	load1;
-	size_t		offst;
-	size_t		diffb;
+	t_size		offst;
+	t_size		diffb;
 
 	offst = 0;
 	if (n < sizeof(t_vu256))

@@ -43,7 +43,7 @@ typedef struct s_lastgen
 typedef struct s_fuzzer
 {
 	t_xoshiro	xo;
-	size_t		buf_n;
+	t_size		buf_n;
 	t_arena		arena;
 	t_buffer	*buffers;
 	t_lastgen	lastgen;

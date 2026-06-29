@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/19 00:00:00 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/14 00:46:26 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/06/29 00:05:00 by username         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include "xft.h"
 # include "str.h"
 # include "hint.h"
+# include "rt.h"
 # include <string.h>
 
 # define LONG_S "10000===0000000000000000000000000000000000000000000000000000"

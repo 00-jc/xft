@@ -13,13 +13,13 @@
 #include "private/ft_p_map.h"
 
 __attribute__((__nonnull__(1, 2, 3)))
-inline size_t	ft__map_lookup_offset(const t_map *restrict const map,
-	const t_u8 *restrict const mem, size_t data[4])
+inline t_size	ft__map_lookup_offset(const t_map *restrict const map,
+	const t_u8 *restrict const mem, t_size data[4])
 {
 	t_vu128		sse;
 	t_u16a		mask;
 	t_bucket	bucket;
-	size_t		i;
+	t_size		i;
 	t_u8		h2;
 
 	h2 = (t_u8)data[H2];
@@ -48,16 +48,16 @@ void	ft_map_delete(t_map *restrict const map, t_buffer key)
 {
 	t_u128a		hash;
 	t_u8		h2;
-	size_t		group;
-	size_t		nblks;
-	size_t		result;
+	t_size		group;
+	t_size		nblks;
+	t_size		result;
 
 	hash = ft_xxh3_64bits(key, 0);
 	h2 = (hash >> 57) & MAP_H2_MASK;
 	nblks = map->table_size >> 4;
 	group = hash % nblks;
 	result = ft__map_lookup_offset(map, key.mem,
-			(size_t [4]){h2, nblks, group, key.size});
+			(t_size [4]){h2, nblks, group, key.size});
 	if (result > map->table_size)
 		return ;
 	map->meta[result] = MAP_DELETED;

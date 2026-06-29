@@ -13,7 +13,7 @@
 #include "mem.h"
 
 __attribute__((__always_inline__, const))
-inline t_buffer	ft_fatptr(t_blk8r mem, size_t size)
+inline t_buffer	ft_fatptr(t_blk8r mem, t_size size)
 {
 	return ((t_buffer){.mem = (t_u8 *)mem, .size = size});
 }

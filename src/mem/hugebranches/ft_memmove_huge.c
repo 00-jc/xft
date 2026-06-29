@@ -14,9 +14,9 @@
 
 __attribute__((__nonnull__(1, 2), __always_inline__))
 inline void	ft_memmove_512_tail(void *restrict d,
-	const void	*restrict s, size_t n2)
+	const void	*restrict s, t_size n2)
 {
-	size_t		x[2];
+	t_size		x[2];
 	t_vu512a	interleaved[3];
 
 	if (__builtin_expect(n2 != 0, 1))
@@ -50,10 +50,10 @@ inline void	ft__hugekernel_move(void *restrict d,
 
 __attribute__((__nonnull__(1, 2), __always_inline__))
 inline void	ft_memmove_512_huge(void *restrict dest,
-	const void	*restrict const src, size_t n)
+	const void	*restrict const src, t_size n)
 {
 	t_vu512a	x[6];
-	size_t		n2;
+	t_size		n2;
 	void		*d;
 	void		*s;
 

@@ -13,10 +13,10 @@
 #include "tailor.h"
 #include "mem_bench.h"
 
-void	ft_memmove_overlap(t_buffer *buffer, size_t shift, size_t invert,
-	size_t *bytes)
+void	ft_memmove_overlap(t_buffer *buffer, t_size shift, t_size invert,
+	t_size *bytes)
 {
-	size_t	len;
+	t_size	len;
 
 	if (buffer->size <= shift)
 		return ;

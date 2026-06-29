@@ -51,8 +51,8 @@ void	test_arena_alignment(void)
 {
 	t_arena	a;
 	void	*p;
-	size_t	aligns[7];
-	size_t	i;
+	t_size	aligns[7];
+	t_size	i;
 
 	aligns[0] = 1;
 	aligns[1] = 2;
@@ -86,7 +86,7 @@ void	test_arena_invalid(void)
 		(char *)"align 6");
 	ft_pin_invariant_msg(ft_arena_alloc(&a, 0, 8) == nullptr,
 		(char *)"size 0");
-	ft_pin_invariant_msg(ft_arena_alloc(&a, (size_t)-1, 8) == nullptr,
+	ft_pin_invariant_msg(ft_arena_alloc(&a, (t_size)-1, 8) == nullptr,
 		(char *)"oversize");
 	ft_destroy_arena(&a);
 }
@@ -114,7 +114,7 @@ void	test_arena_checkpoint(void)
 	ft_destroy_arena(&a);
 }
 
-int	main(void)
+int	ft_main(t_u64a argc, t_u8 **argv, t_u8 **envp)
 {
 	ft_printf("Testing arena allocator...\n");
 	test_arena_basic();
@@ -122,5 +122,8 @@ int	main(void)
 	test_arena_invalid();
 	test_arena_checkpoint();
 	ft_printf("  arena: OK\n");
+	(void)argc;
+	(void)argv;
+	(void)envp;
 	return (0);
 }

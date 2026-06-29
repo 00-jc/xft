@@ -13,7 +13,7 @@
 #include "tailor.h"
 
 __attribute__((__nonnull__(1), __always_inline__))
-inline size_t	ft_tailor_get_random_num(void *ptr)
+inline t_size	ft_tailor_get_random_num(void *ptr)
 {
 	t_tailor_arg	*arg;
 

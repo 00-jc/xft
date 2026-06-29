@@ -98,7 +98,7 @@ void	test_memcpy_large(void)
 	ft_pin_invariant(memcmp(b + 1, a + 3, 2000) == 0);
 }
 
-int	main(void)
+int	ft_main(t_u64a argc, t_u8 **argv, t_u8 **envp)
 {
 	ft_printf("Testing ft_memcpy/ft_memmove...\n");
 	test_memcpy_basic();
@@ -106,5 +106,8 @@ int	main(void)
 	test_memmove_backward();
 	test_memcpy_large();
 	ft_printf("  ft_memcpy/ft_memmove: OK\n");
+	(void)argc;
+	(void)argv;
+	(void)envp;
 	return (0);
 }

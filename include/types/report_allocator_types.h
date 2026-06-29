@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   report_allocator_types.h                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
+/*   By: username <your@mail.com>                   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/06/06 00:00:00 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/06/06 00:00:00 by jaicastr         ###   ########.fr       */
+/*   Created: 2026/06/28 16:02:57 by username          #+#    #+#             */
+/*   Updated: 2026/06/28 16:02:59 by username         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,16 +19,16 @@
 typedef struct s_reporta
 {
 	void	*slab;
-	size_t	slabsize;
+	t_size	slabsize;
 	void	*bmp;
 	void	*free[GPA_CLASSES];
-	size_t	n_allocs;
-	size_t	n_frees;
-	size_t	slabs;
-	size_t	reuses;
-	size_t	misses;
-	size_t	free_depth[GPA_CLASSES];
-	size_t	paged;
+	t_size	n_allocs;
+	t_size	n_frees;
+	t_size	slabs;
+	t_size	reuses;
+	t_size	misses;
+	t_size	free_depth[GPA_CLASSES];
+	t_size	paged;
 	t_f64	avg_frag;
 }	t_reporta;
 

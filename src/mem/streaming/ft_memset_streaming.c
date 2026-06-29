@@ -16,7 +16,7 @@
 
 __attribute__((__nonnull__(1), __always_inline__, __hot__))
 inline void	ft__setkernel_stream(void *restrict d,
-	const t_u8 c, size_t offset)
+	const t_u8 c, t_size offset)
 {
 	__asm__ (
 		"vpbroadcastb %[byte], %%zmm0\n\t"
@@ -46,7 +46,7 @@ inline void	ft__setkernel_stream(void *restrict d,
 
 __attribute__((__nonnull__(1), __always_inline__, __hot__))
 inline void	ft__setkernel_stream(void *restrict d,
-	const t_u8 c, size_t offset)
+	const t_u8 c, t_size offset)
 {
 	t_blk256wa	p;
 
@@ -78,7 +78,7 @@ inline void	ft__setkernel_stream(void *restrict d,
 
 __attribute__((__nonnull__(1), __always_inline__, __hot__))
 inline void	ft__setkernel_stream(void *restrict d,
-	const t_u8 c, size_t offset)
+	const t_u8 c, t_size offset)
 {
 	register t_vu512a	x;
 
@@ -100,7 +100,7 @@ inline void	ft__setkernel_stream(void *restrict d,
 
 __attribute__((__always_inline__, __nonnull__(1)))
 inline void	ft_memset_stream_tail(void *restrict dest,
-	const t_u8 c, size_t n)
+	const t_u8 c, t_size n)
 {
 	register t_vu512a	x;
 
@@ -124,10 +124,10 @@ inline void	ft_memset_stream_tail(void *restrict dest,
 
 __attribute__((__nonnull__(1), __always_inline__))
 inline void	ft_memset_512_streaming(void *restrict dest,
-	const t_u8 c, size_t n)
+	const t_u8 c, t_size n)
 {
 	t_t_f64_size			s;
-	size_t					delta;
+	t_size					delta;
 	t_u8					*d;
 	register t_vu512a		x;
 
@@ -146,6 +146,6 @@ inline void	ft_memset_512_streaming(void *restrict dest,
 		ft__setkernel_stream(d, c, s.i);
 		s.i += 8;
 	}
-	ft_fence();
+	ft_stfence();
 	ft_memset_stream_tail(d + (s.i << 6), c, n - (s.i << 6));
 }

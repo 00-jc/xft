@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tailor_types.h                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
+/*   By: username <your@mail.com>                   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/06/06 00:00:00 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/06/06 00:00:00 by jaicastr         ###   ########.fr       */
+/*   Created: 2026/06/28 16:02:57 by username          #+#    #+#             */
+/*   Updated: 2026/06/28 16:02:59 by username         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,10 @@
 # define TAILOR_TYPES_H
 
 # include "primitives.h"
-# include "types/arena_alloc_types.h"
-# include "types/perf_types.h"
-# include "types/rng_types.h"
-# include "types/ft_p_asm_types.h"
+# include "types/arena_alloc_primitives.h"
+# include "types/perf_primitives.h"
+# include "types/rng_primitives.h"
+# include "types/ft_p_asm_primitives.h"
 
 typedef void	(*t_tailor_fn)(void *);
 
@@ -29,10 +29,10 @@ typedef struct s_tailor_bench
 
 typedef struct s_tailor_arg
 {
-	size_t		iters;
+	t_size		iters;
 	t_buffer	buffers;
 	t_xoshiro	xoshiro;
-	size_t		bytes_processed;
+	t_size		bytes_processed;
 }	t_tailor_arg;
 
 typedef struct s_tailor

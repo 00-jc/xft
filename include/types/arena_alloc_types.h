@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   arena_alloc_types.h                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
+/*   By: username <your@mail.com>                   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/06/06 00:00:00 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/06/06 00:00:00 by jaicastr         ###   ########.fr       */
+/*   Created: 2026/06/28 16:02:57 by username          #+#    #+#             */
+/*   Updated: 2026/06/28 16:02:59 by username         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,9 @@ typedef struct s_hugepage
 {
 	struct s_hugepage	*next;
 	struct s_hugepage	*prev;
-	size_t				page_size;
-	size_t				total;
-	size_t				used;
+	t_size				page_size;
+	t_size				total;
+	t_size				used;
 	t_u8				data[];
 }	t_hugepage;
 
@@ -33,7 +33,7 @@ typedef struct s_arena
 
 typedef struct s_checkpoint
 {
-	size_t			used;
+	t_size			used;
 	t_hugepage		*location;
 }	t_arena_checkpoint;
 

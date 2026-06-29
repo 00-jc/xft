@@ -14,7 +14,7 @@
 
 __attribute__((__nonnull__(1, 2), __always_inline__))
 inline void	ft_memcpy_64(void *restrict dest,
-	const void	*restrict const src, size_t n)
+	const void	*restrict const src, t_size n)
 {
 	t_u64a		x[2];
 

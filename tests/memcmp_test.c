@@ -94,7 +94,7 @@ void	test_memcmp_misaligned(void)
 		== (memcmp(buf + 1, ref + 1, 20) > 0));
 }
 
-int	main(void)
+int	ft_main(t_u64a argc, t_u8 **argv, t_u8 **envp)
 {
 	ft_printf("Testing ft_memcmp...\n");
 	test_memcmp_basic();
@@ -102,5 +102,8 @@ int	main(void)
 	test_memcmp_long();
 	test_memcmp_misaligned();
 	ft_printf("  ft_memcmp: OK\n");
+	(void)argc;
+	(void)argv;
+	(void)envp;
 	return (0);
 }

@@ -14,32 +14,32 @@
 # define BMI_H
 
 # include "private/ft_p_asm.h"
-# include "types.h"
+# include "primitives.h"
 
 t_u64			ft_hasz64(t_u64 x)\
 					__attribute__((const));
 t_u64			ft_populate(t_u8 y)\
 					__attribute__((const));
 
-size_t			ft_memctz_u16(t_u16 x)\
+t_size			ft_memctz_u16(t_u16 x)\
 					__attribute__((const));
-size_t			ft_memctz_u32(t_u32 x)\
+t_size			ft_memctz_u32(t_u32 x)\
 					__attribute__((const));
-size_t			ft_memctz_u64(t_u64 x)\
+t_size			ft_memctz_u64(t_u64 x)\
 					__attribute__((const));
-size_t			ft_memctz_u128(t_u128 x)\
-					__attribute__((const));
-
-size_t			ft_memclz_u16(t_u16 x)\
-					__attribute__((const));
-size_t			ft_memclz_u32(t_u32 x)\
-					__attribute__((const));
-size_t			ft_memclz_u64(t_u64 x)\
-					__attribute__((const));
-size_t			ft_memclz_u128(t_u128 x)\
+t_size			ft_memctz_u128(t_u128 x)\
 					__attribute__((const));
 
-size_t			ft_max_s(size_t x, size_t y)\
+t_size			ft_memclz_u16(t_u16 x)\
+					__attribute__((const));
+t_size			ft_memclz_u32(t_u32 x)\
+					__attribute__((const));
+t_size			ft_memclz_u64(t_u64 x)\
+					__attribute__((const));
+t_size			ft_memclz_u128(t_u128 x)\
+					__attribute__((const));
+
+t_size			ft_max_s(t_size x, t_size y)\
 					__attribute__((const));
 t_u8			ft_maxu8(t_u8 x, t_u8 y)\
 					__attribute__((const));
@@ -63,9 +63,9 @@ t_u32a			ft_to_be32(t_u32a x)\
 					__attribute__((const));
 t_u64a			ft_to_be64(t_u64a x)\
 					__attribute__((const));
-size_t			ft_roll_mask(size_t chunk_size, size_t n)\
+t_size			ft_roll_mask(t_size chunk_size, t_size n)\
 					__attribute__((const));
-t_u64a			ft_rotl64(t_u64a hash, size_t n)\
+t_u64a			ft_rotl64(t_u64a hash, t_size n)\
 					__attribute__((const));
 
 t_u64a			ft_tern(t_u64a cond, t_u64a value1,\
@@ -76,10 +76,10 @@ t_f64			ft_dtern(t_u64a cond, t_f64 value1,\
 					t_f64 value2)\
 					__attribute__((const));
 
-size_t			ft_next_pow2(size_t qword)\
+t_size			ft_next_pow2(t_size qword)\
 					__attribute__((const, __hot__));
 
-size_t			ft_last_pow2(size_t qword)\
+t_size			ft_last_pow2(t_size qword)\
 					__attribute__((const, __hot__));
 
 #endif

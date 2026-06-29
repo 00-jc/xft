@@ -13,10 +13,10 @@
 #include "str.h"
 
 __attribute__((__nonnull__(1)))
-t_result	ft_str_remove(t_str *restrict const v, size_t i)
+t_result	ft_str_remove(t_str *restrict const v, t_size i)
 {
 	t_u8	*start;
-	size_t	len;
+	t_size	len;
 
 	if (!v->mem || v->size <= i)
 		return (KO);

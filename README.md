@@ -37,13 +37,42 @@ zig build -Dtarget=...             # cross-compile target
 
 ## Requirements
 
-- GCC or Clang with C23 and C99 support
+- GCC or Clang with C23 or C99 support (preferably C23)
 - Linux
 - Norminette >3.3.59 (latest release)
-- Libc (this lib is not freestanding)
 - Zig requires clang/llvm
 - Makefile requires one of clang or gcc
 - Makefile requires one of each of `llvm-ar`/`gcc-ar` and `llvm-randlib`/`gcc-randlib`
+- Test/Fuzz require libc for unit tests and sanitizers (for bench is not needed).
+
+## Libc Linkage
+
+The core library is freestanding on x86_64 by default.
+Whether `libc` gets linked into a given artifact is decided in `make_lib` (zig) by:
+
+```
+const libc = cfg.san or builtin.cpu.arch != .x86_64 or opt.use_libc;
+```
+
+That is, libc is linked (and `FT_REQUIRE_LIBC` defined) whenever **any** of the following holds:
+
+| Condition | Trigger |
+|-----------|---------|
+| `cfg.san` | Sanitizer build (UBSan runtime needs libc) |
+| `cfg.tsan` | Thread sanitizer build (TSan runtime needs libc) |
+| `builtin.cpu.arch != .x86_64` | Any non-x86_64 target (for the syscall() macro) |
+| `opt.use_libc` | `-Dlibc=true` passed on the command line |
+
+Per artifact:
+
+| Artifact | Step | Libc |
+|----------|------|------|
+| `xft` | `core` / `nolto` | `bench` | Only on non-x86_64 or `-Dlibc` (freestanding otherwise) |
+| `xft_san` | `san` | Always (sanitizer build) |
+| `xft` (tsan cfg) | `tsan` | Follows the core rule — keyed on `cfg.san`, **not** `cfg.tsan`, so freestanding on x86_64 without `-Dlibc` |
+
+The test and bench **executables** link libc independently of the library:
+test exes always (`link_libc = true`), bench exes only on non-x86_64.
 
 ## Implementation Details
 
@@ -62,6 +91,7 @@ zig build -Dtarget=...             # cross-compile target
 - All assembly is written as inline `__asm__` in C files and protected at compile time; no raw assembly nor hidden/extern code the compiler cannot see
 - All vector and SIMD is done via vector types, not includes or proprietary logic; portability depends solely on the compiler and target
 - No partial recovery or automatic cleanup of resources on non-fatal failure; the programmer must account for that explicitly
+- Code will be clean an readable, norminette compliant and not exceeding 9 in the GNU cyclomatic dependency scale.
 
 ## Philosophy
 
@@ -73,10 +103,23 @@ zig build -Dtarget=...             # cross-compile target
 
 See [RULES.md](RULES.md).
 
+## TODO
+
+- [x] Implement clock_gettime / get_ns natively to not depend on LIBC (rdtsc)
+- [x] Add /usr/include/linux to the include path
+- [x] Clean all system includes (we're freestanding!!)
+- [x] Figure out how to cleanly split x86 freestanding mode from libc mode apart from the macro (at a target level)
+- [x] Figure out how to separate build.zig into smaller files
+- [x] Push release
+- [ ] Implement a proper IO interface (readers, writers, ...)
+- [ ] Implement something like zig's juicy main to pass to ft_main()
+- [ ] Make my own threads (hopefully better than pthread or at least more modern)
+- [ ] Coalescing Allocator
+- [ ] Implement io_uring
+- [ ] Add more math functionality.
+
 ## Notes
 
 ~500 commits were lost when migrating to codeberg; the library started around April 2025. Doesn't really impact the code since there were massive rewrites, but worth noting.
 
-Only tested on x86_64, there might be quirks around toolchains or flags, but they should not affect logic and should be easily tackled.
-
-Code compiles clean for aarch64, but cannot be tested due to lack of supporting hardware.
+This lib is mostly centered around x86_64, while it can rely on libc for others enabling FT_REQUIRE_LIBC (automatic in zig).

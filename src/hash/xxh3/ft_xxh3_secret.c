@@ -37,8 +37,8 @@ inline t_buffer	ft_xxh3_get_secret(void)
 __attribute__((__nonnull__(1)))
 void	ft_xxh3_init_custom_secret(void *custom_secret, t_u64a seed)
 {
-	size_t			nrounds;
-	size_t			i;
+	t_size			nrounds;
+	t_size			i;
 	t_vu64_512a		seed_lane;
 	t_vu64_512a		*rrptr[2];
 	t_buffer		secret;

@@ -6,14 +6,15 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/17 00:00:00 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/17 00:00:00 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/06/28 22:40:12 by username         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "tailor.h"
 #include "alloc_bench.h"
+#include "rt.h"
 
-int	main(void)
+int	ft_main(t_u64a argc, t_u8 **argv, t_u8 **envp)
 {
 	static t_tailor_bench	benches[] = {
 	{ft_arena_bench_8, (t_blk8r)"arena_alloc_8"},
@@ -24,6 +25,9 @@ int	main(void)
 	};
 	t_tailor				t;
 
+	(void)argc;
+	(void)argv;
+	(void)envp;
 	ft_bind_process_to_cpu(0);
 	if (!ft_tailor_new(&t, 2, 2000))
 		return (1);

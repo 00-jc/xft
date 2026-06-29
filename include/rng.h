@@ -13,7 +13,7 @@
 #ifndef RNG_H
 # define RNG_H
 
-# include "types.h"
+# include "primitives.h"
 # include "bmi.h"
 
 typedef t_u64a		t_xoshiro[4];

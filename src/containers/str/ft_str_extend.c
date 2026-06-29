@@ -14,10 +14,10 @@
 
 __attribute__((__nonnull__(2)))
 t_result	ft_str_reserve(t_allocator allocator,
-	t_str *restrict const str, size_t n)
+	t_str *restrict const str, t_size n)
 {
 	t_buffer	new_buf;
-	size_t		new_cap;
+	t_size		new_cap;
 
 	if (str->mem == nullptr || allocator.allocator == nullptr)
 		__builtin_unreachable();
@@ -33,7 +33,7 @@ t_result	ft_str_reserve(t_allocator allocator,
 
 __attribute__((__nonnull__(2, 3)))
 t_result	ft_str_extend(t_allocator allocator, t_str *restrict const str,
-		const t_u8 *restrict const mem, size_t n)
+		const t_u8 *restrict const mem, t_size n)
 {
 	t_u8	should_extend;
 

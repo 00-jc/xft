@@ -18,7 +18,7 @@ __attribute__((__nonnull__(1), __noinline__, __used__))
 t_token	ft_eat_until(t_tokenizer *tk, t_eater_select select)
 {
 	t_eaterset	set;
-	size_t		remaining;
+	t_size		remaining;
 
 	set = get_eaterset(select);
 	remaining = tk->max - tk->cc;
@@ -38,7 +38,7 @@ __attribute__((__nonnull__(1), __noinline__, __used__))
 t_token	ft_eat_until(t_tokenizer *tk, t_eater_select select)
 {
 	t_eaterset	set;
-	size_t		remaining;
+	t_size		remaining;
 
 	set = get_eaterset(select);
 	remaining = tk->max - tk->cc;
@@ -56,7 +56,7 @@ __attribute__((__nonnull__(1), __noinline__, __used__))
 t_token	ft_eat_until(t_tokenizer *tk, t_eater_select select)
 {
 	t_eaterset	set;
-	size_t		remaining;
+	t_size		remaining;
 
 	set = get_eaterset(select);
 	remaining = tk->max - tk->cc;

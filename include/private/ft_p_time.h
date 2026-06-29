@@ -1,22 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_threadpool_wait.c                               :+:      :+:    :+:   */
+/*   ft_p_time.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
+/*   By: username <your@mail.com>                   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/16 15:15:42 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/03/16 16:40:20 by jaicastr         ###   ########.fr       */
+/*   Created: 2026/06/28 21:23:47 by username          #+#    #+#             */
+/*   Updated: 2026/06/28 23:40:49 by username         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "threadpool.h"
+#include "timing.h"
+# include "types/timing_types.h"
 
-__attribute__((__nonnull__(1)))
-void	ft_threadpool_wait(t_threadpool *tp)
-{
-	pthread_mutex_lock(&tp->mutex);
-	while (tp->count > 0)
-		pthread_cond_wait(&tp->done, &tp->mutex);
-	pthread_mutex_unlock(&tp->mutex);
-}
+t_u64a		ft_rdtsc(void);

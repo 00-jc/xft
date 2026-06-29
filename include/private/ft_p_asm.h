@@ -6,15 +6,14 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/19 04:30:00 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/19 01:42:34 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/06/28 15:51:51 by username         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FT_P_ASM_H
 # define FT_P_ASM_H
 
-# include "types.h"
-# include <sys/types.h>
+# include "primitives.h"
 
 typedef t_u8 *__restrict__ const									t_blk8w;
 typedef const t_u8 *__restrict__ const								t_blk8r;

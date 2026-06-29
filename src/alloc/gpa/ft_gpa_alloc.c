@@ -29,7 +29,7 @@ static inline int	ft_advance_slab(t_gpa *gpa)
 }
 
 __attribute__((__nonnull__(1), __always_inline__))
-static inline t_buffer	ft_return_ptr(t_gpa *gpa, size_t snapped, size_t align)
+static inline t_buffer	ft_return_ptr(t_gpa *gpa, t_size snapped, t_size align)
 {
 	void	*new_ptr;
 
@@ -45,11 +45,11 @@ static inline t_buffer	ft_return_ptr(t_gpa *gpa, size_t snapped, size_t align)
 }
 
 __attribute__((__nonnull__(1)))
-t_buffer	ft_gpa_alloc(void *alloc, size_t size, size_t align)
+t_buffer	ft_gpa_alloc(void *alloc, t_size size, t_size align)
 {
 	void	*new_ptr;
-	size_t	freelist;
-	size_t	snapped;
+	t_size	freelist;
+	t_size	snapped;
 	t_gpa	*gpa;
 
 	gpa = (t_gpa *)alloc;
@@ -59,7 +59,8 @@ t_buffer	ft_gpa_alloc(void *alloc, size_t size, size_t align)
 	if (GPA_CLASSES <= freelist)
 	{
 		new_ptr = ft_mmap(snapped, 0, ft_match_hugepage_flags(snapped));
-		new_ptr = (void *)ft_tern(new_ptr == MAP_FAILED, 0, (t_uptr)new_ptr);
+		new_ptr = (void *)ft_tern(new_ptr == (void *)MAP_FAILED,
+				0, (t_uptr)new_ptr);
 		return (ft_fatptr(new_ptr, snapped));
 	}
 	new_ptr = gpa->free[freelist];

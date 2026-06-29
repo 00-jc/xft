@@ -15,9 +15,9 @@
 
 # include "io.h"
 
-void			putu(int fd, size_t n);
-void			putx(int fd, size_t n, char or);
-void			putd(int fd, ssize_t n);
+void			putu(int fd, t_size n);
+void			putx(int fd, t_size n, char or);
+void			putd(int fd, t_ssize n);
 void			puti(int fd, int n);
 void			pputs(int fd, const char *__restrict__ const str);
 void			pflt(int fd, t_f64 d);

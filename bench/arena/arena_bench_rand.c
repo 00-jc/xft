@@ -16,9 +16,9 @@
 void	ft_arena_bench_random(void *ptr)
 {
 	t_arena		*arena;
-	size_t		n;
-	size_t		bytes;
-	size_t		sz;
+	t_size		n;
+	t_size		bytes;
+	t_size		sz;
 	void		*p;
 
 	arena = ft_get_bench_arena();

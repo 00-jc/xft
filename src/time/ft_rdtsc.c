@@ -1,21 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   env.h                                              :+:      :+:    :+:   */
+/*   ft_rdtsc.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
+/*   By: username <your@mail.com>                   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/19 01:02:39 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/13 06:38:54 by jaicastr         ###   ########.fr       */
+/*   Created: 2026/06/28 21:21:04 by username          #+#    #+#             */
+/*   Updated: 2026/06/28 21:48:36 by username         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef ENV_H
-# define ENV_H
+#include "mem.h"
+#include "private/ft_p_time.h"
 
-# include "mem.h"
+#ifdef __x86_64__
 
-char			*ft_getenv(const char *__restrict__ const var)\
-					__attribute__((__nonnull__(1)));
+__attribute__((__always_inline__))
+inline t_u64a	ft_rdtsc(void)
+{
+	ft_ldfence();
+	return (__builtin_ia32_rdtsc());
+}
 
 #endif

@@ -16,7 +16,7 @@ __attribute__((__nonnull__(2)))
 t_str	ft_cstr_to_str(t_allocator allocator, const char *cstr)
 {
 	t_str	str;
-	size_t	n;
+	t_size	n;
 
 	n = ft_strlen(cstr);
 	str = ft_str(allocator, n);

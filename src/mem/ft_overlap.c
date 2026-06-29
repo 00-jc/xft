@@ -18,7 +18,7 @@
 
 __attribute__((__always_inline__, __nonnull__(1), __const__))
 inline void	*ft_overlap(const void *restrict ptr,
-	size_t chunk_size, size_t rem_size)
+	t_size chunk_size, t_size rem_size)
 {
 	return ((((t_u8 *)ptr) + rem_size) - chunk_size);
 }

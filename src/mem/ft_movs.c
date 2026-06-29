@@ -16,7 +16,7 @@
 
 __attribute__((__nonnull__(1, 2), __always_inline__))
 inline void	ft_movsb(void *restrict dest,
-	const void	*restrict src, size_t n)
+	const void	*restrict src, t_size n)
 {
 	__asm__ volatile (
 		"rep movsb"
@@ -28,7 +28,7 @@ inline void	ft_movsb(void *restrict dest,
 
 __attribute__((__nonnull__(1, 2), __always_inline__))
 inline void	ft_movsq(void *restrict dest,
-	const void	*restrict src, size_t qw)
+	const void	*restrict src, t_size qw)
 {
 	__asm__ volatile (
 		"rep movsq"
@@ -42,9 +42,9 @@ inline void	ft_movsq(void *restrict dest,
 
 __attribute__((__nonnull__(1, 2), __always_inline__))
 inline void	ft_movsb(void *restrict dest,
-	const void	*restrict src, size_t n)
+	const void	*restrict src, t_size n)
 {
-	size_t	i;
+	t_size	i;
 
 	i = 0;
 	while (i < n)
@@ -56,9 +56,9 @@ inline void	ft_movsb(void *restrict dest,
 
 __attribute__((__nonnull__(1, 2), __always_inline__))
 inline void	ft_movsq(void *restrict dest,
-	const void	*restrict src, size_t n)
+	const void	*restrict src, t_size n)
 {
-	size_t	i;
+	t_size	i;
 
 	i = 0;
 	while (i < n)

@@ -6,23 +6,24 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 20:45:31 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/19 20:57:50 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/06/28 14:16:02 by username         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "syscalls.h"
+#include "private/ft_p_syscalls.h"
 
 #ifdef __x86_64__
 
 __attribute__((__nonnull__(2), __always_inline__))
-inline ssize_t	ft_write(int fd, t_u8 *restrict const buffer, size_t len)
+inline t_ssize	ft_write(int fd, t_u8 *restrict const buffer, t_size len)
 {
-	ssize_t		ret;
+	t_ssize		ret;
 
 	__asm__(
 		"syscall"
 		: "=a"(ret)
-		: "0"(SYS_write),
+		: "0"(SYS_WRITE),
 		"D"(fd),
 		"S"(buffer),
 		"d"(len)
@@ -34,9 +35,9 @@ inline ssize_t	ft_write(int fd, t_u8 *restrict const buffer, size_t len)
 #else
 
 __attribute__((__nonnull__(2), __always_inline__))
-inline ssize_t	ft_write(int fd, t_u8 *restrict const buffer, size_t len)
+inline t_ssize	ft_write(int fd, t_u8 *restrict const buffer, t_size len)
 {
-	return (syscall(SYS_write, fd, buffer, len));
+	return (syscall(SYS_WRITE, fd, buffer, len));
 }
 
 #endif

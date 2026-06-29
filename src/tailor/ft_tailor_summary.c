@@ -16,9 +16,9 @@
 
 __attribute__((__nonnull__(1, 2), __always_inline__))
 static inline void	ft_sum_counters(t_perf_sample *src, t_perf_sample *sum,
-	size_t n)
+	t_size n)
 {
-	size_t	i;
+	t_size	i;
 
 	*sum = (t_perf_sample){0};
 	i = 0;

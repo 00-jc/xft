@@ -16,7 +16,7 @@ __attribute__((__nonnull__(2)))
 t_result	ft_map_rehash(t_allocator allocator, t_map *restrict const map)
 {
 	t_map	new;
-	size_t	i;
+	t_size	i;
 
 	if (map->buckets == nullptr || map->meta == nullptr)
 		__builtin_unreachable();

@@ -23,7 +23,7 @@ void	test_extend_trigger(void)
 	t_arena		a;
 	t_hugepage	*first;
 	void		*p;
-	size_t		big;
+	t_size		big;
 
 	a = ft_new_arena_alloc();
 	first = a.current;
@@ -46,7 +46,7 @@ void	test_extend_rewind_reuse(void)
 	t_arena_checkpoint	cp;
 	t_hugepage			*second;
 	void				*ptrs[2];
-	size_t				big;
+	t_size				big;
 
 	a = ft_new_arena_alloc();
 	big = a.current->total - a.current->used - 128;
@@ -69,7 +69,7 @@ void	test_extend_rewind_grow(void)
 	t_arena_checkpoint	cp;
 	t_hugepage			*pages[2];
 	void				*p;
-	size_t				big;
+	t_size				big;
 
 	a = ft_new_arena_alloc();
 	pages[0] = a.current;
@@ -92,7 +92,7 @@ void	test_extend_clean_releases(void)
 	t_arena				a;
 	t_arena_checkpoint	cp;
 	t_hugepage			*base;
-	size_t				big;
+	t_size				big;
 	int					i;
 
 	a = ft_new_arena_alloc();
@@ -111,7 +111,7 @@ void	test_extend_clean_releases(void)
 	ft_destroy_arena(&a);
 }
 
-int	main(void)
+int	ft_main(t_u64a argc, t_u8 **argv, t_u8 **envp)
 {
 	ft_printf("Testing arena extend...\n");
 	test_extend_trigger();
@@ -119,5 +119,8 @@ int	main(void)
 	test_extend_rewind_grow();
 	test_extend_clean_releases();
 	ft_printf("  arena extend: OK\n");
+	(void)argc;
+	(void)argv;
+	(void)envp;
 	return (0);
 }

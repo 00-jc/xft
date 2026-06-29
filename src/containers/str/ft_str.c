@@ -12,7 +12,7 @@
 
 #include "str.h"
 
-t_str	ft_str(t_allocator allocator, size_t size)
+t_str	ft_str(t_allocator allocator, t_size size)
 {
 	t_buffer	buf;
 

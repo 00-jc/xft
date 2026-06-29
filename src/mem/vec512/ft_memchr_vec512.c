@@ -16,7 +16,7 @@
 
 __attribute__ ((__nonnull__ (1), __always_inline__, pure))
 inline void	*ft__fix_last_w(const t_u8 *restrict const ptr,
-	size_t n, t_u8 msk)
+	t_size n, t_u8 msk)
 {
 	t_vu512a		w;
 	t_vu512			*adjusted;
@@ -35,7 +35,7 @@ inline void	*ft__fix_last_w(const t_u8 *restrict const ptr,
 }
 
 __attribute__((__nonnull__ (1), __always_inline__, pure))
-inline void	*ft_memchr_avx512(const void *restrict ptr, int c, size_t n)
+inline void	*ft_memchr_avx512(const void *restrict ptr, int c, t_size n)
 {
 	t_u64a						hasz;
 	t_vu512a					w;

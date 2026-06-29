@@ -19,7 +19,7 @@ static void	gpa_destroy(void *alloc)
 }
 
 __attribute__((__nonnull__(1)))
-static t_buffer	gpa_allocate(void *alloc, size_t size, size_t align)
+static t_buffer	gpa_allocate(void *alloc, t_size size, t_size align)
 {
 	return (ft_gpa_alloc(alloc, size, align));
 }
@@ -31,8 +31,8 @@ static void	gpa_free(void *alloc, t_buffer old)
 }
 
 __attribute__((__nonnull__(1)))
-static t_buffer	gpa_reallocate(void *alloc, t_buffer old, size_t new_size,
-				size_t align)
+static t_buffer	gpa_reallocate(void *alloc, t_buffer old, t_size new_size,
+				t_size align)
 {
 	return (ft_gpa_realloc(alloc, old, new_size, align));
 }

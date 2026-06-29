@@ -16,8 +16,8 @@
 void	ft_gpa_bench_8(void *ptr)
 {
 	t_gpa		*gpa;
-	size_t		n;
-	size_t		bytes;
+	t_size		n;
+	t_size		bytes;
 	t_buffer	b;
 
 	gpa = ft_get_bench_gpa();
@@ -36,8 +36,8 @@ void	ft_gpa_bench_8(void *ptr)
 void	ft_gpa_bench_64(void *ptr)
 {
 	t_gpa		*gpa;
-	size_t		n;
-	size_t		bytes;
+	t_size		n;
+	t_size		bytes;
 	t_buffer	b;
 
 	gpa = ft_get_bench_gpa();
@@ -56,8 +56,8 @@ void	ft_gpa_bench_64(void *ptr)
 void	ft_gpa_bench_512(void *ptr)
 {
 	t_gpa		*gpa;
-	size_t		n;
-	size_t		bytes;
+	t_size		n;
+	t_size		bytes;
 	t_buffer	b;
 
 	gpa = ft_get_bench_gpa();
@@ -76,8 +76,8 @@ void	ft_gpa_bench_512(void *ptr)
 void	ft_gpa_bench_8k(void *ptr)
 {
 	t_gpa		*gpa;
-	size_t		n;
-	size_t		bytes;
+	t_size		n;
+	t_size		bytes;
 	t_buffer	b;
 
 	gpa = ft_get_bench_gpa();
@@ -95,10 +95,10 @@ void	ft_gpa_bench_8k(void *ptr)
 
 void	ft_gpa_bench_varied(void *ptr)
 {
-	static const size_t	sizes[4] = {8, 64, 512, 4096};
+	static const t_size	sizes[4] = {8, 64, 512, 4096};
 	t_gpa				*gpa;
-	size_t				n;
-	size_t				bytes;
+	t_size				n;
+	t_size				bytes;
 	t_buffer			b;
 
 	gpa = ft_get_bench_gpa();

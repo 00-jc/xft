@@ -14,7 +14,7 @@
 
 __attribute__ ((__nonnull__ (1), __always_inline__, pure))
 inline void	*ft__fix_last_w(const t_u8 *restrict const ptr,
-	size_t n, t_u8 msk)
+	t_size n, t_u8 msk)
 {
 	t_vu128a		w;
 	t_vu128			*adjusted;
@@ -34,9 +34,9 @@ inline void	*ft__fix_last_w(const t_u8 *restrict const ptr,
 
 __attribute__((__nonnull__(1), __always_inline__))
 inline void	*ft_memchr_minimal(const void *restrict const ptr,
-	t_u8 c, size_t n)
+	t_u8 c, t_size n)
 {
-	size_t	i;
+	t_size	i;
 
 	i = 0;
 	while (i < n)
@@ -49,7 +49,7 @@ inline void	*ft_memchr_minimal(const void *restrict const ptr,
 }
 
 __attribute__((__nonnull__ (1), __always_inline__, pure))
-inline void	*ft_memchr_sse(const void *restrict ptr, int c, size_t n)
+inline void	*ft_memchr_sse(const void *restrict ptr, int c, t_size n)
 {
 	t_u16a						hasz;
 	t_vu128a					w;

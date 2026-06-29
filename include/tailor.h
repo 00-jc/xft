@@ -16,7 +16,7 @@
 # include "perf.h"
 # include "alloc.h"
 # include "rng.h"
-# include "types.h"
+# include "primitives.h"
 # include "mem.h"
 
 typedef void	(*t_tailor_fn)(void *);
@@ -29,10 +29,10 @@ typedef struct s_tailor_bench
 
 typedef struct s_tailor_arg
 {
-	size_t		iters;
+	t_size		iters;
 	t_buffer	buffers;
 	t_xoshiro	xoshiro;
-	size_t		bytes_processed;
+	t_size		bytes_processed;
 }	t_tailor_arg;
 
 typedef struct s_tailor
@@ -51,14 +51,14 @@ t_result	ft_tailor_new(t_tailor *t, t_f64 warmup_sec, t_u64a min_samples)\
 					__attribute__((nonnull(1)));
 
 t_result	ft_tailor_bench(t_tailor *t, t_tailor_bench benches[],\
-				size_t size)\
+				t_size size)\
 				__attribute__((__nonnull__(1, 2)));
 
-size_t		ft_tailor_getcount(const void *ptr)\
+t_size		ft_tailor_getcount(const void *ptr)\
 				__attribute__((pure, __nonnull__(1)));
 
-t_result	ft_tailor_buffers(t_tailor *t, size_t *sizes,\
-				t_u8 *alignment, size_t n)\
+t_result	ft_tailor_buffers(t_tailor *t, t_size *sizes,\
+				t_u8 *alignment, t_size n)\
 				__attribute__((__nonnull__(1, 2, 3)));
 
 t_buffer	ft_get_random_buffer(const void *ptr)\
@@ -67,12 +67,12 @@ t_buffer	ft_get_random_buffer(const void *ptr)\
 void		ft_tailor_destroy(t_tailor *t)\
 				__attribute__((nonnull(1)));
 
-t_buffer	*ft_get_all_buffers(const void *ptr, size_t *n)\
+t_buffer	*ft_get_all_buffers(const void *ptr, t_size *n)\
 				__attribute__((__nonnull__(1)));
 
-void		ft_tailor_add_processed_bytes(void *ptr, const size_t bytes)\
+void		ft_tailor_add_processed_bytes(void *ptr, const t_size bytes)\
 				__attribute__((__nonnull__(1)));
 
-size_t		ft_tailor_get_random_num(void *ptr)\
+t_size		ft_tailor_get_random_num(void *ptr)\
 				__attribute__((__nonnull__(1), __always_inline__));
 #endif

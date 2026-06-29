@@ -86,7 +86,7 @@ void	test_xoshiro_init_diff(void)
 	ft_pin_invariant_msg(diff == 1, (char *)"diff != 1");
 }
 
-int	main(void)
+int	ft_main(t_u64a argc, t_u8 **argv, t_u8 **envp)
 {
 	ft_printf("Testing ft_xoshiro256**...\n");
 	test_xoshiro_basic();
@@ -94,5 +94,8 @@ int	main(void)
 	test_xoshiro_state_changes();
 	test_xoshiro_init_diff();
 	ft_printf("  ft_xoshiro256**: OK\n");
+	(void)argc;
+	(void)argv;
+	(void)envp;
 	return (0);
 }

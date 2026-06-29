@@ -13,9 +13,9 @@
 #include "private/ft_p_tailor.h"
 
 __attribute__((__nonnull__(1, 2)))
-t_result	ft_tailor_bench(t_tailor *t, t_tailor_bench benches[], size_t size)
+t_result	ft_tailor_bench(t_tailor *t, t_tailor_bench benches[], t_size size)
 {
-	size_t	i;
+	t_size	i;
 
 	i = 0;
 	while (i < size)

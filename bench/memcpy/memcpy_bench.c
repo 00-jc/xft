@@ -13,9 +13,9 @@
 #include "tailor.h"
 #include "mem_bench.h"
 
-int	main(void)
+int	ft_main(t_u64a argc, t_u8 **argv, t_u8 **envp)
 {
-	static size_t			bufsizes[] = {
+	static t_size			bufsizes[] = {
 		1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2049, (1 << 18), (1 << 20),
 		1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2049, (1 << 18), (1 << 20),
 	};
@@ -34,6 +34,9 @@ int	main(void)
 	};
 	t_tailor				t;
 
+	(void)argc;
+	(void)argv;
+	(void)envp;
 	ft_bind_process_to_cpu(0);
 	if (!ft_tailor_new(&t, 2, 2000))
 		return (1);

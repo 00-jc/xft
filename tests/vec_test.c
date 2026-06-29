@@ -107,7 +107,7 @@ void	test_vec_clear_reuse(t_allocator a)
 	ft_vec_destroy(a, &v);
 }
 
-int	main(void)
+int	ft_main(t_u64a argc, t_u8 **argv, t_u8 **envp)
 {
 	t_gpa		gpa;
 	t_allocator	a;
@@ -121,5 +121,8 @@ int	main(void)
 	test_vec_clear_reuse(a);
 	ft_gpa_destroy(&gpa);
 	ft_printf("  t_vec: OK\n");
+	(void)argc;
+	(void)argv;
+	(void)envp;
 	return (0);
 }

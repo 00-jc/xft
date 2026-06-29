@@ -16,7 +16,7 @@
 
 __attribute__((__nonnull__(1, 2), __always_inline__, __hot__))
 inline void	ft__cpykernel_stream(void *restrict d,
-	const void *restrict const s, size_t offset)
+	const void *restrict const s, t_size offset)
 {
 	t_vu512a	*restrict	pd;
 	t_vu512a	*restrict	ps;
@@ -47,7 +47,7 @@ inline void	ft__cpykernel_stream(void *restrict d,
 
 __attribute__((__nonnull__(1, 2), __always_inline__, __hot__))
 inline void	ft__cpykernel_stream(void *restrict d,
-	const void *restrict const s, size_t offset)
+	const void *restrict const s, t_size offset)
 {
 	t_vu256a	*restrict	pd;
 	t_vu256a	*restrict	ps;
@@ -80,7 +80,7 @@ inline void	ft__cpykernel_stream(void *restrict d,
 
 __attribute__((__nonnull__(1, 2), __always_inline__, __hot__))
 inline void	ft__cpykernel_stream(void *restrict d,
-	const void *restrict const s, size_t offset)
+	const void *restrict const s, t_size offset)
 {
 	t_vu512a	x[8];
 
@@ -106,7 +106,7 @@ inline void	ft__cpykernel_stream(void *restrict d,
 
 __attribute__((__always_inline__, __nonnull__(1, 2)))
 inline void	ft_memcpy_stream_tail(void *restrict dest,
-	const void *restrict const src, size_t n)
+	const void *restrict const src, t_size n)
 {
 	t_vu512a	x[8];
 
@@ -136,10 +136,10 @@ inline void	ft_memcpy_stream_tail(void *restrict dest,
 
 __attribute__((__nonnull__(1, 2), __always_inline__))
 inline void	ft_memcpy_512_streaming(void *restrict dest,
-	const void *restrict const src, size_t n)
+	const void *restrict const src, t_size n)
 {
 	t_t_f64_size	s;
-	size_t			delta;
+	t_size			delta;
 	t_u8			*d;
 	const t_u8		*sr;
 
@@ -155,6 +155,6 @@ inline void	ft_memcpy_512_streaming(void *restrict dest,
 		ft__cpykernel_stream(d, sr, s.i);
 		s.i += 8;
 	}
-	ft_fence();
+	ft_stfence();
 	ft_memcpy_stream_tail(d + (s.i << 6), sr + (s.i << 6), n - (s.i << 6));
 }

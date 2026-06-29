@@ -16,7 +16,7 @@
 # include "mem.h"
 # include "hash.h"
 
-t_u64a	rotl(t_u64a x, size_t r)\
+t_u64a	rotl(t_u64a x, t_size r)\
 			__attribute__((const));
 
 t_u64a	fmix64(t_u64a k)\

@@ -22,116 +22,116 @@
 
 typedef struct s_t_f64_size
 {
-	size_t		i;
-	size_t		blks;
+	t_size		i;
+	t_size		blks;
 }	t_t_f64_size;
 
 void			ft_memcpy_naive(void *__restrict__ dest,
 					const void	*__restrict__ const src,
-					size_t n)\
+					t_size n)\
 					__attribute__((__nonnull__(1, 2)));
 
 void			ft_memcpy_512_huge(void *__restrict__ dest,\
 					const void	*__restrict__ const src,\
-					size_t n)\
+					t_size n)\
 					__attribute__((__nonnull__(1, 2)));
 
 void			ft_memmove_512_huge(void *__restrict__ dest,\
 					const void	*__restrict__ const src,\
-					size_t n)\
+					t_size n)\
 					__attribute__((__nonnull__(1, 2)));
 
 void			ft_memcpy_64(void *__restrict__ dest,
 					const void	*__restrict__ const src,
-					size_t n)\
+					t_size n)\
 					__attribute__((__nonnull__(1, 2)));
 
 void			ft_memset_naive(void *__restrict__ dest,
-					const t_u8 b, size_t n)\
+					const t_u8 b, t_size n)\
 					__attribute__((__nonnull__(1)));
 void			ft_memset_64(void *__restrict__ dest,
-					const t_u8 b, size_t n)\
+					const t_u8 b, t_size n)\
 					__attribute__((__nonnull__(1)));
 
 void			ft_memcpy_128(void *__restrict__ dest,
 					const void	*__restrict__ const src,
-					size_t n)\
+					t_size n)\
 					__attribute__((__nonnull__(1, 2)));
 void			ft_memcpy_256(void *__restrict__ dest,
 					const void	*__restrict__ const src,
-					size_t n)\
+					t_size n)\
 					__attribute__((__nonnull__(1, 2)));
 void			ft_memcpy_512(void *__restrict__ dest,
 					const void	*__restrict__ const src,
-					size_t n)\
+					t_size n)\
 					__attribute__((__nonnull__(1, 2)));
 
 void			ft_movsb(void *__restrict__ dest,
 					const void	*__restrict__ src,
-					size_t n)\
+					t_size n)\
 					__attribute__((__nonnull__(1, 2)));
 
 void			ft_movsq(void *__restrict__ dest,
 					const void	*__restrict__ src,
-					size_t n)\
+					t_size n)\
 					__attribute__((__nonnull__(1, 2)));
 
 void			ft_memset_128(void *__restrict__ dest,
-					const t_u8 b, size_t n)\
+					const t_u8 b, t_size n)\
 					__attribute__((__nonnull__(1)));
 
 void			ft_memset_256(void *__restrict__ dest,
-					const t_u8 b, size_t n)\
+					const t_u8 b, t_size n)\
 					__attribute__((__nonnull__(1)));
 
 void			ft_memset_512(void *__restrict__ dest,
-					const t_u8 b, size_t n)\
+					const t_u8 b, t_size n)\
 					__attribute__((__nonnull__(1)));
 
 void			ft_memset_512_huge(void *__restrict__ dest,
-					const t_u8 b, size_t n)\
+					const t_u8 b, t_size n)\
 					__attribute__((__nonnull__(1)));
 
 void			*ft_memchr_minimal(const void *ptr,
-					t_u8 c, size_t n)\
+					t_u8 c, t_size n)\
 					__attribute__((__nonnull__(1)));
 
 void			*ft_memchr_sse(const void *ptr,
-					int c, size_t n)\
+					int c, t_size n)\
 					__attribute__((__nonnull__(1)));
 
 void			*ft_memchr_avx256(const void *ptr,
-					int c, size_t n)\
+					int c, t_size n)\
 					__attribute__((__nonnull__(1)));
 
 void			*ft_memchr_avx512(const void *ptr,
-					int c, size_t n)\
+					int c, t_size n)\
 					__attribute__((__nonnull__(1)));
 
-ssize_t			ft_memcmp_minimal(const void *__restrict__ const ptr1,
-					const void	*__restrict__ const ptr2, size_t offst,\
-					size_t n)\
+t_ssize			ft_memcmp_minimal(const void *__restrict__ const ptr1,
+					const void	*__restrict__ const ptr2, t_size offst,\
+					t_size n)\
 					__attribute__((__nonnull__(1, 2)));
 
-ssize_t			ft_memcmp_sse(const void *__restrict__ const ptr1,
-					const void	*__restrict__ const ptr2, size_t n)\
+t_ssize			ft_memcmp_sse(const void *__restrict__ const ptr1,
+					const void	*__restrict__ const ptr2, t_size n)\
 					__attribute__((__nonnull__(1, 2)));
 
-ssize_t			ft_memcmp_avx256(const void *__restrict__ const ptr1,
-					const void	*__restrict__ const ptr2, size_t n)\
+t_ssize			ft_memcmp_avx256(const void *__restrict__ const ptr1,
+					const void	*__restrict__ const ptr2, t_size n)\
 					__attribute__((__nonnull__(1, 2)));
 
-ssize_t			ft_memcmp_avx512(const void *__restrict__ const ptr1,
-					const void	*__restrict__ const ptr2, size_t n)\
+t_ssize			ft_memcmp_avx512(const void *__restrict__ const ptr1,
+					const void	*__restrict__ const ptr2, t_size n)\
 					__attribute__((__nonnull__(1, 2)));
 
 void			ft_memset_512_streaming(void *restrict dest,
-					const t_u8 c, size_t n)\
+					const t_u8 c, t_size n)\
 					__attribute__((__nonnull__(1)));
 
 void			ft_memcpy_512_streaming(void *__restrict__ dest,\
 					const void	*__restrict__ const src,\
-					size_t n)\
+					t_size n)\
 					__attribute__((__nonnull__(1, 2)));
 
 #endif

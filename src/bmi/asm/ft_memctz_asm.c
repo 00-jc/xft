@@ -15,7 +15,7 @@
 #if defined(__BMI__) && defined(__x86_64__)
 
 __attribute__((hot, const, __always_inline__))
-inline size_t	ft_memctz_u16(t_u16 x)
+inline t_size	ft_memctz_u16(t_u16 x)
 {
 	t_u16	result;
 
@@ -24,21 +24,21 @@ inline size_t	ft_memctz_u16(t_u16 x)
 }
 
 __attribute__((hot, const, __always_inline__))
-inline size_t	ft_memctz_u32(t_u32 x)
+inline t_size	ft_memctz_u32(t_u32 x)
 {
 	__asm__("tzcnt %1, %0" : "=r"(x) : "r"(x));
 	return (x);
 }
 
 __attribute__((hot, const, __always_inline__))
-inline size_t	ft_memctz_u64(t_u64 x)
+inline t_size	ft_memctz_u64(t_u64 x)
 {
 	__asm__("tzcnt %1, %0" : "=r"(x) : "r"(x));
 	return (x);
 }
 
 __attribute__((hot, const, __always_inline__))
-inline size_t	ft_memctz_u128(t_u128 x)
+inline t_size	ft_memctz_u128(t_u128 x)
 {
 	t_u64	low;
 	t_u64	high;

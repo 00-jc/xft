@@ -10,13 +10,13 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "types.h"
+#include "primitives.h"
 #include "syscalls.h"
 
 #ifdef __x86_64__
 
 __attribute__((__nonnull__(3), __always_inline__))
-inline void	*ft_mremap(size_t size, size_t new_size,
+inline void	*ft_mremap(t_size size, t_size new_size,
 	void *addr, long flags_extra)
 {
 	void				*ret;
@@ -26,7 +26,7 @@ inline void	*ft_mremap(size_t size, size_t new_size,
 	__asm__ volatile (
 		"syscall"
 		: "=a"(ret)
-		: "0"(SYS_mremap),
+		: "0"(SYS_MREMAP),
 		"D"(addr),
 		"S"((long)size),
 		"d"((long)new_size),
@@ -39,10 +39,10 @@ inline void	*ft_mremap(size_t size, size_t new_size,
 #else
 
 __attribute__((__nonnull__(3), __always_inline__))
-inline void	*ft_mremap(size_t size, size_t new_size,
+inline void	*ft_mremap(t_size size, t_size new_size,
 	void *addr, long flags_extra)
 {
-	return ((void *)syscall(SYS_mremap, addr, size,
+	return ((void *)syscall(SYS_MREMAP, addr, size,
 			new_size, MREMAP_MAYMOVE | flags_extra));
 }
 

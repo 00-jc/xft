@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   threadpool_types.h                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
+/*   By: username <your@mail.com>                   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/06/06 00:00:00 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/06/06 00:00:00 by jaicastr         ###   ########.fr       */
+/*   Created: 2026/06/28 16:02:57 by username          #+#    #+#             */
+/*   Updated: 2026/06/28 16:02:59 by username         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,8 @@ typedef struct s_threadpool
 	pthread_mutex_t		mutex;
 	pthread_cond_t		start;
 	pthread_cond_t		done;
-	size_t				count;
-	size_t				go;
+	t_size				count;
+	t_size				go;
 	t_u8				alive;
 }	t_threadpool;
 

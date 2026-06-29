@@ -15,7 +15,7 @@
 
 # include "str.h"
 
-size_t			ft_strlen(const char *__restrict__ str)\
+t_size			ft_strlen(const char *__restrict__ str)\
 					__attribute__((__nonnull__(1)));
 
 t_str			ft_cstr_to_str(t_allocator allocator, const char *cstr)\

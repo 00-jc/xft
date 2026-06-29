@@ -75,7 +75,7 @@ void	test_murmur_lengths(void)
 	}
 }
 
-int	main(void)
+int	ft_main(t_u64a argc, t_u8 **argv, t_u8 **envp)
 {
 	ft_printf("Testing ft_murmur3...\n");
 	test_murmur_deterministic();
@@ -83,5 +83,8 @@ int	main(void)
 	test_murmur_seed();
 	test_murmur_lengths();
 	ft_printf("  ft_murmur3: OK\n");
+	(void)argc;
+	(void)argv;
+	(void)envp;
 	return (0);
 }

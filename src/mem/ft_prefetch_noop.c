@@ -16,7 +16,7 @@
 
 __attribute__((__nonnull__(1), __always_inline__))
 inline void	ft_prefetch0(const void *restrict const ptr,
-	size_t distance)
+	t_size distance)
 {
 	(void)ptr;
 	(void)distance;
@@ -24,7 +24,7 @@ inline void	ft_prefetch0(const void *restrict const ptr,
 
 __attribute__((__nonnull__(1), __always_inline__))
 inline void	ft_prefetch1(const void *restrict const ptr,
-	size_t distance)
+	t_size distance)
 {
 	(void)ptr;
 	(void)distance;
@@ -32,7 +32,7 @@ inline void	ft_prefetch1(const void *restrict const ptr,
 
 __attribute__((__nonnull__(1), __always_inline__))
 inline void	ft_prefetch2(const void *restrict const ptr,
-	size_t distance)
+	t_size distance)
 {
 	(void)ptr;
 	(void)distance;
@@ -40,7 +40,7 @@ inline void	ft_prefetch2(const void *restrict const ptr,
 
 __attribute__((__nonnull__(1), __always_inline__))
 inline void	ft_prefetchnta(const void *restrict const ptr,
-	size_t distance)
+	t_size distance)
 {
 	(void)ptr;
 	(void)distance;

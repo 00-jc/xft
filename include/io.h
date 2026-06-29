@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 17:14:01 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/20 10:19:04 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/06/28 15:46:24 by username         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #ifndef IO_H
@@ -14,23 +14,16 @@
 
 # include <stdarg.h>
 # include <stdbool.h>
-# include <unistd.h>
-# include <stdlib.h>
-# include <fcntl.h>
-# include <sys/mman.h>
-# include <sys/stat.h>
-# include <sys/types.h>
 # include "syscalls.h"
 # include "cstr.h"
 # include "mem.h"
 # include "alloc.h"
-# include <syscall.h>
 
 typedef struct s_file
 {
 	t_u8 *__restrict__		content;
 	t_u32a					fd;
-	size_t					size;
+	t_size					size;
 }	t_file;
 
 # ifndef BUFSIZE

@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/12 08:00:01 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/15 06:58:10 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/06/28 23:59:07 by username         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,7 +123,7 @@ static void	test_xxh3_lengths(t_u8 *seq)
 			.size = 1024}, 42) == H_1024B_S42, (char *)"1024B seq seed42");
 }
 
-int	main(void)
+int	ft_main(t_u64a argc, t_u8 **argv, t_u8 **envp)
 {
 	int					i;
 	t_misal_buffer		buf;
@@ -140,5 +140,8 @@ int	main(void)
 	test_xxh3_seeds();
 	test_xxh3_lengths(buf);
 	ft_printf("    ft_xxh3_64bits: OK\n");
+	(void)argc;
+	(void)argv;
+	(void)envp;
 	return (0);
 }

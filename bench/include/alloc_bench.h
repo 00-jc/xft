@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/17 00:00:00 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/17 00:00:00 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/06/28 22:51:41 by username         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define ALLOC_BENCH_H
 
 # include "alloc.h"
+# include "rt.h"
 
 t_gpa	*ft_get_bench_gpa(void);
 t_arena	*ft_get_bench_arena(void);

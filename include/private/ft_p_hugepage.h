@@ -16,9 +16,9 @@
 # include "alloc/page_alloc.h"
 # include "bmi.h"
 
-size_t	ft_match_hugepage(size_t size)\
+t_size	ft_match_hugepage(t_size size)\
 			__attribute__((const));
-int		ft_match_hugepage_flags(size_t page_size)\
+int		ft_match_hugepage_flags(t_size page_size)\
 			__attribute__((const));
 
 #endif

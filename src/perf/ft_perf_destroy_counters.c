@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/17 19:55:48 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/04/17 20:29:06 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/06/28 22:49:08 by username         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,9 @@
 __attribute__((__nonnull__(1)))
 void	ft_perf_destroy_counters(t_perf_counters c)
 {
-	size_t	i;
+	t_size	i;
 
 	i = 0;
 	while (i < HW_COUNTERS_N + SW_COUNTERS_N)
-		close((int)c[i++]);
+		ft_close((int)c[i++]);
 }

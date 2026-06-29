@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/25 19:01:06 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/13 06:14:07 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/06/28 23:12:01 by username         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 static void	init_keys(t_u8 keys[FUZZ_KEY_SLOTS][2])
 {
-	size_t	i;
+	t_size	i;
 
 	i = 0;
 	while (i < FUZZ_KEY_SLOTS)
@@ -29,7 +29,7 @@ static void	fuzz_map_case(t_fuzzer *fz, t_allocator a,
 		t_map *m, t_u8 keys[FUZZ_KEY_SLOTS][2])
 {
 	t_buffer	key;
-	size_t		i;
+	t_size		i;
 	int			val;
 	int			*x;
 
@@ -46,14 +46,17 @@ static void	fuzz_map_case(t_fuzzer *fz, t_allocator a,
 	ft_pin_invariant(ft_map_lookup(m, key) == nullptr);
 }
 
-int	main(void)
+int	ft_main(t_size argc, t_u8 **argv, t_u8 **envp)
 {
 	t_fuzzer	fz;
 	t_allocator	a;
 	t_map		m;
 	t_u8		keys[FUZZ_KEY_SLOTS][2];
-	size_t		i;
+	t_size		i;
 
+	(void)argc;
+	(void)argv;
+	(void)envp;
 	fz = ft_fuzzer_new(ft_new_arena_alloc());
 	ft_pin_invariant(fz.arena.current != nullptr);
 	ft_pin_invariant(ft_fuzzer_add_rand(&fz));

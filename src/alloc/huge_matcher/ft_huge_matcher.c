@@ -13,9 +13,9 @@
 #include "private/ft_p_hugepage.h"
 
 __attribute__((const))
-size_t	ft_match_hugepage(size_t requested_size)
+t_size	ft_match_hugepage(t_size requested_size)
 {
-	size_t	page_size;
+	t_size	page_size;
 
 	page_size = (-(requested_size <= HUGEPAGE_16GB) & HUGEPAGE_16GB)
 		| (-(requested_size > HUGEPAGE_16GB) & requested_size);
@@ -39,7 +39,7 @@ size_t	ft_match_hugepage(size_t requested_size)
 }
 
 __attribute__((const))
-int	ft_match_hugepage_flags(size_t page_size)
+int	ft_match_hugepage_flags(t_size page_size)
 {
 	t_u32	flags;
 

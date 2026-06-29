@@ -13,7 +13,7 @@
 #ifndef HINT_H
 # define HINT_H
 
-# include "types.h"
+# include "primitives.h"
 # include <stdbool.h>
 
 void	ft_pin_invariant(int res);

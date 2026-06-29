@@ -13,9 +13,9 @@
 #include "private/ft_p_palloc.h"
 
 __attribute__((__always_inline__))
-inline t_buffer	ft_palloc(size_t size)
+inline t_buffer	ft_palloc(t_size size)
 {
-	size_t	snapped;
+	t_size	snapped;
 	void	*mem;
 	int		flags;
 
@@ -24,14 +24,14 @@ inline t_buffer	ft_palloc(size_t size)
 	mem = ft_mmap(snapped, 0, flags);
 	return ((t_buffer){
 		.size = snapped,
-		.mem = (void *)ft_tern(mem != MAP_FAILED, (t_u64a)mem, 0),
+		.mem = (void *)ft_tern(mem != (void *)MAP_FAILED, (t_u64a)mem, 0),
 	});
 }
 
 __attribute__((__always_inline__))
-inline t_buffer	ft_palloc_resize(t_buffer b, size_t new_size)
+inline t_buffer	ft_palloc_resize(t_buffer b, t_size new_size)
 {
-	size_t		snapped;
+	t_size		snapped;
 	int			flags;
 	void		*mem;
 	t_buffer	new_b;
@@ -42,13 +42,13 @@ inline t_buffer	ft_palloc_resize(t_buffer b, size_t new_size)
 		mem = ft_mremap(b.size, snapped, b.mem, 0);
 		return ((t_buffer){
 			.size = snapped,
-			.mem = (void *)ft_tern(mem != MAP_FAILED, (t_u64a)mem, 0)});
+			.mem = (void *)ft_tern(mem != (void *)MAP_FAILED, (t_u64a)mem, 0)});
 	}
 	flags = ft_match_hugepage_flags(snapped);
 	mem = ft_mmap(snapped, 0, flags);
 	new_b = (t_buffer){
 		.size = snapped,
-		.mem = (void *)ft_tern(mem != MAP_FAILED, (t_u64a)mem, 0),
+		.mem = (void *)ft_tern(mem != (void *)MAP_FAILED, (t_u64a)mem, 0),
 	};
 	ft_memcpy(new_b.mem, b.mem, b.size);
 	ft_munmap(b.mem, b.size);

@@ -12,7 +12,7 @@
 
 #include "map.h"
 
-t_map	ft_map_with(t_allocator allocator, size_t capacity)
+t_map	ft_map_with(t_allocator allocator, t_size capacity)
 {
 	t_buffer	meta_buf;
 	t_buffer	bucket_buf;

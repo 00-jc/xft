@@ -90,7 +90,7 @@ void	test_memchr_long(void)
 	ft_pin_invariant(ft_memchr(buf, '\0', 256) == memchr(buf, '\0', 256));
 }
 
-int	main(void)
+int	ft_main(t_u64a argc, t_u8 **argv, t_u8 **envp)
 {
 	ft_printf("Testing ft_memchr...\n");
 	test_memchr_basic();
@@ -98,5 +98,8 @@ int	main(void)
 	test_memchr_misaligned();
 	test_memchr_long();
 	ft_printf("  ft_memchr: OK\n");
+	(void)argc;
+	(void)argv;
+	(void)envp;
 	return (0);
 }

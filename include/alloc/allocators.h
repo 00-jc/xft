@@ -13,7 +13,7 @@
 #ifndef ALLOCATORS_H
 # define ALLOCATORS_H
 
-# include "types/allocators_types.h"
+# include "types/allocators_primitives.h"
 # include "alloc/general_allocator.h"
 # include "alloc/page_alloc.h"
 # include "alloc/report_allocator.h"

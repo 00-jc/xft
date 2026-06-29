@@ -3,18 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   syscalls_types.h                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
+/*   By: username <your@mail.com>                   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/06/06 00:00:00 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/06/06 00:00:00 by jaicastr         ###   ########.fr       */
+/*   Created: 2026/06/28 16:02:57 by username          #+#    #+#             */
+/*   Updated: 2026/06/28 23:08:44 by username         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SYSCALLS_TYPES_H
 # define SYSCALLS_TYPES_H
 
-# include <fcntl.h>
+# ifdef FT_REQUIRES_LIBC
 
-typedef struct flock	t_flock;
+#  include <fcntl.h>
+
+typedef t_flock	t_flock;
+
+#endif
 
 #endif

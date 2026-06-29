@@ -16,11 +16,11 @@
 #if FT_HAS_512_VEC
 
 __attribute__((pure, __nonnull__(1)))
-size_t	ft_strlen(const char *restrict str)
+t_size	ft_strlen(const char *restrict str)
 {
 	t_uptr						a;
 	t_u64a						w;
-	size_t						offst;
+	t_size						offst;
 	const t_vu512	*restrict	wp;
 	t_vu512a					mask;
 
@@ -44,11 +44,11 @@ size_t	ft_strlen(const char *restrict str)
 #elif FT_HAS_256_VEC
 
 __attribute__((pure, __nonnull__(1)))
-size_t	ft_strlen(const char *restrict str)
+t_size	ft_strlen(const char *restrict str)
 {
 	t_uptr						a;
 	t_u32a						w;
-	size_t						offst;
+	t_size						offst;
 	const t_vu256	*restrict	wp;
 	t_vu256a					mask;
 
@@ -72,11 +72,11 @@ size_t	ft_strlen(const char *restrict str)
 #else
 
 __attribute__((pure, __nonnull__(1)))
-size_t	ft_strlen(const char *restrict str)
+t_size	ft_strlen(const char *restrict str)
 {
 	t_uptr						a;
 	t_u16a						w;
-	size_t						offst;
+	t_size						offst;
 	const t_vu128	*restrict	wp;
 	t_vu128a					mask;
 

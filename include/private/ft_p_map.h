@@ -23,8 +23,8 @@ t_result	ft_map_rehash(t_allocator allocator,\
 				t_map *__restrict__ const map)\
 				__attribute__((__nonnull__(2)));
 
-size_t		ft__map_lookup_offset(const t_map *__restrict__ const map,\
-				const t_u8 *__restrict__ const mem, size_t data[4])\
+t_size		ft__map_lookup_offset(const t_map *__restrict__ const map,\
+				const t_u8 *__restrict__ const mem, t_size data[4])\
 				__attribute__((__nonnull__(1, 2, 3)));
 
 #endif

@@ -15,7 +15,7 @@
 __attribute__((__always_inline__))
 inline void	pputs(int fd, const char *restrict const str)
 {
-	ssize_t		unused;
+	t_ssize		unused;
 
 	if (!str)
 		unused = ft_write(fd, (t_u8 *)"(nil)", 5);
@@ -27,7 +27,7 @@ inline void	pputs(int fd, const char *restrict const str)
 __attribute__((__always_inline__))
 inline void	putc_(char c, int fd)
 {
-	ssize_t		unused;
+	t_ssize		unused;
 
 	unused = ft_write(fd, (t_u8 *)&c, 1);
 	(void)(unused == 0);

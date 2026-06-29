@@ -13,7 +13,7 @@
 #include "bmi.h"
 
 __attribute__((const, __always_inline__))
-inline size_t	ft_roll_mask(size_t chunk_size, size_t n)
+inline t_size	ft_roll_mask(t_size chunk_size, t_size n)
 {
 	return (-1ULL << (chunk_size - n));
 }

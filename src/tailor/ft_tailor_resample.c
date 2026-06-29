@@ -34,7 +34,7 @@ static inline t_result	ft_bootstrap_ci(t_tailor *t, t_buffer surv,
 	t_u64a				*medres[2];
 	t_xoshiro			xo;
 	t_perf_sample		*src;
-	size_t				ij[2];
+	t_size				ij[2];
 	t_qsort_ctx			ctx;
 
 	if (surv.mem == nullptr)
@@ -65,7 +65,7 @@ static inline t_result	ft_getpost_med(t_tailor *t, t_buffer surv,
 	t_u64a			m;
 	t_u64a			*arr;
 	t_perf_sample	*src;
-	size_t			i;
+	t_size			i;
 	t_qsort_ctx		ctx;
 
 	if (surv.mem == nullptr)

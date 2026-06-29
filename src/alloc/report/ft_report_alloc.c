@@ -31,7 +31,7 @@ static inline int	ft_advance_slab(t_reporta *gpa)
 
 __attribute__((__nonnull__(1), __always_inline__))
 static inline t_buffer	ft_return_ptr(t_reporta *gpa,
-	size_t sizes[2], size_t align)
+	t_size sizes[2], t_size align)
 {
 	void	*new_ptr;
 
@@ -51,8 +51,8 @@ static inline t_buffer	ft_return_ptr(t_reporta *gpa,
 }
 
 __attribute__((__nonnull__(1), __always_inline__))
-static inline t_buffer	ft_reuse_ptr(t_reporta *gpa, size_t freelist,
-	void *new_ptr, size_t sizes[2])
+static inline t_buffer	ft_reuse_ptr(t_reporta *gpa, t_size freelist,
+	void *new_ptr, t_size sizes[2])
 {
 	++gpa->reuses;
 	--gpa->free_depth[freelist];
@@ -63,13 +63,13 @@ static inline t_buffer	ft_reuse_ptr(t_reporta *gpa, size_t freelist,
 }
 
 __attribute__((__nonnull__(1), __always_inline__))
-static inline t_buffer	ft_paged_ptr(t_reporta *gpa, size_t sizes[2])
+static inline t_buffer	ft_paged_ptr(t_reporta *gpa, t_size sizes[2])
 {
 	void	*new_ptr;
 
 	++gpa->paged;
 	new_ptr = ft_mmap(sizes[1], 0, ft_match_hugepage_flags(sizes[1]));
-	if (__builtin_expect(new_ptr == MAP_FAILED, 0))
+	if (__builtin_expect(new_ptr == (void *)MAP_FAILED, 0))
 		return (ft_fatptr(nullptr, 0));
 	gpa->avg_frag += (t_f64)((t_f64)(sizes[1] - sizes[0]) - gpa->avg_frag)
 		/ (t_f64)gpa->n_allocs;
@@ -77,11 +77,11 @@ static inline t_buffer	ft_paged_ptr(t_reporta *gpa, size_t sizes[2])
 }
 
 __attribute__((__nonnull__(1)))
-t_buffer	ft_reporta_alloc(void *alloc, size_t size, size_t align)
+t_buffer	ft_reporta_alloc(void *alloc, t_size size, t_size align)
 {
 	void		*new_ptr;
-	size_t		freelist;
-	size_t		snapped;
+	t_size		freelist;
+	t_size		snapped;
 	t_reporta	*gpa;
 
 	gpa = (t_reporta *)alloc;
@@ -90,10 +90,10 @@ t_buffer	ft_reporta_alloc(void *alloc, size_t size, size_t align)
 	freelist = 60 - ft_memclz_u64(snapped);
 	++gpa->n_allocs;
 	if (GPA_CLASSES <= freelist)
-		return (ft_paged_ptr(gpa, (size_t[2]){snapped, size}));
+		return (ft_paged_ptr(gpa, (t_size[2]){snapped, size}));
 	new_ptr = gpa->free[freelist];
 	if (new_ptr)
 		return (ft_reuse_ptr(gpa, freelist, new_ptr,
-				(size_t[2]){size, snapped}));
-	return (ft_return_ptr(gpa, (size_t[2]){size, snapped}, align));
+				(t_size[2]){size, snapped}));
+	return (ft_return_ptr(gpa, (t_size[2]){size, snapped}, align));
 }

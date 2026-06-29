@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/25 19:01:06 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/14 07:38:29 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/06/28 23:12:29 by username         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ static void	fuzz_mem_rw(t_fuzzer *fz)
 	t_buffer	*a;
 	t_u8		x[FUZZ_MEM_CAP + 1];
 	t_u8		y[FUZZ_MEM_CAP + 1];
-	size_t		n;
+	t_size		n;
 
 	a = ft_fuzz_get_rand(fz);
 	ft_printf("trying mem size %lu alignment to word %lu\n", a->size,
@@ -37,7 +37,7 @@ static void	fuzz_mem_scan(t_fuzzer *fz)
 {
 	t_buffer	*a;
 	t_buffer	*b;
-	size_t		n;
+	t_size		n;
 	t_u8		c;
 
 	a = ft_fuzz_get_rand(fz);
@@ -73,8 +73,8 @@ static void	fuzz_strlen_case(t_fuzzer *fz)
 {
 	t_buffer	*b;
 	char		x[FUZZ_MEM_CAP + 1];
-	size_t		i;
-	size_t		n;
+	t_size		i;
+	t_size		n;
 
 	b = ft_fuzz_get_rand(fz);
 	i = 0;
@@ -89,12 +89,15 @@ static void	fuzz_strlen_case(t_fuzzer *fz)
 	ft_pin_invariant(ft_strlen(x) == strlen(x));
 }
 
-int	main(void)
+int	ft_main(t_size argc, t_u8 **argv, t_u8 **envp)
 {
 	t_fuzzer	fz;
-	size_t		i;
-	size_t		n;
+	t_size		i;
+	t_size		n;
 
+	(void)argc;
+	(void)argv;
+	(void)envp;
 	fz = ft_fuzzer_new(ft_new_arena_alloc());
 	ft_pin_invariant(fz.arena.current != nullptr);
 	ft_pin_invariant(ft_fuzzer_add_rand(&fz));

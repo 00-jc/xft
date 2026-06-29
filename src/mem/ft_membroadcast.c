@@ -13,7 +13,7 @@
 #include "mem.h"
 
 __attribute__((__nonnull__(1, 2)))
-void	ft_membroadcast(void *dst, void *src, size_t chunk_size, size_t n)
+void	ft_membroadcast(void *dst, void *src, t_size chunk_size, t_size n)
 {
 	t_u8	*d;
 

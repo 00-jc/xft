@@ -14,7 +14,7 @@
 
 __attribute__((__nonnull__(1), __always_inline__))
 inline void	ft_memset_512(void *restrict dest,
-	const t_u8 c, size_t n)
+	const t_u8 c, t_size n)
 {
 	register t_vu512a	x;
 

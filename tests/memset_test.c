@@ -83,7 +83,7 @@ void	test_bzero_large(void)
 	ft_pin_invariant(a[3013] == 'B');
 }
 
-int	main(void)
+int	ft_main(t_u64a argc, t_u8 **argv, t_u8 **envp)
 {
 	ft_printf("Testing ft_memset/ft_bzero (SIMD)...\n");
 	test_memset_basic();
@@ -91,5 +91,8 @@ int	main(void)
 	test_memset_misaligned();
 	test_bzero_large();
 	ft_printf("  ft_memset/ft_bzero: OK\n");
+	(void)argc;
+	(void)argv;
+	(void)envp;
 	return (0);
 }

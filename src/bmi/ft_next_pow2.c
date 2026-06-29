@@ -13,13 +13,13 @@
 #include "bmi.h"
 
 __attribute__((const, __always_inline__, __hot__))
-inline size_t	ft_next_pow2(size_t qword)
+inline t_size	ft_next_pow2(t_size qword)
 {
 	return (1ULL << (64ULL - ft_memclz_u64(qword - 1)));
 }
 
 __attribute__((const, __always_inline__, __hot__))
-inline size_t	ft_last_pow2(size_t qword)
+inline t_size	ft_last_pow2(t_size qword)
 {
 	return (1ULL << (63ULL - ft_memclz_u64(qword)));
 }

@@ -36,9 +36,9 @@ static inline void	runblock1(t_u64a *s, t_u64a *restrict k)
 
 __attribute__((__always_inline__, __nonnull__(1, 2, 3)))
 static inline void	ft_murmur3_tail(const t_u8 *restrict const tail,
-		t_u64a k[2], t_u64a s[2], size_t len)
+		t_u64a k[2], t_u64a s[2], t_size len)
 {
-	size_t	i;
+	t_size	i;
 
 	k[0] = 0;
 	k[1] = 0;
@@ -65,9 +65,9 @@ static inline void	ft_murmur3_tail(const t_u8 *restrict const tail,
 }
 
 __attribute__((pure, __nonnull__(1)))
-t_u128a	ft_murmur3_with_seed(const t_u8 *restrict mem, t_u64a seed, size_t size)
+t_u128a	ft_murmur3_with_seed(const t_u8 *restrict mem, t_u64a seed, t_size size)
 {
-	size_t	blk;
+	t_size	blk;
 	t_u64a	s[2];
 	t_u64a	k[2];
 
@@ -95,7 +95,7 @@ t_u128a	ft_murmur3_with_seed(const t_u8 *restrict mem, t_u64a seed, size_t size)
 }
 
 __attribute__((pure, __always_inline__, __nonnull__(1)))
-inline t_u128a	ft_murmur3(const t_u8 *restrict mem, size_t size)
+inline t_u128a	ft_murmur3(const t_u8 *restrict mem, t_size size)
 {
 	return (ft_murmur3_with_seed(mem, DEFAULT_SEED, size));
 }

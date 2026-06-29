@@ -19,7 +19,7 @@ static inline t_buffer	ft_tailor_runfn(t_tailor *t, t_tailor_fn fn,
 	t_plankb		plan;
 	t_perf_sample	*samples;
 	t_tailor_arg	arg;
-	size_t			i;
+	t_size			i;
 	t_perf_sample	s;
 
 	plan = ft_get_kb(t, fn);
@@ -46,7 +46,7 @@ static inline t_buffer	ft_tailor_runfn(t_tailor *t, t_tailor_fn fn,
 __attribute__((__nonnull__(3), __always_inline__))
 static inline void	ft_calc_mad(t_buffer scratch, t_u64a med, t_u64a *mad)
 {
-	size_t					i;
+	t_size					i;
 	t_u64a					tmp;
 	t_u64a					swap;
 	t_qsort_ctx				ctx;
@@ -71,7 +71,7 @@ static inline t_result	ft_calc(t_tailor *t, t_buffer samples, t_u64a *med,
 {
 	t_u64a					*arr;
 	t_arena_checkpoint		c;
-	size_t					i;
+	t_size					i;
 	t_qsort_ctx				ctx;
 
 	c = ft_arena_checkpoint(&t->arena);
@@ -97,8 +97,8 @@ static inline t_buffer	ft_make_surv(t_tailor *t, t_buffer sample,
 {
 	t_perf_sample	*surv;
 	t_perf_sample	*src;
-	size_t			i;
-	size_t			n_surv;
+	t_size			i;
+	t_size			n_surv;
 
 	surv = ft_arena_alloc(&t->arena, sizeof(*surv) * sample.size, 64);
 	if (__builtin_expect(surv == nullptr, 0))

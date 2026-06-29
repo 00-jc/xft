@@ -23,7 +23,7 @@ void	ft_perf_start_sample(t_perf_counters c, t_perf_sample *t)
 __attribute__((__nonnull__(1, 2), __always_inline__))
 static inline t_result	ft__get_sample_plexed(t_perf_counters c, t_u64 *v)
 {
-	size_t			i;
+	t_size			i;
 	t_perf_read		t;
 	t_u8			adjust;
 	t_f64			scale;
@@ -49,7 +49,7 @@ static inline t_result	ft__get_sample_plexed(t_perf_counters c, t_u64 *v)
 }
 
 __attribute__((__nonnull__(2, 3)))
-t_result	ft_perf_collect_sample(size_t n,
+t_result	ft_perf_collect_sample(t_size n,
 	t_perf_counters c, t_perf_sample *s)
 {
 	t_u64a	v[SW_COUNTERS_N + HW_COUNTERS_N];

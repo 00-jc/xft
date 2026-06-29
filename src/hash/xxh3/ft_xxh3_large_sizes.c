@@ -65,9 +65,9 @@ inline void	ft_xxh3_scramble_acc_512(t_blk8r acc, t_blk8r secret)
 
 __attribute__((__nonnull__(1, 2, 3), __always_inline__))
 inline void	ft_xxh3_accumulate(t_blk8r accs,
-	t_blk8r input, t_blk8r secret, size_t nb_stripes)
+	t_blk8r input, t_blk8r secret, t_size nb_stripes)
 {
-	size_t	n;
+	t_size	n;
 	void	*in;
 
 	n = 0;
@@ -85,11 +85,11 @@ __attribute__((__nonnull__(1), __always_inline__))
 inline void	ft_xxh3_hashlong_internal_loop(t_blk8r acc, t_buffer input,
 		t_buffer secret)
 {
-	size_t	nb_str_blk;
-	size_t	blen;
-	size_t	nb_blks;
-	size_t	nb_stripes;
-	size_t	n;
+	t_size	nb_str_blk;
+	t_size	blen;
+	t_size	nb_blks;
+	t_size	nb_stripes;
+	t_size	n;
 
 	if (input.mem == nullptr || secret.mem == nullptr
 		|| input.size < XXH3_STRIPE_LEN)

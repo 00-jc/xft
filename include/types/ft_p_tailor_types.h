@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_p_tailor_types.h                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
+/*   By: username <your@mail.com>                   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/06/06 00:00:00 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/06/06 00:00:00 by jaicastr         ###   ########.fr       */
+/*   Created: 2026/06/28 16:02:57 by username          #+#    #+#             */
+/*   Updated: 2026/06/28 16:02:59 by username         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,9 @@
 
 typedef struct s_datapoint
 {
-	size_t		n;
-	size_t		iters;
-	size_t		bytes_processed;
+	t_size		n;
+	t_size		iters;
+	t_size		bytes_processed;
 	t_f64		mu;
 	t_f64		m2;
 	t_f64		min;
@@ -29,7 +29,7 @@ typedef struct s_datapoint
 typedef struct s_tailor_calib
 {
 	t_datapoint		dp;
-	size_t			inner;
+	t_size			inner;
 	t_u64a			cold;
 }	t_tailor_calib;
 

@@ -13,7 +13,7 @@
 #include "tailor.h"
 
 __attribute__((pure, __nonnull__(1)))
-size_t	ft_tailor_getcount(const void *ptr)
+t_size	ft_tailor_getcount(const void *ptr)
 {
 	t_tailor_arg	*arg;
 

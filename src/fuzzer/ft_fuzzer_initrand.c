@@ -13,11 +13,11 @@
 #include "fuzzer.h"
 
 __attribute__((__nonnull__(1), __always_inline__))
-static inline t_result	ft_fuzzer_init__internal(t_fuzzer *fuzz, size_t i,
-	size_t n, t_arena_checkpoint c)
+static inline t_result	ft_fuzzer_init__internal(t_fuzzer *fuzz, t_size i,
+	t_size n, t_arena_checkpoint c)
 {
-	size_t		len;
-	size_t		align;
+	t_size		len;
+	t_size		align;
 
 	while (i < n)
 	{
@@ -36,8 +36,8 @@ __attribute__((__nonnull__(1)))
 t_result	ft_fuzzer_add_rand(t_fuzzer *fuzz)
 {
 	t_arena_checkpoint	c;
-	size_t				n;
-	size_t				i;
+	t_size				n;
+	t_size				i;
 
 	n = FT_FUZZ_MIN_INIT + (ft_xoshiro256ss(fuzz->xo) % FT_FUZZ_MAX_INIT);
 	c = ft_arena_checkpoint(&fuzz->arena);
