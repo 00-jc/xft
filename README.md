@@ -74,6 +74,9 @@ Per artifact:
 The test and bench **executables** link libc independently of the library:
 test exes always (`link_libc = true`), bench exes only on non-x86_64.
 
+The only external thing it expects is `/usr/include/linux` to be present in the system (for the perf counter interface).
+I'm studing wether protect the module and not compile it if it's not present or hardcoding the values myself.
+
 ## Implementation Details
 
 - Uses `src/tailor/` for the bench target
