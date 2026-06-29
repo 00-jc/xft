@@ -67,7 +67,7 @@ Per artifact:
 
 | Artifact | Step | Libc |
 |----------|------|------|
-| `xft` | `core` / `nolto` | `bench` | Only on non-x86_64 or `-Dlibc` (freestanding otherwise) |
+| `xft` | `core` / `nolto` / `bench` | Only on non-x86_64 or `-Dlibc` (freestanding otherwise) |
 | `xft_san` | `san` | Always (sanitizer build) |
 | `xft` (tsan cfg) | `tsan` | Follows the core rule — keyed on `cfg.san`, **not** `cfg.tsan`, so freestanding on x86_64 without `-Dlibc` |
 
