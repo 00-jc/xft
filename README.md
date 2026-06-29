@@ -67,7 +67,7 @@ Per artifact:
 
 | Artifact | Step | Libc |
 |----------|------|------|
-| `xft` | `core` / `nolto` / `bench` | Only on non-x86_64 or `-Dlibc` (freestanding otherwise) |
+| `xft` | `core` / `nolto` | Only on non-x86_64 or `-Dlibc` (freestanding otherwise) |
 | `xft_san` | `san` | Always (sanitizer build) |
 | `xft` (tsan cfg) | `tsan` | Follows the core rule — keyed on `cfg.san`, **not** `cfg.tsan`, so freestanding on x86_64 without `-Dlibc` |
 
@@ -85,6 +85,7 @@ test exes always (`link_libc = true`), bench exes only on non-x86_64.
 - A function has one and one purpose only and it's either validation, logic or driving others.
 - Any function that allocates memory requires an allocator vtable interface
 - `strlen` tests/benches may fail under gcc due to redzoning, but work fine in real-world usage; clang/llvm runtimes pass the sanitized tests cleanly
+- ft_main's runtime is as thin as possible, no syscalls and no initialization of ANY resources.
 
 ## Guarantees
 
@@ -98,10 +99,6 @@ test exes always (`link_libc = true`), bench exes only on non-x86_64.
 - Low latency, correctness, and specialization over general code
 - Input validation at initialization
 - Explicit intent through the type system and arguments; no state without an owner, no owners in dynamic memory
-
-## Style Rules
-
-See [RULES.md](RULES.md).
 
 ## TODO
 
