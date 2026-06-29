@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/14 03:11:41 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/14 03:11:42 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/06/29 10:09:00 by username         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,10 +34,7 @@ int	ft_main(t_u64a argc, t_u8 **argv, t_u8 **envp)
 	};
 	t_tailor				t;
 
-	(void)argc;
-	(void)argv;
-	(void)envp;
-	ft_bind_process_to_cpu(0);
+	((void)argc, (void)argv, (void)envp, ft_bind_process_to_cpu(0));
 	if (!ft_tailor_new(&t, 2, 2000))
 		return (1);
 	if (!ft_tailor_buffers(&t, bufsizes, bufalign, 28))

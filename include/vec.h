@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 17:14:00 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/06/29 09:42:50 by username         ###   ########.fr       */
+/*   Updated: 2026/06/29 10:05:45 by username         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@
 # include "alloc.h"
 # include "types/vec_types.h"
 # include <stddef.h>
-
 
 t_vec			ft_vec(t_allocator allocator, t_size size, t_size type_size);
 void			ft_vec_destroy(t_allocator allocator, t_vec *v)\

@@ -6,7 +6,7 @@
 /*   By: username <your@mail.com>                   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/28 15:38:49 by username          #+#    #+#             */
-/*   Updated: 2026/06/28 23:49:11 by username         ###   ########.fr       */
+/*   Updated: 2026/06/29 10:04:05 by username         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,5 @@ void	_start(void)\
 
 int		ft_main(t_size argc, t_u8 **argv, t_u8 **envp)\
 			__attribute__((__nonnull__(2, 3)));
-
 
 #endif

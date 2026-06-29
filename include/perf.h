@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/17 15:15:00 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/06/28 23:04:14 by username         ###   ########.fr       */
+/*   Updated: 2026/06/29 10:05:33 by username         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 # include "hint.h"
 # include "syscalls.h"
 
-#define FT_CPU_SETSIZE	1024
+# define FT_CPU_SETSIZE	1024
 
 typedef struct s_perf_sample
 {

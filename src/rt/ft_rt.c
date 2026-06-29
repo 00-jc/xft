@@ -6,7 +6,7 @@
 /*   By: username <your@mail.com>                   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/28 15:24:32 by username          #+#    #+#             */
-/*   Updated: 2026/06/28 23:51:53 by username         ###   ########.fr       */
+/*   Updated: 2026/06/29 10:06:05 by username         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ void	_start(void)
 
 #elif defined(FT_REQUIRE_LIBC)
 
-int main(int argc, char **argv, char **envp)
+int	main(int argc, char **argv, char **envp)
 {
 	return (ft_main((t_u64a)argc, (t_u8 **)argv, (t_u8 **)envp));
 }

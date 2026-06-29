@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 17:14:00 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/06/29 09:12:23 by username         ###   ########.fr       */
+/*   Updated: 2026/06/29 10:05:17 by username         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,14 +18,14 @@
 extern "C"
 {
 
-#endif
+# endif
 
 # if !defined(__x86_64__) && !defined(FT_REQUIRES_LIBC)
-#  error "Cannot compile on non x86_64 without libc, please define FT_REQUIRES_LIBC"
+# error "Cannot compile on non x86_64 without FT_REQUIRES_LIBC"
 # endif
 
 # if !defined(__linux__)
-#  error "For now this library is linux only"
+# error "For now this library is linux only"
 # endif
 
 # include "primitives.h"

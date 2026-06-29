@@ -6,7 +6,7 @@
 /*   By: username <your@mail.com>                   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/28 16:02:57 by username          #+#    #+#             */
-/*   Updated: 2026/06/28 23:08:44 by username         ###   ########.fr       */
+/*   Updated: 2026/06/29 10:03:52 by username         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,6 @@
 
 typedef t_flock	t_flock;
 
-#endif
+# endif
 
 #endif

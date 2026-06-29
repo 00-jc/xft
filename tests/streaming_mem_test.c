@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 00:00:00 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/19 01:08:03 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/06/29 10:09:40 by username         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,8 +74,6 @@ int	ft_main(t_u64a argc, t_u8 **argv, t_u8 **envp)
 	ft_palloc_free(set[0]);
 	ft_palloc_free(set[1]);
 	ft_printf("  streaming ft_memcpy/ft_memset: OK\n");
-	(void)argc;
-	(void)argv;
-	(void)envp;
+	((void)argc, (void)argv, (void)envp);
 	return (0);
 }
