@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/30 16:00:12 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/07/01 14:44:44 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/07/01 23:04:50 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ static inline t_result	ft_fmt_manage(t_writer *__restrict__ const writer,
 	else if (c == 'i' || c == 'd' || c == 'o' || c == 'y')
 		return (ft_fmt_handle_signed(writer, *(*value)++, c));
 	else if (c == '%')
-		return (ft_writer_write(writer, ft_fatptr((t_u8 *)"\n", 1)));
+		return (ft_writer_write(writer, ft_fatptr((t_u8 *)"%", 1)));
 	else
 		return (KO);
 }

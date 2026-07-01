@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/30 18:00:49 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/06/30 18:08:04 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/07/01 23:00:46 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,9 +44,8 @@ inline t_size	ft_fmt_double_int(t_u8 *out, t_f64 d, bool neg)
 	i = 0;
 	if (neg)
 		out[i++] = '-';
-	while (j < 20)
-		out[i++] = tmp[j++];
-	return (i);
+	ft_memcpy(out + i, tmp + j, 20 - j);
+	return (i + 20);
 }
 
 __attribute__((__nonnull__(1), __always_inline__))
