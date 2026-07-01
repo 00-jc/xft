@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/17 00:00:00 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/06/28 22:40:40 by username         ###   ########.fr       */
+/*   Updated: 2026/07/01 23:39:22 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,8 @@
 #include "alloc_bench.h"
 #include "rt.h"
 
-int	ft_main(t_u64a argc, t_u8 **argv, t_u8 **envp)
+__attribute__((__always_inline__))
+inline int	ft_main(t_u64a argc, t_u8 **argv, t_u8 **envp)
 {
 	static t_tailor_bench	benches[] = {
 	{ft_gpa_bench_8, (t_blk8r)"gpa_alloc_free_8"},

@@ -6,14 +6,15 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/14 03:11:41 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/06/29 10:09:00 by username         ###   ########.fr       */
+/*   Updated: 2026/07/01 23:40:22 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "tailor.h"
 #include "mem_bench.h"
 
-int	ft_main(t_u64a argc, t_u8 **argv, t_u8 **envp)
+__attribute__((__always_inline__))
+inline int	ft_main(t_u64a argc, t_u8 **argv, t_u8 **envp)
 {
 	static t_size			bufsizes[] = {
 		1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2049, (1 << 18), (1 << 20),
