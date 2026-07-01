@@ -5,12 +5,13 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/05/16 00:00:00 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/18 15:41:15 by jaicastr         ###   ########.fr       */
+/*   Created: 2026/06/29 23:39:13 by jaicastr          #+#    #+#             */
+/*   Updated: 2026/07/01 13:41:52 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "private/ft_p_gpa.h"
+#include "io.h"
 
 __attribute__((__nonnull__(1)))
 static void	gpa_destroy(void *alloc)

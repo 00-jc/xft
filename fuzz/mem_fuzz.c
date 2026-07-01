@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/04/25 19:01:06 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/06/28 23:12:29 by username         ###   ########.fr       */
+/*   Created: 2026/06/29 23:39:15 by jaicastr          #+#    #+#             */
+/*   Updated: 2026/07/01 21:51:23 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,6 @@ static void	fuzz_mem_rw(t_fuzzer *fz)
 	t_size		n;
 
 	a = ft_fuzz_get_rand(fz);
-	ft_printf("trying mem size %lu alignment to word %lu\n", a->size,
-		(t_uptr)a->mem & -(t_uptr)a->mem);
 	n = a->size;
 	ft_memcpy(x, a->mem, n);
 	memcpy(y, a->mem, n);

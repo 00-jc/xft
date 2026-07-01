@@ -5,13 +5,21 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/05/15 22:47:10 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/18 19:49:19 by jaicastr         ###   ########.fr       */
+/*   Created: 2026/06/29 23:39:13 by jaicastr          #+#    #+#             */
+/*   Updated: 2026/07/01 13:44:07 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "private/ft_p_gpa.h"
+#include "alloc.h"
+#include "primitives.h"
+#include "math.h"
 #include "io.h"
+#include "fmt.h"
+
+#define R1 "reporta (%x) report:\n  allocs:    %q\n  frees:     %q\n"
+#define R2 "reuses:    %q\n  misses:    %q\n  paged:     %q\n  slabs:"
+#define R3 "     %q\n  avg frag:  %f bytes\n  leaks:     %q\n  owned:"
+#define R4 " %q bytes\n"
 
 t_reporta	ft_reporta(void)
 {
@@ -38,31 +46,24 @@ t_reporta	ft_reporta(void)
 __attribute__((__nonnull__(1), __always_inline__))
 static inline void	ft_reporta_report(t_reporta *gpa)
 {
-	t_size	i;
+	const t_size	size = sizeof(R1 R2 R3 R4);
+	t_size			args[10];
+	t_writer		writer;
 
-	ft_fprintf(STDERR_FILENO,
-		"reporta (%lx) report:\n"
-		"  allocs:    %lu\n"
-		"  frees:     %lu\n"
-		"  reuses:    %lu\n"
-		"  misses:    %lu\n"
-		"  paged:     %lu\n"
-		"  slabs:     %lu\n"
-		"  avg frag:  %f bytes\n"
-		"  leaks:     %lu\n"
-		"  owned:     %lu bytes\n",
-		gpa, gpa->n_allocs, gpa->n_frees, gpa->reuses,
-		gpa->misses, gpa->paged, gpa->slabs,
-		gpa->avg_frag, gpa->n_allocs - gpa->n_frees,
-		gpa->slabsize * gpa->slabs);
-	i = 0;
-	while (i < GPA_CLASSES)
-	{
-		ft_fprintf(STDERR_FILENO,
-			"  free[%lu]: %lu chained at exit\n",
-			1 << (i + 3), gpa->free_depth[i]);
-		i++;
-	}
+	writer = ft_get_fs_writer(ft_fatptr(gpa->buffer, REPORTA_BUFFER),
+			ft_get_stderr());
+	args[0] = (t_uptr)gpa;
+	args[1] = gpa->n_allocs;
+	args[2] = gpa->n_frees;
+	args[3] = gpa->reuses;
+	args[4] = gpa->misses;
+	args[5] = gpa->paged;
+	args[6] = gpa->slabs;
+	args[6] = gpa->slabs;
+	args[7] = (t_dp){.f = gpa->avg_frag}.i;
+	args[8] = gpa->n_allocs - gpa->n_frees;
+	args[9] = gpa->slabsize * gpa->slabs;
+	ft_fmt_writer(&writer, ft_fatptr((t_u8 *)R1 R2 R3 R4, size), args);
 }
 
 __attribute__((__nonnull__(1)))
@@ -72,11 +73,11 @@ void	ft_reporta_destroy(t_reporta *gpa)
 	void	**next;
 
 	ft_reporta_report(gpa);
-	ptr = gpa->slab;
+	ptr = (void **)gpa->slab;
 	while (ptr != nullptr)
 	{
-		next = *ptr;
-		ft_munmap(ptr, gpa->slabsize);
+		next = (void **)*ptr;
+		ft_munmap((void *)ptr, gpa->slabsize);
 		ptr = next;
 	}
 }

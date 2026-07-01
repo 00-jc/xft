@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/04/18 19:32:06 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/17 09:55:18 by jaicastr         ###   ########.fr       */
+/*   Created: 2026/06/29 23:39:13 by jaicastr          #+#    #+#             */
+/*   Updated: 2026/07/01 15:03:43 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,8 @@ typedef struct s_tailor_arg
 	t_size		bytes_processed;
 }	t_tailor_arg;
 
+# define TAILOR_BUFFER_SIZE 1024ULL
+
 typedef struct s_tailor
 {
 	t_arena				arena;
@@ -45,7 +47,15 @@ typedef struct s_tailor
 	t_buffer			rand_buffers;
 	t_arena_checkpoint	rpoint;
 	t_u64a				swap;
+	t_u8				buffer[TAILOR_BUFFER_SIZE];
+	t_writer			writer;
 }	t_tailor;
+
+typedef struct s_tailor_report_ctx
+{
+	t_blk8r							name;
+	t_writer *__restrict__ const	writer;
+}	t_tailor_report_ctx;
 
 t_result	ft_tailor_new(t_tailor *t, t_f64 warmup_sec, t_u64a min_samples)\
 					__attribute__((nonnull(1)));

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_sched_setaffinity.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: username <your@mail.com>                   +#+  +:+       +#+        */
+/*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/06/28 23:00:53 by username          #+#    #+#             */
-/*   Updated: 2026/06/28 23:00:55 by username         ###   ########.fr       */
+/*   Created: 2026/06/29 23:39:14 by jaicastr          #+#    #+#             */
+/*   Updated: 2026/06/29 23:39:20 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

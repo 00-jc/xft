@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   report_allocator.h                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: username <your@mail.com>                   +#+  +:+       +#+        */
+/*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/06/06 04:13:10 by username          #+#    #+#             */
-/*   Updated: 2026/06/06 04:38:16 by username         ###   ########.fr       */
+/*   Created: 2026/06/29 23:39:13 by jaicastr          #+#    #+#             */
+/*   Updated: 2026/06/29 23:39:19 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

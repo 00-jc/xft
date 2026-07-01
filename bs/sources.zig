@@ -6,7 +6,7 @@
 //   By: username <your@mail.com>                   +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2026/06/29 09:15:56 by username          #+#    #+#             //
-//   Updated: 2026/06/29 09:16:48 by username         ###   ########.fr       //
+//   Updated: 2026/06/30 18:09:40 by jaicastr         ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -65,6 +65,7 @@ pub const SRCS_SYSCALLS = &[_][]const u8{
     "src/syscalls/ft_fmap.c",
     "src/syscalls/ft_read.c",
     "src/syscalls/ft_write.c",
+    "src/syscalls/ft_writev.c",
     "src/syscalls/ft_stat.c",
     "src/syscalls/ft_lockf.c",
     "src/syscalls/ft_exit.c",
@@ -74,13 +75,23 @@ pub const SRCS_SYSCALLS = &[_][]const u8{
     "src/syscalls/ft_sched_setaffinity.c",
 };
 
+pub const SRCS_FMT = &[_][]const u8{
+    "src/fmt/ft_fmt_handle_double.c",
+    "src/fmt/ft_fmt_handle_hex.c",
+    "src/fmt/ft_fmt_handle_unsigned.c",
+    "src/fmt/ft_fmt_handle_signed.c",
+    "src/fmt/fmt.c",
+    "src/fmt/ft_fmt_handle_slice.c",
+};
+
 pub const SRCS_IO = &[_][]const u8{
-    "src/io/ft_printf_helpers2.c",
-    "src/io/ft_read_file_portable.c",
-    "src/io/ft_read_file.c",
-    "src/io/ft_printf_helpers.c",
-    "src/io/ft_printf.c",
-    "src/io/ft_lockf.c",
+    "src/io/ft_writer_write.c",
+    "src/io/ft_get_fixed_fd.c",
+    "src/io/blocking_fd/ft_drain.c",
+    "src/io/blocking_fd/ft_flush.c",
+    "src/io/blocking_fd/ft_vtable.c",
+    "src/io/blocking_fd/ft_fill.c",
+    "src/io/ft_reader_read.c",
 };
 
 pub const SRCS_MATH = &[_][]const u8{
@@ -299,28 +310,106 @@ pub const MODULES = SRCS_SYSCALLS
                 ++ SRCS_RNG
                 ++ SRCS_TAILOR
                 ++ SRCS_SORT
+                ++ SRCS_FMT
                 ++ SRCS_FUZZ;
 
-pub const SRCS_TEST = &[_][2][]const u8{
-    .{ "tests/memchr_test.c",        "test_memchr" },
-    .{ "tests/strlen_test.c",        "test_strlen" },
-    .{ "tests/memcmp_test.c",        "test_memcmp" },
-    .{ "tests/memcpy_test.c",        "test_memcpy" },
-    .{ "tests/memset_test.c",        "test_memset" },
-    .{ "tests/streaming_mem_test.c", "test_streaming_mem" },
-    .{ "tests/vec_test.c",           "test_vec" },
-    .{ "tests/str_test.c",           "test_str" },
-    .{ "tests/cstr_test.c",          "test_cstr" },
-    .{ "tests/map_test.c",           "test_map" },
-    .{ "tests/murmur_test.c",        "test_murmur" },
-    .{ "tests/bmi_test.c",           "test_bmi" },
-    .{ "tests/xxh3_test.c",          "test_xxh3" },
-    .{ "tests/arena_test.c",         "test_arena" },
-    .{ "tests/arena_extend_test.c",  "test_arena_extend" },
-    .{ "tests/test_vtables.c",       "test_vtables" },
-    .{ "tests/gpa_bulk_test.c",      "test_gpa_bulk" },
+pub const TEST_NAME = "tests";
+
+pub const SRCS_TEST = &[_][]const u8{
+    "tests/alloc/arena/arena_extend_test.c",
+    "tests/alloc/arena/arena_extend_test_clean_releases.c",
+    "tests/alloc/arena/arena_extend_test_rewind_grow.c",
+    "tests/alloc/arena/arena_extend_test_rewind_reuse.c",
+    "tests/alloc/arena/arena_extend_test_trigger.c",
+    "tests/alloc/arena/arena_test_alignment.c",
+    "tests/alloc/arena/arena_test_basic.c",
+    "tests/alloc/arena/arena_test_uniq.c",
+    "tests/alloc/arena/arena_test.c",
+    "tests/alloc/arena/arena_test_checkpoint.c",
+    "tests/alloc/arena/arena_test_invalid.c",
+    "tests/alloc/gpa/gpa_bulk_test.c",
+    "tests/alloc/gpa/gpa_bulk_test_mixed_sizes.c",
+    "tests/alloc/gpa/gpa_bulk_test_mixed_sizes_fill.c",
+    "tests/alloc/gpa/gpa_bulk_test_reuse.c",
+    "tests/alloc/gpa/gpa_bulk_test_same_size.c",
+    "tests/alloc/gpa/gpa_bulk_test_same_size_fill.c",
+    "tests/alloc/vtables/vtables_test_arena.c",
+    "tests/alloc/vtables/vtables_test_arena_realloc.c",
+    "tests/alloc/vtables/vtables_test.c",
+    "tests/alloc/vtables/vtables_test_gpa.c",
+    "tests/alloc/vtables/vtables_test_gpa_realloc.c",
+    "tests/alloc/vtables/vtables_test_gpa_freelist.c",
+    "tests/alloc/vtables/vtables_test_gpa_freelist_advance.c",
+    "tests/alloc/vtables/vtables_test_palloc.c",
+    "tests/alloc/vtables/vtables_test_palloc_realloc.c",
+    "tests/bmi/bmi_test_bswap.c",
+    "tests/bmi/bmi_test.c",
+    "tests/bmi/bmi_test_clz.c",
+    "tests/bmi/bmi_test_ctz.c",
+    "tests/bmi/bmi_test_max.c",
+    "tests/containers/str/str_test.c",
+    "tests/containers/str/str_test_extend.c",
+    "tests/containers/str/str_test_new.c",
+    "tests/containers/str/str_test_push_back.c",
+    "tests/containers/str/str_test_remove.c",
+    "tests/containers/swissmap/map_test.c",
+    "tests/containers/swissmap/map_test_delete.c",
+    "tests/containers/swissmap/map_test_insert_lookup.c",
+    "tests/containers/swissmap/map_test_many.c",
+    "tests/containers/swissmap/map_test_overwrite.c",
+    "tests/containers/vec/vec_test.c",
+    "tests/containers/vec/vec_test_clear_reuse.c",
+    "tests/containers/vec/vec_test_extend.c",
+    "tests/containers/vec/vec_test_pop.c",
+    "tests/containers/vec/vec_test_push_get.c",
+    "tests/cstr/cstr_to_str/cstr_to_str_test.c",
+    "tests/cstr/strlen/strlen_test_basic.c",
+    "tests/cstr/strlen/strlen_test.c",
+    "tests/cstr/strlen/strlen_test_long.c",
+    "tests/cstr/strlen/strlen_test_misaligned.c",
+    "tests/hash/murmur3/murmur_test.c",
+    "tests/hash/murmur3/murmur_test_deterministic.c",
+    "tests/hash/murmur3/murmur_test_diff_input.c",
+    "tests/hash/murmur3/murmur_test_lengths.c",
+    "tests/hash/murmur3/murmur_test_seed.c",
+    "tests/hash/xxh3/xxh3_test_basic.c",
+    "tests/hash/xxh3/xxh3_test.c",
+    "tests/hash/xxh3/xxh3_test_edge.c",
+    "tests/hash/xxh3/xxh3_test_lengths.c",
+    "tests/hash/xxh3/xxh3_test_lengths_large.c",
+    "tests/hash/xxh3/xxh3_test_seeds.c",
+    "tests/mem/bzero/bzero_test.c",
+    "tests/mem/memchr/memchr_test_basic.c",
+    "tests/mem/memchr/memchr_test.c",
+    "tests/mem/memchr/memchr_test_edge.c",
+    "tests/mem/memchr/memchr_test_long.c",
+    "tests/mem/memchr/memchr_test_misaligned.c",
+    "tests/mem/memcmp/memcmp_test_basic.c",
+    "tests/mem/memcmp/memcmp_test_binary.c",
+    "tests/mem/memcmp/memcmp_test.c",
+    "tests/mem/memcmp/memcmp_test_long.c",
+    "tests/mem/memcmp/memcmp_test_misaligned.c",
+    "tests/mem/memcpy/memcpy_test_basic.c",
+    "tests/mem/memcpy/memcpy_test.c",
+    "tests/mem/memcpy/memcpy_test_large.c",
+    "tests/mem/memcpy/memcpy_test_misaligned.c",
+    "tests/mem/memmove/memmove_test.c",
+    "tests/mem/memset/memset_test_basic.c",
+    "tests/mem/memset/memset_test.c",
+    "tests/mem/memset/memset_test_large.c",
+    "tests/mem/memset/memset_test_misaligned.c",
+    "tests/mem/streaming/streaming_test.c",
+    "tests/mem/streaming/streaming_test_memcpy.c",
+    "tests/mem/streaming/streaming_test_memset.c",
+    "tests/rng/xoshiro/xoshiro_test_basic.c",
+    "tests/rng/xoshiro/xoshiro_test.c",
+    "tests/rng/xoshiro/xoshiro_test_init_diff.c",
+    "tests/rng/xoshiro/xoshiro_test_not_constant.c",
+    "tests/rng/xoshiro/xoshiro_test_state_changes.c",
+    "tests/test_state.c",
+    "tests/tests_main.c",
 };
- 
+
 pub const SRCS_FUZZ_TARGETS = &[_][2][]const u8{
     .{ "fuzz/mem_fuzz.c", "fuzz_mem" },
     .{ "fuzz/vec_fuzz.c", "fuzz_vec" },

@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/03 17:56:09 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/04/12 04:29:31 by jaicastr         ###   ########.fr       */
+/*   Created: 2026/06/29 23:39:13 by jaicastr          #+#    #+#             */
+/*   Updated: 2026/07/01 13:45:27 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,7 @@
 # include <stdbool.h>
 
 void	ft_pin_invariant(int res);
-void	ft_pin_invariant_msg(int res, char *msg)\
-			__attribute__((__nonnull__(2)));
+void	ft_pin_invariant_msg(int res, t_buffer msg);
 void	ft_assume(bool expr);
 
 #endif

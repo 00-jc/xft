@@ -24,7 +24,8 @@ void	ft_memmove_test_medium_aligned(void *ptr)
 	buffers = ft_get_all_buffers(ptr, bufn);
 	buffers += 18;
 	bufn[0] = 8;
-	ft_pin_invariant_msg(buffers != nullptr, (char *)"NO BUFFERS");
+	ft_pin_invariant_msg(buffers != nullptr,
+		ft_fatptr((t_u8 *)"NO BUFFERS", 10));
 	bufn[2] = 0;
 	while (n-- > 0)
 	{
@@ -46,7 +47,8 @@ void	ft_memmove_test_medium_unaligned(void *ptr)
 	buffers = ft_get_all_buffers(ptr, bufn);
 	buffers += 4;
 	bufn[0] = 8;
-	ft_pin_invariant_msg(buffers != nullptr, (char *)"NO BUFFERS");
+	ft_pin_invariant_msg(buffers != nullptr,
+		ft_fatptr((t_u8 *)"NO BUFFERS", 10));
 	bufn[2] = 0;
 	while (n-- > 0)
 	{

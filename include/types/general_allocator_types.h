@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   general_allocator_types.h                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: username <your@mail.com>                   +#+  +:+       +#+        */
+/*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/06/28 16:02:57 by username          #+#    #+#             */
-/*   Updated: 2026/06/28 16:02:59 by username         ###   ########.fr       */
+/*   Created: 2026/06/29 23:39:12 by jaicastr          #+#    #+#             */
+/*   Updated: 2026/06/29 23:39:19 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

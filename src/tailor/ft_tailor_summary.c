@@ -5,14 +5,38 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/04/20 00:24:50 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/15 11:19:35 by jaicastr         ###   ########.fr       */
+/*   Created: 2026/06/29 23:39:14 by jaicastr          #+#    #+#             */
+/*   Updated: 2026/07/01 16:47:17 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+#include "primitives.h"
 #include "private/ft_p_tailor.h"
 #include "macros.h"
 #include "io.h"
+#include "fmt.h"
 #include "bmi.h"
+#include "tailor.h"
+#include "math.h"
+
+#define H0		" * %s\n"
+#define H1		" ├─ time         = %f ns per_call\n"
+#define H2		" ├─ ipc          = %f\n"
+#define H3		" ├─ GB/sec       = %f\n"
+#define H4		" ├─ cycles       = %f\n"
+#define H5		" ├─ instr        = %f per_call\n"
+
+#define H6	" │\n"
+#define H7		" ├─ branch miss  = %f%%"
+#define H8	" │  └───────────── total_ratio=%q/%q\n"
+#define H9		" ├─ LL     miss  = %f%%"
+#define B1		" ├─ align faults = %q\n"
+#define B2		" └─ page  faults = %q\n"
+
+#define B3		" ├─ total_iters  = %q\n"
+#define B4		" ├─ med          = %qns [%q, %q] min=%qns\n"
+#define B5		" ├─ relevant     = %q samples (burst of=%q iters)\n"
+#define B6		" ├─ resamples    = %q bootstrap_runs\n"
 
 __attribute__((__nonnull__(1, 2), __always_inline__))
 static inline void	ft_sum_counters(t_perf_sample *src, t_perf_sample *sum,
@@ -37,70 +61,71 @@ static inline void	ft_sum_counters(t_perf_sample *src, t_perf_sample *sum,
 	}
 }
 
-static void	ft_print_head(t_perf_sample sum, t_plankb plan, t_blk8r name,
-	t_u64a total_iters)
+__attribute__((__nonnull__(3, 4), __always_inline__))
+static inline void	ft_init_args(t_perf_sample sum, t_plankb plan, t_u64a *data,
+	t_u64a *args)
 {
-	t_f64	bps;
+	t_u64a	total_iters;
+	t_u64a	it;
 
-	bps = ft_dtern(sum.ns != 0,
-			(t_f64)plan.dp.bytes_processed / (t_f64)sum.ns * 1e9, 0.0) / 1e9;
-	ft_printf(ANSI_BCYAN" * %s"ANSI_RESET"\n"
-		" ├─ time         = %f ns per_call\n"
-		" ├─ ipc          = %f\n"
-		" ├─ GB/sec       = %f\n"
-		" ├─ cycles       = %f\n"
-		" ├─ instr        = %f per_call\n",
-		name,
-		ft_dtern(total_iters != 0,
-			(t_f64)sum.ns / (t_f64)total_iters, (t_f64)0.0),
-		ft_dtern(sum.cycles != 0,
-			(t_f64)sum.instr / (t_f64)sum.cycles, (t_f64)0.0),
-		bps,
-		(t_f64)sum.cycles / (t_f64)plan.dp.iters,
-		(t_f64)sum.instr / (t_f64)plan.dp.iters);
-}
-
-static void	ft_print_tail(t_perf_sample sum)
-{
-	ft_printf(
-		" │\n"
-		" ├─ branch miss  = %f%%\n"
-		" │  └───────────── total_ratio=%lu/%lu\n"
-		" │\n"
-		" ├─ LL     miss  = %f%%\n"
-		" │  └───────────── total_ratio=%lu/%lu\n"
-		" │\n"
-		" ├─ align faults = %lu\n"
-		" └─ page  faults = %lu\n",
-		ft_dtern(sum.branches > 0,
-			(t_f64)sum.branch_miss / (t_f64)sum.branches * 100.0, 0.0),
-		sum.branch_miss, sum.branches,
-		ft_dtern(sum.cache_ll > 0,
-			(t_f64)sum.cache_miss / (t_f64)sum.cache_ll * 100.0, 0.0),
-		sum.cache_miss, sum.cache_ll,
-		sum.alignment_faults, sum.page_faults);
-}
-
-__attribute__((__nonnull__(3, 4)))
-void	ft_print_summary(t_buffer surv, t_plankb plan, t_blk8r name,
-			t_u64a data[4])
-{
-	t_perf_sample	sum;
-	t_u64a			total_iters;
-	t_u64a			it;
-
-	if (surv.mem == nullptr)
-		__builtin_unreachable();
-	ft_sum_counters((t_perf_sample *)surv.mem, &sum, surv.size);
 	total_iters = plan.k_runs * plan.dp.iters;
 	it = plan.dp.iters;
-	ft_print_head(sum, plan, name, total_iters);
-	ft_printf(" ├─ total_iters  = %lu\n"
-		" ├─ med          = %luns [%lu, %lu] min=%luns\n"
-		" ├─ relevant     = %lu samples (burst of=%lu iters)\n"
-		" ├─ resamples    = %lu bootstrap_runs\n",
-		total_iters,
-		data[0] / it, data[2] / it, data[3] / it, data[1] / it,
-		surv.size, plan.dp.iters, plan.b);
-	ft_print_tail(sum);
+	args[2] = (t_dp){.f = ft_dtern(total_iters != 0,
+			(t_f64)sum.ns / (t_f64)total_iters, 0.0)}.i;
+	args[3] = (t_dp){.f = ft_dtern(sum.cycles != 0,
+			(t_f64)sum.instr / (t_f64)sum.cycles, 0.0)}.i;
+	args[4] = (t_dp){.f = ft_dtern(sum.ns != 0,
+			(t_f64)plan.dp.bytes_processed / (t_f64)sum.ns
+			* 1e9, 0.0) * 1e-9}.i;
+	args[5] = (t_dp){.f = (t_f64)sum.cycles / (t_f64)plan.dp.iters}.i;
+	args[6] = (t_dp){.f = (t_f64)sum.instr / (t_f64)plan.dp.iters}.i;
+	args[7] = total_iters;
+	args[8] = data[0] / it;
+	args[9] = data[2] / it;
+	args[10] = data[3] / it;
+	args[11] = data[1] / it;
+}
+
+__attribute__((__nonnull__(4), __always_inline__))
+static inline void	ft_init_args2(t_perf_sample sum, t_buffer surv,
+	t_plankb plan, t_u64a *args)
+{
+	if (surv.mem == nullptr)
+		__builtin_unreachable();
+	args[12] = surv.size;
+	args[13] = plan.dp.iters;
+	args[14] = plan.b;
+	args[15] = (t_dp){.f = ft_dtern(sum.branches > 0,
+			(t_f64)sum.branch_miss / (t_f64)sum.branches
+			* 100.0, 0.0)}.i;
+	args[16] = sum.branch_miss;
+	args[17] = sum.branches;
+	args[18] = (t_dp){.f = ft_dtern(sum.cache_ll > 0,
+			(t_f64)sum.cache_miss / (t_f64)sum.cache_ll
+			* 100.0, 0.0)}.i;
+	args[19] = sum.cache_miss;
+	args[20] = sum.cache_ll;
+	args[21] = sum.alignment_faults;
+	args[22] = sum.page_faults;
+}
+
+__attribute__((__nonnull__(4)))
+void	ft_print_summary(t_buffer surv, t_plankb plan, t_tailor_report_ctx ctx,
+			t_u64a data[4])
+{
+	const t_size	size = sizeof(ANSI_BCYAN H0 ANSI_RESET H1 H2 H3 H4 H5
+			B3 B4 B5 B6 H6 H7 H8 H6 H9 H8 B1 B2 "\n") - 1;
+	t_perf_sample	sum;
+	t_u64a			args[28];
+
+	if (surv.mem == nullptr || ctx.name == nullptr)
+		__builtin_unreachable();
+	ft_sum_counters((t_perf_sample *)surv.mem, &sum, surv.size);
+	args[0] = (t_u64a)(uintptr_t)ctx.name;
+	args[1] = (t_u64a)ft_strlen((const char *)ctx.name);
+	ft_init_args(sum, plan, data, args);
+	ft_init_args2(sum, surv, plan, args);
+	ft_fmt_writer(ctx.writer, ft_fatptr(
+			(t_u8 *)ANSI_BCYAN H0 ANSI_RESET H1 H2 H3 H4 H5
+			B3 B4 B5 B6 H6 H7 H8 H6 H9 H8 B1 B2 "\n", size), args);
 }

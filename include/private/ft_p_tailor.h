@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/04/18 21:51:49 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/13 23:49:02 by jaicastr         ###   ########.fr       */
+/*   Created: 2026/06/29 23:39:12 by jaicastr          #+#    #+#             */
+/*   Updated: 2026/07/01 13:51:27 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,9 +63,10 @@ t_plankb		ft_get_kb(t_tailor *t, t_tailor_fn fn)\
 t_result		ft_bootstrap(t_tailor *t, t_buffer surv, t_plankb plan,\
 					t_blk8r name) __attribute__((__nonnull__(1)));
 
-void			ft_print_summary(t_buffer surv, t_plankb plan, t_blk8r name,\
+void			ft_print_summary(t_buffer surv, t_plankb plan,\
+					t_tailor_report_ctx ctx,\
 					t_u64a data[4])\
-					__attribute__((__nonnull__(3, 4)));
+					__attribute__((__nonnull__(4)));
 
 t_result		ft_tailor_benchfn(t_tailor *t, t_tailor_fn fn, t_blk8r name)\
 					__attribute__((__nonnull__(1)));

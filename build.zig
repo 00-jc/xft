@@ -17,6 +17,7 @@ const NAME              = "xft";
 const INCLUDES          = "include";
 const MODULES           = @import("bs/sources.zig").MODULES;
 const SRCS_TEST         = @import("bs/sources.zig").SRCS_TEST;
+const TEST_NAME         = @import("bs/sources.zig").TEST_NAME;
 const SRCS_FUZZ_TARGETS = @import("bs/sources.zig").SRCS_FUZZ_TARGETS;
 const BENCH_TARGETS     = @import("bs/sources.zig").BENCH_TARGETS;
 const CFLAGS_COMMON     = @import("bs/flags.zig").CFLAGS_COMMON;
@@ -102,11 +103,11 @@ inline fn make_lib(
 }
 
 inline fn make_test_exe(
-    b:        *std.Build,
-    opt:      Opts,
-    xft_san:  *std.Build.Step.Compile,
-    name:     []const u8,
-    src_path: []const u8,
+    b:       *std.Build,
+    opt:     Opts,
+    xft_san: *std.Build.Step.Compile,
+    name:    []const u8,
+    srcs:    []const []const u8,
 ) *std.Build.Step.Compile
 {
     var mod = b.createModule(.{
@@ -120,7 +121,7 @@ inline fn make_test_exe(
     });
     add_includes(b, mod);
     mod.addCSourceFiles(.{
-        .files = &.{src_path},
+        .files = srcs,
         .flags = CFLAGS_COMMON,
     });
     mod.linkLibrary(xft_san);
@@ -201,9 +202,8 @@ pub fn build(b: *std.Build) !void
         install_step(b, v.step, v.desc, make_lib(b, v.cfg, opts));
 
     const test_step = b.step("test", "Build and run tests (sanitized)");
-    inline for (SRCS_TEST) |t|
     {
-        const exe = make_test_exe(b, opts, xft_san, t[1], t[0]);
+        const exe = make_test_exe(b, opts, xft_san, TEST_NAME, SRCS_TEST);
         const run = b.addRunArtifact(exe);
         run.has_side_effects = true;
         test_step.dependOn(&run.step);
@@ -212,7 +212,7 @@ pub fn build(b: *std.Build) !void
     const fuzz_step = b.step("fuzz", "Build and run fuzz targets (sanitized)");
     inline for (SRCS_FUZZ_TARGETS) |t|
     {
-        const exe = make_test_exe(b, opts, xft_san, t[1], t[0]);
+        const exe = make_test_exe(b, opts, xft_san, t[1], &.{t[0]});
         const run = b.addRunArtifact(exe);
         run.has_side_effects = true;
         fuzz_step.dependOn(&run.step);

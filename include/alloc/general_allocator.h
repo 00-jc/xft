@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   general_allocator.h                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: username <your@mail.com>                   +#+  +:+       +#+        */
+/*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/06/06 04:14:01 by username          #+#    #+#             */
-/*   Updated: 2026/06/06 04:38:06 by username         ###   ########.fr       */
+/*   Created: 2026/06/29 23:39:13 by jaicastr          #+#    #+#             */
+/*   Updated: 2026/06/30 11:18:45 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef GENERAL_ALLOCATOR_H
 # define GENERAL_ALLOCATOR_H
 
-# include "types/general_allocator_primitives.h"
+# include "types/general_allocator_types.h"
 
 t_gpa		ft_gpa(void);
 void		ft_gpa_destroy(t_gpa *gpa);

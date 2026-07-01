@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/03 17:58:31 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/03/03 18:14:05 by jaicastr         ###   ########.fr       */
+/*   Created: 2026/06/29 23:39:13 by jaicastr          #+#    #+#             */
+/*   Updated: 2026/07/01 13:46:05 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,7 @@
 
 void	ft_hardcrash(void)\
 			__attribute__((__noreturn__, __cold__, __noinline__));
-void	ft_hardcrash_with_message(char *msg)\
-			__attribute__((__noreturn__, __cold__, __noinline__,\
-			__nonnull__(1)));
+void	ft_hardcrash_with_message(t_buffer msg)\
+			__attribute__((__noreturn__, __cold__, __noinline__));
 
 #endif

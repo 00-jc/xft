@@ -25,7 +25,8 @@ void	ft_memset_test_large_aligned(void *ptr)
 	buffers = ft_get_all_buffers(ptr, bufn);
 	buffers += 26;
 	bufn[0] = 2;
-	ft_pin_invariant_msg(buffers != nullptr, (char *)"NO BUFFERS");
+	ft_pin_invariant_msg(buffers != nullptr,
+		ft_fatptr((t_u8 *)"NO BUFFERS", 10));
 	bufn[2] = 0;
 	while (n-- > 0)
 	{
@@ -49,7 +50,8 @@ void	ft_memset_test_large_unaligned(void *ptr)
 	buffers = ft_get_all_buffers(ptr, bufn);
 	buffers += 26;
 	bufn[0] = 2;
-	ft_pin_invariant_msg(buffers != nullptr, (char *)"NO BUFFERS");
+	ft_pin_invariant_msg(buffers != nullptr,
+		ft_fatptr((t_u8 *)"NO BUFFERS", 10));
 	bufn[2] = 0;
 	while (n-- > 0)
 	{

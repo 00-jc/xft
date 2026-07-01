@@ -5,14 +5,15 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/04/19 23:40:09 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/20 02:50:02 by jaicastr         ###   ########.fr       */
+/*   Created: 2026/06/29 23:39:14 by jaicastr          #+#    #+#             */
+/*   Updated: 2026/07/01 14:31:33 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "private/ft_p_tailor.h"
 #include "io.h"
 #include "private/ft_p_math.h"
+#include "tailor.h"
 
 __attribute__((__nonnull__(1, 2), __always_inline__))
 static inline void	ft_finalmix(t_u64a *medians, t_u64a hilo[2],
@@ -102,6 +103,7 @@ t_result	ft_bootstrap(t_tailor *t, t_buffer surv,
 		return (KO);
 	if (__builtin_expect(ft_getpost_med(t, surv, &med, &min) == KO, 0))
 		return (KO);
-	ft_print_summary(surv, plan, name, (t_u64a[4]){med, min, hilo[0], hilo[1]});
+	ft_print_summary(surv, plan, (t_tailor_report_ctx){name, &t->writer},
+		(t_u64a[4]){med, min, hilo[0], hilo[1]});
 	return (OK);
 }

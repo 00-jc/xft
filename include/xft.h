@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/16 17:14:00 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/06/29 10:05:17 by username         ###   ########.fr       */
+/*   Created: 2026/06/29 23:39:13 by jaicastr          #+#    #+#             */
+/*   Updated: 2026/06/30 18:11:00 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,8 @@ extern "C"
 # include "tailor.h"
 # include "str.h"
 # include "syscall.h"
+# include "rt.h"
+# include "fmt.h"
 
 #ifdef __cplusplus
 }

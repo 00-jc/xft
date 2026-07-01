@@ -24,7 +24,8 @@ void	ft_memset_test_stream_1x_unaligned(void *ptr)
 	n = ft_tailor_getcount(ptr);
 	buffers = ft_get_all_buffers(ptr, bufn);
 	bufn[0] = 2;
-	ft_pin_invariant_msg(buffers != nullptr, (char *)"NO BUFFERS");
+	ft_pin_invariant_msg(buffers != nullptr,
+		ft_fatptr((t_u8 *)"NO BUFFERS", 10));
 	bufn[2] = 0;
 	while (n-- > 0)
 	{
@@ -48,7 +49,8 @@ void	ft_memset_test_stream_2x_unaligned(void *ptr)
 	buffers = ft_get_all_buffers(ptr, bufn);
 	buffers += 2;
 	bufn[0] = 2;
-	ft_pin_invariant_msg(buffers != nullptr, (char *)"NO BUFFERS");
+	ft_pin_invariant_msg(buffers != nullptr,
+		ft_fatptr((t_u8 *)"NO BUFFERS", 10));
 	bufn[2] = 0;
 	while (n-- > 0)
 	{
@@ -72,7 +74,8 @@ void	ft_memset_test_stream_1x_aligned(void *ptr)
 	buffers = ft_get_all_buffers(ptr, bufn);
 	buffers += 4;
 	bufn[0] = 2;
-	ft_pin_invariant_msg(buffers != nullptr, (char *)"NO BUFFERS");
+	ft_pin_invariant_msg(buffers != nullptr,
+		ft_fatptr((t_u8 *)"NO BUFFERS", 10));
 	bufn[2] = 0;
 	while (n-- > 0)
 	{
@@ -96,7 +99,8 @@ void	ft_memset_test_stream_2x_aligned(void *ptr)
 	buffers = ft_get_all_buffers(ptr, bufn);
 	buffers += 6;
 	bufn[0] = 2;
-	ft_pin_invariant_msg(buffers != nullptr, (char *)"NO BUFFERS");
+	ft_pin_invariant_msg(buffers != nullptr,
+		ft_fatptr((t_u8 *)"NO BUFFERS", 10));
 	bufn[2] = 0;
 	while (n-- > 0)
 	{

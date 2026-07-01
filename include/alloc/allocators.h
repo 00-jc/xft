@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   allocators.h                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: username <your@mail.com>                   +#+  +:+       +#+        */
+/*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/06/06 04:25:08 by username          #+#    #+#             */
-/*   Updated: 2026/06/06 04:55:10 by username         ###   ########.fr       */
+/*   Created: 2026/06/29 23:39:13 by jaicastr          #+#    #+#             */
+/*   Updated: 2026/06/30 11:18:34 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef ALLOCATORS_H
 # define ALLOCATORS_H
 
-# include "types/allocators_primitives.h"
+# include "types/allocators_types.h"
 # include "alloc/general_allocator.h"
 # include "alloc/page_alloc.h"
 # include "alloc/report_allocator.h"

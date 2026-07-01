@@ -1,125 +1,64 @@
 # xft
 
-A C library (ex-libft, still norm compliant).
+A C library (ex-libft, still norm compliant). Closer to zig's std in spirit, but much less friendly.
 
-## Build (zig)
+# Why?
 
-| Command | Description |
-|---------|-------------|
-| `zig build core` | `-O3` + LTO |
-| `zig build nolto` | `-O3` - LTO (to inspect disassembly) |
-| `zig build san` | debug + sanitizers (UBSan) |
-| `zig build tsan` | thread sanitizer |
-| `zig build test` | run tests (sanitized) |
-| `zig build bench` | run the benchmarks (self-hosted) |
-| `zig build fuzz` | run the fuzzers (sanitized, self-hosted) |
-| `zig build analyze` | run clang's static analyzer |
+Started for school, now I don't like libc's defaults and I run perf at least 2 times a day.
 
-**Overrides:**
+## Building against it
 
-```
-zig build -Doptimize=ReleaseFast   # override optimize mode
-zig build -Dcpu=native             # -march=native alternative
-zig build -Dtarget=...             # cross-compile target
-```
-
-## Build (make fallback)
-
-| Command | Description |
-|---------|-------------|
-| `make` | builds `libxft.a` with the default compiler |
-| `make CC=clang` | force clang |
-| `make CC=gcc` | force gcc |
-| `make re` | full rebuild |
-| `make analyze` | clang scan-build + gcc -fanalyzer + norminette |
-| `make clean` | remove object files |
-| `make fclean` | remove all build artifacts |
+See [INSTALL.md](INSTALL.md)
 
 ## Requirements
 
-- GCC or Clang with C23 or C99 support (preferably C23)
 - Linux
-- Norminette >3.3.59 (latest release)
-- Zig requires clang/llvm
-- Makefile requires one of clang or gcc
+- Norminette >3.3.59 (or latest release)
+- GNU complexity
+
+## Toolchains
+
+### Main Toolchain
+
+- Zig (with llvm backend)
+
+### Fallback Toolchains
+
+- GCC or Clang with C23 support
 - Makefile requires one of each of `llvm-ar`/`gcc-ar` and `llvm-randlib`/`gcc-randlib`
-- Test/Fuzz require libc for unit tests and sanitizers (for bench is not needed).
+- Optionally, glibc / musl
 
 ## Libc Linkage
 
-The core library is freestanding on x86_64 by default.
-Whether `libc` gets linked into a given artifact is decided in `make_lib` (zig) by:
+The core library is freestanding on x86_64 by default,  libc is linked if  `FT_REQUIRE_LIBC` is defined or whenever **any** of the following holds:
 
-```
-const libc = cfg.san or builtin.cpu.arch != .x86_64 or opt.use_libc;
-```
-
-That is, libc is linked (and `FT_REQUIRE_LIBC` defined) whenever **any** of the following holds:
-
-| Condition | Trigger |
-|-----------|---------|
-| `cfg.san` | Sanitizer build (UBSan runtime needs libc) |
-| `cfg.tsan` | Thread sanitizer build (TSan runtime needs libc) |
-| `builtin.cpu.arch != .x86_64` | Any non-x86_64 target (for the syscall() macro) |
-| `opt.use_libc` | `-Dlibc=true` passed on the command line |
-
-Per artifact:
-
-| Artifact | Step | Libc |
-|----------|------|------|
-| `xft` | `core` / `nolto` | Only on non-x86_64 or `-Dlibc` (freestanding otherwise) |
-| `xft_san` | `san` | Always (sanitizer build) |
-| `xft` (tsan cfg) | `tsan` | Follows the core rule |
-
-The test and bench **executables** link libc independently of the library:
-test exes always (`link_libc = true`), bench exes only on non-x86_64.
-
-The only external thing it expects is `/usr/include/linux` to be present in the system (for the perf counter interface).
-I'm studing wether protect the module and not compile it if it's not present or hardcoding the values myself.
-
-## Implementation Details
-
-- Uses `src/tailor/` for the bench target
-- Uses `src/fuzz/` for the fuzz target
-- No allocator is thread safe
-- Functions that can fail return explicit errors as values: `t_result {OK|KO}`; constructors return zero-initialized structs to avoid stack spills; allocators return `t_buffer{mem:nullptr,len:0}` on failure
-- Almost all functions assume non-null pointers and valid data; correct usage is the programmer's responsibility.
-- Will likely cause SIGSEV/SIGABRT on invalid data than return an error, errors will be returned if the function itself fails, not from the data it takes.
-- A function has one and one purpose only and it's either validation, logic or driving others.
-- Any function that allocates memory requires an allocator vtable interface
-- `strlen` tests/benches may fail under gcc due to redzoning, but work fine in real-world usage; clang/llvm runtimes pass the sanitized tests cleanly
-- ft_main's runtime is as thin as possible, no syscalls and no initialization of ANY resources.
-
-## Guarantees
-
-- All assembly is written as inline `__asm__` in C files and protected at compile time; no raw assembly nor hidden/extern code the compiler cannot see
-- All vector and SIMD is done via vector types, not includes or proprietary logic; portability depends solely on the compiler and target
-- No partial recovery or automatic cleanup of resources on non-fatal failure; the programmer must account for that explicitly
-- Code will be clean an readable, norminette compliant and not exceeding 9 in the GNU cyclomatic dependency scale.
+- Building the library with sanitizers of any kind (neeeded for the runtime)
+- -Dlibc=true is passed to zig build
+- Compilation is for non x86_64
 
 ## Philosophy
 
 - Low latency, correctness, and specialization over general code
-- Input validation at initialization
-- Explicit intent through the type system and arguments; no state without an owner, no owners in dynamic memory
+- Input validation at initialization, downstream services assume data is well formed and sanitized
+- Explicit intent through the type system and arguments
+- No state without an owner, no owners in dynamic memory even if it means relying more on the stack
+- Clearly defined lifetimes with constructors / destructors
+- Heavy inlining and specialization is opt-out, not opt-in
 
 ## TODO
 
 - [x] Implement clock_gettime / get_ns natively to not depend on LIBC (rdtsc)
 - [x] Add /usr/include/linux to the include path
-- [x] Clean all system includes (we're freestanding!!)
+- [x] Clean all system includes (freestanding!!)
 - [x] Figure out how to cleanly split x86 freestanding mode from libc mode apart from the macro (at a target level)
 - [x] Figure out how to separate build.zig into smaller files
-- [x] Push release
-- [ ] Implement a proper IO interface (readers, writers, ...)
+- [x] Implement a proper IO interface (readers, writers, ...)
+- [x] Implement formatting (no varargs, no implicit behaviour)
+- [x] Make benches work and the tailor framework adapt to the new IO model.
+- [x] Add a lot more tests and separate them in folders more cleanly (make a single entry point)
+- [ ] Make an AOSOA data structure
+- [ ] Make my own threads and concurrent primitives
 - [ ] Implement something like zig's juicy main to pass to ft_main()
-- [ ] Make my own threads (hopefully better than pthread or at least more modern)
 - [ ] Coalescing Allocator
-- [ ] Implement io_uring
-- [ ] Add more math functionality.
-
-## Notes
-
-~500 commits were lost when migrating to codeberg; the library started around April 2025. Doesn't really impact the code since there were massive rewrites, but worth noting.
-
-This lib is mostly centered around x86_64, while it can rely on libc for others enabling FT_REQUIRE_LIBC (automatic in zig).
+- [ ] Implement io_uring + threaded io (async / await hooks)
+- [ ] Add more math

@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/05/15 04:10:00 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/06/29 09:10:40 by username         ###   ########.fr       */
+/*   Created: 2026/06/29 23:39:13 by jaicastr          #+#    #+#             */
+/*   Updated: 2026/06/30 10:28:26 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include "types/timing_types.h"
 # include "private/ft_p_syscalls.h"
 # include <linux/perf_event.h>
+# include "types/io_types.h"
 
 # ifdef FT_REQUIRE_LIBC
 
@@ -50,12 +51,6 @@ typedef struct s_flock
 	t_i64	l_len;
 	t_i32	l_pid;
 }	t_flock;
-
-typedef struct s_timespec
-{
-	t_i64	tv_sec;
-	t_i64	tv_nsec;
-}	t_timespec;
 
 typedef struct s_stat
 {
@@ -117,5 +112,8 @@ int		ft_getpid(void);
 int		ft_sched_setaffinity(int pid, t_size cpusetsize,\
 				const t_u64a *restrict const mask)\
 				__attribute__((__nonnull__(3), __always_inline__));
+
+t_ssize	ft_writev(int fd, t_iovec *buffers, t_size len)\
+			__attribute__((__nonnull__(2), __always_inline__));
 
 #endif
