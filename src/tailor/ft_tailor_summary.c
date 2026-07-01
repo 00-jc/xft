@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/29 23:39:14 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/07/01 16:47:17 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/07/01 23:06:36 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,9 @@
 #define H5		" ├─ instr        = %f per_call\n"
 
 #define H6	" │\n"
-#define H7		" ├─ branch miss  = %f%%"
+#define H7		" ├─ branch miss  = %f%%\n"
 #define H8	" │  └───────────── total_ratio=%q/%q\n"
-#define H9		" ├─ LL     miss  = %f%%"
+#define H9		" ├─ LL     miss  = %f%%\n"
 #define B1		" ├─ align faults = %q\n"
 #define B2		" └─ page  faults = %q\n"
 
