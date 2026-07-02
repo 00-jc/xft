@@ -13,7 +13,7 @@
 #include "tailor.h"
 #include "mem_bench.h"
 
-void	ft_memcpy_test_varied(void *ptr)
+void	ft_memcpy_test_varied(t_any ptr)
 {
 	t_buffer	*buffers;
 	t_buffer	*in;

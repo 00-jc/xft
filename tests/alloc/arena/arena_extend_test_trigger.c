@@ -16,7 +16,7 @@ void	test_extend_trigger(void)
 {
 	t_arena		a;
 	t_hugepage	*first;
-	void		*p;
+	t_any		p;
 	t_size		big;
 
 	a = ft_new_arena_alloc();

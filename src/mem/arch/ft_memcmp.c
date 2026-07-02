@@ -15,8 +15,8 @@
 #if FT_HAS_512_VEC
 
 __attribute__((__nonnull__(1, 2)))
-t_ssize	ft_memcmp(const void *restrict const dest,
-	const void *restrict src, t_size n)
+t_ssize	ft_memcmp(t_cany restrict const dest,
+	t_cany restrict src, t_size n)
 {
 	if (n >= sizeof(t_vu512a))
 		return (ft_memcmp_avx512(dest, src, n));
@@ -31,8 +31,8 @@ t_ssize	ft_memcmp(const void *restrict const dest,
 #elif FT_HAS_256_VEC
 
 __attribute__((__nonnull__(1, 2)))
-t_ssize	ft_memcmp(const void *restrict const dest,
-	const void *restrict src, t_size n)
+t_ssize	ft_memcmp(t_cany restrict const dest,
+	t_cany restrict src, t_size n)
 {
 	if (n >= sizeof(t_vu256a))
 		return (ft_memcmp_avx256(dest, src, n));
@@ -45,8 +45,8 @@ t_ssize	ft_memcmp(const void *restrict const dest,
 #else
 
 __attribute__((__nonnull__(1, 2)))
-t_ssize	ft_memcmp(const void *restrict const dest,
-	const void *restrict src, t_size n)
+t_ssize	ft_memcmp(t_cany restrict const dest,
+	t_cany restrict src, t_size n)
 {
 	if (n >= sizeof(t_vu128a))
 		return (ft_memcmp_sse(dest, src, n));

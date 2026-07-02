@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/29 23:39:12 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/07/01 13:33:18 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/07/02 22:32:09 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,10 @@
 
 typedef struct s_reporta
 {
-	void		*slab;
+	t_any		slab;
 	t_size		slabsize;
-	void		*bmp;
-	void		*free[GPA_CLASSES];
+	t_any		bmp;
+	t_any		free[GPA_CLASSES];
 	t_size		n_allocs;
 	t_size		n_frees;
 	t_size		slabs;

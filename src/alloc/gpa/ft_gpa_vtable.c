@@ -13,25 +13,25 @@
 #include "private/ft_p_gpa.h"
 
 __attribute__((__nonnull__(1)))
-static void	gpa_destroy(void *alloc)
+static void	gpa_destroy(t_any alloc)
 {
 	ft_gpa_destroy((t_gpa *)alloc);
 }
 
 __attribute__((__nonnull__(1)))
-static t_buffer	gpa_allocate(void *alloc, t_size size, t_size align)
+static t_buffer	gpa_allocate(t_any alloc, t_size size, t_size align)
 {
 	return (ft_gpa_alloc(alloc, size, align));
 }
 
 __attribute__((__nonnull__(1)))
-static void	gpa_free(void *alloc, t_buffer old)
+static void	gpa_free(t_any alloc, t_buffer old)
 {
 	ft_gpa_free(alloc, old);
 }
 
 __attribute__((__nonnull__(1)))
-static t_buffer	gpa_reallocate(void *alloc, t_buffer old, t_size new_size,
+static t_buffer	gpa_reallocate(t_any alloc, t_buffer old, t_size new_size,
 				t_size align)
 {
 	return (ft_gpa_realloc(alloc, old, new_size, align));

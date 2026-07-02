@@ -13,8 +13,8 @@
 #include "private/ft_p_mem.h"
 
 __attribute__((__nonnull__(1, 2), __always_inline__))
-inline t_ssize	ft_memcmp_finalround(const void *restrict const ptr1,
-	const void	*restrict const ptr2, t_size offst, t_size n)
+inline t_ssize	ft_memcmp_finalround(t_cany restrict const ptr1,
+	t_cany restrict const ptr2, t_size offst, t_size n)
 {
 	t_u16a		mask;
 	t_vu128a	load0;
@@ -37,8 +37,8 @@ inline t_ssize	ft_memcmp_finalround(const void *restrict const ptr1,
 }
 
 __attribute__((__nonnull__(1, 2), __always_inline__))
-inline t_ssize	ft_memcmp_minimal(const void *restrict const ptr1,
-	const void	*restrict const ptr2, t_size offst, t_size n)
+inline t_ssize	ft_memcmp_minimal(t_cany restrict const ptr1,
+	t_cany restrict const ptr2, t_size offst, t_size n)
 {
 	t_u8		b1;
 	t_u8		b2;
@@ -55,8 +55,8 @@ inline t_ssize	ft_memcmp_minimal(const void *restrict const ptr1,
 }
 
 __attribute__((__nonnull__(1, 2), __always_inline__))
-inline t_ssize	ft_memcmp_sse(const void *restrict const ptr1,
-	const void	*restrict const ptr2, t_size n)
+inline t_ssize	ft_memcmp_sse(t_cany restrict const ptr1,
+	t_cany restrict const ptr2, t_size n)
 {
 	t_u16a		mask;
 	t_vu128a	load0;

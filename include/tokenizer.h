@@ -45,7 +45,7 @@ t_u32a		ft_tokenizer_goto(t_tokenizer *tk, t_u8 byte)\
 				__attribute__((__nonnull__(1)));
 void		ft_skip_whitespace(t_tokenizer *tk)\
 				__attribute__((__nonnull__(1)));
-t_tokenizer	ft_tokenizer_over(void *mem, t_size size)\
+t_tokenizer	ft_tokenizer_over(t_any mem, t_size size)\
 				__attribute__((__nonnull__(1), const));
 t_u32a		ft_match_next(t_tokenizer *tk, t_u8 expected)\
 				__attribute__((__nonnull__(1)));

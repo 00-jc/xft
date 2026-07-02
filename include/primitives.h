@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/29 23:39:13 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/06/30 22:24:01 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/07/02 22:29:25 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,8 @@ typedef long double __attribute__((__may_alias__, __aligned__(1)))		t_f80;
 typedef long double __attribute__((__may_alias__, __aligned__(8)))		t_f80a;
 
 typedef uintptr_t __attribute__((__may_alias__))						t_uptr;
+typedef void * __attribute__((__may_alias__))							t_any;
+typedef const void * __attribute__((__may_alias__))						t_cany;
 
 typedef t_u64															t_size;
 typedef t_i64															t_ssize;

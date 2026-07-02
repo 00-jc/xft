@@ -17,11 +17,11 @@
 
 t_gpa		ft_gpa(void);
 void		ft_gpa_destroy(t_gpa *gpa);
-t_buffer	ft_gpa_alloc(void *alloc, t_size size, t_size align);
-t_buffer	ft_gpa_realloc(void *alloc, t_buffer buf, t_size newsize,
+t_buffer	ft_gpa_alloc(t_any alloc, t_size size, t_size align);
+t_buffer	ft_gpa_realloc(t_any alloc, t_buffer buf, t_size newsize,
 				t_size align);
-void		ft_gpa_free(void *allocator, t_buffer buf);
-t_buffer	ft_alloc_clone(void *self, t_buffer buffer)\
+void		ft_gpa_free(t_any allocator, t_buffer buf);
+t_buffer	ft_alloc_clone(t_any self, t_buffer buffer)\
 				__attribute__((__nonnull__(1)));
 
 #endif

@@ -13,8 +13,8 @@
 #include "private/ft_p_mem.h"
 
 __attribute__((__nonnull__(1, 2), __always_inline__))
-inline void	ft_memcpy_128(void *restrict dest,
-	const void	*restrict const src, t_size n)
+inline void	ft_memcpy_128(t_any restrict dest,
+	t_cany restrict const src, t_size n)
 {
 	t_vu128a		x[2];
 

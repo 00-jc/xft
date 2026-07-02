@@ -27,12 +27,12 @@ t_arena	*ft_get_bench_arena(void)
 	return (&arena);
 }
 
-void	ft_arena_bench_8(void *ptr)
+void	ft_arena_bench_8(t_any ptr)
 {
 	t_arena	*arena;
 	t_size	n;
 	t_size	bytes;
-	void	*p;
+	t_any	p;
 
 	arena = ft_get_bench_arena();
 	n = ft_tailor_getcount(ptr);
@@ -46,12 +46,12 @@ void	ft_arena_bench_8(void *ptr)
 	ft_tailor_add_processed_bytes(ptr, bytes);
 }
 
-void	ft_arena_bench_64(void *ptr)
+void	ft_arena_bench_64(t_any ptr)
 {
 	t_arena	*arena;
 	t_size	n;
 	t_size	bytes;
-	void	*p;
+	t_any	p;
 
 	arena = ft_get_bench_arena();
 	n = ft_tailor_getcount(ptr);
@@ -65,12 +65,12 @@ void	ft_arena_bench_64(void *ptr)
 	ft_tailor_add_processed_bytes(ptr, bytes);
 }
 
-void	ft_arena_bench_512(void *ptr)
+void	ft_arena_bench_512(t_any ptr)
 {
 	t_arena	*arena;
 	t_size	n;
 	t_size	bytes;
-	void	*p;
+	t_any	p;
 
 	arena = ft_get_bench_arena();
 	n = ft_tailor_getcount(ptr);
@@ -84,13 +84,13 @@ void	ft_arena_bench_512(void *ptr)
 	ft_tailor_add_processed_bytes(ptr, bytes);
 }
 
-void	ft_arena_bench_varied(void *ptr)
+void	ft_arena_bench_varied(t_any ptr)
 {
 	static const t_size	sizes[4] = {8, 64, 256, 512};
 	t_arena				*arena;
 	t_size				n;
 	t_size				bytes;
-	void				*p;
+	t_any				p;
 
 	arena = ft_get_bench_arena();
 	n = ft_tailor_getcount(ptr);

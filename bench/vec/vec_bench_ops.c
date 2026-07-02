@@ -14,7 +14,7 @@
 #include "tailor.h"
 #include "vec_bench.h"
 
-void	ft_vec_bench_push_back(void *ptr)
+void	ft_vec_bench_push_back(t_any ptr)
 {
 	t_allocator	a;
 	t_vec		vec;
@@ -37,7 +37,7 @@ void	ft_vec_bench_push_back(void *ptr)
 	ft_vec_destroy(a, &vec);
 }
 
-void	ft_vec_bench_push_back_reserved(void *ptr)
+void	ft_vec_bench_push_back_reserved(t_any ptr)
 {
 	t_allocator	a;
 	t_vec		vec;
@@ -60,7 +60,7 @@ void	ft_vec_bench_push_back_reserved(void *ptr)
 }
 
 __attribute__((__nonnull__(1)))
-void	ft_vec_bench_push_pop(void *ptr)
+void	ft_vec_bench_push_pop(t_any ptr)
 {
 	t_allocator	a;
 	t_vec		vec;

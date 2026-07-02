@@ -16,9 +16,9 @@ void	test_arena_checkpoint(void)
 {
 	t_arena				a;
 	t_arena_checkpoint	cp;
-	void				*p1;
-	void				*p2;
-	void				*p3;
+	t_any				p1;
+	t_any				p2;
+	t_any				p3;
 
 	a = ft_new_arena_alloc();
 	p1 = ft_arena_alloc(&a, 64, 8);

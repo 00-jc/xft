@@ -72,7 +72,7 @@ typedef struct s_map
 
 t_map		ft_map_with(t_allocator allocator, t_size capacity);
 t_map		ft_map_new(t_allocator allocator);
-void		*ft_map_lookup(const t_map *__restrict__ const map, t_buffer key)\
+t_any		ft_map_lookup(const t_map *__restrict__ const map, t_buffer key)\
 				__attribute__((__nonnull__(1)));
 t_result	ft_map_insert(t_allocator allocator,\
 				t_map *__restrict__ const map,\

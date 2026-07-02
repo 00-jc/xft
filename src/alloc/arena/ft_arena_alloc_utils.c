@@ -25,9 +25,9 @@ inline t_size	ft_match_paging(t_size requested_size)
 }
 
 __attribute__((nonnull(1), returns_nonnull, __always_inline__))
-inline void	*get_next_ptr(t_hugepage *page, t_size align)
+inline t_any	get_next_ptr(t_hugepage *page, t_size align)
 {
-	void	*addr;
+	t_any	addr;
 	t_u8	*base;
 
 	base = page->data + page->used;
@@ -44,7 +44,7 @@ inline t_hugepage	*new_hugepage(t_hugepage *restrict const prev,
 	if (prev && prev->next && prev->next->page_size >= size)
 		return ((void)(page = prev->next), (void)(page->used = 0), page);
 	page = ft_mmap(size, 0, flag);
-	if (page == (void *)MAP_FAILED)
+	if (page == (t_any)MAP_FAILED)
 		return (nullptr);
 	page->page_size = size;
 	page->prev = prev;

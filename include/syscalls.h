@@ -71,9 +71,9 @@ typedef struct s_stat
 
 # endif
 
-void	*ft_mmap(t_size size, long prot_extra, long flags_extra);
-void	*ft_fmap(t_size size, int fd);
-void	ft_munmap(void *__restrict__ const mem, t_size size)\
+t_any	ft_mmap(t_size size, long prot_extra, long flags_extra);
+t_any	ft_fmap(t_size size, int fd);
+void	ft_munmap(t_any __restrict__ const mem, t_size size)\
 			__attribute__((nonnull(1)));
 t_u32a	ft_fcntl(t_u32a fd, t_u32a cmd,\
 			const t_flock *__restrict__ const arg)\
@@ -87,8 +87,8 @@ int		ft_close(int fd);
 int		ft_stat(const char *__restrict__ path, t_stat *statbuf)\
 			__attribute__((__nonnull__(1)));
 
-void	*ft_mremap(t_size size, t_size new_size,\
-			void *addr, long flags_extra)\
+t_any	ft_mremap(t_size size, t_size new_size,\
+			t_any addr, long flags_extra)\
 			__attribute__((__nonnull__(3)));
 
 t_ssize	ft_write(int fd, t_u8 *restrict const buffer, t_size len)\

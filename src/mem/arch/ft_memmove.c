@@ -22,7 +22,7 @@
  */
 
 __attribute__((__nonnull__(1, 2), __hot__))
-void	ft_memmove(void *restrict dest, const void *restrict src, t_size n)
+void	ft_memmove(t_any restrict dest, t_cany restrict src, t_size n)
 {
 	if (__builtin_expect(dest == src || n == 0, 0))
 		return ;

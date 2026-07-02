@@ -15,7 +15,7 @@
 #include "mem.h"
 
 __attribute__((__nonnull__(1)))
-t_buffer	ft_alloc_clone(void *self, t_buffer buffer)
+t_buffer	ft_alloc_clone(t_any self, t_buffer buffer)
 {
 	t_buffer	mem;
 

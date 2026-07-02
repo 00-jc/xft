@@ -30,19 +30,19 @@ t_result		ft_vec_push_back(t_allocator allocator,\
 					const t_u8 *__restrict__ const data, t_size type_size)\
 					__attribute__((__nonnull__(2, 3)));
 
-const void		*ft_vec_get(const t_vec *__restrict__ const vec, t_size idx,
+t_cany			ft_vec_get(const t_vec *__restrict__ const vec, t_size idx,
 					t_size type_size) __attribute__((__nonnull__(1),
 						pure));
 
-void			*ft_vec_get_mut(const t_vec *__restrict__ const vec, t_size idx,
+t_any			ft_vec_get_mut(const t_vec *__restrict__ const vec, t_size idx,
 					t_size type_size) __attribute__((__nonnull__(1),
 						pure));
 
-void			*ft_vec_get_last(const t_vec *__restrict__ const vec,\
+t_any			ft_vec_get_last(const t_vec *__restrict__ const vec,\
 					t_size type_size)\
 					__attribute__((__nonnull__(1), pure));
 
-const void		*ft_vec_peek_last(const t_vec *__restrict__ const vec,\
+t_cany			ft_vec_peek_last(const t_vec *__restrict__ const vec,\
 					t_size type_size) __attribute__((__nonnull__(1), pure));
 
 t_result		ft_vec_reserve(t_allocator allocator,\
@@ -58,7 +58,7 @@ t_result		ft_vec_extend(t_allocator allocator,\
 void			ft_vec_pop(t_vec *__restrict__ const v, t_size type_size)\
 					__attribute__((__nonnull__(1)));
 
-t_result		ft_vec_popmv(t_vec *__restrict__ const v, void *const dest,
+t_result		ft_vec_popmv(t_vec *__restrict__ const v, t_any const dest,
 					t_size type_size) __attribute__((__nonnull__(1)));
 
 t_result		ft_vec_pop_managed(t_allocator allocator,\

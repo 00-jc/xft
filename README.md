@@ -56,8 +56,9 @@ The core library is freestanding on x86_64 by default,  libc is linked if  `FT_R
 - [x] Implement formatting (no varargs, no implicit behaviour)
 - [x] Make benches work and the tailor framework adapt to the new IO model.
 - [x] Add a lot more tests and separate them in folders more cleanly (make a single entry point)
-- [ ] Make an AOSOA data structure
 - [ ] Make my own threads and concurrent primitives
+- [ ] Ditch both zig and make, self host a build system, im sick of both
+- [ ] Make an AOSOA data structure
 - [ ] Implement something like zig's juicy main to pass to ft_main()
 - [ ] Coalescing Allocator
 - [ ] Implement io_uring + threaded io (async / await hooks)

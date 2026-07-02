@@ -22,7 +22,7 @@ t_str	ft_cstr_to_str(t_allocator allocator, const char *cstr)
 	str = ft_str(allocator, n);
 	if (__builtin_expect(str.mem == nullptr, 0))
 		return ((t_str){0});
-	if (__builtin_expect(!ft_str_extend(allocator, &str, (void *)cstr, n), 0))
+	if (__builtin_expect(!ft_str_extend(allocator, &str, (t_any)cstr, n), 0))
 	{
 		ft_str_destroy(allocator, &str);
 		return ((t_str){0});

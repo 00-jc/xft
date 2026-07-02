@@ -15,8 +15,8 @@
 #if FT_HAS_256_VEC
 
 __attribute__((__nonnull__(1, 2), __always_inline__))
-inline t_ssize	ft_memcmp_finalround(const void *restrict const ptr1,
-	const void	*restrict const ptr2, t_size offst, t_size n)
+inline t_ssize	ft_memcmp_finalround(t_cany restrict const ptr1,
+	t_cany restrict const ptr2, t_size offst, t_size n)
 {
 	t_u32a		mask;
 	t_vu256a	load0;
@@ -39,8 +39,8 @@ inline t_ssize	ft_memcmp_finalround(const void *restrict const ptr1,
 }
 
 __attribute__((__nonnull__(1, 2), __always_inline__))
-inline t_ssize	ft_memcmp_avx256(const void *restrict const ptr1,
-	const void	*restrict const ptr2, t_size n)
+inline t_ssize	ft_memcmp_avx256(t_cany restrict const ptr1,
+	t_cany restrict const ptr2, t_size n)
 {
 	t_u32a		mask;
 	t_vu256a	load0;

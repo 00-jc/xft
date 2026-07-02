@@ -13,8 +13,8 @@
 #include "private/ft_p_mem.h"
 
 __attribute__((__nonnull__(1, 2), __always_inline__))
-inline void	ft_memmove_512_tail(void *restrict d,
-	const void	*restrict s, t_size n2)
+inline void	ft_memmove_512_tail(t_any restrict d,
+	t_cany restrict s, t_size n2)
 {
 	t_size		x[2];
 	t_vu512a	interleaved[3];
@@ -35,8 +35,8 @@ inline void	ft_memmove_512_tail(void *restrict d,
 }
 
 __attribute__((__nonnull__(1, 2, 3), __always_inline__))
-inline void	ft__hugekernel_move(void *restrict d,
-	const void	*restrict const s, t_vu512a	x[4])
+inline void	ft__hugekernel_move(t_any restrict d,
+	t_cany restrict const s, t_vu512a	x[4])
 {
 	x[0] = ((t_blk512r)s)[0];
 	x[1] = ((t_blk512r)s)[1];
@@ -49,13 +49,13 @@ inline void	ft__hugekernel_move(void *restrict d,
 }
 
 __attribute__((__nonnull__(1, 2), __always_inline__))
-inline void	ft_memmove_512_huge(void *restrict dest,
-	const void	*restrict const src, t_size n)
+inline void	ft_memmove_512_huge(t_any restrict dest,
+	t_cany restrict const src, t_size n)
 {
 	t_vu512a	x[6];
 	t_size		n2;
-	void		*d;
-	void		*s;
+	t_any		d;
+	t_any		s;
 
 	d = ft_align_bkw((t_blk8w)dest + n, 63);
 	s = (t_blk8w)src + ((t_uptr)d - (t_uptr)dest);

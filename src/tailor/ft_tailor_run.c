@@ -41,7 +41,7 @@ static inline t_buffer	ft_tailor_runfn(t_tailor *t, t_tailor_fn fn,
 	}
 	plan.dp.bytes_processed = arg.bytes_processed;
 	*oplan = plan;
-	return (ft_fatptr((void *)samples, plan.k_runs));
+	return (ft_fatptr((t_any)samples, plan.k_runs));
 }
 
 __attribute__((__nonnull__(3), __always_inline__))
@@ -62,7 +62,7 @@ static inline void	ft_calc_mad(t_buffer scratch, t_u64a med, t_u64a *mad)
 		++i;
 	}
 	ctx = (t_qsort_ctx){(t_u8 *)&swap, sizeof(t_u64a), ft_cmp_u64};
-	ft_qsort((void *)scratch.mem, &ctx, 0, scratch.size);
+	ft_qsort((t_any)scratch.mem, &ctx, 0, scratch.size);
 	*mad = ((t_blk64ra)scratch.mem)[scratch.size >> 1];
 }
 
@@ -86,9 +86,9 @@ static inline t_result	ft_calc(t_tailor *t, t_buffer samples, t_u64a *med,
 		++i;
 	}
 	ctx = (t_qsort_ctx){(t_u8 *)&t->swap, sizeof(t_u64a), ft_cmp_u64};
-	ft_qsort((void *)arr, &ctx, 0, samples.size);
+	ft_qsort((t_any)arr, &ctx, 0, samples.size);
 	*med = arr[samples.size >> 1];
-	ft_calc_mad(ft_fatptr((void *)arr, samples.size), *med, mad);
+	ft_calc_mad(ft_fatptr((t_any)arr, samples.size), *med, mad);
 	return (ft_arena_rewind(&t->arena, c), OK);
 }
 
@@ -113,7 +113,7 @@ static inline t_buffer	ft_make_surv(t_tailor *t, t_buffer sample,
 			surv[n_surv++] = src[i];
 		++i;
 	}
-	return (ft_fatptr((void *)surv, n_surv));
+	return (ft_fatptr((t_any)surv, n_surv));
 }
 
 __attribute__((__nonnull__(1)))

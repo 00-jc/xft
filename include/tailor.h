@@ -19,7 +19,7 @@
 # include "primitives.h"
 # include "mem.h"
 
-typedef void	(*t_tailor_fn)(void *);
+typedef void	(*t_tailor_fn)(t_any);
 
 typedef struct s_tailor_bench
 {
@@ -64,25 +64,25 @@ t_result	ft_tailor_bench(t_tailor *t, t_tailor_bench benches[],\
 				t_size size)\
 				__attribute__((__nonnull__(1, 2)));
 
-t_size		ft_tailor_getcount(const void *ptr)\
+t_size		ft_tailor_getcount(t_cany ptr)\
 				__attribute__((pure, __nonnull__(1)));
 
 t_result	ft_tailor_buffers(t_tailor *t, t_size *sizes,\
 				t_u8 *alignment, t_size n)\
 				__attribute__((__nonnull__(1, 2, 3)));
 
-t_buffer	ft_get_random_buffer(const void *ptr)\
+t_buffer	ft_get_random_buffer(t_cany ptr)\
 				__attribute__((__nonnull__(1)));
 
 void		ft_tailor_destroy(t_tailor *t)\
 				__attribute__((nonnull(1)));
 
-t_buffer	*ft_get_all_buffers(const void *ptr, t_size *n)\
+t_buffer	*ft_get_all_buffers(t_cany ptr, t_size *n)\
 				__attribute__((__nonnull__(1)));
 
-void		ft_tailor_add_processed_bytes(void *ptr, const t_size bytes)\
+void		ft_tailor_add_processed_bytes(t_any ptr, const t_size bytes)\
 				__attribute__((__nonnull__(1)));
 
-t_size		ft_tailor_get_random_num(void *ptr)\
+t_size		ft_tailor_get_random_num(t_any ptr)\
 				__attribute__((__nonnull__(1), __always_inline__));
 #endif

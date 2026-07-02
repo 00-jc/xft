@@ -19,7 +19,7 @@
 # include "types/rng_primitives.h"
 # include "types/ft_p_asm_primitives.h"
 
-typedef void	(*t_tailor_fn)(void *);
+typedef void	(*t_tailor_fn)(t_any);
 
 typedef struct s_tailor_bench
 {

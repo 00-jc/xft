@@ -13,8 +13,8 @@
 #include "private/ft_p_mem.h"
 
 __attribute__((__nonnull__(1, 2), __always_inline__))
-inline void	ft_memcpy_naive(void *restrict dest,
-	const void	*restrict const src, t_size n)
+inline void	ft_memcpy_naive(t_any restrict dest,
+	t_cany restrict const src, t_size n)
 {
 	t_u8	i[7];
 	t_u8	s[7];
@@ -43,8 +43,8 @@ inline void	ft_memcpy_naive(void *restrict dest,
 }
 
 __attribute__((__nonnull__(1, 2), __hot__))
-void	ft_memcpy(void *restrict dest,
-	const void	*restrict const src, t_size n)
+void	ft_memcpy(t_any restrict dest,
+	t_cany restrict const src, t_size n)
 {
 	if (__builtin_expect(dest == src || n == 0, 0))
 		return ;

@@ -15,7 +15,7 @@
 #if !defined(FT_REQUIRE_LIBC) && defined(__x86_64__)
 
 __attribute__((noreturn, used, __nonnull__(1)))
-inline void	ft_rt_entry(void **sp)
+inline void	ft_rt_entry(t_any *sp)
 {
 	t_u64a	argc;
 	t_u8	**argv;

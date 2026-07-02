@@ -23,7 +23,7 @@ static inline void	ft_finalmix(t_u64a *medians, t_u64a hilo[2],
 	t_u64a		swap;
 
 	ctx = (t_qsort_ctx){(t_u8 *)&swap, sizeof(t_u64a), ft_cmp_u64};
-	ft_qsort((void *)medians, &ctx, 0, plan.b);
+	ft_qsort((t_any)medians, &ctx, 0, plan.b);
 	hilo[0] = medians[(plan.b * 25) / 1000];
 	hilo[1] = medians[(plan.b * 975) / 1000];
 }
@@ -53,7 +53,7 @@ static inline t_result	ft_bootstrap_ci(t_tailor *t, t_buffer surv,
 		ij[1] = 0;
 		while (ij[1] < surv.size)
 			medres[1][ij[1]++] = src[ft_xoshiro256ss(xo) % surv.size].ns;
-		ft_qsort((void *)medres[1], &ctx, 0, surv.size);
+		ft_qsort((t_any)medres[1], &ctx, 0, surv.size);
 		medres[0][ij[0]++] = medres[1][surv.size >> 1];
 	}
 	return (ft_finalmix(medres[0], hilo, plan), OK);
@@ -84,7 +84,7 @@ static inline t_result	ft_getpost_med(t_tailor *t, t_buffer surv,
 		++i;
 	}
 	ctx = (t_qsort_ctx){(t_u8 *)&t->swap, sizeof(t_u64a), ft_cmp_u64};
-	ft_qsort((void *)arr, &ctx, 0, surv.size);
+	ft_qsort((t_any)arr, &ctx, 0, surv.size);
 	*med = arr[surv.size >> 1];
 	*min = m;
 	return (OK);

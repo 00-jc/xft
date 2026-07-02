@@ -14,7 +14,7 @@
 #include "types/io_types.h"
 
 __attribute__((__always_inline__, pure, __nonnull__(1, 2)))
-inline t_result	ft_raw_drain_check_size(void *__restrict const writer,
+inline t_result	ft_raw_drain_check_size(t_any __restrict const writer,
 	t_iovec *__restrict__ bufs, t_size nbufs)
 {
 	t_writer *__restrict__ const		w = writer;
@@ -33,7 +33,7 @@ inline t_result	ft_raw_drain_check_size(void *__restrict const writer,
 }
 
 __attribute__((__always_inline__, __nonnull__(1, 2)))
-inline t_result	ft_raw_drain(void *__restrict const writer,
+inline t_result	ft_raw_drain(t_any __restrict const writer,
 	t_iovec *__restrict__ bufs, t_size nbufs)
 {
 	t_writer *__restrict__ const		w = writer;

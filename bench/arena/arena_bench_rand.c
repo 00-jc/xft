@@ -13,13 +13,13 @@
 #include "tailor.h"
 #include "alloc_bench.h"
 
-void	ft_arena_bench_random(void *ptr)
+void	ft_arena_bench_random(t_any ptr)
 {
 	t_arena		*arena;
 	t_size		n;
 	t_size		bytes;
 	t_size		sz;
-	void		*p;
+	t_any		p;
 
 	arena = ft_get_bench_arena();
 	n = ft_tailor_getcount(ptr);

@@ -13,7 +13,7 @@
 #include "private/ft_p_mem.h"
 
 __attribute__((__nonnull__(1), __always_inline__))
-inline void	ft_memset_hugetail(void *restrict dest,
+inline void	ft_memset_hugetail(t_any restrict dest,
 	t_size n, t_vu512a *x)
 {
 	t_size				i[3];
@@ -33,7 +33,7 @@ inline void	ft_memset_hugetail(void *restrict dest,
 }
 
 __attribute__((__nonnull__(1), __always_inline__))
-inline void	ft_memset_512_huge(void *restrict dest,
+inline void	ft_memset_512_huge(t_any restrict dest,
 	const t_u8 c, t_size n)
 {
 	t_t_f64_size			s;

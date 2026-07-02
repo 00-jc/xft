@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/29 23:39:13 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/06/29 23:39:19 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/07/02 22:29:51 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ typedef struct s_checkpoint
 }	t_arena_checkpoint;
 
 t_arena				ft_new_arena_alloc(void);
-void				*ft_arena_alloc(t_arena *__restrict__ const allocator,
+t_any				ft_arena_alloc(t_arena *__restrict__ const allocator,
 						t_size size, t_size align)\
 						__attribute__((nonnull(1)));
 void				ft_destroy_arena(t_arena *alloc)\

@@ -13,7 +13,7 @@
 #include "private/ft_p_mem.h"
 
 __attribute__ ((__nonnull__ (1), __always_inline__, pure))
-inline void	*ft__fix_last_w(const t_u8 *restrict const ptr,
+inline t_any	ft__fix_last_w(const t_u8 *restrict const ptr,
 	t_size n, t_u8 msk)
 {
 	t_vu128a		w;
@@ -23,17 +23,17 @@ inline void	*ft__fix_last_w(const t_u8 *restrict const ptr,
 
 	if (n != 0)
 	{
-		adjusted = (t_vu128 *)ft_overlap((void *)ptr, sizeof(t_vu128), n);
+		adjusted = (t_vu128 *)ft_overlap((t_any)ptr, sizeof(t_vu128), n);
 		w = (t_vu128a)(*(t_blk128r)adjusted == msk);
 		packed = ft_bitpack128(w) & ft_roll_mask(sizeof(t_vu128a), n);
 		p = (t_uptr)adjusted + ft_memctz_u16(packed);
-		return ((void *)(-((t_uptr)(packed != 0)) & p));
+		return ((t_any)(-((t_uptr)(packed != 0)) & p));
 	}
 	return (nullptr);
 }
 
 __attribute__((__nonnull__(1), __always_inline__))
-inline void	*ft_memchr_minimal(const void *restrict const ptr,
+inline t_any	ft_memchr_minimal(t_cany restrict const ptr,
 	t_u8 c, t_size n)
 {
 	t_size	i;
@@ -42,14 +42,14 @@ inline void	*ft_memchr_minimal(const void *restrict const ptr,
 	while (i < n)
 	{
 		if (((t_blk8r)ptr)[i] == c)
-			return ((void *)((t_u8 *)ptr + i));
+			return ((t_any)((t_u8 *)ptr + i));
 		++i;
 	}
 	return (nullptr);
 }
 
 __attribute__((__nonnull__ (1), __always_inline__, pure))
-inline void	*ft_memchr_sse(const void *restrict ptr, int c, t_size n)
+inline t_any	ft_memchr_sse(t_cany restrict ptr, int c, t_size n)
 {
 	t_u16a						hasz;
 	t_vu128a					w;
@@ -65,7 +65,7 @@ inline void	*ft_memchr_sse(const void *restrict ptr, int c, t_size n)
 		hasz = ft_bitpack128(w);
 		if (hasz)
 			return ((void)(hasz = (t_u16a)ft_memctz_u16(hasz)),
-			(void *)((t_u8 *)wptr + hasz));
+			(t_any)((t_u8 *)wptr + hasz));
 		wptr++;
 		n -= sizeof (t_vu128);
 	}

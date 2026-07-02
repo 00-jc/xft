@@ -13,7 +13,7 @@
 #include "private/ft_p_io.h"
 
 __attribute__((__always_inline__, __nonnull__(1, 2, 4)))
-inline t_result	ft_stream_unbuffered_fill(void *__restrict__ const ptr,
+inline t_result	ft_stream_unbuffered_fill(t_any __restrict__ const ptr,
 	t_u8 *__restrict__ const dst, const t_size len,
 	t_size *__restrict__ const total)
 {
@@ -44,7 +44,7 @@ inline t_result	ft_stream_unbuffered_fill(void *__restrict__ const ptr,
 }
 
 __attribute__((__always_inline__, __nonnull__(1)))
-inline t_result	ft_stream_fill(void *__restrict__ const reader)
+inline t_result	ft_stream_fill(t_any __restrict__ const reader)
 {
 	t_reader *__restrict const	rd = reader;
 	t_ssize						ret;

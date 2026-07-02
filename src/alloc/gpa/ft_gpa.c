@@ -20,10 +20,10 @@ t_gpa	ft_gpa(void)
 	buf = ft_palloc(GPA_SLABSIZE);
 	if (__builtin_expect(buf.mem == nullptr, 0))
 		return ((t_gpa){0});
-	ft_memset((void *)gpa.free, 0, sizeof(t_uptr) * GPA_CLASSES);
+	ft_memset((t_any)gpa.free, 0, sizeof(t_uptr) * GPA_CLASSES);
 	gpa.slab = buf.mem;
-	*(void **)gpa.slab = nullptr;
-	gpa.bmp = (t_blk8w)gpa.slab + sizeof(void **);
+	*(t_any *)gpa.slab = nullptr;
+	gpa.bmp = (t_blk8w)gpa.slab + sizeof(t_any *);
 	gpa.slabsize = buf.size;
 	return (gpa);
 }
@@ -31,8 +31,8 @@ t_gpa	ft_gpa(void)
 __attribute__((__nonnull__(1)))
 void	ft_gpa_destroy(t_gpa *gpa)
 {
-	void	**ptr;
-	void	**next;
+	t_any	*ptr;
+	t_any	*next;
 
 	ptr = gpa->slab;
 	while (ptr != nullptr)

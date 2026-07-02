@@ -25,18 +25,18 @@
 
 typedef struct s_gpa
 {
-	void	*slab;
+	t_any	slab;
 	t_size	slabsize;
-	void	*bmp;
-	void	*free[GPA_CLASSES];
+	t_any	bmp;
+	t_any	free[GPA_CLASSES];
 }	t_gpa;
 
 typedef struct s_reporta
 {
-	void		*slab;
+	t_any		slab;
 	t_size		slabsize;
-	void		*bmp;
-	void		*free[GPA_CLASSES];
+	t_any		bmp;
+	t_any		free[GPA_CLASSES];
 	t_size		n_allocs;
 	t_size		n_frees;
 	t_size		slabs;
@@ -50,22 +50,22 @@ typedef struct s_reporta
 
 t_gpa		ft_gpa(void);
 void		ft_gpa_destroy(t_gpa *gpa);
-t_buffer	ft_gpa_alloc(void *alloc, t_size size, t_size align);
-t_buffer	ft_gpa_realloc(void *alloc, t_buffer buf, t_size newsize,
+t_buffer	ft_gpa_alloc(t_any alloc, t_size size, t_size align);
+t_buffer	ft_gpa_realloc(t_any alloc, t_buffer buf, t_size newsize,
 				t_size align);
-void		ft_gpa_free(void *allocator, t_buffer buf);
-t_buffer	ft_alloc_clone(void *self, t_buffer buffer)\
+void		ft_gpa_free(t_any allocator, t_buffer buf);
+t_buffer	ft_alloc_clone(t_any self, t_buffer buffer)\
 				__attribute__((__nonnull__(1)));
 
 t_reporta	ft_reporta(void);
 void		ft_reporta_destroy(t_reporta *gpa)\
 				__attribute__((__nonnull__(1)));
-t_buffer	ft_reporta_alloc(void *alloc, t_size size, t_size align)\
+t_buffer	ft_reporta_alloc(t_any alloc, t_size size, t_size align)\
 				__attribute__((__nonnull__(1)));
-t_buffer	ft_reporta_realloc(void *alloc, t_buffer buf, t_size newsize,
+t_buffer	ft_reporta_realloc(t_any alloc, t_buffer buf, t_size newsize,
 				t_size align)\
 				__attribute__((__nonnull__(1)));
-void		ft_reporta_free(void *allocator, t_buffer buf)\
+void		ft_reporta_free(t_any allocator, t_buffer buf)\
 				__attribute__((__nonnull__(1)));
 
 t_allocator	ft_arena_allocator(t_arena *arena)\

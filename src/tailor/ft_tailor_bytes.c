@@ -13,7 +13,7 @@
 #include "tailor.h"
 
 __attribute__((__nonnull__(1), __always_inline__))
-inline void	ft_tailor_add_processed_bytes(void *ptr, const t_size bytes)
+inline void	ft_tailor_add_processed_bytes(t_any ptr, const t_size bytes)
 {
 	t_tailor_arg	*arg;
 

@@ -14,26 +14,26 @@
 #include "mem.h"
 
 __attribute__((__nonnull__(1)))
-static t_buffer	arena_allocate(void *alloc, t_size size, t_size align)
+static t_buffer	arena_allocate(t_any alloc, t_size size, t_size align)
 {
-	void	*ptr;
+	t_any	ptr;
 
 	ptr = ft_arena_alloc((t_arena *)alloc, size, align);
 	return (ft_fatptr(ptr, size));
 }
 
 __attribute__((__nonnull__(1)))
-static void	arena_free(void *alloc, t_buffer old)
+static void	arena_free(t_any alloc, t_buffer old)
 {
 	(void)alloc;
 	(void)old;
 }
 
 __attribute__((__nonnull__(1)))
-static t_buffer	arena_reallocate(void *alloc, t_buffer old, t_size new_size,
+static t_buffer	arena_reallocate(t_any alloc, t_buffer old, t_size new_size,
 					t_size align)
 {
-	void	*ptr;
+	t_any	ptr;
 	t_size	copy_size;
 
 	ptr = ft_arena_alloc((t_arena *)alloc, new_size, align);
@@ -45,7 +45,7 @@ static t_buffer	arena_reallocate(void *alloc, t_buffer old, t_size new_size,
 }
 
 __attribute__((__nonnull__(1)))
-static void	arena_destroy(void *alloc)
+static void	arena_destroy(t_any alloc)
 {
 	ft_destroy_arena((t_arena *)alloc);
 }

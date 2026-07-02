@@ -16,7 +16,7 @@
 #define RMF_LEN	256
 
 __attribute__((__nonnull__(1)))
-void	ft_vec_bench_remove_front(void *ptr)
+void	ft_vec_bench_remove_front(t_any ptr)
 {
 	t_allocator	a;
 	t_vec		vec;

@@ -13,7 +13,7 @@
 #include "private/ft_p_gpa.h"
 
 __attribute__((__nonnull__(1)))
-t_buffer	ft_reporta_realloc(void *alloc, t_buffer buf,
+t_buffer	ft_reporta_realloc(t_any alloc, t_buffer buf,
 	t_size newsize, t_size align)
 {
 	t_reporta		*gpa;

@@ -36,7 +36,7 @@ inline void	ft_sync_iovecs(t_iovec *__restrict__ *__restrict__ bufs,
 }
 
 __attribute__((__always_inline__, __nonnull__(1, 2)))
-inline t_result	ft_stream_drain(void *__restrict const writer,
+inline t_result	ft_stream_drain(t_any __restrict const writer,
 	t_iovec *__restrict__ bufs, t_size nbufs)
 {
 	t_writer *__restrict__ const		w = writer;

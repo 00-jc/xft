@@ -20,13 +20,13 @@ typedef struct s_qsort_ctx
 {
 	t_u8		*buf;
 	t_size		size;
-	int			(*cmp)(const void *, const void *);
+	int			(*cmp)(t_cany, t_cany);
 }	t_qsort_ctx;
 
 void	ft_qsort(t_u8 *arr, t_qsort_ctx *c, t_size l, t_size h)\
 			__attribute__((__nonnull__(1, 2)));
 
-int		ft_cmp_u64(const void *a, const void *b)\
+int		ft_cmp_u64(t_cany a, t_cany b)\
 			__attribute__((__nonnull__(1, 2)));
 
 #endif

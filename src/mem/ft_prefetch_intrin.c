@@ -15,7 +15,7 @@
 #ifdef __x86_64__
 
 __attribute__((__nonnull__(1), __always_inline__))
-inline void	ft_prefetch0(const void *restrict const ptr,
+inline void	ft_prefetch0(t_cany restrict const ptr,
 	t_size distance)
 {
 	t_u8	*addr;
@@ -29,7 +29,7 @@ inline void	ft_prefetch0(const void *restrict const ptr,
 }
 
 __attribute__((__nonnull__(1), __always_inline__))
-inline void	ft_prefetch1(const void *restrict const ptr,
+inline void	ft_prefetch1(t_cany restrict const ptr,
 	t_size distance)
 {
 	t_u8	*addr;
@@ -43,7 +43,7 @@ inline void	ft_prefetch1(const void *restrict const ptr,
 }
 
 __attribute__((__nonnull__(1), __always_inline__))
-inline void	ft_prefetch2(const void *restrict const ptr,
+inline void	ft_prefetch2(t_cany restrict const ptr,
 	t_size distance)
 {
 	t_u8	*addr;
@@ -57,7 +57,7 @@ inline void	ft_prefetch2(const void *restrict const ptr,
 }
 
 __attribute__((__nonnull__(1), __always_inline__))
-inline void	ft_prefetchnta(const void *restrict const ptr,
+inline void	ft_prefetchnta(t_cany restrict const ptr,
 	t_size distance)
 {
 	t_u8	*addr;

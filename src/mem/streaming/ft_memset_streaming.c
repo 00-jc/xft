@@ -15,7 +15,7 @@
 #if defined (__x86_64__) && FT_HAS_512_VEC
 
 __attribute__((__nonnull__(1), __always_inline__, __hot__))
-inline void	ft__setkernel_stream(void *restrict d,
+inline void	ft__setkernel_stream(t_any restrict d,
 	const t_u8 c, t_size offset)
 {
 	__asm__ (
@@ -45,7 +45,7 @@ inline void	ft__setkernel_stream(void *restrict d,
 #elif defined (__x86_64__) && FT_HAS_256_VEC
 
 __attribute__((__nonnull__(1), __always_inline__, __hot__))
-inline void	ft__setkernel_stream(void *restrict d,
+inline void	ft__setkernel_stream(t_any restrict d,
 	const t_u8 c, t_size offset)
 {
 	t_blk256wa	p;
@@ -77,7 +77,7 @@ inline void	ft__setkernel_stream(void *restrict d,
 #else
 
 __attribute__((__nonnull__(1), __always_inline__, __hot__))
-inline void	ft__setkernel_stream(void *restrict d,
+inline void	ft__setkernel_stream(t_any restrict d,
 	const t_u8 c, t_size offset)
 {
 	register t_vu512a	x;
@@ -99,7 +99,7 @@ inline void	ft__setkernel_stream(void *restrict d,
 #endif
 
 __attribute__((__always_inline__, __nonnull__(1)))
-inline void	ft_memset_stream_tail(void *restrict dest,
+inline void	ft_memset_stream_tail(t_any restrict dest,
 	const t_u8 c, t_size n)
 {
 	register t_vu512a	x;
@@ -123,7 +123,7 @@ inline void	ft_memset_stream_tail(void *restrict dest,
 }
 
 __attribute__((__nonnull__(1), __always_inline__))
-inline void	ft_memset_512_streaming(void *restrict dest,
+inline void	ft_memset_512_streaming(t_any restrict dest,
 	const t_u8 c, t_size n)
 {
 	t_t_f64_size			s;

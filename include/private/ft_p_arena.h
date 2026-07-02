@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/29 23:39:13 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/06/29 23:39:19 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/07/02 22:30:14 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 # include "syscalls.h"
 # include "mem.h"
 
-void				*get_next_ptr(t_hugepage *slab, t_size align)\
+t_any				get_next_ptr(t_hugepage *slab, t_size align)\
 						__attribute__((nonnull(1), returns_nonnull));
 
 t_u32a				ft_arena_move_fwd(t_arena *alloc,\

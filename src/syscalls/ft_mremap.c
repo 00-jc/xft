@@ -16,10 +16,10 @@
 #ifdef __x86_64__
 
 __attribute__((__nonnull__(3), __always_inline__))
-inline void	*ft_mremap(t_size size, t_size new_size,
-	void *addr, long flags_extra)
+inline t_any	ft_mremap(t_size size, t_size new_size,
+	t_any addr, long flags_extra)
 {
-	void				*ret;
+	t_any				ret;
 	register long r10	__asm__("r10");
 
 	r10 = MREMAP_MAYMOVE | flags_extra;
@@ -39,10 +39,10 @@ inline void	*ft_mremap(t_size size, t_size new_size,
 #else
 
 __attribute__((__nonnull__(3), __always_inline__))
-inline void	*ft_mremap(t_size size, t_size new_size,
-	void *addr, long flags_extra)
+inline t_any	ft_mremap(t_size size, t_size new_size,
+	t_any addr, long flags_extra)
 {
-	return ((void *)syscall(SYS_MREMAP, addr, size,
+	return ((t_any)syscall(SYS_MREMAP, addr, size,
 			new_size, MREMAP_MAYMOVE | flags_extra));
 }
 

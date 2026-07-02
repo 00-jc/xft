@@ -13,7 +13,7 @@
 #include "tailor.h"
 #include "mem_bench.h"
 
-void	ft_memset_test_medium_aligned(void *ptr)
+void	ft_memset_test_medium_aligned(t_any ptr)
 {
 	t_buffer			*buffers;
 	t_buffer			*out;
@@ -39,7 +39,7 @@ void	ft_memset_test_medium_aligned(void *ptr)
 	ft_tailor_add_processed_bytes(ptr, bufn[2]);
 }
 
-void	ft_memset_test_medium_unaligned(void *ptr)
+void	ft_memset_test_medium_unaligned(t_any ptr)
 {
 	t_buffer			*buffers;
 	t_buffer			*out;

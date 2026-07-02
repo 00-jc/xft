@@ -13,7 +13,7 @@
 #include "tailor.h"
 #include "alloc_bench.h"
 
-void	ft_gpa_bench_random(void *ptr)
+void	ft_gpa_bench_random(t_any ptr)
 {
 	t_gpa		*gpa;
 	t_size		n;

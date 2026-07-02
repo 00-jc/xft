@@ -13,7 +13,7 @@
 #include "map.h"
 
 __attribute__((__nonnull__(1, 2, 3)))
-static inline void	*ft__map_lookup(const t_map *restrict const map,
+static inline t_any	ft__map_lookup(const t_map *restrict const map,
 	const t_u8 *restrict const mem, t_size data[4])
 {
 	t_vu128		sse;
@@ -44,7 +44,7 @@ static inline void	*ft__map_lookup(const t_map *restrict const map,
 }
 
 __attribute__((__nonnull__(1)))
-void	*ft_map_lookup(const t_map *restrict const map, t_buffer key)
+t_any	ft_map_lookup(const t_map *restrict const map, t_buffer key)
 {
 	t_u128a		hash;
 	t_u8		h2;

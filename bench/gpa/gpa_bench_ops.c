@@ -13,7 +13,7 @@
 #include "tailor.h"
 #include "alloc_bench.h"
 
-void	ft_gpa_bench_8(void *ptr)
+void	ft_gpa_bench_8(t_any ptr)
 {
 	t_gpa		*gpa;
 	t_size		n;
@@ -33,7 +33,7 @@ void	ft_gpa_bench_8(void *ptr)
 	ft_tailor_add_processed_bytes(ptr, bytes);
 }
 
-void	ft_gpa_bench_64(void *ptr)
+void	ft_gpa_bench_64(t_any ptr)
 {
 	t_gpa		*gpa;
 	t_size		n;
@@ -53,7 +53,7 @@ void	ft_gpa_bench_64(void *ptr)
 	ft_tailor_add_processed_bytes(ptr, bytes);
 }
 
-void	ft_gpa_bench_512(void *ptr)
+void	ft_gpa_bench_512(t_any ptr)
 {
 	t_gpa		*gpa;
 	t_size		n;
@@ -73,7 +73,7 @@ void	ft_gpa_bench_512(void *ptr)
 	ft_tailor_add_processed_bytes(ptr, bytes);
 }
 
-void	ft_gpa_bench_8k(void *ptr)
+void	ft_gpa_bench_8k(t_any ptr)
 {
 	t_gpa		*gpa;
 	t_size		n;
@@ -93,7 +93,7 @@ void	ft_gpa_bench_8k(void *ptr)
 	ft_tailor_add_processed_bytes(ptr, bytes);
 }
 
-void	ft_gpa_bench_varied(void *ptr)
+void	ft_gpa_bench_varied(t_any ptr)
 {
 	static const t_size	sizes[4] = {8, 64, 512, 4096};
 	t_gpa				*gpa;

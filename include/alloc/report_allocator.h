@@ -18,12 +18,12 @@
 t_reporta	ft_reporta(void);
 void		ft_reporta_destroy(t_reporta *gpa)\
 				__attribute__((__nonnull__(1)));
-t_buffer	ft_reporta_alloc(void *alloc, t_size size, t_size align)\
+t_buffer	ft_reporta_alloc(t_any alloc, t_size size, t_size align)\
 				__attribute__((__nonnull__(1)));
-t_buffer	ft_reporta_realloc(void *alloc, t_buffer buf, t_size newsize,
+t_buffer	ft_reporta_realloc(t_any alloc, t_buffer buf, t_size newsize,
 				t_size align)\
 				__attribute__((__nonnull__(1)));
-void		ft_reporta_free(void *allocator, t_buffer buf)\
+void		ft_reporta_free(t_any allocator, t_buffer buf)\
 				__attribute__((__nonnull__(1)));
 
 #endif

@@ -100,7 +100,7 @@ t_u64a		ft_xxh3_rrmxmx(t_u64a a, t_u64a b)\
 t_buffer	ft_xxh3_get_secret(void)\
 				__attribute__((const));
 
-void		ft_xxh3_init_custom_secret(void *custom_secret, t_u64a seed)\
+void		ft_xxh3_init_custom_secret(t_any custom_secret, t_u64a seed)\
 				__attribute__((__nonnull__(1)));
 
 #endif

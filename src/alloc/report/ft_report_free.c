@@ -13,7 +13,7 @@
 #include "private/ft_p_gpa.h"
 
 __attribute__((__nonnull__(1)))
-void	ft_reporta_free(void *allocator, t_buffer buf)
+void	ft_reporta_free(t_any allocator, t_buffer buf)
 {
 	t_size		freelist;
 	t_reporta	*gpa;
@@ -29,6 +29,6 @@ void	ft_reporta_free(void *allocator, t_buffer buf)
 		return ;
 	}
 	++gpa->free_depth[freelist];
-	*(void **)buf.mem = gpa->free[freelist];
+	*(t_any *)buf.mem = gpa->free[freelist];
 	gpa->free[freelist] = buf.mem;
 }

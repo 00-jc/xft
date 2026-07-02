@@ -19,7 +19,7 @@ typedef struct s_qsort_ctx
 {
 	t_u8		*buf;
 	t_size		size;
-	int			(*cmp)(const void *, const void *);
+	int			(*cmp)(t_cany, t_cany);
 }	t_qsort_ctx;
 
 #endif

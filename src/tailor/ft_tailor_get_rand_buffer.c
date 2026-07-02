@@ -13,7 +13,7 @@
 #include "private/ft_p_tailor.h"
 
 __attribute__((__nonnull__(1)))
-t_buffer	ft_get_random_buffer(const void *ptr)
+t_buffer	ft_get_random_buffer(t_cany ptr)
 {
 	t_tailor_arg	*arg;
 	t_size			idx;
@@ -24,7 +24,7 @@ t_buffer	ft_get_random_buffer(const void *ptr)
 }
 
 __attribute__((__nonnull__(1)))
-t_buffer	*ft_get_all_buffers(const void *ptr, t_size *n)
+t_buffer	*ft_get_all_buffers(t_cany ptr, t_size *n)
 {
 	t_tailor_arg	*arg;
 

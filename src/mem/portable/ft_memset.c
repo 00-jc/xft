@@ -13,7 +13,7 @@
 #include "private/ft_p_mem.h"
 
 __attribute__((__nonnull__(1), __always_inline__))
-inline void	ft_memset_64(void *restrict dest,
+inline void	ft_memset_64(t_any restrict dest,
 	const t_u8 c, t_size n)
 {
 	*(t_blk64w)dest = ft_populate(c);

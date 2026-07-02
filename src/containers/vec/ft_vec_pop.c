@@ -19,7 +19,7 @@ inline void	ft_vec_pop(t_vec *restrict const v, t_size type_size)
 }
 
 __attribute__((__always_inline__, __nonnull__(1)))
-inline t_result	ft_vec_popmv(t_vec *restrict const v, void *const dest,
+inline t_result	ft_vec_popmv(t_vec *restrict const v, t_any const dest,
 	size_t type_size)
 {
 	t_u8	*last;

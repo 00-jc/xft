@@ -13,10 +13,10 @@
 #include "private/ft_p_tailor.h"
 
 __attribute__((__nonnull__(1), __always_inline__))
-static inline void	*ft__handle_alignment_alloc(t_tailor *t, t_size size,
+static inline t_any	ft__handle_alignment_alloc(t_tailor *t, t_size size,
 	t_u8 alignment)
 {
-	void	*tmp;
+	t_any	tmp;
 
 	if (alignment == 1)
 	{
@@ -35,7 +35,7 @@ t_result	ft_tailor_buffers(t_tailor *t,
 	t_size *sizes, t_u8 *alignment, t_size n)
 {
 	t_size				i;
-	void				*tmp;
+	t_any				tmp;
 	t_arena_checkpoint	c;
 
 	i = 0;

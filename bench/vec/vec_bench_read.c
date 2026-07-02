@@ -16,7 +16,7 @@
 #define READ_FILL	1024
 
 __attribute__((__nonnull__(1)))
-void	ft_vec_bench_read(void *ptr)
+void	ft_vec_bench_read(t_any ptr)
 {
 	t_allocator	a;
 	t_vec		vec;

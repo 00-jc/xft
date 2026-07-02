@@ -33,8 +33,8 @@ union	u_writer;
 
 typedef struct s_writer_vtable
 {
-	t_result	(*flush)(void *__restrict__ const writer);
-	t_result	(*drain)(void *__restrict__ const writer,\
+	t_result	(*flush)(t_any __restrict__ const writer);
+	t_result	(*drain)(t_any __restrict__ const writer,\
 					t_iovec * __restrict__ const bufs, t_size nbufs);
 }	t_writer_vtable;
 
@@ -79,10 +79,10 @@ typedef struct s_writer
 
 typedef struct s_reader_vtable
 {
-	t_result	(*unbufered_fill)(void *__restrict__ const reader,\
+	t_result	(*unbufered_fill)(t_any __restrict__ const reader,\
 					t_u8 * __restrict__ const dst, const t_size len,\
 					t_size * __restrict__ const total);
-	t_result	(*fill)(void *__restrict__ const reader);
+	t_result	(*fill)(t_any __restrict__ const reader);
 }	t_reader_vtable;
 
 typedef struct s_fs_reader

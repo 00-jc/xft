@@ -20,7 +20,7 @@
 void	_start(void)\
 			__attribute__((noreturn, force_align_arg_pointer));
 
-void	ft_rt_entry(void **sp)\
+void	ft_rt_entry(t_any *sp)\
 			__attribute__((noreturn, used, __nonnull__(1)));
 
 # endif

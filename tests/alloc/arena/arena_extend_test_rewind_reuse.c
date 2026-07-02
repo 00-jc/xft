@@ -17,7 +17,7 @@ void	test_extend_rewind_reuse(void)
 	t_arena				a;
 	t_arena_checkpoint	cp;
 	t_hugepage			*second;
-	void				*ptrs[2];
+	t_any				ptrs[2];
 	t_size				big;
 
 	a = ft_new_arena_alloc();

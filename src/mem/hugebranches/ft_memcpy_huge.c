@@ -13,8 +13,8 @@
 #include "private/ft_p_mem.h"
 
 __attribute__((__nonnull__(1, 2), __always_inline__))
-inline void	ft_memcpy_hugetail(void *restrict dest,
-	const void	*restrict const src, t_size n)
+inline void	ft_memcpy_hugetail(t_any restrict dest,
+	t_cany restrict const src, t_size n)
 {
 	t_size		i[3];
 	t_vu512a	x[4];
@@ -41,8 +41,8 @@ inline void	ft_memcpy_hugetail(void *restrict dest,
 }
 
 __attribute__((__nonnull__(1, 2, 4), __always_inline__))
-inline void	ft__huge_kernel_cpy(void *restrict dest,
-	const void	*restrict const src, const t_size i,
+inline void	ft__huge_kernel_cpy(t_any restrict dest,
+	t_cany restrict const src, const t_size i,
 	t_vu512a *restrict const x)
 {
 	x[0] = ((t_blk512r)src)[i + 0];
@@ -56,8 +56,8 @@ inline void	ft__huge_kernel_cpy(void *restrict dest,
 }
 
 __attribute__((__nonnull__(1, 2), __always_inline__))
-inline void	ft_memcpy_512_huge(void *restrict dest,
-	const void	*restrict const src, t_size n)
+inline void	ft_memcpy_512_huge(t_any restrict dest,
+	t_cany restrict const src, t_size n)
 {
 	t_t_f64_size	s;
 	t_size			delta;

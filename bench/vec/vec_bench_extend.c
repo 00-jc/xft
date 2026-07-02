@@ -14,7 +14,7 @@
 #include "vec_bench.h"
 
 __attribute__((__nonnull__(1)))
-void	ft_vec_bench_extend(void *ptr)
+void	ft_vec_bench_extend(t_any ptr)
 {
 	static const t_u64	chunk[8] = {0, 1, 2, 3, 4, 5, 6, 7};
 	t_allocator			a;

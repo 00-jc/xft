@@ -68,12 +68,12 @@ inline void	ft_xxh3_accumulate(t_blk8r accs,
 	t_blk8r input, t_blk8r secret, t_size nb_stripes)
 {
 	t_size	n;
-	void	*in;
+	t_any	in;
 
 	n = 0;
 	while (n < nb_stripes)
 	{
-		in = (void *)(input + (n * XXH3_STRIPE_LEN));
+		in = (t_any)(input + (n * XXH3_STRIPE_LEN));
 		ft_prefetch0(in, XXH3_PREFETCH_DIST);
 		ft_xxh3_accumulate_512(accs, in,
 			secret + (n * XXH3_SECRET_CONSUME_RATE));

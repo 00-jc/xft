@@ -15,7 +15,7 @@
 void	test_arena_alignment(void)
 {
 	t_arena	a;
-	void	*p;
+	t_any	p;
 	t_size	aligns[7];
 	t_size	i;
 

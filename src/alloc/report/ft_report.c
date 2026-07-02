@@ -29,11 +29,11 @@ t_reporta	ft_reporta(void)
 	buf = ft_palloc(GPA_SLABSIZE);
 	if (__builtin_expect(buf.mem == nullptr, 0))
 		return ((t_reporta){0});
-	ft_memset((void *)gpa.free, 0, sizeof(t_uptr) * GPA_CLASSES);
-	ft_memset((void *)gpa.free_depth, 0, sizeof(t_size) * GPA_CLASSES);
+	ft_memset((t_any)gpa.free, 0, sizeof(t_uptr) * GPA_CLASSES);
+	ft_memset((t_any)gpa.free_depth, 0, sizeof(t_size) * GPA_CLASSES);
 	gpa.slab = buf.mem;
-	*(void **)gpa.slab = nullptr;
-	gpa.bmp = (t_blk8w)gpa.slab + sizeof(void **);
+	*(t_any *)gpa.slab = nullptr;
+	gpa.bmp = (t_blk8w)gpa.slab + sizeof(t_any *);
 	gpa.slabsize = buf.size;
 	gpa.avg_frag = 0;
 	gpa.n_allocs = 0;
@@ -69,15 +69,15 @@ static inline void	ft_reporta_report(t_reporta *gpa)
 __attribute__((__nonnull__(1)))
 void	ft_reporta_destroy(t_reporta *gpa)
 {
-	void	**ptr;
-	void	**next;
+	t_any	*ptr;
+	t_any	*next;
 
 	ft_reporta_report(gpa);
-	ptr = (void **)gpa->slab;
+	ptr = (t_any *)gpa->slab;
 	while (ptr != nullptr)
 	{
-		next = (void **)*ptr;
-		ft_munmap((void *)ptr, gpa->slabsize);
+		next = (t_any *)*ptr;
+		ft_munmap((t_any)ptr, gpa->slabsize);
 		ptr = next;
 	}
 }

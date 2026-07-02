@@ -64,10 +64,10 @@ void	ft_destroy_arena(t_arena *alloc)
 }
 
 __attribute__((nonnull(1)))
-void	*ft_arena_alloc(t_arena *restrict const allocator,
+t_any	ft_arena_alloc(t_arena *restrict const allocator,
 	t_size size, t_size align)
 {
-	void			*next_ptr;
+	t_any			next_ptr;
 	t_size			waste;
 	t_size			pagesize;
 	int				pageflag;

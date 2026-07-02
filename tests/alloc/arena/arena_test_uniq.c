@@ -13,10 +13,10 @@
 #include "tests/alloc/arena/arena_test.h"
 
 __attribute__((__nonnull__(1, 2)))
-void	test_arena_uniq(t_arena *a, void *buf)
+void	test_arena_uniq(t_arena *a, t_any buf)
 {
-	void	*prev;
-	void	*p;
+	t_any	prev;
+	t_any	p;
 	int		i;
 
 	prev = buf;

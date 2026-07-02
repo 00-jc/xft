@@ -35,7 +35,7 @@ inline t_buffer	ft_xxh3_get_secret(void)
 }
 
 __attribute__((__nonnull__(1)))
-void	ft_xxh3_init_custom_secret(void *custom_secret, t_u64a seed)
+void	ft_xxh3_init_custom_secret(t_any custom_secret, t_u64a seed)
 {
 	t_size			nrounds;
 	t_size			i;

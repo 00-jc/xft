@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/29 23:39:12 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/06/29 23:39:19 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/07/02 22:31:54 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,10 @@
 
 typedef struct s_gpa
 {
-	void	*slab;
+	t_any	slab;
 	t_size	slabsize;
-	void	*bmp;
-	void	*free[GPA_CLASSES];
+	t_any	bmp;
+	t_any	free[GPA_CLASSES];
 }	t_gpa;
 
 #endif

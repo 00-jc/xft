@@ -16,40 +16,40 @@
 # include "private/ft_p_mem.h"
 # include "rt.h"
 
-void	ft_memset_test_varied(void *ptr);
-void	ft_memset_test_short_aligned(void *ptr);
-void	ft_memset_test_short_unaligned(void *ptr);
-void	ft_memset_test_medium_aligned(void *ptr);
-void	ft_memset_test_medium_unaligned(void *ptr);
-void	ft_memset_test_large_aligned(void *ptr);
-void	ft_memset_test_large_unaligned(void *ptr);
+void	ft_memset_test_varied(t_any ptr);
+void	ft_memset_test_short_aligned(t_any ptr);
+void	ft_memset_test_short_unaligned(t_any ptr);
+void	ft_memset_test_medium_aligned(t_any ptr);
+void	ft_memset_test_medium_unaligned(t_any ptr);
+void	ft_memset_test_large_aligned(t_any ptr);
+void	ft_memset_test_large_unaligned(t_any ptr);
 
-void	ft_memcpy_test_varied(void *ptr);
-void	ft_memcpy_test_short_aligned(void *ptr);
-void	ft_memcpy_test_short_unaligned(void *ptr);
-void	ft_memcpy_test_medium_aligned(void *ptr);
-void	ft_memcpy_test_medium_unaligned(void *ptr);
-void	ft_memcpy_test_large_aligned(void *ptr);
-void	ft_memcpy_test_large_unaligned(void *ptr);
+void	ft_memcpy_test_varied(t_any ptr);
+void	ft_memcpy_test_short_aligned(t_any ptr);
+void	ft_memcpy_test_short_unaligned(t_any ptr);
+void	ft_memcpy_test_medium_aligned(t_any ptr);
+void	ft_memcpy_test_medium_unaligned(t_any ptr);
+void	ft_memcpy_test_large_aligned(t_any ptr);
+void	ft_memcpy_test_large_unaligned(t_any ptr);
 
 void	ft_memmove_overlap(t_buffer *buffer, t_size shift, t_size invert,
 			t_size *bytes);
-void	ft_memmove_test_varied(void *ptr);
-void	ft_memmove_test_short_aligned(void *ptr);
-void	ft_memmove_test_short_unaligned(void *ptr);
-void	ft_memmove_test_medium_aligned(void *ptr);
-void	ft_memmove_test_medium_unaligned(void *ptr);
-void	ft_memmove_test_large_aligned(void *ptr);
-void	ft_memmove_test_large_unaligned(void *ptr);
+void	ft_memmove_test_varied(t_any ptr);
+void	ft_memmove_test_short_aligned(t_any ptr);
+void	ft_memmove_test_short_unaligned(t_any ptr);
+void	ft_memmove_test_medium_aligned(t_any ptr);
+void	ft_memmove_test_medium_unaligned(t_any ptr);
+void	ft_memmove_test_large_aligned(t_any ptr);
+void	ft_memmove_test_large_unaligned(t_any ptr);
 
-void	ft_memcpy_test_stream_1x_unaligned(void *ptr);
-void	ft_memcpy_test_stream_2x_unaligned(void *ptr);
-void	ft_memcpy_test_stream_1x_aligned(void *ptr);
-void	ft_memcpy_test_stream_2x_aligned(void *ptr);
+void	ft_memcpy_test_stream_1x_unaligned(t_any ptr);
+void	ft_memcpy_test_stream_2x_unaligned(t_any ptr);
+void	ft_memcpy_test_stream_1x_aligned(t_any ptr);
+void	ft_memcpy_test_stream_2x_aligned(t_any ptr);
 
-void	ft_memset_test_stream_1x_unaligned(void *ptr);
-void	ft_memset_test_stream_2x_unaligned(void *ptr);
-void	ft_memset_test_stream_1x_aligned(void *ptr);
-void	ft_memset_test_stream_2x_aligned(void *ptr);
+void	ft_memset_test_stream_1x_unaligned(t_any ptr);
+void	ft_memset_test_stream_2x_unaligned(t_any ptr);
+void	ft_memset_test_stream_1x_aligned(t_any ptr);
+void	ft_memset_test_stream_2x_aligned(t_any ptr);
 
 #endif

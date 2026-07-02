@@ -16,22 +16,22 @@ __attribute__((__nonnull__(1), __always_inline__))
 static inline int	ft_advance_slab(t_gpa *gpa)
 {
 	t_buffer	buf;
-	void		**prev;
+	t_any		*prev;
 
 	buf = ft_palloc(GPA_SLABSIZE);
 	if (__builtin_expect(buf.mem == nullptr, 0))
 		return (0);
-	prev = (void **)gpa->slab;
+	prev = (t_any *)gpa->slab;
 	gpa->slab = buf.mem;
-	*(void **)gpa->slab = (void *)prev;
-	gpa->bmp = (t_blk8w)gpa->slab + sizeof(void **);
+	*(t_any *)gpa->slab = (t_any)prev;
+	gpa->bmp = (t_blk8w)gpa->slab + sizeof(t_any *);
 	return (1);
 }
 
 __attribute__((__nonnull__(1), __always_inline__))
 static inline t_buffer	ft_return_ptr(t_gpa *gpa, t_size snapped, t_size align)
 {
-	void	*new_ptr;
+	t_any	new_ptr;
 
 	new_ptr = ft_align_fwd(gpa->bmp, align - 1);
 	if (__builtin_expect(
@@ -40,14 +40,14 @@ static inline t_buffer	ft_return_ptr(t_gpa *gpa, t_size snapped, t_size align)
 			&& !ft_advance_slab(gpa), 0))
 		return (ft_fatptr(nullptr, 0));
 	new_ptr = ft_align_fwd(gpa->bmp, align - 1);
-	gpa->bmp = (void *)((t_blk8w)new_ptr + snapped);
+	gpa->bmp = (t_any)((t_blk8w)new_ptr + snapped);
 	return (ft_fatptr(new_ptr, snapped));
 }
 
 __attribute__((__nonnull__(1)))
-t_buffer	ft_gpa_alloc(void *alloc, t_size size, t_size align)
+t_buffer	ft_gpa_alloc(t_any alloc, t_size size, t_size align)
 {
-	void	*new_ptr;
+	t_any	new_ptr;
 	t_size	freelist;
 	t_size	snapped;
 	t_gpa	*gpa;
@@ -59,14 +59,14 @@ t_buffer	ft_gpa_alloc(void *alloc, t_size size, t_size align)
 	if (GPA_CLASSES <= freelist)
 	{
 		new_ptr = ft_mmap(snapped, 0, ft_match_hugepage_flags(snapped));
-		new_ptr = (void *)ft_tern(new_ptr == (void *)MAP_FAILED,
+		new_ptr = (t_any)ft_tern(new_ptr == (t_any)MAP_FAILED,
 				0, (t_uptr)new_ptr);
 		return (ft_fatptr(new_ptr, snapped));
 	}
 	new_ptr = gpa->free[freelist];
 	if (new_ptr)
 	{
-		gpa->free[freelist] = *(void **)new_ptr;
+		gpa->free[freelist] = *(t_any *)new_ptr;
 		return (ft_fatptr(new_ptr, snapped));
 	}
 	return (ft_return_ptr(gpa, snapped, align));

@@ -13,7 +13,7 @@
 #include "sort.h"
 
 __attribute__((__nonnull__(1, 2), pure))
-int	ft_cmp_u64(const void *a, const void *b)
+int	ft_cmp_u64(t_cany a, t_cany b)
 {
 	t_u64a	x;
 	t_u64a	y;

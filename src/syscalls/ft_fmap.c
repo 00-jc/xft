@@ -16,9 +16,9 @@
 #ifdef __x86_64__
 
 __attribute__((__always_inline__))
-inline void	*ft_fmap(t_size size, int fd)
+inline t_any	ft_fmap(t_size size, int fd)
 {
-	void				*ret;
+	t_any				ret;
 	register long r10	__asm__("r10");
 	register long r8	__asm__("r8");
 	register long r9	__asm__("r9");
@@ -42,9 +42,9 @@ inline void	*ft_fmap(t_size size, int fd)
 #else
 
 __attribute__((__always_inline__))
-inline void	*ft_fmap(t_size size, int fd)
+inline t_any	ft_fmap(t_size size, int fd)
 {
-	return ((void *)syscall(SYS_MMAP, NULL, size, PROT_READ,
+	return ((t_any)syscall(SYS_MMAP, NULL, size, PROT_READ,
 			MAP_PRIVATE, fd, 0));
 }
 

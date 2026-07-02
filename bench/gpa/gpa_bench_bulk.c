@@ -15,7 +15,7 @@
 
 #define BULK_BATCH	256
 
-void	ft_gpa_bulk_bench_64(void *ptr)
+void	ft_gpa_bulk_bench_64(t_any ptr)
 {
 	static t_buffer	bufs[BULK_BATCH];
 	t_gpa			*gpa;
@@ -42,7 +42,7 @@ void	ft_gpa_bulk_bench_64(void *ptr)
 	ft_tailor_add_processed_bytes(ptr, bytes);
 }
 
-void	ft_gpa_bulk_bench_512(void *ptr)
+void	ft_gpa_bulk_bench_512(t_any ptr)
 {
 	static t_buffer	bufs[BULK_BATCH];
 	t_gpa			*gpa;
@@ -69,7 +69,7 @@ void	ft_gpa_bulk_bench_512(void *ptr)
 	ft_tailor_add_processed_bytes(ptr, bytes);
 }
 
-void	ft_gpa_bulk_bench_mixed(void *ptr)
+void	ft_gpa_bulk_bench_mixed(t_any ptr)
 {
 	static t_buffer	bufs[BULK_BATCH];
 	t_gpa			*gpa;

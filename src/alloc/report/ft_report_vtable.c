@@ -14,25 +14,25 @@
 #include "io.h"
 
 __attribute__((__nonnull__(1)))
-static void	gpa_destroy(void *alloc)
+static void	gpa_destroy(t_any alloc)
 {
 	ft_reporta_destroy((t_reporta *)alloc);
 }
 
 __attribute__((__nonnull__(1)))
-static t_buffer	gpa_allocate(void *alloc, t_size size, t_size align)
+static t_buffer	gpa_allocate(t_any alloc, t_size size, t_size align)
 {
 	return (ft_reporta_alloc(alloc, size, align));
 }
 
 __attribute__((__nonnull__(1)))
-static void	gpa_free(void *alloc, t_buffer old)
+static void	gpa_free(t_any alloc, t_buffer old)
 {
 	ft_reporta_free(alloc, old);
 }
 
 __attribute__((__nonnull__(1)))
-static t_buffer	gpa_reallocate(void *alloc, t_buffer old, t_size new_size,
+static t_buffer	gpa_reallocate(t_any alloc, t_buffer old, t_size new_size,
 				t_size align)
 {
 	return (ft_reporta_realloc(alloc, old, new_size, align));

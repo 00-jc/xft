@@ -14,7 +14,7 @@
 #include "types/io_types.h"
 
 __attribute__((__nonnull__(1), __always_inline__))
-inline t_result	ft_raw_flush(void *__restrict__ const writer)
+inline t_result	ft_raw_flush(t_any __restrict__ const writer)
 {
 	t_writer *__restrict__ const		w = writer;
 	t_mem_writer *__restrict__ const	mem_w = &w->as.mem_writer;

@@ -13,7 +13,7 @@
 #include "tokenizer.h"
 
 __attribute__((__nonnull__(1), const, __always_inline__))
-inline t_tokenizer	ft_tokenizer_over(void *mem, t_size size)
+inline t_tokenizer	ft_tokenizer_over(t_any mem, t_size size)
 {
 	return ((t_tokenizer){
 		.mem = mem,
@@ -25,7 +25,7 @@ inline t_tokenizer	ft_tokenizer_over(void *mem, t_size size)
 __attribute__((__nonnull__(1)))
 t_u32a	ft_tokenizer_goto(t_tokenizer *tk, t_u8 byte)
 {
-	void	*bptr;
+	t_any	bptr;
 	t_size	newcc;
 
 	bptr = ft_memchr(tk->mem + tk->cc, byte, tk->max - tk->cc);

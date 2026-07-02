@@ -16,9 +16,9 @@
 #ifdef __x86_64__
 
 __attribute__((__always_inline__))
-inline void	*ft_mmap(t_size size, long prot_extra, long flags_extra)
+inline t_any	ft_mmap(t_size size, long prot_extra, long flags_extra)
 {
-	void				*ret;
+	t_any				ret;
 	register long r10	__asm__("r10");
 	register long r9	__asm__("r9");
 	register long r8	__asm__("r8");
@@ -40,7 +40,7 @@ inline void	*ft_mmap(t_size size, long prot_extra, long flags_extra)
 }
 
 __attribute__((nonnull(1), __always_inline__))
-inline void	ft_munmap(void *restrict const mem, t_size size)
+inline void	ft_munmap(t_any restrict const mem, t_size size)
 {
 	__asm__ volatile (
 		"syscall"
@@ -55,9 +55,9 @@ inline void	ft_munmap(void *restrict const mem, t_size size)
 #else
 
 __attribute__((__always_inline__))
-void	*ft_mmap(t_size size, long prot_extra, long flags_extra)
+t_any	ft_mmap(t_size size, long prot_extra, long flags_extra)
 {
-	return ((void *)syscall(SYS_MMAP,
+	return ((t_any)syscall(SYS_MMAP,
 			size,
 			NULL,
 			PROT_READ | PROT_WRITE | prot_extra,
@@ -68,7 +68,7 @@ void	*ft_mmap(t_size size, long prot_extra, long flags_extra)
 }
 
 __attribute__((nonnull(1), __always_inline__))
-inline void	ft_munmap(void *restrict const mem, t_size size)
+inline void	ft_munmap(t_any restrict const mem, t_size size)
 {
 	syscall(SYS_MUNMAP, mem, size);
 }

@@ -17,7 +17,7 @@
 # include "alloc.h"
 
 void	test_arena_basic(void);
-void	test_arena_uniq(t_arena *a, void *buf);
+void	test_arena_uniq(t_arena *a, t_any buf);
 void	test_arena_alignment(void);
 void	test_arena_invalid(void);
 void	test_arena_checkpoint(void);

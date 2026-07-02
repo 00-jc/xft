@@ -13,8 +13,8 @@
 #include "vec.h"
 
 __attribute__((__nonnull__(1)))
-void	ft_memtake(void *restrict dst,
-	void *restrict src, t_size len)
+void	ft_memtake(t_any restrict dst,
+	t_any restrict src, t_size len)
 {
 	if (!len)
 		return ;

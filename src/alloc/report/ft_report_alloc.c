@@ -16,7 +16,7 @@ __attribute__((__nonnull__(1), __always_inline__))
 static inline int	ft_advance_slab(t_reporta *gpa)
 {
 	t_buffer	buf;
-	void		**prev;
+	t_any		*prev;
 
 	buf = ft_palloc(GPA_SLABSIZE);
 	if (__builtin_expect(buf.mem == nullptr, 0))
@@ -24,8 +24,8 @@ static inline int	ft_advance_slab(t_reporta *gpa)
 	prev = gpa->slab;
 	++gpa->slabs;
 	gpa->slab = buf.mem;
-	*(void **)gpa->slab = prev;
-	gpa->bmp = (t_blk8w)gpa->slab + sizeof(void **);
+	*(t_any *)gpa->slab = prev;
+	gpa->bmp = (t_blk8w)gpa->slab + sizeof(t_any *);
 	return (1);
 }
 
@@ -33,7 +33,7 @@ __attribute__((__nonnull__(1), __always_inline__))
 static inline t_buffer	ft_return_ptr(t_reporta *gpa,
 	t_size sizes[2], t_size align)
 {
-	void	*new_ptr;
+	t_any	new_ptr;
 
 	++gpa->misses;
 	new_ptr = ft_align_fwd(gpa->bmp, align - 1);
@@ -46,30 +46,30 @@ static inline t_buffer	ft_return_ptr(t_reporta *gpa,
 	gpa->avg_frag += (t_f64)((t_f64)((sizes[1] - sizes[0])
 				+ (t_uptr)new_ptr - (t_uptr)gpa->bmp)
 			- gpa->avg_frag) / (t_f64)gpa->n_allocs;
-	gpa->bmp = (void *)((t_blk8w)new_ptr + sizes[1]);
+	gpa->bmp = (t_any)((t_blk8w)new_ptr + sizes[1]);
 	return (ft_fatptr(new_ptr, sizes[1]));
 }
 
 __attribute__((__nonnull__(1), __always_inline__))
 static inline t_buffer	ft_reuse_ptr(t_reporta *gpa, t_size freelist,
-	void *new_ptr, t_size sizes[2])
+	t_any new_ptr, t_size sizes[2])
 {
 	++gpa->reuses;
 	--gpa->free_depth[freelist];
 	gpa->avg_frag += (t_f64)((t_f64)(sizes[1] - sizes[0]) - gpa->avg_frag)
 		/ (t_f64)gpa->n_allocs;
-	gpa->free[freelist] = *(void **)new_ptr;
+	gpa->free[freelist] = *(t_any *)new_ptr;
 	return (ft_fatptr(new_ptr, sizes[1]));
 }
 
 __attribute__((__nonnull__(1), __always_inline__))
 static inline t_buffer	ft_paged_ptr(t_reporta *gpa, t_size sizes[2])
 {
-	void	*new_ptr;
+	t_any	new_ptr;
 
 	++gpa->paged;
 	new_ptr = ft_mmap(sizes[1], 0, ft_match_hugepage_flags(sizes[1]));
-	if (__builtin_expect(new_ptr == (void *)MAP_FAILED, 0))
+	if (__builtin_expect(new_ptr == (t_any)MAP_FAILED, 0))
 		return (ft_fatptr(nullptr, 0));
 	gpa->avg_frag += (t_f64)((t_f64)(sizes[1] - sizes[0]) - gpa->avg_frag)
 		/ (t_f64)gpa->n_allocs;
@@ -77,9 +77,9 @@ static inline t_buffer	ft_paged_ptr(t_reporta *gpa, t_size sizes[2])
 }
 
 __attribute__((__nonnull__(1)))
-t_buffer	ft_reporta_alloc(void *alloc, t_size size, t_size align)
+t_buffer	ft_reporta_alloc(t_any alloc, t_size size, t_size align)
 {
-	void		*new_ptr;
+	t_any		new_ptr;
 	t_size		freelist;
 	t_size		snapped;
 	t_reporta	*gpa;

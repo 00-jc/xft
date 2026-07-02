@@ -13,7 +13,7 @@
 #include "private/ft_p_mem.h"
 
 __attribute__((__nonnull__(1), __always_inline__))
-inline void	ft_memset_128(void *restrict dest,
+inline void	ft_memset_128(t_any restrict dest,
 	const t_u8 c, t_size n)
 {
 	register t_vu128a	x;

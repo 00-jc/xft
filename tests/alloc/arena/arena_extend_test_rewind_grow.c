@@ -17,7 +17,7 @@ void	test_extend_rewind_grow(void)
 	t_arena				a;
 	t_arena_checkpoint	cp;
 	t_hugepage			*pages[2];
-	void				*p;
+	t_any				p;
 	t_size				big;
 
 	a = ft_new_arena_alloc();

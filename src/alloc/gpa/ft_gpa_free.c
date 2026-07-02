@@ -13,7 +13,7 @@
 #include "private/ft_p_gpa.h"
 
 __attribute__((__nonnull__(1)))
-void	ft_gpa_free(void *allocator, t_buffer buf)
+void	ft_gpa_free(t_any allocator, t_buffer buf)
 {
 	t_size	freelist;
 	t_gpa	*gpa;
@@ -27,6 +27,6 @@ void	ft_gpa_free(void *allocator, t_buffer buf)
 		ft_munmap(buf.mem, buf.size);
 		return ;
 	}
-	*(void **)buf.mem = gpa->free[freelist];
+	*(t_any *)buf.mem = gpa->free[freelist];
 	gpa->free[freelist] = buf.mem;
 }
