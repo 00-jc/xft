@@ -18,15 +18,16 @@ void	ft_vec_bench_extend(void *ptr)
 {
 	static const t_u64	chunk[8] = {0, 1, 2, 3, 4, 5, 6, 7};
 	t_allocator			a;
-	t_vec				*vec;
+	t_vec				vec;
 	t_size				n;
 
-	vec = ft_get_bench_vec();
 	a = ft_gpa_allocator(ft_get_bench_vec_gpa());
+	vec = ft_vec(a, 64, sizeof(t_u64));
 	n = ft_tailor_getcount(ptr);
 	while (n-- > 0)
-		ft_vec_extend(a, vec,
+		ft_vec_extend(a, &vec,
 			(t_buffer){.mem = (t_u8 *)chunk, .size = sizeof(chunk)});
 	ft_tailor_add_processed_bytes(ptr,
 		ft_tailor_getcount(ptr) * sizeof(chunk));
+	ft_vec_destroy(a, &vec);
 }

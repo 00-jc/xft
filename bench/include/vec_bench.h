@@ -18,7 +18,6 @@
 # include "rt.h"
 
 t_gpa	*ft_get_bench_vec_gpa(void);
-t_vec	*ft_get_bench_vec(void);
 
 void	ft_vec_bench_push_back(void *ptr);
 void	ft_vec_bench_push_back_reserved(void *ptr);

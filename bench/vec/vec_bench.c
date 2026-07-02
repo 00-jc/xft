@@ -34,8 +34,6 @@ inline int	ft_main(t_u64a argc, t_u8 **argv, t_u8 **envp)
 	if (!ft_tailor_new(&t, 2, 2000))
 		return (1);
 	(void)ft_tailor_bench(&t, benches, 6);
-	ft_vec_destroy(ft_gpa_allocator(ft_get_bench_vec_gpa()),
-		ft_get_bench_vec());
 	ft_gpa_destroy(ft_get_bench_vec_gpa());
 	ft_tailor_destroy(&t);
 	return (0);

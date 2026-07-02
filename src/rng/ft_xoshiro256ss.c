@@ -6,11 +6,12 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/29 23:39:14 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/06/29 23:39:20 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/07/02 22:06:28 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rng.h"
+#include "timing.h"
 
 __attribute__((__nonnull__(1), __always_inline__))
 inline t_u64a	ft_splitmix(t_u64a *restrict const x)
@@ -31,7 +32,7 @@ inline void	ft_xoshiro_init(t_xoshiro xoshiro)
 	t_size			current;
 	t_u64a			x;
 
-	internal += ((t_uptr)xoshiro) << 3;
+	internal += (((t_uptr)xoshiro) << 3) * ft_get_nanos();
 	x = (t_uptr) & current ^ internal++;
 	xoshiro[0] = ft_splitmix(&x) | 1;
 	xoshiro[1] = ft_splitmix(&x) | 2;
