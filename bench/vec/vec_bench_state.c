@@ -1,24 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   vec_types.h                                        :+:      :+:    :+:   */
+/*   vec_bench_state.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/06/29 23:39:12 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/07/02 12:59:10 by jaicastr         ###   ########.fr       */
+/*   Created: 2026/07/02 13:46:16 by jaicastr          #+#    #+#             */
+/*   Updated: 2026/07/02 13:46:17 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef VEC_TYPES_H
-# define VEC_TYPES_H
+#include "tailor.h"
+#include "vec_bench.h"
 
-# include "primitives.h"
-
-typedef struct s_vec
+t_gpa	*ft_get_bench_vec_gpa(void)
 {
-	size_t		size;
-	t_buffer	buf;
-}	t_vec;
+	static t_gpa	gpa = {0};
 
-#endif
+	if (gpa.slab == nullptr)
+		gpa = ft_gpa();
+	return (&gpa);
+}
+
+t_vec	*ft_get_bench_vec(void)
+{
+	static t_vec	vec = {0};
+
+	if (vec.buf.mem == nullptr)
+		vec = ft_vec(ft_gpa_allocator(ft_get_bench_vec_gpa()), 64,
+				sizeof(t_u64));
+	ft_vec_clear(&vec);
+	return (&vec);
+}

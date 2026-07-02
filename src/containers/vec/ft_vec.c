@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/29 23:39:14 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/06/29 23:39:20 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/07/02 13:02:52 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,8 @@ t_vec	ft_vec(t_allocator allocator, size_t size, size_t type_size)
 	t_buffer	buf;
 	size_t		mul;
 
-	if (allocator.allocator == nullptr)
+	if (allocator.allocator == nullptr
+		|| allocator.interface.allocate == nullptr)
 		__builtin_unreachable();
 	mul = size * type_size;
 	if (mul == 0 || (mul / size != type_size))
@@ -28,15 +29,15 @@ t_vec	ft_vec(t_allocator allocator, size_t size, size_t type_size)
 		return ((t_vec){0});
 	return ((t_vec){
 		.size = 0,
-		.capacity = buf.size / type_size,
 		.buf = buf,
 	});
 }
 
-__attribute__((__nonnull__(2)))
-void	ft_vec_destroy(t_allocator allocator, t_vec *v)
+__attribute__((__always_inline__, __nonnull__(2)))
+inline void	ft_vec_destroy(t_allocator allocator, t_vec *v)
 {
-	if (allocator.allocator == nullptr)
+	if (allocator.allocator == nullptr
+		|| allocator.interface.free == nullptr || v->buf.mem == nullptr)
 		__builtin_unreachable();
 	if (v->buf.mem)
 		allocator.interface.free(allocator.allocator, v->buf);

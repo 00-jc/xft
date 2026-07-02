@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/01 21:35:09 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/07/01 21:35:12 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/07/02 13:33:00 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,7 @@ void	test_vec_extend(t_allocator a)
 		i++;
 	}
 	ft_pin_invariant(ft_vec_extend(a, &v,
-			(t_buffer){.mem = (t_u8 *)data, .size = sizeof(data)},
-			sizeof(int)));
+			(t_buffer){.mem = (t_u8 *)data, .size = sizeof(data)}));
 	ft_pin_invariant(ft_vec_len(&v, sizeof(int)) == 5);
 	got = ft_vec_get(&v, 3, sizeof(int));
 	ft_pin_invariant(got && *got == 30);

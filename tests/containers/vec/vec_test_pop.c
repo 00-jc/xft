@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/01 21:35:09 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/07/01 21:35:12 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/07/02 13:20:48 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void	test_vec_pop(t_allocator a)
 	ft_pin_invariant(ft_vec_popmv(&v, &out, sizeof(int)));
 	ft_pin_invariant(out == 30);
 	ft_pin_invariant(ft_vec_len(&v, sizeof(int)) == 2);
-	ft_vec_pop(&v);
+	ft_vec_pop(&v, sizeof(int));
 	ft_pin_invariant(ft_vec_len(&v, sizeof(int)) == 1);
 	ft_vec_destroy(a, &v);
 }

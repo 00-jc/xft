@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/29 23:39:14 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/06/29 23:39:20 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/07/02 14:07:43 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,6 +116,7 @@ __attribute__((__nonnull__(1, 2)))
 t_plankb	ft_get_kb(t_tailor *t, t_tailor_fn fn)
 {
 	t_datapoint		dp;
+	t_u64			div;
 	t_f64			cv;
 	t_f64			ktmp;
 	t_u64a			kb[2];
@@ -124,7 +125,9 @@ t_plankb	ft_get_kb(t_tailor *t, t_tailor_fn fn)
 	cv = ft_dsqrt(dp.m2 / (t_f64)(dp.n - 1)) / dp.mu;
 	ktmp = 1.96 * (cv / K_REL_CI);
 	ktmp = 1.5 * ktmp * ktmp;
-	kb[0] = ((t->phase1_ns + t->phase2_ns) << 2) / ((t_u64a)dp.mu * dp.iters);
+	div = (t_u64a)dp.mu * dp.iters;
+	div = ft_tern(div == 0, 1, div);
+	kb[0] = ((t->phase1_ns + t->phase2_ns) << 2) / div;
 	kb[1] = (t_u64a)ktmp;
 	kb[1] = ft_tern(kb[1] < 120, 120, kb[1]);
 	kb[1] = ft_tern(10000 < kb[1], 10000, kb[1]);

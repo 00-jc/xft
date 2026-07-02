@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/29 23:39:15 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/07/01 21:51:30 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/07/02 13:33:41 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ static void	fuzz_vec_case(t_fuzzer *fz, t_allocator alloc)
 	v = ft_vec(alloc, 1, sizeof(int));
 	ft_pin_invariant(v.buf.mem != nullptr);
 	ft_pin_invariant(ft_vec_extend(alloc, &v,
-			(t_buffer){.mem = b->mem, .size = n * sizeof(int)}, sizeof(int)));
+			(t_buffer){.mem = b->mem, .size = n * sizeof(int)}));
 	ft_pin_invariant(ft_vec_len(&v, sizeof(int)) == n);
 	if (n != 0)
 	{

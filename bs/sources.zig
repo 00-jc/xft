@@ -6,7 +6,7 @@
 //   By: username <your@mail.com>                   +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2026/06/29 09:15:56 by username          #+#    #+#             //
-//   Updated: 2026/06/30 18:09:40 by jaicastr         ###   ########.fr       //
+//   Updated: 2026/07/02 14:14:46 by jaicastr         ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -465,7 +465,17 @@ pub const SRCS_BENCH_ARENA = &[_][]const u8{
     "bench/arena/arena_bench_rand.c",
 };
 
+pub const SRCS_BENCH_VEC = &[_][]const u8{
+    "bench/vec/vec_bench.c",
+    "bench/vec/vec_bench_state.c",
+    "bench/vec/vec_bench_ops.c",
+    "bench/vec/vec_bench_read.c",
+    "bench/vec/vec_bench_extend.c",
+    "bench/vec/vec_bench_remove.c",
+};
+
 pub const BENCH_TARGETS = &[_]struct { name: []const u8, srcs: []const []const u8 }{
+    .{ .name = "vec_bench",           .srcs = SRCS_BENCH_VEC },
     .{ .name = "memcpy_bench",        .srcs = SRCS_BENCH_MEMCPY },
     .{ .name = "memcpy_stream_bench", .srcs = SRCS_BENCH_MEMCPY_STREAM },
     .{ .name = "memmove_bench",       .srcs = SRCS_BENCH_MEMMOVE },
