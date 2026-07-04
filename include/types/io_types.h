@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/29 23:39:12 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/07/01 13:41:44 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/07/04 23:14:21 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,7 @@
 
 # include "primitives.h"
 # include "types/allocators_types.h"
-
-typedef struct s_file
-{
-	t_u8 *__restrict__		content;
-	t_u32a					fd;
-	t_size					size;
-}	t_file;
+# include "atomics.h"
 
 typedef struct s_iovec
 {

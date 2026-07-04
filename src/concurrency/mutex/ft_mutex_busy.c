@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/04 18:00:00 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/07/04 17:39:56 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/07/04 22:34:29 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ inline void	ft_mutex_busy(t_mutex *__restrict__ const mutex)
 						__ATOMIC_ACQUIRE, __ATOMIC_RELAXED), 1))
 				return ;
 		}
-		ft_mutex_backoff(ft_last_pow2(iters++));
+		ft_mutex_backoff(ft_last_pow2(iters++ | 1));
 		iters &= (1ULL << 11) - 1;
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/04 18:00:00 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/07/04 17:43:26 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/07/04 22:34:40 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ inline void	ft_mutex_spin(t_mutex *__restrict__ const mutex)
 				if (__builtin_expect(ft__try_lock_spin(mutex), 1))
 					return ;
 			}
-			ft_mutex_backoff(ft_last_pow2(iters++));
+			ft_mutex_backoff(ft_last_pow2(iters++ | 1));
 		}
 		if (__builtin_expect(ft__try_lock(mutex), 0))
 			return ;

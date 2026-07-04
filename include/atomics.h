@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/03 16:22:50 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/07/04 18:17:52 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/07/04 22:35:49 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 # include "types/atomic_types.h"
 
 # ifndef FT_MUTEX_SPIN
-#  define FT_MUTEX_SPIN 64
+#  define FT_MUTEX_SPIN 32
 # endif
 
 void			ft_thread_fence(t_i32a memorder);

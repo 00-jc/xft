@@ -6,7 +6,7 @@
 //   By: username <your@mail.com>                   +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2026/06/29 09:15:56 by username          #+#    #+#             //
-//   Updated: 2026/07/04 17:27:05 by jaicastr         ###   ########.fr       //
+//   Updated: 2026/07/04 22:25:45 by jaicastr         ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -87,6 +87,7 @@ pub const SRCS_FMT = &[_][]const u8{
 
 pub const SRCS_CONCURRENCY = &[_][]const u8{
     "src/concurrency/ft_fences.c",
+    "src/concurrency/mutex/ft_mutex_init.c",
     "src/concurrency/mutex/ft_mutex_lock.c",
     "src/concurrency/mutex/ft_mutex_fast.c",
     "src/concurrency/mutex/ft_mutex_busy.c",
