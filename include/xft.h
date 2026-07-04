@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/29 23:39:13 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/06/30 18:11:00 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/07/04 14:35:59 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ extern "C"
 # include "syscall.h"
 # include "rt.h"
 # include "fmt.h"
+# include "atomics.h"
 
 #ifdef __cplusplus
 }

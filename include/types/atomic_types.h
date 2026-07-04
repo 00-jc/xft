@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/30 22:24:11 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/07/04 13:06:42 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/07/04 17:53:20 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,14 @@ typedef volatile long double __attribute__((__aligned__(64)))	t_c_f80;
 typedef volatile uintptr_t __attribute__((__aligned__(64)))		t_c_ptr;
 typedef volatile void * __attribute__((__aligned__(64)))		t_c_any;
 typedef t_c_i32													t_mutex_nonsh;
-typedef volatile t_i32											t_mutex;
+typedef volatile t_i32a											t_mutex;
+
+typedef enum e_mutex_type
+{
+	FAST,
+	SLOW,
+	BUSY,
+}	t_mutex_type;
 
 # define FT_UNLOCKED 0
 # define FT_LOCKED 1

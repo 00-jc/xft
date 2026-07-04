@@ -6,7 +6,7 @@
 //   By: username <your@mail.com>                   +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2026/06/29 09:15:56 by username          #+#    #+#             //
-//   Updated: 2026/07/04 12:53:31 by jaicastr         ###   ########.fr       //
+//   Updated: 2026/07/04 17:27:05 by jaicastr         ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -73,6 +73,7 @@ pub const SRCS_SYSCALLS = &[_][]const u8{
     "src/syscalls/ft_perf_events.c",
     "src/syscalls/ft_getpid.c",
     "src/syscalls/ft_sched_setaffinity.c",
+    "src/syscalls/ft_futex.c",
 };
 
 pub const SRCS_FMT = &[_][]const u8{
@@ -86,7 +87,11 @@ pub const SRCS_FMT = &[_][]const u8{
 
 pub const SRCS_CONCURRENCY = &[_][]const u8{
     "src/concurrency/ft_fences.c",
-    "src/concurrency/mutex/ft_mutex.c"
+    "src/concurrency/mutex/ft_mutex_lock.c",
+    "src/concurrency/mutex/ft_mutex_fast.c",
+    "src/concurrency/mutex/ft_mutex_busy.c",
+    "src/concurrency/mutex/ft_mutex_slow.c",
+    "src/concurrency/mutex/ft_mutex_unlock.c"
 };
 
 pub const SRCS_IO = &[_][]const u8{
