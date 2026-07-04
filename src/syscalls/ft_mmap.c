@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/29 23:39:14 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/06/29 23:39:20 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/07/04 13:15:08 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,14 +18,12 @@
 __attribute__((__always_inline__))
 inline t_any	ft_mmap(t_size size, long prot_extra, long flags_extra)
 {
-	t_any				ret;
-	register long r10	__asm__("r10");
-	register long r9	__asm__("r9");
-	register long r8	__asm__("r8");
+	t_any					ret;
+	const register long r10	__asm__("r10") = MAP_PRIVATE
+		| MAP_ANONYMOUS | flags_extra;
+	const register long r9	__asm__("r9") = 0;
+	const register long r8	__asm__("r8") = -1;
 
-	r10 = MAP_PRIVATE | MAP_ANONYMOUS | flags_extra;
-	r9 = 0;
-	r8 = -1;
 	__asm__ volatile (
 		"syscall"
 		: "=a"(ret)

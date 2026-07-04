@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/29 23:39:13 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/06/29 23:39:19 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/07/03 21:37:00 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,13 +37,8 @@ inline t_buffer	ft_palloc_resize(t_buffer b, t_size new_size)
 	t_buffer	new_b;
 
 	snapped = ft_match_hugepage(new_size);
-	if (snapped == b.size)
-	{
-		mem = ft_mremap(b.size, snapped, b.mem, 0);
-		return ((t_buffer){
-			.size = snapped,
-			.mem = (t_any)ft_tern(mem != (t_any)MAP_FAILED, (t_u64a)mem, 0)});
-	}
+	if (__builtin_expect(snapped == b.size, 1))
+		return (b);
 	flags = ft_match_hugepage_flags(snapped);
 	mem = ft_mmap(snapped, 0, flags);
 	new_b = (t_buffer){

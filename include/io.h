@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/29 23:39:13 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/07/01 00:16:24 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/07/03 09:13:00 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,5 +54,11 @@ t_i32			ft_get_stdin(void)\
 					__attribute__((const));
 t_i32			ft_get_stdout(void)\
 					__attribute__((const));
+
+t_file			ft_map_file(const t_u8 *__restrict__ const name,\
+					t_u32 flags)\
+					__attribute__((__nonnull__(1)));
+
+void			ft_unmap_file(t_file file);
 
 #endif

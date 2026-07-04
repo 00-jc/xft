@@ -6,7 +6,7 @@
 //   By: username <your@mail.com>                   +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2026/06/29 09:15:56 by username          #+#    #+#             //
-//   Updated: 2026/07/02 14:14:46 by jaicastr         ###   ########.fr       //
+//   Updated: 2026/07/04 12:53:31 by jaicastr         ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -84,7 +84,13 @@ pub const SRCS_FMT = &[_][]const u8{
     "src/fmt/ft_fmt_handle_slice.c",
 };
 
+pub const SRCS_CONCURRENCY = &[_][]const u8{
+    "src/concurrency/ft_fences.c",
+    "src/concurrency/mutex/ft_mutex.c"
+};
+
 pub const SRCS_IO = &[_][]const u8{
+    "src/io/ft_map_file.c",
     "src/io/ft_writer_write.c",
     "src/io/ft_get_fixed_fd.c",
     "src/io/blocking_fd/ft_drain.c",
@@ -311,6 +317,7 @@ pub const MODULES = SRCS_SYSCALLS
                 ++ SRCS_TAILOR
                 ++ SRCS_SORT
                 ++ SRCS_FMT
+                ++ SRCS_CONCURRENCY
                 ++ SRCS_FUZZ;
 
 pub const TEST_NAME = "tests";

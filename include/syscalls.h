@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/29 23:39:13 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/06/30 10:28:26 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/07/04 12:49:59 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,5 +115,11 @@ int		ft_sched_setaffinity(int pid, t_size cpusetsize,\
 
 t_ssize	ft_writev(int fd, t_iovec *buffers, t_size len)\
 			__attribute__((__nonnull__(2), __always_inline__));
+
+long	ft_futex_wait(t_u32a *__restrict__ const uaddr)\
+			__attribute__((__nonnull__(1)));
+
+long	ft_futex_wake(t_u32a *__restrict__ const uaddr)\
+			__attribute__((__nonnull__(1)));
 
 #endif
