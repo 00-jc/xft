@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/03 22:27:59 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/07/04 13:31:18 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/07/04 13:40:20 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ inline void	ft_mutex_spin(t_mutex *__restrict__ const mutex)
 	while (true)
 	{
 		iters = FT_MUTEX_SPIN;
-		while (iters-- > FT_UNLOCKED)
+		while (iters--)
 		{
 			__atomic_load(mutex, &val, __ATOMIC_RELAXED);
 			if (__builtin_expect(val == FT_UNLOCKED, 1))
