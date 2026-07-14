@@ -87,15 +87,13 @@ static void	fuzz_strlen_case(t_fuzzer *fz)
 	ft_pin_invariant(ft_strlen(x) == strlen(x));
 }
 
-int	ft_main(t_size argc, t_u8 **argv, t_u8 **envp)
+void	ft_main(const t_any *__restrict__ const sp)
 {
 	t_fuzzer	fz;
 	t_size		i;
 	t_size		n;
 
-	(void)argc;
-	(void)argv;
-	(void)envp;
+	(void)sp;
 	fz = ft_fuzzer_new(ft_new_arena_alloc());
 	ft_pin_invariant(fz.arena.current != nullptr);
 	ft_pin_invariant(ft_fuzzer_add_rand(&fz));
@@ -109,5 +107,5 @@ int	ft_main(t_size argc, t_u8 **argv, t_u8 **envp)
 		fuzz_strlen_case(&fz);
 	}
 	ft_fuzzer_destroy(&fz);
-	return (0);
+	ft_exit(0);
 }

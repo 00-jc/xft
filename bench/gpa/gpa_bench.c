@@ -15,7 +15,7 @@
 #include "rt.h"
 
 __attribute__((__always_inline__))
-inline int	ft_main(t_u64a argc, t_u8 **argv, t_u8 **envp)
+inline void	ft_main(const t_any *__restrict__ const sp)
 {
 	static t_tailor_bench	benches[] = {
 	{ft_gpa_bench_8, (t_blk8r)"gpa_alloc_free_8"},
@@ -30,12 +30,12 @@ inline int	ft_main(t_u64a argc, t_u8 **argv, t_u8 **envp)
 	};
 	t_tailor				t;
 
-	(void)argc;
-	(void)argv;
-	(void)envp;
+	(void)sp;
 	ft_bind_process_to_cpu(0);
 	if (!ft_tailor_new(&t, 2, 2000))
-		return (1);
-	return ((void)ft_tailor_bench(&t, benches, 9),
-		ft_gpa_destroy(ft_get_bench_gpa()), ft_tailor_destroy(&t), 0);
+		ft_exit(1);
+	(void)ft_tailor_bench(&t, benches, 9);
+	ft_gpa_destroy(ft_get_bench_gpa());
+	ft_tailor_destroy(&t);
+	ft_exit(0);
 }

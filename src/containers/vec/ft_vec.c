@@ -12,18 +12,18 @@
 
 #include "vec.h"
 
-t_vec	ft_vec(t_allocator allocator, size_t size, size_t type_size)
+t_vec	ft_vec(t_allocator allocator, t_size size, t_size type_size)
 {
 	t_buffer	buf;
-	size_t		mul;
+	t_size		mul;
 
 	if (allocator.allocator == nullptr
-		|| allocator.interface.allocate == nullptr)
+		|| allocator.vtable.allocate == nullptr)
 		__builtin_unreachable();
 	mul = size * type_size;
 	if (mul == 0 || (mul / size != type_size))
 		return ((t_vec){0});
-	buf = allocator.interface.allocate(allocator.allocator, mul,
+	buf = allocator.vtable.allocate(allocator.allocator, mul,
 			ft_next_pow2(mul));
 	if (__builtin_expect(buf.mem == nullptr, 0))
 		return ((t_vec){0});
@@ -37,9 +37,9 @@ __attribute__((__always_inline__, __nonnull__(2)))
 inline void	ft_vec_destroy(t_allocator allocator, t_vec *v)
 {
 	if (allocator.allocator == nullptr
-		|| allocator.interface.free == nullptr || v->buf.mem == nullptr)
+		|| allocator.vtable.free == nullptr || v->buf.mem == nullptr)
 		__builtin_unreachable();
 	if (v->buf.mem)
-		allocator.interface.free(allocator.allocator, v->buf);
+		allocator.vtable.free(allocator.allocator, v->buf);
 	*v = (t_vec){0};
 }

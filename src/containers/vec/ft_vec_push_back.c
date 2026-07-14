@@ -15,7 +15,7 @@
 __attribute__((__nonnull__(2, 3), __always_inline__, hot))
 inline t_result	ft_vec_push_back(t_allocator allocator,
 		t_vec *restrict const vec,
-		const t_u8 *restrict const data, size_t type_size)
+		const t_u8 *restrict const data, t_size type_size)
 {
 	if (vec->buf.mem == nullptr || allocator.allocator == nullptr)
 		__builtin_unreachable();

@@ -11,7 +11,6 @@
 // ************************************************************************** //
 
 const std       = @import("std");
-const builtin   = @import("builtin");
 
 const WARNS_COMMON = &[_][]const u8{
     "-Wall",
@@ -220,5 +219,8 @@ pub const CFLAGS_COMMON = &[_][]const u8{
     "-falign-functions",
     "-fjump-tables",
     "-g3",
-    if (builtin.cpu.arch == .x86_64) "-fcf-protection=full" else "",
 } ++ WARNS_COMMON ;
+
+// Intel CET; not a valid flag outside x86_64, so callers must pick the
+// resolved *target*'s arch (not the host's) before appending this.
+pub const CFLAG_CF_PROTECTION = "-fcf-protection=full";

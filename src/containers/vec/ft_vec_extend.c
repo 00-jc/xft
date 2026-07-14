@@ -14,13 +14,13 @@
 
 __attribute__((__nonnull__(2), __always_inline__))
 inline t_result	ft_vec_reserve(t_allocator allocator, t_vec *restrict const vec,
-	size_t n)
+	t_size n)
 {
 	t_buffer	new_buf;
-	size_t		new_cap;
+	t_size		new_cap;
 
 	new_cap = n + vec->buf.size;
-	new_buf = allocator.interface.realloc(allocator.allocator,
+	new_buf = allocator.vtable.realloc(allocator.allocator,
 			vec->buf, new_cap, ft_next_pow2(new_cap));
 	if (__builtin_expect(new_buf.mem != nullptr, 1))
 	{

@@ -17,7 +17,7 @@ void	test_palloc_vtable_realloc(t_allocator *alloc, t_buffer buf)
 {
 	t_buffer	rbuf;
 
-	rbuf = alloc->interface.realloc(alloc->allocator, buf, 4096, 8);
+	rbuf = alloc->vtable.realloc(alloc->allocator, buf, 4096, 8);
 	ft_pin_invariant_msg(rbuf.mem != nullptr,
 		ft_fatptr((t_u8 *)"palloc: realloc ok",
 			sizeof("palloc: realloc ok") - 1));
@@ -30,5 +30,5 @@ void	test_palloc_vtable_realloc(t_allocator *alloc, t_buffer buf)
 	ft_pin_invariant_msg(rbuf.mem[63] == 0xCD,
 		ft_fatptr((t_u8 *)"palloc: rdata hi",
 			sizeof("palloc: rdata hi") - 1));
-	alloc->interface.free(alloc->allocator, rbuf);
+	alloc->vtable.free(alloc->allocator, rbuf);
 }

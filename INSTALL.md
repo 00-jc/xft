@@ -18,7 +18,7 @@ zig build core
 ```
 
 This produces `libxft.a` under `zig-out/lib/`, built freestanding on
-x86_64 (see "Libc Linkage" below).
+x86_64 and aarch64 (see "Libc Linkage" below).
 
 ### Other `zig build` steps
 
@@ -54,12 +54,13 @@ Other targets: `make clean`, `make fclean`, `make re`, `make analyze`.
 
 ## Libc Linkage
 
-The core library is freestanding on x86_64 by default. Libc is linked if
-`FT_REQUIRE_LIBC` is defined, or whenever **any** of the following holds:
+The core library is freestanding on x86_64 and aarch64 by default. Libc is
+linked if `FT_REQUIRE_LIBC` is defined, or whenever **any** of the following
+holds:
 
 - Building the library with sanitizers of any kind (needed for the runtime)
 - `-Dlibc=true` is passed to `zig build`
-- Compilation targets a non-x86_64 architecture
+- Compilation targets an architecture other than x86_64 or aarch64
 
 ## Using the library
 

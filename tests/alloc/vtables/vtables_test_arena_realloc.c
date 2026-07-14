@@ -17,7 +17,7 @@ void	test_arena_vtable_realloc(t_allocator *alloc, t_buffer buf)
 {
 	t_buffer	rbuf;
 
-	rbuf = alloc->interface.realloc(alloc->allocator, buf, 256, 16);
+	rbuf = alloc->vtable.realloc(alloc->allocator, buf, 256, 16);
 	ft_pin_invariant_msg(rbuf.mem != nullptr,
 		ft_fatptr((t_u8 *)"arena: realloc ok",
 			sizeof("arena: realloc ok") - 1));
@@ -28,10 +28,10 @@ void	test_arena_vtable_realloc(t_allocator *alloc, t_buffer buf)
 		ft_fatptr((t_u8 *)"arena: rdata lo", sizeof("arena: rdata lo") - 1));
 	ft_pin_invariant_msg(rbuf.mem[127] == 0xAD,
 		ft_fatptr((t_u8 *)"arena: rdata hi", sizeof("arena: rdata hi") - 1));
-	alloc->interface.free(alloc->allocator, rbuf);
-	rbuf = alloc->interface.allocate(alloc->allocator, 64, 8);
+	alloc->vtable.free(alloc->allocator, rbuf);
+	rbuf = alloc->vtable.allocate(alloc->allocator, 64, 8);
 	ft_pin_invariant_msg(rbuf.mem != nullptr,
 		ft_fatptr((t_u8 *)"arena: post-free alloc",
 			sizeof("arena: post-free alloc") - 1));
-	alloc->interface.destroy(alloc->allocator);
+	alloc->vtable.destroy(alloc->allocator);
 }

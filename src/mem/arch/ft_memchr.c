@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/29 23:39:13 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/06/29 23:39:20 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/07/09 15:06:00 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,11 @@ __attribute__((__nonnull__ (1), pure))
 t_any	ft_memchr(t_cany restrict ptr, int c, t_size n)
 {
 	if (n >= sizeof(t_vu512a))
-		return (ft_memchr_avx512(ptr, c, n));
+		return (ft_memchr_512(ptr, c, n));
 	else if (n >= sizeof(t_vu256a))
-		return (ft_memchr_avx256(ptr, c, n));
+		return (ft_memchr_256(ptr, c, n));
 	else if (n >= sizeof(t_vu128a))
-		return (ft_memchr_sse(ptr, c, n));
+		return (ft_memchr_128(ptr, c, n));
 	else
 		return (ft_memchr_minimal(ptr, (t_u8)c, n));
 }
@@ -33,9 +33,20 @@ __attribute__((__nonnull__ (1), pure))
 t_any	ft_memchr(t_cany restrict ptr, int c, t_size n)
 {
 	if (n >= sizeof(t_vu256a))
-		return (ft_memchr_avx256(ptr, c, n));
+		return (ft_memchr_256(ptr, c, n));
 	else if (n >= sizeof(t_vu128a))
-		return (ft_memchr_sse(ptr, c, n));
+		return (ft_memchr_128(ptr, c, n));
+	else
+		return (ft_memchr_minimal(ptr, (t_u8)c, n));
+}
+
+#elif FT_HAS_128_VEC
+
+__attribute__((__nonnull__ (1), pure))
+t_any	ft_memchr(t_cany restrict ptr, int c, t_size n)
+{
+	if (n >= sizeof(t_vu128a))
+		return (ft_memchr_128(ptr, c, n));
 	else
 		return (ft_memchr_minimal(ptr, (t_u8)c, n));
 }
@@ -45,10 +56,7 @@ t_any	ft_memchr(t_cany restrict ptr, int c, t_size n)
 __attribute__((__nonnull__ (1), pure))
 t_any	ft_memchr(t_cany restrict ptr, int c, t_size n)
 {
-	if (n >= sizeof(t_vu128a))
-		return (ft_memchr_sse(ptr, c, n));
-	else
-		return (ft_memchr_minimal(ptr, (t_u8)c, n));
+	return (ft_memchr_minimal(ptr, (t_u8)c, n));
 }
 
 #endif

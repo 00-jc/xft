@@ -20,7 +20,7 @@ inline void	ft_vec_pop(t_vec *restrict const v, t_size type_size)
 
 __attribute__((__always_inline__, __nonnull__(1)))
 inline t_result	ft_vec_popmv(t_vec *restrict const v, t_any const dest,
-	size_t type_size)
+	t_size type_size)
 {
 	t_u8	*last;
 
@@ -43,12 +43,12 @@ inline t_result	ft_vec_pop_managed(t_allocator allocator,
 	t_u8	*last;
 
 	if (v->buf.mem == nullptr || allocator.allocator == nullptr
-		|| allocator.interface.free == nullptr)
+		|| allocator.vtable.free == nullptr)
 		__builtin_unreachable();
 	last = ft_vec_get_last(v, type_size);
 	if (__builtin_expect(last != nullptr, 1))
 	{
-		allocator.interface.free(allocator.allocator, *(t_buffer *)last);
+		allocator.vtable.free(allocator.allocator, *(t_buffer *)last);
 		ft_vec_pop(v, type_size);
 		return (OK);
 	}

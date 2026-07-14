@@ -13,7 +13,7 @@
 #include "vec.h"
 
 __attribute__((__nonnull__(1), __always_inline__, pure))
-inline size_t	ft_vec_len(const t_vec *restrict const v, size_t type_size)
+inline t_size	ft_vec_len(const t_vec *restrict const v, t_size type_size)
 {
 	return (v->size / type_size);
 }

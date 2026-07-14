@@ -68,7 +68,8 @@ static inline t_buffer	ft_paged_ptr(t_reporta *gpa, t_size sizes[2])
 	t_any	new_ptr;
 
 	++gpa->paged;
-	new_ptr = ft_mmap(sizes[1], 0, ft_match_hugepage_flags(sizes[1]));
+	new_ptr = ft_mmap(sizes[1], PROT_READ | PROT_WRITE,
+			ft_match_hugepage_flags(sizes[1]));
 	if (__builtin_expect(new_ptr == (t_any)MAP_FAILED, 0))
 		return (ft_fatptr(nullptr, 0));
 	gpa->avg_frag += (t_f64)((t_f64)(sizes[1] - sizes[0]) - gpa->avg_frag)

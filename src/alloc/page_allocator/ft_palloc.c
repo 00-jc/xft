@@ -21,7 +21,7 @@ inline t_buffer	ft_palloc(t_size size)
 
 	snapped = ft_match_hugepage(size);
 	flags = ft_match_hugepage_flags(snapped);
-	mem = ft_mmap(snapped, 0, flags);
+	mem = ft_mmap(snapped, PROT_READ | PROT_WRITE, flags);
 	return ((t_buffer){
 		.size = snapped,
 		.mem = (t_any)ft_tern(mem != (t_any)MAP_FAILED, (t_u64a)mem, 0),
@@ -40,7 +40,7 @@ inline t_buffer	ft_palloc_resize(t_buffer b, t_size new_size)
 	if (__builtin_expect(snapped == b.size, 1))
 		return (b);
 	flags = ft_match_hugepage_flags(snapped);
-	mem = ft_mmap(snapped, 0, flags);
+	mem = ft_mmap(snapped, PROT_READ | PROT_WRITE, flags);
 	new_b = (t_buffer){
 		.size = snapped,
 		.mem = (t_any)ft_tern(mem != (t_any)MAP_FAILED, (t_u64a)mem, 0),

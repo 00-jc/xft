@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/29 23:39:13 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/06/29 23:39:19 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/07/09 14:55:34 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,11 +37,17 @@ typedef const t_u8 *__restrict__ const								t_blk8r;
 #  define FT_HAS_256_VEC 1
 #  define FT_HAS_128_VEC 1
 
-# else
+# elif defined(__SSE__) || defined(__ARM_NEON)
 
 #  define FT_HAS_512_VEC 0
 #  define FT_HAS_256_VEC 0
 #  define FT_HAS_128_VEC 1
+
+# else
+
+#  define FT_HAS_512_VEC 0
+#  define FT_HAS_256_VEC 0
+#  define FT_HAS_128_VEC 0
 
 # endif
 

@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/29 23:39:13 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/06/29 23:39:19 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/07/08 17:35:16 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,10 @@
 
 # define LONES_64 			0x0101010101010101ULL
 # define HIGHS_64	 		0x8080808080808080ULL
+
+# ifndef FT_PAGE_ALIGN
+#  define FT_PAGE_ALIGN 0x1000ULL
+# endif
 
 void			ft_bzero(t_any __restrict__ ptr, t_size n)\
 					__attribute__((__nonnull__(1)));

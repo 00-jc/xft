@@ -17,7 +17,7 @@ void	test_gpa_vtable_realloc(t_allocator *alloc, t_buffer buf)
 {
 	t_buffer	rbuf;
 
-	rbuf = alloc->interface.realloc(alloc->allocator, buf, 512, 8);
+	rbuf = alloc->vtable.realloc(alloc->allocator, buf, 512, 8);
 	ft_pin_invariant_msg(rbuf.mem != nullptr,
 		ft_fatptr((t_u8 *)"gpa: realloc non-null",
 			sizeof("gpa: realloc non-null") - 1));
@@ -30,6 +30,6 @@ void	test_gpa_vtable_realloc(t_allocator *alloc, t_buffer buf)
 	ft_pin_invariant_msg(rbuf.mem[63] == 0xFE,
 		ft_fatptr((t_u8 *)"gpa: realloc data hi",
 			sizeof("gpa: realloc data hi") - 1));
-	alloc->interface.free(alloc->allocator, rbuf);
-	alloc->interface.destroy(alloc->allocator);
+	alloc->vtable.free(alloc->allocator, rbuf);
+	alloc->vtable.destroy(alloc->allocator);
 }

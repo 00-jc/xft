@@ -58,7 +58,8 @@ t_buffer	ft_gpa_alloc(t_any alloc, t_size size, t_size align)
 	freelist = 60 - ft_memclz_u64(snapped);
 	if (GPA_CLASSES <= freelist)
 	{
-		new_ptr = ft_mmap(snapped, 0, ft_match_hugepage_flags(snapped));
+		new_ptr = ft_mmap(snapped, PROT_READ | PROT_WRITE,
+				ft_match_hugepage_flags(snapped));
 		new_ptr = (t_any)ft_tern(new_ptr == (t_any)MAP_FAILED,
 				0, (t_uptr)new_ptr);
 		return (ft_fatptr(new_ptr, snapped));

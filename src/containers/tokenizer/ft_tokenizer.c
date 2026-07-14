@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "tokenizer.h"
+#include "private/ft_p_tok.h"
 
 __attribute__((__nonnull__(1), const, __always_inline__))
 inline t_tokenizer	ft_tokenizer_over(t_any mem, t_size size)
@@ -39,7 +39,9 @@ t_u32a	ft_tokenizer_goto(t_tokenizer *tk, t_u8 byte)
 __attribute__((__nonnull__(1), __always_inline__))
 inline void	ft_skip_whitespace(t_tokenizer *tk)
 {
-	(void)ft_eat_while(tk, set_blank);
+	const t_eaterset	set = {.eater8 = ft_isspace};
+
+	(void)ft_eat_while(tk, &set);
 }
 
 __attribute__((__nonnull__(1), __always_inline__))

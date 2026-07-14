@@ -18,9 +18,9 @@
  * */
 
 __attribute__((const, __always_inline__))
-static inline struct perf_event_attr	ft__getattr(t_u32a type, long conf)
+static inline t_perf_event_attr	ft__getattr(t_u32a type, long conf)
 {
-	struct perf_event_attr	attr;
+	t_perf_event_attr		attr;
 
 	ft_memset(&attr, 0, sizeof(attr));
 	attr.read_format = PERF_FORMAT_TOTAL_TIME_ENABLED
@@ -41,7 +41,7 @@ __attribute__((__nonnull__(1)))
 static inline t_result	ft__init_hw(t_perf_counters c)
 {
 	t_size					i;
-	struct perf_event_attr	attr;
+	t_perf_event_attr		attr;
 
 	i = SW_COUNTERS_N;
 	while (i < HW_COUNTERS_N + SW_COUNTERS_N)
@@ -64,7 +64,7 @@ __attribute__((__nonnull__(1)))
 static inline t_result	ft__init_sw(t_perf_counters c)
 {
 	t_size					i;
-	struct perf_event_attr	attr;
+	t_perf_event_attr		attr;
 
 	attr = ft__getattr(PERF_TYPE_SOFTWARE, get_sw_counters()[0]);
 	c[0] = ft_perf_event_open(&attr, -1);

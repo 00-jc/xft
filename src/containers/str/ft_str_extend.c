@@ -22,7 +22,7 @@ t_result	ft_str_reserve(t_allocator allocator,
 	if (str->mem == nullptr || allocator.allocator == nullptr)
 		__builtin_unreachable();
 	new_cap = n + str->capacity + 1;
-	new_buf = allocator.interface.realloc(allocator.allocator,
+	new_buf = allocator.vtable.realloc(allocator.allocator,
 			ft_fatptr(str->mem, str->capacity), new_cap, ft_next_pow2(new_cap));
 	if (__builtin_expect(new_buf.mem == nullptr, 0))
 		return (KO);

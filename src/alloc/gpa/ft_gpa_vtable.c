@@ -41,7 +41,7 @@ __attribute__((__nonnull__(1), __const__))
 t_allocator	ft_gpa_allocator(t_gpa *gpa)
 {
 	return ((t_allocator){
-		.interface = {
+		.vtable = {
 			.free = gpa_free,
 			.realloc = gpa_reallocate,
 			.allocate = gpa_allocate,

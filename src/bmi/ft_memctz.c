@@ -12,7 +12,7 @@
 
 #include "bmi.h"
 
-#if !defined(__BMI__) || !defined(__x86_64__)
+#if !defined(__aarch64__) && (!defined(__BMI__) || !defined(__x86_64__))
 
 __attribute__((hot, const, __always_inline__))
 inline t_size	ft_memctz_u16(t_u16 x)

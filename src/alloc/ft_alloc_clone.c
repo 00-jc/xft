@@ -19,7 +19,7 @@ t_buffer	ft_alloc_clone(t_any self, t_buffer buffer)
 {
 	t_buffer	mem;
 
-	mem = ((t_allocator *)self)->interface.allocate(
+	mem = ((t_allocator *)self)->vtable.allocate(
 			((t_allocator *)self)->allocator, buffer.size,
 			ft_next_pow2(buffer.size));
 	if (__builtin_expect(mem.mem == nullptr, 0))

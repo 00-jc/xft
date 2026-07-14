@@ -42,7 +42,7 @@ t_allocator	ft_new_page_alloc(void)
 	static t_page_alloc	instance = {0};
 
 	return ((t_allocator){
-		.interface = {
+		.vtable = {
 			.free = palloc_free,
 			.realloc = palloc_reallocate,
 			.allocate = palloc_allocate,

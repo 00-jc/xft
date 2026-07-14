@@ -96,15 +96,15 @@ t_any			ft_memchr_minimal(t_cany ptr,
 					t_u8 c, t_size n)\
 					__attribute__((__nonnull__(1)));
 
-t_any			ft_memchr_sse(t_cany ptr,\
+t_any			ft_memchr_128(t_cany ptr,\
 					int c, t_size n)\
 					__attribute__((__nonnull__(1)));
 
-t_any			ft_memchr_avx256(t_cany ptr,
+t_any			ft_memchr_256(t_cany ptr,
 					int c, t_size n)\
 					__attribute__((__nonnull__(1)));
 
-t_any			ft_memchr_avx512(t_cany ptr,
+t_any			ft_memchr_512(t_cany ptr,
 					int c, t_size n)\
 					__attribute__((__nonnull__(1)));
 
@@ -113,15 +113,15 @@ t_ssize			ft_memcmp_minimal(t_cany __restrict__ const ptr1,
 					t_size n)\
 					__attribute__((__nonnull__(1, 2)));
 
-t_ssize			ft_memcmp_sse(t_cany __restrict__ const ptr1,
+t_ssize			ft_memcmp_128(t_cany __restrict__ const ptr1,
 					t_cany __restrict__ const ptr2, t_size n)\
 					__attribute__((__nonnull__(1, 2)));
 
-t_ssize			ft_memcmp_avx256(t_cany __restrict__ const ptr1,
+t_ssize			ft_memcmp_256(t_cany __restrict__ const ptr1,
 					t_cany __restrict__ const ptr2, t_size n)\
 					__attribute__((__nonnull__(1, 2)));
 
-t_ssize			ft_memcmp_avx512(t_cany __restrict__ const ptr1,
+t_ssize			ft_memcmp_512(t_cany __restrict__ const ptr1,
 					t_cany __restrict__ const ptr2, t_size n)\
 					__attribute__((__nonnull__(1, 2)));
 

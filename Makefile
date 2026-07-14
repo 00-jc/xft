@@ -366,7 +366,6 @@ SRCS_TOK := \
 	src/containers/tokenizer/ft_eat_u512.c \
 	src/containers/tokenizer/ft_eat_until.c \
 	src/containers/tokenizer/ft_eat_u8.c \
-	src/containers/tokenizer/ft_sets.c \
 	src/containers/tokenizer/ft_tokenizer.c \
 	src/containers/tokenizer/ft_eat_while.c
 

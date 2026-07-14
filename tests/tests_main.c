@@ -39,15 +39,13 @@ inline void	run_all_tests(t_test *t)
 }
 
 __attribute__((__always_inline__))
-inline int	ft_main(t_u64a argc, t_u8 **argv, t_u8 **envp)
+inline void	ft_main(const t_any *__restrict__ const sp)
 {
 	t_test	t;
 
 	ft_test_init(&t);
 	run_all_tests(&t);
-	(void)argc;
-	(void)argv;
-	(void)envp;
+	(void)sp;
 	ft_writer_flush(&t.writer);
-	return (0);
+	ft_exit(0);
 }

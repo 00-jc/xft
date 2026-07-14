@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/29 23:39:13 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/06/29 23:39:19 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/07/14 02:14:52 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,12 @@ t_size			ft_next_pow2(t_size qword)\
 					__attribute__((const, __hot__));
 
 t_size			ft_last_pow2(t_size qword)\
+					__attribute__((const, __hot__));
+
+t_u64			ft_align_fwd_integer(t_u64a n, t_u64 align)\
+					__attribute__((const, __hot__));
+
+t_u64			ft_align_bwd_integer(t_u64a n, t_u64 align)\
 					__attribute__((const, __hot__));
 
 #endif

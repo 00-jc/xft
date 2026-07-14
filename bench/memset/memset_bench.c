@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/20 15:14:00 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/07/01 23:39:51 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/07/13 11:39:23 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include "mem_bench.h"
 
 __attribute__((__always_inline__))
-inline int	ft_main(t_u64a argc, t_u8 **argv, t_u8 **envp)
+inline void	ft_main(const t_any *__restrict__ const sp)
 {
 	static t_size			bufsizes[] = {
 		1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2049, (1 << 18), (1 << 20),
@@ -35,10 +35,10 @@ inline int	ft_main(t_u64a argc, t_u8 **argv, t_u8 **envp)
 	};
 	t_tailor				t;
 
-	((void)argc, (void)argv, (void)envp, ft_bind_process_to_cpu(0));
+	((void)sp, ft_bind_process_to_cpu(0));
 	if (!ft_tailor_new(&t, 2, 2000))
-		return (1);
+		ft_exit(1);
 	if (!ft_tailor_buffers(&t, bufsizes, bufalign, 28))
-		return (1);
-	return ((void)ft_tailor_bench(&t, benches, 7), ft_tailor_destroy(&t), 0);
+		ft_exit(1);
+	((void)ft_tailor_bench(&t, benches, 7), ft_tailor_destroy(&t), ft_exit(0));
 }

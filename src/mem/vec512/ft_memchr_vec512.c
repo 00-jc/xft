@@ -35,7 +35,7 @@ inline t_any	ft__fix_last_w(const t_u8 *restrict const ptr,
 }
 
 __attribute__((__nonnull__ (1), __always_inline__, pure))
-inline t_any	ft_memchr_avx512(t_cany restrict ptr, int c, t_size n)
+inline t_any	ft_memchr_512(t_cany restrict ptr, int c, t_size n)
 {
 	t_u64a						hasz;
 	t_vu512a					w;

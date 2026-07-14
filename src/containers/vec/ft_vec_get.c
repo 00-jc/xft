@@ -14,7 +14,7 @@
 
 __attribute__((__nonnull__(1), __always_inline__, pure))
 inline t_cany	ft_vec_get(const t_vec *restrict const vec,
-		size_t idx, size_t type_size)
+		t_size idx, t_size type_size)
 {
 	t_size		byte_idx;
 
@@ -25,7 +25,7 @@ inline t_cany	ft_vec_get(const t_vec *restrict const vec,
 
 __attribute__((__nonnull__(1), __always_inline__, pure))
 inline t_any	ft_vec_get_mut(const t_vec *restrict const vec,
-		size_t idx, size_t type_size)
+		t_size idx, t_size type_size)
 {
 	t_size	byte_idx;
 
@@ -36,7 +36,7 @@ inline t_any	ft_vec_get_mut(const t_vec *restrict const vec,
 
 __attribute__((__nonnull__(1), __always_inline__, pure))
 inline t_cany	ft_vec_peek_last(const t_vec *restrict const vec,
-	size_t type_size)
+	t_size type_size)
 {
 	return ((t_cany)(-((t_uptr)vec->size != 0)
 		& ((t_uptr)vec->buf.mem + (vec->size - type_size))));
@@ -44,7 +44,7 @@ inline t_cany	ft_vec_peek_last(const t_vec *restrict const vec,
 
 __attribute__((__nonnull__(1), __always_inline__, pure))
 inline t_any	ft_vec_get_last(const t_vec *restrict const vec,
-	size_t type_size)
+	t_size type_size)
 {
 	return ((t_any)(-((t_uptr)vec->size != 0)
 		& ((t_uptr)vec->buf.mem + (vec->size - type_size))));

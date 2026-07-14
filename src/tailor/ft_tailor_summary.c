@@ -121,7 +121,7 @@ void	ft_print_summary(t_buffer surv, t_plankb plan, t_tailor_report_ctx ctx,
 	if (surv.mem == nullptr || ctx.name == nullptr)
 		__builtin_unreachable();
 	ft_sum_counters((t_perf_sample *)surv.mem, &sum, surv.size);
-	args[0] = (t_u64a)(uintptr_t)ctx.name;
+	args[0] = (t_u64a)(t_uptr)ctx.name;
 	args[1] = (t_u64a)ft_strlen((const char *)ctx.name);
 	ft_init_args(sum, plan, data, args);
 	ft_init_args2(sum, surv, plan, args);

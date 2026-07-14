@@ -13,7 +13,18 @@
 #include "syscalls.h"
 #include "private/ft_p_time.h"
 
-#if !defined(__x86_64__)
+#if defined(__aarch64__) && !defined(FT_REQUIRE_LIBC)
+
+__attribute__((__always_inline__))
+inline t_u64a	ft_get_nanos(void)
+{
+	t_timespec	ts;
+
+	ft_clock_gettime(&ts);
+	return (((t_u64a)ts.tv_sec * 1000000000) + (t_u64a)ts.tv_nsec);
+}
+
+#elif !defined(__x86_64__)
 
 __attribute__((__always_inline__))
 inline t_u64a	ft_get_nanos(void)

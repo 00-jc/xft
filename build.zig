@@ -6,7 +6,7 @@
 //   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2026/05/15 07:20:25 by jaicastr          #+#    #+#             //
-//   Updated: 2026/06/29 09:39:36 by username         ###   ########.fr       //
+//   Updated: 2026/07/12 10:00:50 by jaicastr         ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -21,6 +21,9 @@ const TEST_NAME         = @import("bs/sources.zig").TEST_NAME;
 const SRCS_FUZZ_TARGETS = @import("bs/sources.zig").SRCS_FUZZ_TARGETS;
 const BENCH_TARGETS     = @import("bs/sources.zig").BENCH_TARGETS;
 const CFLAGS_COMMON     = @import("bs/flags.zig").CFLAGS_COMMON;
+const CFLAG_CF_PROTECTION = @import("bs/flags.zig").CFLAG_CF_PROTECTION;
+const syscalls_for      = @import("bs/sources.zig").syscalls_for;
+const threads_for       = @import("bs/sources.zig").threads_for;
 
 pub const Opts = struct
 {
@@ -41,10 +44,30 @@ const LIB_STEPS = &[_]struct { step: []const u8, desc: []const u8, cfg: XFT }{
     .{ .step = "nolto", .desc = "Build with no lto",           .cfg = .{ .lto = false, .san = false, .tsan = false } },
 };
 
-inline fn add_includes(b: *std.Build, mod: *std.Build.Module) void
+inline fn add_includes(b: *std.Build, mod: *std.Build.Module, target: std.Build.ResolvedTarget) void
 {
     mod.addIncludePath(b.path(INCLUDES));
-    mod.addSystemIncludePath(.{ .cwd_relative = "/usr/include" });
+    // after, not system: so the target's own <stdint.h> etc (resolved by
+    // the compiler for the target) win over the host's when cross-compiling;
+    // the host path is only there to supply things like <linux/perf_event.h>.
+    if (target.result.cpu.arch != .x86_64 and target.result.cpu.arch != .aarch64)
+        mod.addAfterIncludePath(.{ .cwd_relative = "/usr/include" });
+}
+
+inline fn cflags_for(target: std.Build.ResolvedTarget) []const []const u8
+{
+    return if (target.result.cpu.arch == .x86_64)
+        CFLAGS_COMMON ++ &[_][]const u8{CFLAG_CF_PROTECTION}
+    else
+        CFLAGS_COMMON;
+}
+
+inline fn bench_cflags_for(target: std.Build.ResolvedTarget) []const []const u8
+{
+    return if (target.result.cpu.arch == .x86_64)
+        CFLAGS_COMMON ++ &[_][]const u8{CFLAG_CF_PROTECTION}
+    else
+        CFLAGS_COMMON;
 }
 
 inline fn install_step(
@@ -63,7 +86,10 @@ inline fn make_lib(
     opt:            Opts,
 ) *std.Build.Step.Compile
 {
-    const libc = cfg.san or builtin.cpu.arch != .x86_64 or opt.use_libc;
+    const target_arch = opt.target.result.cpu.arch;
+    const libc = cfg.san
+        or (target_arch != .x86_64 and target_arch != .aarch64)
+        or opt.use_libc;
     var mod = b.createModule(.{
         .optimize        = if (cfg.san or cfg.tsan) .Debug else opt.optimize,
         .target          = opt.target,
@@ -77,13 +103,21 @@ inline fn make_lib(
         .sanitize_thread = cfg.tsan,
         .pic             = true,
     });
-    add_includes(b, mod);
+    add_includes(b, mod, opt.target);
     mod.addCMacro("FT_NTHREADS", b.fmt("{d}", .{std.Thread.getCpuCount() catch 1}));
     mod.addCMacro("FT_LLC", b.fmt("{d}", .{opt.llc_out}));
     if (libc) mod.addCMacro("FT_REQUIRE_LIBC", "");
     mod.addCSourceFiles(.{
         .files = MODULES,
-        .flags = CFLAGS_COMMON,
+        .flags = cflags_for(opt.target),
+    });
+    mod.addCSourceFiles(.{
+        .files = syscalls_for(target_arch),
+        .flags = cflags_for(opt.target),
+    });
+    mod.addCSourceFiles(.{
+        .files = threads_for(target_arch),
+        .flags = cflags_for(opt.target),
     });
     const lib = b.addLibrary(.{
         .name        = NAME,
@@ -119,10 +153,10 @@ inline fn make_test_exe(
         .stack_protector = true,
         .stack_check     = true,
     });
-    add_includes(b, mod);
+    add_includes(b, mod, opt.target);
     mod.addCSourceFiles(.{
         .files = srcs,
-        .flags = CFLAGS_COMMON,
+        .flags = cflags_for(opt.target),
     });
     mod.linkLibrary(xft_san);
     const exe = b.addExecutable(.{
@@ -143,18 +177,19 @@ inline fn make_bench_exe(
     srcs:      []const []const u8,
 ) *std.Build.Step.Compile
 {
+    const target_arch = opt.target.result.cpu.arch;
     var mod = b.createModule(.{
         .optimize        = .ReleaseFast,
         .target          = opt.target,
-        .link_libc       = builtin.cpu.arch != .x86_64,
+        .link_libc       = target_arch != .x86_64 and target_arch != .aarch64,
         .single_threaded = false,
     });
-    add_includes(b, mod);
+    add_includes(b, mod, opt.target);
     mod.addIncludePath(b.path("bench/include"));
     mod.addCMacro("FT_LLC", b.fmt("{d}", .{opt.llc_out}));
     mod.addCSourceFiles(.{
         .files = srcs,
-        .flags = CFLAGS_COMMON ++ .{ "-march=native", "-mtune=native", "-O3" },
+        .flags = bench_cflags_for(opt.target),
     });
     if (mod.link_libc) |x| if (x) mod.addCMacro("FT_REQUIRE_LIBC", "");
     mod.linkLibrary(xft_bench);
@@ -227,13 +262,23 @@ pub fn build(b: *std.Build) !void
         bench_step.dependOn(&run.step);
     }
 
+    // analyze/complexity always run the host's own clang, never a cross
+    // target, so the host arch (builtin.cpu.arch) is the right thing to
+    // key off here -- unlike the cross-compilable lib/test/bench steps.
+    const host_cflags = if (builtin.cpu.arch == .x86_64)
+        CFLAGS_COMMON ++ &[_][]const u8{CFLAG_CF_PROTECTION}
+    else
+        CFLAGS_COMMON;
+    const host_syscalls = comptime syscalls_for(builtin.cpu.arch);
+    const host_threads  = comptime threads_for(builtin.cpu.arch);
+
     const analyze_step = b.step("analyze", "Run clang static analyzer");
     const analyze_cmd  = b.addSystemCommand(
-        .{"clang"} ++ CFLAGS_COMMON ++ .{ "--analyze", "--analyzer-output", "text", "-I", INCLUDES } ++ MODULES,
+        .{"clang"} ++ host_cflags ++ .{ "--analyze", "--analyzer-output", "text", "-I", INCLUDES } ++ MODULES ++ host_syscalls ++ host_threads,
     );
     analyze_step.dependOn(&analyze_cmd.step);
     const complexity_cmd = b.addSystemCommand(
-        .{"complexity"} ++ .{ "--threshold", "0", "--horrid", "10", "--histogram" } ++ MODULES,
+        .{"complexity"} ++ .{ "--threshold", "0", "--horrid", "10", "--histogram" } ++ MODULES ++ host_syscalls ++ host_threads,
     );
     const norminette = b.addSystemCommand(&.{"norminette"});
 

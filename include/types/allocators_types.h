@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/29 23:39:12 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/07/02 22:32:21 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/07/10 00:52:36 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,18 +31,18 @@ typedef void		(*t_destroy)(t_any alloc)\
 typedef t_buffer	(*t_clone)(t_any self, t_buffer buffer)\
 						__attribute__((__nonnull__(1)));
 
-typedef struct e_alloc_interface
+typedef struct e_alloc_vtable
 {
 	t_free			free;
 	t_reallocate	realloc;
 	t_allocate		allocate;
 	t_destroy		destroy;
 	t_clone			clone;
-}	t_alloc_interface;
+}	t_alloc_vtable;
 
 typedef struct s_allocator
 {
-	t_alloc_interface	interface;
+	t_alloc_vtable		vtable;
 	t_any				allocator;
 }	t_allocator;
 

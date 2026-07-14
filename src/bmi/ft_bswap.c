@@ -12,7 +12,7 @@
 
 #include "bmi.h"
 
-#ifndef __x86_64__
+#if !defined(__x86_64__) && !defined(__aarch64__)
 
 __attribute__((__always_inline__, const))
 inline t_u16a	ft_bswap16(t_u16a x)

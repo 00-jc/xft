@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/29 23:39:13 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/07/04 23:17:34 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/07/05 09:56:55 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,6 @@ t_buffer		ft_map_file(const t_u8 *__restrict__ const name,\
 					t_u32 flags)\
 					__attribute__((__nonnull__(1)));
 
-t_buffer		ft_unmap_file(t_buffer file);
+void			ft_unmap_file(t_buffer file);
 
 #endif

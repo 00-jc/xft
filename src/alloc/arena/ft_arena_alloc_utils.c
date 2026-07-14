@@ -43,7 +43,7 @@ inline t_hugepage	*new_hugepage(t_hugepage *restrict const prev,
 
 	if (prev && prev->next && prev->next->page_size >= size)
 		return ((void)(page = prev->next), (void)(page->used = 0), page);
-	page = ft_mmap(size, 0, flag);
+	page = ft_mmap(size, PROT_READ | PROT_WRITE, flag);
 	if (page == (t_any)MAP_FAILED)
 		return (nullptr);
 	page->page_size = size;

@@ -18,7 +18,7 @@ void	test_palloc_vtable(void)
 	t_buffer	buf;
 
 	alloc = ft_new_page_alloc();
-	buf = alloc.interface.allocate(alloc.allocator, 64, 8);
+	buf = alloc.vtable.allocate(alloc.allocator, 64, 8);
 	ft_pin_invariant_msg(buf.mem != nullptr,
 		ft_fatptr((t_u8 *)"palloc: alloc non-null",
 			sizeof("palloc: alloc non-null") - 1));

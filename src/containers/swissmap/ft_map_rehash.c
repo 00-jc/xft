@@ -32,8 +32,8 @@ t_result	ft_map_rehash(t_allocator allocator, t_map *restrict const map)
 				map->buckets[i].value);
 		++i;
 	}
-	allocator.interface.free(allocator.allocator, map->meta_buf);
-	allocator.interface.free(allocator.allocator, map->bucket_buf);
+	allocator.vtable.free(allocator.allocator, map->meta_buf);
+	allocator.vtable.free(allocator.allocator, map->bucket_buf);
 	*map = new;
 	return (OK);
 }

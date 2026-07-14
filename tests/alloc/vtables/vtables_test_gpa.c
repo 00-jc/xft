@@ -22,7 +22,7 @@ void	test_gpa_vtable(void)
 	ft_pin_invariant_msg(gpa.slab != nullptr,
 		ft_fatptr((t_u8 *)"gpa: init", sizeof("gpa: init") - 1));
 	alloc = ft_gpa_allocator(&gpa);
-	buf = alloc.interface.allocate(alloc.allocator, 64, 8);
+	buf = alloc.vtable.allocate(alloc.allocator, 64, 8);
 	ft_pin_invariant_msg(buf.mem != nullptr,
 		ft_fatptr((t_u8 *)"gpa: alloc non-null",
 			sizeof("gpa: alloc non-null") - 1));

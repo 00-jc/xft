@@ -49,7 +49,7 @@ inline t_any	ft_memchr_minimal(t_cany restrict const ptr,
 }
 
 __attribute__((__nonnull__ (1), __always_inline__, pure))
-inline t_any	ft_memchr_sse(t_cany restrict ptr, int c, t_size n)
+inline t_any	ft_memchr_128(t_cany restrict ptr, int c, t_size n)
 {
 	t_u16a						hasz;
 	t_vu128a					w;

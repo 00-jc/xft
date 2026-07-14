@@ -13,7 +13,7 @@
 #include "vec.h"
 
 __attribute__((__nonnull__(1)))
-t_result	ft_vec_remove(t_vec *restrict const v, size_t i, size_t type_size)
+t_result	ft_vec_remove(t_vec *restrict const v, t_size i, t_size type_size)
 {
 	t_u8		*elem;
 	const t_u8	*last;
@@ -36,14 +36,14 @@ t_result	ft_vec_remove_managed(t_allocator allocator,
 	t_u8		*elem;
 	const t_u8	*last;
 
-	if (v->buf.mem == nullptr || allocator.interface.free == nullptr
+	if (v->buf.mem == nullptr || allocator.vtable.free == nullptr
 		|| allocator.allocator == nullptr)
 		__builtin_unreachable();
 	elem = ft_vec_get_mut(v, i, type_size);
 	last = ft_vec_peek_last(v, type_size);
 	if (elem == nullptr || last == nullptr)
 		return (KO);
-	allocator.interface.free(allocator.allocator, *(t_buffer *)elem);
+	allocator.vtable.free(allocator.allocator, *(t_buffer *)elem);
 	ft_memmove(elem, elem + type_size, (t_uptr)last - (t_uptr)elem);
 	v->size -= type_size;
 	return (OK);

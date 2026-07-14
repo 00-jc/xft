@@ -6,12 +6,11 @@
 //   By: username <your@mail.com>                   +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2026/06/29 09:15:56 by username          #+#    #+#             //
-//   Updated: 2026/07/04 22:25:45 by jaicastr         ###   ########.fr       //
+//   Updated: 2026/07/13 17:53:03 by jaicastr         ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
 const std       = @import("std");
-const builtin   = @import("builtin");
 
 pub const SRCS_ALLOC = &[_][]const u8{
     "src/alloc/ft_alloc_clone.c",
@@ -40,13 +39,6 @@ pub const SRCS_CSTR = &[_][]const u8{
 };
 
 pub const SRCS_CTYPE = &[_][]const u8{
-    "src/ctype/asm/ft_isalnum.c",
-    "src/ctype/asm/ft_isalpha.c",
-    "src/ctype/asm/ft_isascii.c",
-    "src/ctype/asm/ft_isdigit.c",
-    "src/ctype/asm/ft_isprint.c",
-    "src/ctype/asm/ft_isxdigit.c",
-    "src/ctype/asm/ft_isspace.c",
     "src/ctype/ft_isascii.c",
     "src/ctype/ft_isalnum.c",
     "src/ctype/ft_isprint.c",
@@ -56,25 +48,85 @@ pub const SRCS_CTYPE = &[_][]const u8{
     "src/ctype/ft_isdigit.c",
 };
 
-pub const SRCS_SYSCALLS = &[_][]const u8{
-    "src/syscalls/ft_open.c",
-    "src/syscalls/ft_close.c",
-    "src/syscalls/ft_clock_gettime.c",
-    "src/syscalls/ft_mremap.c",
-    "src/syscalls/ft_mmap.c",
-    "src/syscalls/ft_fmap.c",
-    "src/syscalls/ft_read.c",
-    "src/syscalls/ft_write.c",
-    "src/syscalls/ft_writev.c",
-    "src/syscalls/ft_stat.c",
-    "src/syscalls/ft_lockf.c",
-    "src/syscalls/ft_exit.c",
-    "src/syscalls/ft_ioctl.c",
-    "src/syscalls/ft_perf_events.c",
-    "src/syscalls/ft_getpid.c",
-    "src/syscalls/ft_sched_setaffinity.c",
-    "src/syscalls/ft_futex.c",
+pub const SRCS_SYSCALLS_X86_64 = &[_][]const u8{
+    "src/syscalls/x86_64/ft_open.c",
+    "src/syscalls/x86_64/ft_close.c",
+    "src/syscalls/x86_64/ft_clock_gettime.c",
+    "src/syscalls/x86_64/ft_mremap.c",
+    "src/syscalls/x86_64/ft_mmap.c",
+    "src/syscalls/x86_64/ft_fmap.c",
+    "src/syscalls/x86_64/ft_read.c",
+    "src/syscalls/x86_64/ft_write.c",
+    "src/syscalls/x86_64/ft_writev.c",
+    "src/syscalls/x86_64/ft_stat.c",
+    "src/syscalls/x86_64/ft_lockf.c",
+    "src/syscalls/x86_64/ft_exit.c",
+    "src/syscalls/x86_64/ft_ioctl.c",
+    "src/syscalls/x86_64/ft_perf_events.c",
+    "src/syscalls/x86_64/ft_getpid.c",
+    "src/syscalls/x86_64/ft_sched_setaffinity.c",
+    "src/syscalls/x86_64/ft_futex.c",
+    "src/syscalls/x86_64/ft_mprotect.c",
+    "src/syscalls/x86_64/ft_set_tid_address.c",
+    "src/syscalls/x86_64/ft_sigprocmask.c",
+    "src/syscalls/x86_64/ft_clone.c",
 };
+
+pub const SRCS_SYSCALLS_AARCH64 = &[_][]const u8{
+    "src/syscalls/aarch64/ft_syscall6.c",
+    "src/syscalls/aarch64/ft_open.c",
+    "src/syscalls/aarch64/ft_close.c",
+    "src/syscalls/aarch64/ft_clock_gettime.c",
+    "src/syscalls/aarch64/ft_mremap.c",
+    "src/syscalls/aarch64/ft_mmap.c",
+    "src/syscalls/aarch64/ft_fmap.c",
+    "src/syscalls/aarch64/ft_read.c",
+    "src/syscalls/aarch64/ft_write.c",
+    "src/syscalls/aarch64/ft_writev.c",
+    "src/syscalls/aarch64/ft_stat.c",
+    "src/syscalls/aarch64/ft_lockf.c",
+    "src/syscalls/aarch64/ft_exit.c",
+    "src/syscalls/aarch64/ft_ioctl.c",
+    "src/syscalls/aarch64/ft_perf_events.c",
+    "src/syscalls/aarch64/ft_getpid.c",
+    "src/syscalls/aarch64/ft_sched_setaffinity.c",
+    "src/syscalls/aarch64/ft_futex.c",
+    "src/syscalls/aarch64/ft_mprotect.c",
+    "src/syscalls/aarch64/ft_set_tid_address.c",
+    "src/syscalls/aarch64/ft_sigprocmask.c",
+    "src/syscalls/aarch64/ft_clone.c",
+};
+
+pub const SRCS_SYSCALLS_LIBC = &[_][]const u8{
+    "src/syscalls/libc/ft_open.c",
+    "src/syscalls/libc/ft_close.c",
+    "src/syscalls/libc/ft_clock_gettime.c",
+    "src/syscalls/libc/ft_mremap.c",
+    "src/syscalls/libc/ft_mmap.c",
+    "src/syscalls/libc/ft_fmap.c",
+    "src/syscalls/libc/ft_read.c",
+    "src/syscalls/libc/ft_write.c",
+    "src/syscalls/libc/ft_writev.c",
+    "src/syscalls/libc/ft_stat.c",
+    "src/syscalls/libc/ft_lockf.c",
+    "src/syscalls/libc/ft_exit.c",
+    "src/syscalls/libc/ft_ioctl.c",
+    "src/syscalls/libc/ft_perf_events.c",
+    "src/syscalls/libc/ft_getpid.c",
+    "src/syscalls/libc/ft_sched_setaffinity.c",
+    "src/syscalls/libc/ft_futex.c",
+    "src/syscalls/libc/ft_clone.c",
+};
+
+// Picks syscall sources for the *resolved build target*, not the host
+// running zig build: callers must pass opt.target.result.cpu.arch.
+pub fn syscalls_for(arch: std.Target.Cpu.Arch) []const []const u8 {
+    return switch (arch) {
+        .x86_64  => SRCS_SYSCALLS_X86_64,
+        .aarch64 => SRCS_SYSCALLS_AARCH64,
+        else     => SRCS_SYSCALLS_LIBC,
+    };
+}
 
 pub const SRCS_FMT = &[_][]const u8{
     "src/fmt/ft_fmt_handle_double.c",
@@ -85,14 +137,49 @@ pub const SRCS_FMT = &[_][]const u8{
     "src/fmt/ft_fmt_handle_slice.c",
 };
 
-pub const SRCS_CONCURRENCY = &[_][]const u8{
-    "src/concurrency/ft_fences.c",
-    "src/concurrency/mutex/ft_mutex_init.c",
-    "src/concurrency/mutex/ft_mutex_lock.c",
-    "src/concurrency/mutex/ft_mutex_fast.c",
-    "src/concurrency/mutex/ft_mutex_busy.c",
-    "src/concurrency/mutex/ft_mutex_slow.c",
-    "src/concurrency/mutex/ft_mutex_unlock.c"
+pub const SRCS_THREADS = &[_][]const u8{
+    "src/threads/ft_thread.c",
+    "src/threads/ft_thread_clone.c",
+    "src/threads/ft_thread_detach.c",
+    "src/threads/ft_thread_join.c",
+    "src/threads/ft_thread_tls_variant_i.c",
+    "src/threads/ft_thread_tls_variant_ii.c",
+    "src/threads/ft_thread_settls_i386.c",
+    "src/threads/ft_thread_settls_generic.c",
+};
+
+pub const SRCS_THREADS_X86_64 = &[_][]const u8{
+    "src/threads/x86_64/ft_thread_free_exit.c",
+};
+
+pub const SRCS_THREADS_AARCH64 = &[_][]const u8{
+    "src/threads/aarch64/ft_thread_free_exit.c",
+};
+
+pub const SRCS_THREADS_LIBC = &[_][]const u8{
+    "src/threads/libc/ft_thread_free_exit.c",
+};
+
+// Picks thread sources for the *resolved build target*, not the host
+// running zig build: callers must pass opt.target.result.cpu.arch.
+pub fn threads_for(arch: std.Target.Cpu.Arch) []const []const u8 {
+    return switch (arch) {
+        .x86_64  => SRCS_THREADS_X86_64,
+        .aarch64 => SRCS_THREADS_AARCH64,
+        else     => SRCS_THREADS_LIBC,
+    };
+}
+
+pub const SRCS_ATOMICS = &[_][]const u8{
+    "src/atomics/mutex/ft_mutex_init.c",
+    "src/atomics/mutex/ft_mutex_lock.c",
+    "src/atomics/mutex/ft_mutex_fast.c",
+    "src/atomics/mutex/ft_mutex_backoff_x86_64.c",
+    "src/atomics/mutex/ft_mutex_backoff_aarch64.c",
+    "src/atomics/mutex/ft_mutex_backoff_portable.c",
+    "src/atomics/mutex/ft_mutex_busy.c",
+    "src/atomics/mutex/ft_mutex_slow.c",
+    "src/atomics/mutex/ft_mutex_unlock.c"
 };
 
 pub const SRCS_IO = &[_][]const u8{
@@ -162,6 +249,7 @@ pub const SRCS_MEM = &[_][]const u8{
     "src/mem/ft_prefetch_intrin.c",
     "src/mem/ft_stfence.c",
     "src/mem/ft_ldfence.c",
+    "src/mem/ft_fences.c",
 };
 
 pub const SRCS_VEC = &[_][]const u8{
@@ -186,14 +274,18 @@ pub const SRCS_BMI = &[_][]const u8{
     "src/bmi/__populate.c",
     "src/bmi/ft_bswap.c",
     "src/bmi/ft_rotl.c",
-    "src/bmi/asm/ft_bswap_asm.c",
-    "src/bmi/asm/ft_memctz_asm.c",
-    "src/bmi/asm/ft_memclz_asm.c",
-    "src/bmi/asm/ft_get128.c",
-    "src/bmi/asm/ft_get256.c",
-    "src/bmi/asm/ft_get512.c",
-    "src/bmi/asm/ft_bitpack.c",
-    "src/bmi/asm/ft_bitpack_intrin.c",
+    "src/bmi/ft_get128.c",
+    "src/bmi/ft_get256.c",
+    "src/bmi/ft_get512.c",
+    "src/bmi/ft_bitpack.c",
+    "src/bmi/x86_64/ft_bswap.c",
+    "src/bmi/x86_64/ft_memctz.c",
+    "src/bmi/x86_64/ft_memclz.c",
+    "src/bmi/x86_64/ft_bitpack.c",
+    "src/bmi/aarch64/ft_bswap.c",
+    "src/bmi/aarch64/ft_memctz.c",
+    "src/bmi/aarch64/ft_memclz.c",
+    "src/bmi/aarch64/ft_bitpack.c",
     "src/bmi/ft_to_be_from_be.c",
     "src/bmi/ft_to_be_from_le.c",
     "src/bmi/ft_rollmask.c",
@@ -204,6 +296,7 @@ pub const SRCS_BMI = &[_][]const u8{
     "src/bmi/__max.c",
     "src/bmi/__hasz.c",
     "src/bmi/ft_next_pow2.c",
+    "src/bmi/ft_align.c",
 };
 
 pub const SRCS_HASH = &[_][]const u8{
@@ -222,7 +315,14 @@ pub const SRCS_HASH = &[_][]const u8{
 };
 
 pub const SRCS_RT = &[_][]const u8{
-    "src/rt/ft_rt.c",
+    "src/rt/ft_get_kernel_ptrs.c",
+    "src/rt/ft_get_envp_size.c",
+    "src/rt/ft_get_thread_info.c",
+    "src/rt/ft_get_auxv_size.c",
+    "src/rt/ft_get_rt.c",
+    "src/rt/x86_64/ft_rt.c",
+    "src/rt/aarch64/ft_rt.c",
+    "src/rt/libc/ft_rt.c",
 };
 
 pub const SRCS_MAP = &[_][]const u8{
@@ -246,7 +346,6 @@ pub const SRCS_TOK = &[_][]const u8{
     "src/containers/tokenizer/ft_eat_u512.c",
     "src/containers/tokenizer/ft_eat_until.c",
     "src/containers/tokenizer/ft_eat_u8.c",
-    "src/containers/tokenizer/ft_sets.c",
     "src/containers/tokenizer/ft_tokenizer.c",
     "src/containers/tokenizer/ft_eat_while.c",
 };
@@ -302,8 +401,9 @@ pub const SRCS_FUZZ = &[_][]const u8{
     "src/fuzzer/ft_fuzzer.c",
 };
 
-pub const MODULES = SRCS_SYSCALLS
-                ++ SRCS_ALLOC
+// Excludes syscalls sources: those are target-specific (see syscalls_for)
+// and must be added by the caller separately, keyed off the build target.
+pub const MODULES = SRCS_ALLOC
                 ++ SRCS_CSTR
                 ++ SRCS_CTYPE
                 ++ SRCS_IO
@@ -323,7 +423,8 @@ pub const MODULES = SRCS_SYSCALLS
                 ++ SRCS_TAILOR
                 ++ SRCS_SORT
                 ++ SRCS_FMT
-                ++ SRCS_CONCURRENCY
+                ++ SRCS_ATOMICS
+                ++ SRCS_THREADS
                 ++ SRCS_FUZZ;
 
 pub const TEST_NAME = "tests";

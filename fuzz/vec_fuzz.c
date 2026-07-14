@@ -45,16 +45,14 @@ static void	fuzz_vec_case(t_fuzzer *fz, t_allocator alloc)
 	ft_vec_destroy(alloc, &v);
 }
 
-int	ft_main(t_size argc, t_u8 **argv, t_u8 **envp)
+void	ft_main(const t_any *__restrict__ const sp)
 {
 	t_fuzzer	fz;
 	t_allocator	alloc;
 	t_size		i;
 	t_size		n;
 
-	(void)argc;
-	(void)argv;
-	(void)envp;
+	(void)sp;
 	fz = ft_fuzzer_new(ft_new_arena_alloc());
 	ft_pin_invariant(fz.arena.current != nullptr);
 	ft_pin_invariant(ft_fuzzer_add_rand(&fz));
@@ -64,5 +62,5 @@ int	ft_main(t_size argc, t_u8 **argv, t_u8 **envp)
 	while (i++ < n)
 		fuzz_vec_case(&fz, alloc);
 	ft_fuzzer_destroy(&fz);
-	return (0);
+	ft_exit(0);
 }

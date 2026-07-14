@@ -54,7 +54,7 @@ __attribute__((__nonnull__(1), __const__))
 t_allocator	ft_arena_allocator(t_arena *arena)
 {
 	return ((t_allocator){
-		.interface = {
+		.vtable = {
 			.free = arena_free,
 			.realloc = arena_reallocate,
 			.allocate = arena_allocate,

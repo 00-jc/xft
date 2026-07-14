@@ -13,9 +13,7 @@
 #ifndef PERF_H
 # define PERF_H
 
-# include <linux/perf_event.h>
-# include <linux/bpf_perf_event.h>
-# include <linux/prctl.h>
+# include "linux.h"
 # include "primitives.h"
 # include "mem.h"
 # include "timing.h"

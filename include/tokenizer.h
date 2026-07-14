@@ -15,6 +15,7 @@
 
 # include "mem.h"
 # include "ctype.h"
+# include "private/ft_p_bmi.h"
 
 typedef struct s_tokenizer
 {
@@ -29,18 +30,23 @@ typedef struct s_token
 	t_size	len;
 }	t_token;
 
-typedef enum e_eater_select
-{
-	set_blank = 0,
-	set_alpha = 1,
-	set_digit = 2,
-	set_xdigit = 3,
-}	t_eater_select;
+typedef int			(*t_8eater)(int);
+typedef t_u16a		(*t_128eater)(t_vu128a);
+typedef t_u32a		(*t_256eater)(t_vu256a);
+typedef t_u64a		(*t_512eater)(t_vu512a);
 
-t_token		ft_eat_while(t_tokenizer *tk, t_eater_select select)\
-				__attribute__((__nonnull__(1), __noinline__, __used__));
-t_token		ft_eat_until(t_tokenizer *tk, t_eater_select select)\
-				__attribute__((__nonnull__(1), __noinline__, __used__));
+typedef struct s_eaterset
+{
+	t_8eater	eater8;
+	t_128eater	eater128;
+	t_256eater	eater256;
+	t_512eater	eater512;
+}	t_eaterset;
+
+t_token		ft_eat_while(t_tokenizer *tk, const t_eaterset *set)\
+				__attribute__((__nonnull__(1, 2), __noinline__, __used__));
+t_token		ft_eat_until(t_tokenizer *tk, const t_eaterset *set)\
+				__attribute__((__nonnull__(1, 2), __noinline__, __used__));
 t_u32a		ft_tokenizer_goto(t_tokenizer *tk, t_u8 byte)\
 				__attribute__((__nonnull__(1)));
 void		ft_skip_whitespace(t_tokenizer *tk)\

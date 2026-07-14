@@ -19,16 +19,16 @@ t_map	ft_map_with(t_allocator allocator, t_size capacity)
 
 	if (capacity & 15)
 		return ((t_map){0});
-	meta_buf = allocator.interface.allocate(allocator.allocator,
+	meta_buf = allocator.vtable.allocate(allocator.allocator,
 			capacity, ft_next_pow2(capacity));
 	if (meta_buf.mem == nullptr)
 		return ((t_map){0});
 	ft_memset(meta_buf.mem, MAP_EMPTY, capacity);
-	bucket_buf = allocator.interface.allocate(allocator.allocator,
+	bucket_buf = allocator.vtable.allocate(allocator.allocator,
 			capacity * sizeof(t_bucket),
 			ft_next_pow2(capacity * sizeof(t_bucket)));
 	if (bucket_buf.mem == nullptr)
-		return (allocator.interface.free(allocator.allocator, meta_buf),
+		return (allocator.vtable.free(allocator.allocator, meta_buf),
 			(t_map){0});
 	return ((t_map)
 		{
@@ -56,6 +56,6 @@ t_map	ft_map_new(t_allocator allocator)
 __attribute__((__nonnull__(2)))
 void	ft_map_destroy(t_allocator allocator, t_map *restrict const map)
 {
-	allocator.interface.free(allocator.allocator, map->bucket_buf);
-	allocator.interface.free(allocator.allocator, map->meta_buf);
+	allocator.vtable.free(allocator.allocator, map->bucket_buf);
+	allocator.vtable.free(allocator.allocator, map->meta_buf);
 }

@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/29 23:39:13 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/07/03 15:11:58 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/07/09 14:39:02 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,44 +17,50 @@
 # include <stddef.h>
 # include <limits.h>
 
-typedef uint8_t __attribute__((__may_alias__))							t_u8;
-typedef int8_t __attribute__((__may_alias__))							t_i8;
+typedef uint8_t __attribute__((__may_alias__))						t_u8;
+typedef int8_t __attribute__((__may_alias__))						t_i8;
 
-typedef uint16_t __attribute__((__may_alias__, __aligned__(1)))			t_u16;
-typedef uint16_t __attribute__((__may_alias__, __aligned__(2)))			t_u16a;
-typedef int16_t __attribute__((__may_alias__, __aligned__(1)))			t_i16;
-typedef int16_t __attribute__((__may_alias__, __aligned__(2)))			t_i16a;
+typedef uint16_t __attribute__((__may_alias__, __aligned__(1)))		t_u16;
+typedef uint16_t __attribute__((__may_alias__, __aligned__(2)))		t_u16a;
+typedef int16_t __attribute__((__may_alias__, __aligned__(1)))		t_i16;
+typedef int16_t __attribute__((__may_alias__, __aligned__(2)))		t_i16a;
 
-typedef uint32_t __attribute__((__may_alias__, __aligned__(1)))			t_u32;
-typedef uint32_t __attribute__((__may_alias__, __aligned__(4)))			t_u32a;
-typedef int32_t __attribute__((__may_alias__, __aligned__(1)))			t_i32;
-typedef int32_t __attribute__((__may_alias__, __aligned__(4)))			t_i32a;
+typedef uint32_t __attribute__((__may_alias__, __aligned__(1)))		t_u32;
+typedef uint32_t __attribute__((__may_alias__, __aligned__(4)))		t_u32a;
+typedef int32_t __attribute__((__may_alias__, __aligned__(1)))		t_i32;
+typedef int32_t __attribute__((__may_alias__, __aligned__(4)))		t_i32a;
 
-typedef uint64_t __attribute__((__may_alias__, __aligned__(1)))			t_u64;
-typedef uint64_t __attribute__((__may_alias__, __aligned__(8)))			t_u64a;
-typedef int64_t __attribute__((__may_alias__, __aligned__(1)))			t_i64;
-typedef int64_t __attribute__((__may_alias__, __aligned__(8)))			t_i64a;
+typedef uint64_t __attribute__((__may_alias__, __aligned__(1)))		t_u64;
+typedef uint64_t __attribute__((__may_alias__, __aligned__(8)))		t_u64a;
+typedef int64_t __attribute__((__may_alias__, __aligned__(1)))		t_i64;
+typedef int64_t __attribute__((__may_alias__, __aligned__(8)))		t_i64a;
 
-typedef __uint128_t __attribute__((__may_alias__, __aligned__(1)))		t_u128;
-typedef __uint128_t __attribute__((__may_alias__, __aligned__(16)))		t_u128a;
-typedef __int128_t __attribute__((__may_alias__, __aligned__(1)))		t_i128;
-typedef __int128_t __attribute__((__may_alias__, __aligned__(16)))		t_i128a;
+typedef __uint128_t __attribute__((__may_alias__, __aligned__(1)))	t_u128;
+typedef __uint128_t __attribute__((__may_alias__, __aligned__(16)))	t_u128a;
+typedef __int128_t __attribute__((__may_alias__, __aligned__(1)))	t_i128;
+typedef __int128_t __attribute__((__may_alias__, __aligned__(16)))	t_i128a;
 
-typedef float __attribute__((__may_alias__, __aligned__(1)))			t_f32;
-typedef float __attribute__((__may_alias__, __aligned__(4)))			t_f32a;
+typedef float __attribute__((__may_alias__, __aligned__(1)))		t_f32;
+typedef float __attribute__((__may_alias__, __aligned__(4)))		t_f32a;
 
-typedef double __attribute__((__may_alias__, __aligned__(1)))			t_f64;
-typedef double __attribute__((__may_alias__, __aligned__(8)))			t_f64a;
+typedef double __attribute__((__may_alias__, __aligned__(1)))		t_f64;
+typedef double __attribute__((__may_alias__, __aligned__(8)))		t_f64a;
 
-typedef long double __attribute__((__may_alias__, __aligned__(1)))		t_f80;
-typedef long double __attribute__((__may_alias__, __aligned__(8)))		t_f80a;
+typedef long double __attribute__((__may_alias__, __aligned__(1)))	t_f80;
+typedef long double __attribute__((__may_alias__, __aligned__(8)))	t_f80a;
 
-typedef uintptr_t __attribute__((__may_alias__))						t_uptr;
-typedef void * __attribute__((__may_alias__))							t_any;
-typedef const void * __attribute__((__may_alias__))						t_cany;
+// __UINTPTR_TYPE__ (a compiler builtin, not a libc one) is used instead of
+// uintptr_t: these builds don't link libc, and cross-compiling then pulls in
+// the host's <stdint.h>, whose <bits/wordsize.h> keys pointer width off
+// __x86_64__ wrong, and silently 32-bit, for any other compile target.
+typedef __UINTPTR_TYPE__ __attribute__((__may_alias__))				t_uptr;
+typedef void * __attribute__((__may_alias__))						t_any;
+typedef const void * __attribute__((__may_alias__))					t_cany;
 
-typedef t_u64															t_size;
-typedef t_i64															t_ssize;
+typedef t_u64														t_size;
+typedef t_i64														t_ssize;
+
+typedef const t_u8 *__restrict__ *__restrict__						t_rt_arr;
 
 # ifdef __clang__
 
