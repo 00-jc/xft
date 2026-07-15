@@ -645,6 +645,7 @@
 #  define SYS_FUTEX                   98
 #  define SYS_CLOCK_GETTIME           113
 #  define SYS_SCHED_SETAFFINITY       122
+#  define SYS_SCHED_GETAFFINITY       123
 #  define SYS_RT_SIGPROCMASK          135
 #  define SYS_GETPID                  172
 #  define SYS_CLONE                   220

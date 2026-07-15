@@ -97,7 +97,7 @@ t_size				ft__tcb_offset(const t_xft_rt *__restrict__ const rt_info)\
 						__attribute__((__nonnull__(1), pure));
 t_size				ft__block_offset(const t_xft_rt *__restrict__ const rt_info)\
 						__attribute__((__nonnull__(1), pure));
-void				ft__write_abi_tcb(t_abi_tcb *__restrict__ const tp);
+void				ft__write_abi_tcb(t_uptr tp);
 
 # else
 #  error "xft: undefined TLS variant for this architecture"

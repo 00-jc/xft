@@ -1,26 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_bind_process_to_cpu.c                           :+:      :+:    :+:   */
+/*   ft_popcount.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/06/29 23:39:14 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/07/15 12:06:19 by jaicastr         ###   ########.fr       */
+/*   Created: 2026/07/15 12:43:03 by jaicastr          #+#    #+#             */
+/*   Updated: 2026/07/15 12:48:20 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "perf.h"
+#include "bmi.h"
 
-t_result	ft_bind_process_to_cpu(t_u32 cpu)
+#ifdef __x86_64__
+
+__attribute__((__const__, __always_inline__))
+inline t_u32a	ft_popcount_u32(t_u32a x)
 {
-	int			pid;
-	t_size		mask[128 / sizeof(t_size)];
-
-	pid = ft_getpid();
-	ft_memset(mask, 0, sizeof(mask));
-	mask[cpu >> 6] |= (t_u64a)1 << (cpu & 63);
-	if (ft_sched_setaffinity(pid, sizeof(mask), mask) == -1)
-		return (KO);
-	return (OK);
+	__asm__ ("popcnt %1, %0" : "=r"(x) : "r"(x));
+	return (x);
 }
+
+__attribute__((__const__, __always_inline__))
+inline t_u64a	ft_popcount_u64(t_u64a x)
+{
+	__asm__ ("popcnt %1, %0" : "=r"(x) : "r"(x));
+	return (x);
+}
+
+#endif

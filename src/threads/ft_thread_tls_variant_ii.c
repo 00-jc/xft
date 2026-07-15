@@ -29,9 +29,9 @@ inline t_size	ft__block_offset(const t_xft_rt *__restrict__ const rt_info)
 }
 
 __attribute__((__always_inline__, unused))
-inline void	ft__write_abi_tcb(t_abi_tcb *__restrict__ const tp)
+inline void	ft__write_abi_tcb(t_uptr tp)
 {
-	((t_abi_tcb *)tp)->self = tp;
+	((t_abi_tcb *)tp)->self = (t_abi_tcb *)tp;
 }
 
 #endif

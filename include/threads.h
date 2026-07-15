@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/04 23:42:25 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/07/14 02:03:28 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/07/15 12:16:12 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,9 @@ t_result	ft_thread_join(t_thread *__restrict__ const thread)\
 				__attribute__((__nonnull__(1)));
 
 void		ft_thread_detach(t_thread *__restrict__ const thread)\
+				__attribute__((__nonnull__(1)));
+
+t_result	ft_get_cpu_count(t_size *count)\
 				__attribute__((__nonnull__(1)));
 
 #endif

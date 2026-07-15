@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/04 23:40:17 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/07/14 02:06:29 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/07/15 11:33:50 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ inline t_size	ft__tls_prep(const t_xft_rt *__restrict__ const rt_info,
 	tp = (t_uptr)area.mem + ft__tcb_offset(rt_info);
 	block = (t_any)((t_uptr)area.mem + ft__block_offset(rt_info));
 	ft_memcpy(block, (t_any)rt_info->elf.vaddr, rt_info->elf.filesz);
-	ft__write_abi_tcb((t_abi_tcb *)tp);
+	ft__write_abi_tcb(tp);
 	return (tp);
 }
 

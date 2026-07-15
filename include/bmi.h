@@ -21,6 +21,11 @@ t_u64			ft_hasz64(t_u64 x)\
 t_u64			ft_populate(t_u8 y)\
 					__attribute__((const));
 
+t_u32a			ft_popcount_u32(t_u32a x)\
+					__attribute__((const));
+t_u64a			ft_popcount_u64(t_u64a x)\
+					__attribute__((const));
+
 t_size			ft_memctz_u16(t_u16 x)\
 					__attribute__((const));
 t_size			ft_memctz_u32(t_u32 x)\

@@ -6,12 +6,20 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/29 23:39:13 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/07/14 00:53:22 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/07/15 12:15:11 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SYSCALLS_H
 # define SYSCALLS_H
+
+/*
+ *	raw syscalls return -errno on failure, with valid errno codes
+ *	bounded to [1, 4095] (see Linux arch/.../include/asm/unistd.h and
+ *	glibc's MAX_ERRNO); anything else is a legitimate return value
+ *	that merely looks negative (e.g. mmap addresses on some archs).
+ */
+# define FT_MAX_ERRNO 4095
 
 # include "primitives.h"
 # include "types/timing_types.h"
@@ -166,6 +174,10 @@ int		ft_getpid(void);
 
 int		ft_sched_setaffinity(int pid, t_size cpusetsize,\
 				const t_u64a *restrict const mask)\
+				__attribute__((__nonnull__(3), __always_inline__));
+
+int		ft_sched_getaffinity(t_i32a pid, t_size cpusetsize,\
+				const t_u64a *__restrict__ mask)\
 				__attribute__((__nonnull__(3), __always_inline__));
 
 t_ssize	ft_writev(int fd, t_iovec *buffers, t_size len)\

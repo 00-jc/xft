@@ -6,7 +6,7 @@
 //   By: username <your@mail.com>                   +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2026/06/29 09:15:56 by username          #+#    #+#             //
-//   Updated: 2026/07/13 17:53:03 by jaicastr         ###   ########.fr       //
+//   Updated: 2026/07/15 12:22:00 by jaicastr         ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -65,6 +65,7 @@ pub const SRCS_SYSCALLS_X86_64 = &[_][]const u8{
     "src/syscalls/x86_64/ft_perf_events.c",
     "src/syscalls/x86_64/ft_getpid.c",
     "src/syscalls/x86_64/ft_sched_setaffinity.c",
+    "src/syscalls/x86_64/ft_sched_getaffinity.c",
     "src/syscalls/x86_64/ft_futex.c",
     "src/syscalls/x86_64/ft_mprotect.c",
     "src/syscalls/x86_64/ft_set_tid_address.c",
@@ -90,6 +91,7 @@ pub const SRCS_SYSCALLS_AARCH64 = &[_][]const u8{
     "src/syscalls/aarch64/ft_perf_events.c",
     "src/syscalls/aarch64/ft_getpid.c",
     "src/syscalls/aarch64/ft_sched_setaffinity.c",
+    "src/syscalls/aarch64/ft_sched_getaffinity.c",
     "src/syscalls/aarch64/ft_futex.c",
     "src/syscalls/aarch64/ft_mprotect.c",
     "src/syscalls/aarch64/ft_set_tid_address.c",
@@ -114,6 +116,7 @@ pub const SRCS_SYSCALLS_LIBC = &[_][]const u8{
     "src/syscalls/libc/ft_perf_events.c",
     "src/syscalls/libc/ft_getpid.c",
     "src/syscalls/libc/ft_sched_setaffinity.c",
+    "src/syscalls/libc/ft_sched_getaffinity.c",
     "src/syscalls/libc/ft_futex.c",
     "src/syscalls/libc/ft_clone.c",
 };
@@ -139,6 +142,7 @@ pub const SRCS_FMT = &[_][]const u8{
 
 pub const SRCS_THREADS = &[_][]const u8{
     "src/threads/ft_thread.c",
+    "src/threads/ft_get_cpu_count.c",
     "src/threads/ft_thread_clone.c",
     "src/threads/ft_thread_detach.c",
     "src/threads/ft_thread_join.c",
@@ -278,14 +282,17 @@ pub const SRCS_BMI = &[_][]const u8{
     "src/bmi/ft_get256.c",
     "src/bmi/ft_get512.c",
     "src/bmi/ft_bitpack.c",
+    "src/bmi/ft_popcount.c",
     "src/bmi/x86_64/ft_bswap.c",
     "src/bmi/x86_64/ft_memctz.c",
     "src/bmi/x86_64/ft_memclz.c",
     "src/bmi/x86_64/ft_bitpack.c",
+    "src/bmi/x86_64/ft_popcount.c",
     "src/bmi/aarch64/ft_bswap.c",
     "src/bmi/aarch64/ft_memctz.c",
     "src/bmi/aarch64/ft_memclz.c",
     "src/bmi/aarch64/ft_bitpack.c",
+    "src/bmi/aarch64/ft_popcount_neon.c",
     "src/bmi/ft_to_be_from_be.c",
     "src/bmi/ft_to_be_from_le.c",
     "src/bmi/ft_rollmask.c",
