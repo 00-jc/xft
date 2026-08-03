@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/29 23:39:13 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/08/03 00:53:09 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/08/04 00:30:31 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,8 +59,8 @@ void	*ft_memset(t_any restrict dest,
 
 #if !defined(FT_REQUIRE_LIBC)
 
-__attribute__((__nonnull__(1), __hot__, returns_nonnull,
-	__weak__, __alias__("ft_memset")))
-t_any	memset(t_any restrict dest, const t_i32 b, t_size n);
+t_any	memset(t_any restrict dest, const t_i32 b, t_size n)\
+			__attribute__((__nonnull__(1), __hot__, returns_nonnull,\
+				__weak__, __alias__("ft_memset")));
 
 #endif

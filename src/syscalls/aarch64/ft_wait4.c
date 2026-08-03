@@ -25,12 +25,16 @@ __attribute__((__always_inline__))
 inline t_i32	ft_wait4(t_i32 pid, t_i32a *status, t_i32 options,
 		t_any rusage)
 {
-	register long x8	__asm__("x8") = SYS_WAIT4;
-	register long x0		__asm__("x0");
-	register long x1	__asm__("x1") = (long)status;
-	register long x2	__asm__("x2") = options;
-	register long x3	__asm__("x3") = (long)rusage;
+	register long x8	__asm__("x8");
+	register long x0	__asm__("x0");
+	register long x1	__asm__("x1");
+	register long x2	__asm__("x2");
+	register long x3	__asm__("x3");
 
+	x8 = SYS_WAIT4;
+	x1 = (long)status;
+	x2 = options;
+	x3 = (long)rusage;
 	x0 = pid;
 	__asm__ volatile (
 		"svc #0"

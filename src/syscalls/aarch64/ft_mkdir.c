@@ -25,11 +25,14 @@
 __attribute__((__nonnull__(1), __always_inline__))
 inline int	ft_mkdir(const char *restrict path, t_u32a mode)
 {
-	register long x8	__asm__("x8") = SYS_MKDIRAT;
-	register long x0		__asm__("x0");
-	register long x1	__asm__("x1") = (long)path;
-	register long x2	__asm__("x2") = (long)mode;
+	register long x8	__asm__("x8");
+	register long x0	__asm__("x0");
+	register long x1	__asm__("x1");
+	register long x2	__asm__("x2");
 
+	x8 = SYS_MKDIRAT;
+	x1 = (long)path;
+	x2 = (long)mode;
 	x0 = AT_FDCWD;
 	__asm__ volatile (
 		"svc #0"

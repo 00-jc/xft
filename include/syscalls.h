@@ -159,79 +159,79 @@ typedef struct s_clone_arg
 
 # define FT_MKDIR_0755			0755
 
-t_any	ft_mmap(t_size size, long prot, long flags_extra);
-t_any	ft_fmap(t_size size, int fd);
+t_any		ft_mmap(t_size size, long prot, long flags_extra);
+t_any		ft_fmap(t_size size, int fd);
 t_result	ft_map_failed(t_cany ptr)\
 			__attribute__((const));
-void	ft_munmap(t_any __restrict__ const mem, t_size size)\
+void		ft_munmap(t_any __restrict__ const mem, t_size size)\
 			__attribute__((nonnull(1)));
-t_i32a	ft_fcntl(t_u32a fd, t_u32a cmd,\
+t_i32a		ft_fcntl(t_u32a fd, t_u32a cmd,\
 			const t_flock *__restrict__ const arg)\
 			__attribute__((nonnull(3)));
-t_i32a	ft_lockf(int fd);
-t_i32a	ft_unlockf(int fd);
-int		ft_ioctl(int fd, t_u64a request, t_u64a arg);
-int		ft_open(const char *__restrict__ path, int flags)\
+t_i32a		ft_lockf(int fd);
+t_i32a		ft_unlockf(int fd);
+int			ft_ioctl(int fd, t_u64a request, t_u64a arg);
+int			ft_open(const char *__restrict__ path, int flags)\
 			__attribute__((__nonnull__(1)));
-int		ft_close(int fd);
-int		ft_stat(const char *__restrict__ path, t_stat *statbuf)\
+int			ft_close(int fd);
+int			ft_stat(const char *__restrict__ path, t_stat *statbuf)\
 			__attribute__((__nonnull__(1)));
-int		ft_mkdir(const char *__restrict__ path, t_u32a mode)\
+int			ft_mkdir(const char *__restrict__ path, t_u32a mode)\
 			__attribute__((__nonnull__(1)));
 
-t_any	ft_mremap(t_size size, t_size new_size,\
+t_any		ft_mremap(t_size size, t_size new_size,\
 			t_any addr, long flags_extra)\
 			__attribute__((__nonnull__(3)));
 
-t_ssize	ft_write(int fd, t_u8 *restrict const buffer, t_size len)\
+t_ssize		ft_write(int fd, t_u8 *restrict const buffer, t_size len)\
 			__attribute__((__nonnull__(2)));
 
-t_ssize	ft_read(int fd, t_u8 *restrict const buffer, t_size len)\
+t_ssize		ft_read(int fd, t_u8 *restrict const buffer, t_size len)\
 			__attribute__((__nonnull__(2)));
 
-void	ft_exit(int status)\
+void		ft_exit(int status)\
 			__attribute__((__cold__, __noreturn__));
 
-t_i64a	ft_clock_gettime(t_timespec *__restrict__ const ts)\
+t_i64a		ft_clock_gettime(t_timespec *__restrict__ const ts)\
 			__attribute__((__nonnull__(1)));
 
-int		ft_perf_event_open(const t_perf_event_attr *restrict attr,\
+int			ft_perf_event_open(const t_perf_event_attr *restrict attr,\
 				int group_fd)\
 				__attribute__((__nonnull__(1)));
 
-int		ft_getpid(void);
+int			ft_getpid(void);
 
-int		ft_sched_setaffinity(int pid, t_size cpusetsize,\
+int			ft_sched_setaffinity(int pid, t_size cpusetsize,\
 				const t_u64a *restrict const mask)\
 				__attribute__((__nonnull__(3)));
 
-int		ft_sched_getaffinity(t_i32a pid, t_size cpusetsize,\
+int			ft_sched_getaffinity(t_i32a pid, t_size cpusetsize,\
 				const t_u64a *__restrict__ mask)\
 				__attribute__((__nonnull__(3)));
 
-t_ssize	ft_writev(int fd, t_iovec *buffers, t_size len)\
+t_ssize		ft_writev(int fd, t_iovec *buffers, t_size len)\
 			__attribute__((__nonnull__(2)));
 
-long	ft_futex_wait(t_u32a *__restrict__ const uaddr, t_u32a val)\
+long		ft_futex_wait(t_u32a *__restrict__ const uaddr, t_u32a val)\
 			__attribute__((__nonnull__(1)));
 
-long	ft_futex_wake(t_u32a *__restrict__ const uaddr, t_u32a val)\
+long		ft_futex_wake(t_u32a *__restrict__ const uaddr, t_u32a val)\
 			__attribute__((__nonnull__(1)));
 
-int		ft_mprotect(t_any addr, t_size size, int prot)\
+int			ft_mprotect(t_any addr, t_size size, int prot)\
 			__attribute__((__nonnull__(1)));
 
-int		ft_set_tid_address(t_any address);
+int			ft_set_tid_address(t_any address);
 
-int		ft_sigprocmask(t_u32a flags, t_sigset *__restrict__ const set,
+int			ft_sigprocmask(t_u32a flags, t_sigset *__restrict__ const set,\
 			t_sigset *__restrict__ const oldest);
 
-t_i32	ft_clone(const t_clone_arg *__restrict__ const args)\
+t_i32		ft_clone(const t_clone_arg *__restrict__ const args)\
 			__attribute__((__nonnull__(1)));
 
-t_i32	ft_fork(void);
+t_i32		ft_fork(void);
 
-int		ft_execve(const char *__restrict__ path,\
+int			ft_execve(const char *__restrict__ path,\
 			char *const *argv, char *const *envp)\
 			__attribute__((__nonnull__(1, 2)));
 
@@ -241,7 +241,7 @@ int		ft_execve(const char *__restrict__ path,\
  *	status word through the FT_W* macros above.
  */
 
-t_i32	ft_wait4(t_i32 pid, t_i32a *status, t_i32 options,\
+t_i32		ft_wait4(t_i32 pid, t_i32a *status, t_i32 options,\
 			t_any rusage);
 
 #endif

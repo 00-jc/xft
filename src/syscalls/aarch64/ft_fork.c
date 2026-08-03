@@ -27,12 +27,16 @@
 __attribute__((__always_inline__))
 inline t_i32	ft_fork(void)
 {
-	register long x0		__asm__("x0");
-	register long x1	__asm__("x1") = 0;
-	register long x2	__asm__("x2") = 0;
-	register long x3	__asm__("x3") = 0;
-	register long x4	__asm__("x4") = 0;
+	register long x0	__asm__("x0");
+	register long x1	__asm__("x1");
+	register long x2	__asm__("x2");
+	register long x3	__asm__("x3");
+	register long x4	__asm__("x4");
 
+	x1 = 0;
+	x2 = 0;
+	x3 = 0;
+	x4 = 0;
 	x0 = FT_SIGCHLD;
 	__asm__ volatile (
 		"mov x8, %[nr]\n\t"

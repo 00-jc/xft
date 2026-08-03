@@ -20,11 +20,14 @@ __attribute__((__nonnull__(3), __always_inline__))
 inline int	ft_sched_setaffinity(int pid, t_size cpusetsize,
 		const t_u64a *restrict const mask)
 {
-	register long x8	__asm__("x8") = SYS_SCHED_SETAFFINITY;
-	register long x0		__asm__("x0");
-	register long x1	__asm__("x1") = (long)cpusetsize;
-	register long x2	__asm__("x2") = (long)mask;
+	register long x8	__asm__("x8");
+	register long x0	__asm__("x0");
+	register long x1	__asm__("x1");
+	register long x2	__asm__("x2");
 
+	x8 = SYS_SCHED_SETAFFINITY;
+	x1 = (long)cpusetsize;
+	x2 = (long)mask;
 	x0 = pid;
 	__asm__ volatile (
 		"svc #0"

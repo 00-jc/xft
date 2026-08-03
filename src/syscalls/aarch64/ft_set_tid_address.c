@@ -18,9 +18,10 @@
 __attribute__((__always_inline__))
 inline int	ft_set_tid_address(t_any address)
 {
-	register long x8	__asm__("x8") = SYS_SET_TID_ADDRESS;
-	register long x0		__asm__("x0");
+	register long x8	__asm__("x8");
+	register long x0	__asm__("x0");
 
+	x8 = SYS_SET_TID_ADDRESS;
 	x0 = (long)address;
 	__asm__ volatile (
 		"svc #0"

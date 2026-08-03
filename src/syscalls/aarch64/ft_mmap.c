@@ -32,10 +32,13 @@ inline t_any	ft_mmap(t_size size, long prot, long flags_extra)
 __attribute__((nonnull(1), __always_inline__))
 inline void	ft_munmap(t_any restrict const mem, t_size size)
 {
-	register long x8	__asm__("x8") = SYS_MUNMAP;
-	register long x0	__asm__("x0") = (long)mem;
-	register long x1	__asm__("x1") = (long)size;
+	register long x8	__asm__("x8");
+	register long x0	__asm__("x0");
+	register long x1	__asm__("x1");
 
+	x8 = SYS_MUNMAP;
+	x0 = (long)mem;
+	x1 = (long)size;
 	__asm__ volatile (
 		"svc #0"
 		:

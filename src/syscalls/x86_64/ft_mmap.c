@@ -19,11 +19,13 @@ __attribute__((__always_inline__))
 inline t_any	ft_mmap(t_size size, long prot, long flags_extra)
 {
 	t_any					ret;
-	register long r10	__asm__("r10") = MAP_PRIVATE
-		| MAP_ANONYMOUS | flags_extra;
-	register long r9	__asm__("r9") = 0;
-	register long r8	__asm__("r8") = -1;
+	register long r10		__asm__("r10");
+	register long r9		__asm__("r9");
+	register long r8		__asm__("r8");
 
+	r10 = MAP_PRIVATE | MAP_ANONYMOUS | flags_extra;
+	r9 = 0;
+	r8 = -1;
 	__asm__ volatile (
 		"syscall"
 		: "=a"(ret)

@@ -20,11 +20,14 @@ __attribute__((__nonnull__(1, 2), __always_inline__))
 inline int	ft_execve(const char *restrict path,
 		char *const *argv, char *const *envp)
 {
-	register long x8	__asm__("x8") = SYS_EXECVE;
-	register long x0		__asm__("x0");
-	register long x1	__asm__("x1") = (long)argv;
-	register long x2	__asm__("x2") = (long)envp;
+	register long x8	__asm__("x8");
+	register long x0	__asm__("x0");
+	register long x1	__asm__("x1");
+	register long x2	__asm__("x2");
 
+	x8 = SYS_EXECVE;
+	x1 = (long)argv;
+	x2 = (long)envp;
 	x0 = (long)path;
 	__asm__ volatile (
 		"svc #0"

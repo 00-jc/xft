@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/29 23:39:13 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/08/02 18:26:28 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/08/04 00:22:56 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,6 @@ extern "C"
 # include "fmt.h"
 # include "atomics.h"
 # include "threads.h"
-# include "ash.h"
 
 #ifdef __cplusplus
 }

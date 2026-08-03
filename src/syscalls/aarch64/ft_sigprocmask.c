@@ -20,12 +20,16 @@ __attribute__((__always_inline__))
 inline int	ft_sigprocmask(t_u32a flags, t_sigset *__restrict__ const set,
 	t_sigset *__restrict__ const oldest)
 {
-	register long x8	__asm__("x8") = SYS_RT_SIGPROCMASK;
-	register long x0		__asm__("x0");
-	register long x1	__asm__("x1") = (long)set;
-	register long x2	__asm__("x2") = (long)oldest;
-	register long x3	__asm__("x3") = FT_SIGSET_SIZE;
+	register long x8	__asm__("x8");
+	register long x0	__asm__("x0");
+	register long x1	__asm__("x1");
+	register long x2	__asm__("x2");
+	register long x3	__asm__("x3");
 
+	x8 = SYS_RT_SIGPROCMASK;
+	x1 = (long)set;
+	x2 = (long)oldest;
+	x3 = FT_SIGSET_SIZE;
 	x0 = flags;
 	__asm__ volatile (
 		"svc #0"

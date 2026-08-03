@@ -26,8 +26,9 @@ inline t_i32	ft_wait4(t_i32 pid, t_i32a *status, t_i32 options,
 		t_any rusage)
 {
 	t_i32					ret;
-	register long r10	__asm__("r10") = (long)rusage;
+	register long r10		__asm__("r10");
 
+	r10 = (long)rusage;
 	__asm__ volatile (
 		"syscall"
 		: "=a"(ret)

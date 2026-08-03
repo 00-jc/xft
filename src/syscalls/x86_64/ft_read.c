@@ -21,7 +21,7 @@ inline t_ssize	ft_read(int fd, t_u8 *restrict const buffer, t_size len)
 {
 	t_ssize		ret;
 
-	__asm__ volatile(
+	__asm__ volatile (
 		"syscall"
 		: "=a"(ret)
 		: "0"(SYS_READ),
@@ -29,7 +29,7 @@ inline t_ssize	ft_read(int fd, t_u8 *restrict const buffer, t_size len)
 		"S"(buffer),
 		"d"(len)
 		: "rcx", "r11", "memory"
-		);
+	);
 	return ((t_ssize)ft_tern(ret < 0, (t_u64a)-1, (t_u64a)ret));
 }
 

@@ -19,11 +19,14 @@
 __attribute__((__always_inline__))
 inline int	ft_ioctl(int fd, t_u64a request, t_u64a arg)
 {
-	register long x8	__asm__("x8") = SYS_IOCTL;
-	register long x0		__asm__("x0");
-	register long x1	__asm__("x1") = (long)request;
-	register long x2	__asm__("x2") = (long)arg;
+	register long x8	__asm__("x8");
+	register long x0	__asm__("x0");
+	register long x1	__asm__("x1");
+	register long x2	__asm__("x2");
 
+	x8 = SYS_IOCTL;
+	x1 = (long)request;
+	x2 = (long)arg;
 	x0 = fd;
 	__asm__ volatile (
 		"svc #0"

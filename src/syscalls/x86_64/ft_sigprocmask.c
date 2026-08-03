@@ -21,8 +21,9 @@ inline int	ft_sigprocmask(t_u32a flags, t_sigset *__restrict__ const set,
 	t_sigset *__restrict__ const oldest)
 {
 	int							ret;
-	register long r10		__asm__("r10") = FT_SIGSET_SIZE;
+	register long r10			__asm__("r10");
 
+	r10 = FT_SIGSET_SIZE;
 	__asm__ volatile (
 		"syscall"
 		: "=a"(ret)

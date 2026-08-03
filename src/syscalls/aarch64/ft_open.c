@@ -23,12 +23,16 @@
 __attribute__((__nonnull__(1), __always_inline__))
 inline int	ft_open(const char *restrict path, int flags)
 {
-	register long x8	__asm__("x8") = SYS_OPENAT;
-	register long x0		__asm__("x0");
-	register long x1	__asm__("x1") = (long)path;
-	register long x2	__asm__("x2") = flags;
-	register long x3	__asm__("x3") = 0;
+	register long x8	__asm__("x8");
+	register long x0	__asm__("x0");
+	register long x1	__asm__("x1");
+	register long x2	__asm__("x2");
+	register long x3	__asm__("x3");
 
+	x8 = SYS_OPENAT;
+	x1 = (long)path;
+	x2 = flags;
+	x3 = 0;
 	x0 = AT_FDCWD;
 	__asm__ volatile (
 		"svc #0"

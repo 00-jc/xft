@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/29 23:39:13 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/08/03 00:50:37 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/08/04 00:30:11 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,8 +96,8 @@ void	*ft_memcpy(t_any restrict dest,
 
 #if !defined(FT_REQUIRE_LIBC)
 
-__attribute__((__nonnull__(1, 2), __hot__, __returns_nonnull__,
-	__weak__, __alias__("ft_memcpy")))
-t_any	memcpy(t_any restrict dest, t_cany restrict const src, t_size n);
+t_any	memcpy(t_any restrict dest, t_cany restrict const src, t_size n)\
+			__attribute__((__nonnull__(1, 2), __hot__, __returns_nonnull__,\
+				__weak__, __alias__("ft_memcpy")));
 
 #endif

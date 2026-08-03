@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/09 00:00:00 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/07/09 22:09:36 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/08/04 00:32:57 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,8 @@
 __attribute__((const, __always_inline__))
 inline t_u16a	ft_bitpack128(t_vu128a vec)
 {
-	static const t_vu128a	weights =
-	{1, 2, 4, 8, 16, 32, 64, 128, 1, 2, 4, 8, 16, 32, 64, 128};
+	static const t_vu128a	weights = {
+		1, 2, 4, 8, 16, 32, 64, 128, 1, 2, 4, 8, 16, 32, 64, 128};
 	t_u32a					lo;
 	t_u32a					hi;
 

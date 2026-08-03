@@ -20,11 +20,14 @@ __attribute__((nonnull(3), __always_inline__))
 inline t_i32a	ft_fcntl(t_u32a fd, t_u32a cmd,
 		const t_flock *restrict const arg)
 {
-	register long x8	__asm__("x8") = SYS_FCNTL;
-	register long x0		__asm__("x0");
-	register long x1	__asm__("x1") = cmd;
-	register long x2	__asm__("x2") = (long)arg;
+	register long x8	__asm__("x8");
+	register long x0	__asm__("x0");
+	register long x1	__asm__("x1");
+	register long x2	__asm__("x2");
 
+	x8 = SYS_FCNTL;
+	x1 = cmd;
+	x2 = (long)arg;
 	x0 = fd;
 	__asm__ volatile (
 		"svc #0"

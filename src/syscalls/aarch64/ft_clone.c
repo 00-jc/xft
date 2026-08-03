@@ -19,12 +19,16 @@
 __attribute__((__nonnull__(1), __always_inline__))
 inline t_i32	ft_clone(const t_clone_arg *__restrict__ const args)
 {
-	register long x0		__asm__("x0");
-	register long x1	__asm__("x1") = (long)args->stack;
-	register long x2	__asm__("x2") = (long)args->ptid;
-	register long x3	__asm__("x3") = (long)args->tls;
-	register long x4	__asm__("x4") = (long)args->ctid;
+	register long x0	__asm__("x0");
+	register long x1	__asm__("x1");
+	register long x2	__asm__("x2");
+	register long x3	__asm__("x3");
+	register long x4	__asm__("x4");
 
+	x1 = (long)args->stack;
+	x2 = (long)args->ptid;
+	x3 = (long)args->tls;
+	x4 = (long)args->ctid;
 	x0 = (long)args->flags;
 	__asm__ volatile (
 		"mov x8, %[nr]\n\t"

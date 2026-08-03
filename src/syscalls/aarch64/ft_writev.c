@@ -19,11 +19,14 @@
 __attribute__((__nonnull__(2), __always_inline__))
 inline t_ssize	ft_writev(int fd, t_iovec *restrict const buffers, t_size len)
 {
-	register long x8	__asm__("x8") = SYS_WRITEV;
-	register long x0		__asm__("x0");
-	register long x1	__asm__("x1") = (long)buffers;
-	register long x2	__asm__("x2") = (long)len;
+	register long x8	__asm__("x8");
+	register long x0	__asm__("x0");
+	register long x1	__asm__("x1");
+	register long x2	__asm__("x2");
 
+	x8 = SYS_WRITEV;
+	x1 = (long)buffers;
+	x2 = (long)len;
 	x0 = fd;
 	__asm__ volatile (
 		"svc #0"

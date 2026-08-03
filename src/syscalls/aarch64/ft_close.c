@@ -19,9 +19,10 @@
 __attribute__((__always_inline__))
 inline int	ft_close(int fd)
 {
-	register long x8	__asm__("x8") = SYS_CLOSE;
-	register long x0		__asm__("x0");
+	register long x8	__asm__("x8");
+	register long x0	__asm__("x0");
 
+	x8 = SYS_CLOSE;
 	x0 = fd;
 	__asm__ volatile (
 		"svc #0"

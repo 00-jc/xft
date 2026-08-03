@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/11 00:00:00 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/07/14 01:30:45 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/08/04 00:35:22 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,8 @@
 __attribute__((__cold__, __always_inline__, __noreturn__, __unused__))
 static inline void	ft__exit(int status)
 {
-	register long x8	__asm__("x8") = SYS_EXIT;
-	register long x0	__asm__("x0") = status;
+	register long x8 const	__asm__("x8") = SYS_EXIT;
+	register long x0 const	__asm__("x0") = status;
 
 	__asm__ volatile (
 		"svc #0"

@@ -26,7 +26,7 @@ inline t_i64a	ft_clock_gettime(t_timespec *__restrict__ const ts)
 		:"=a"(ret)
 		:"0"(SYS_CLOCK_GETTIME), "D"(1), "S"(ts)
 		:"rcx", "r11", "memory"
-		);
+	);
 	return ((t_i64a)ft_tern(ret < 0, (t_u64a)-1, (t_u64a)ret));
 }
 

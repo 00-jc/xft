@@ -20,10 +20,13 @@ __attribute__((__nonnull__(1), __always_inline__))
 inline long	ft_futex_wait(t_u32a *__restrict__ const uaddr, t_u32a val)
 {
 	long					ret;
-	register long r8	__asm__("r8") = 0;
-	register long r9	__asm__("r9") = 0;
-	register long r10	__asm__("r10") = 0;
+	register long r8		__asm__("r8");
+	register long r9		__asm__("r9");
+	register long r10		__asm__("r10");
 
+	r8 = 0;
+	r9 = 0;
+	r10 = 0;
 	__asm__ volatile (
 		"syscall"
 		: "=a"(ret)
@@ -35,7 +38,7 @@ inline long	ft_futex_wait(t_u32a *__restrict__ const uaddr, t_u32a val)
 		"r"(r8),
 		"r"(r9)
 		: "rcx", "r11", "memory"
-		);
+	);
 	return ((long)ft_tern(ret < 0, (t_u64a)-1, (t_u64a)ret));
 }
 
@@ -43,10 +46,13 @@ __attribute__((__nonnull__(1), __always_inline__))
 inline long	ft_futex_wake(t_u32a *__restrict__ const uaddr, t_u32a val)
 {
 	long					ret;
-	register long r8	__asm__("r8") = 0;
-	register long r9	__asm__("r9") = 0;
-	register long r10	__asm__("r10") = 0;
+	register long r8		__asm__("r8");
+	register long r9		__asm__("r9");
+	register long r10		__asm__("r10");
 
+	r8 = 0;
+	r9 = 0;
+	r10 = 0;
 	__asm__ volatile (
 		"syscall"
 		: "=a"(ret)
@@ -58,7 +64,7 @@ inline long	ft_futex_wake(t_u32a *__restrict__ const uaddr, t_u32a val)
 		"r"(r8),
 		"r"(r9)
 		: "rcx", "r11", "memory"
-		);
+	);
 	return ((long)ft_tern(ret < 0, (t_u64a)-1, (t_u64a)ret));
 }
 

@@ -19,10 +19,12 @@
 __attribute__((__always_inline__, __nonnull__(1)))
 inline t_i64a	ft_clock_gettime(t_timespec *__restrict__ const ts)
 {
-	register long x8	__asm__("x8") = SYS_CLOCK_GETTIME;
-	register long x0		__asm__("x0");
-	register long x1	__asm__("x1") = (long)ts;
+	register long x8	__asm__("x8");
+	register long x0	__asm__("x0");
+	register long x1	__asm__("x1");
 
+	x8 = SYS_CLOCK_GETTIME;
+	x1 = (long)ts;
 	x0 = 1;
 	__asm__ volatile (
 		"svc #0"

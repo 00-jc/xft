@@ -170,6 +170,7 @@ set(SRCS_FUZZER
 
 set(SRCS_HASH
   src/hash/murmur3/ft_murmur3.c
+  src/hash/murmur3/ft_murmur3_tail.c
   src/hash/murmur3/ft_murmur_helpers.c
   src/hash/xxh3/ft_xxh3.c
   src/hash/xxh3/ft_xxh3_avalanche.c

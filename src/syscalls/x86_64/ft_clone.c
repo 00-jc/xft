@@ -20,9 +20,11 @@ __attribute__((__nonnull__(1), __always_inline__))
 inline t_i32	ft_clone(const t_clone_arg *__restrict__ const args)
 {
 	t_i32						ret;
-	register long r10		__asm__("r10") = (long)args->ctid;
-	register long r8		__asm__("r8") = (long)args->tls;
+	register long r10			__asm__("r10");
+	register long r8			__asm__("r8");
 
+	r10 = (long)args->ctid;
+	r8 = (long)args->tls;
 	__asm__ volatile (
 		"syscall"
 		: "=a"(ret)

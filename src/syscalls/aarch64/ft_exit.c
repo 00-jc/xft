@@ -17,9 +17,11 @@
 __attribute__((__cold__, __always_inline__, __noreturn__))
 inline void	ft_exit(int status)
 {
-	register long x8	__asm__("x8") = SYS_EXIT;
-	register long x0	__asm__("x0") = status;
+	register long x8	__asm__("x8");
+	register long x0	__asm__("x0");
 
+	x8 = SYS_EXIT;
+	x0 = status;
 	__asm__ volatile (
 		"svc #0"
 		:
