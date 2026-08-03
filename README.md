@@ -226,9 +226,11 @@ examples/         standalone programs (not built by CMake)
 The whole build is driven by the single top-level `CMakeLists.txt`; source lists
 are explicit, so adding a file means adding it there.
 
-# Lints
+## Lints
 
 All of this library is norminette compliant.
+
+---
 
 # LICENSE
 
