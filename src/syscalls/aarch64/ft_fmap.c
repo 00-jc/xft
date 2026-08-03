@@ -13,7 +13,7 @@
 #include "syscalls.h"
 #include "private/ft_p_syscalls.h"
 
-#ifdef __aarch64__
+#if defined(__aarch64__) && !defined(FT_REQUIRE_LIBC)
 
 __attribute__((__always_inline__))
 inline t_any	ft_fmap(t_size size, int fd)

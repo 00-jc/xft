@@ -11,9 +11,10 @@
 /* ************************************************************************** */
 
 #include "syscalls.h"
+#include "bmi.h"
 #include "private/ft_p_syscalls.h"
 
-#ifdef __x86_64__
+#if defined(__x86_64__) && !defined(FT_REQUIRE_LIBC)
 
 __attribute__((__always_inline__))
 inline int	ft_ioctl(int fd, t_u64a request, t_u64a arg)
@@ -29,7 +30,7 @@ inline int	ft_ioctl(int fd, t_u64a request, t_u64a arg)
 		"d"(arg)
 		: "rcx", "r11", "memory"
 	);
-	return (ret);
+	return ((int)ft_tern(ret < 0, (t_u64a)-1, (t_u64a)ret));
 }
 
 #endif

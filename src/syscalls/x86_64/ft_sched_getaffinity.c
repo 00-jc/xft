@@ -11,9 +11,10 @@
 /* ************************************************************************** */
 
 #include "syscalls.h"
+#include "bmi.h"
 #include "private/ft_p_syscalls.h"
 
-#ifdef __x86_64__
+#if defined(__x86_64__) && !defined(FT_REQUIRE_LIBC)
 
 __attribute__((__nonnull__(3), __always_inline__))
 inline int	ft_sched_getaffinity(t_i32a pid, t_size cpusetsize,
@@ -30,7 +31,7 @@ inline int	ft_sched_getaffinity(t_i32a pid, t_size cpusetsize,
 		"d"(mask)
 		: "r11", "rcx", "memory"
 	);
-	return (ret);
+	return ((int)ft_tern(ret < 0, (t_u64a)-1, (t_u64a)ret));
 }
 
 #endif

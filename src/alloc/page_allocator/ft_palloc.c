@@ -24,7 +24,7 @@ inline t_buffer	ft_palloc(t_size size)
 	mem = ft_mmap(snapped, PROT_READ | PROT_WRITE, flags);
 	return ((t_buffer){
 		.size = snapped,
-		.mem = (t_any)ft_tern(mem != (t_any)MAP_FAILED, (t_u64a)mem, 0),
+		.mem = (t_any)ft_tern(!ft_map_failed(mem), (t_u64a)mem, 0),
 	});
 }
 
@@ -43,7 +43,7 @@ inline t_buffer	ft_palloc_resize(t_buffer b, t_size new_size)
 	mem = ft_mmap(snapped, PROT_READ | PROT_WRITE, flags);
 	new_b = (t_buffer){
 		.size = snapped,
-		.mem = (t_any)ft_tern(mem != (t_any)MAP_FAILED, (t_u64a)mem, 0),
+		.mem = (t_any)ft_tern(!ft_map_failed(mem), (t_u64a)mem, 0),
 	};
 	ft_memcpy(new_b.mem, b.mem, b.size);
 	ft_munmap(b.mem, b.size);

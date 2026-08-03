@@ -34,31 +34,38 @@ static inline void	runblock1(t_u64a *s, t_u64a *restrict k)
 
 /* no safe duff's device since norminette forbids switches */
 
+__attribute__((__always_inline__, __nonnull__(1), __pure__))
+static inline t_u64a	ft_murmur3_tail_word(const t_u8 *restrict const tail,
+		t_size len, t_size base, t_size n)
+{
+	t_u64a	k;
+	t_size	i;
+	t_size	g;
+
+	k = 0;
+	i = 0;
+	while (i < n)
+	{
+		g = (len > (base + i)) & 1;
+		k ^= g * ((t_u64a)tail[(base + i) * g] << (i << 3));
+		++i;
+	}
+	return (k);
+}
+
 __attribute__((__always_inline__, __nonnull__(1, 2, 3)))
 static inline void	ft_murmur3_tail(const t_u8 *restrict const tail,
 		t_u64a k[2], t_u64a s[2], t_size len)
 {
-	t_size	i;
-
 	k[0] = 0;
 	k[1] = 0;
-	i = 0;
-	while (i < 7)
-	{
-		k[1] ^= ((len >= (15 - i)) & 1)
-			* ((t_u64a)tail[14 - i] << (48 - (i << 3)));
-		++i;
-	}
+	if (__builtin_expect(len == 0, 0))
+		return ;
+	k[1] = ft_murmur3_tail_word(tail, len, 8, 7);
 	k[1] *= C2;
 	k[1] = rotl(k[1], 33) * C1;
 	s[1] ^= k[1] * ((len >= 9) & 1);
-	i = 0;
-	while (i < 8)
-	{
-		k[0] ^= ((len >= (8 - i)) & 1)
-			* ((t_u64a)tail[7 - i] << (56 - (i << 3)));
-		++i;
-	}
+	k[0] = ft_murmur3_tail_word(tail, len, 0, 8);
 	k[0] *= C1;
 	k[0] = rotl(k[0], 31) * C2;
 	s[0] ^= k[0] * ((len >= 1) & 1);

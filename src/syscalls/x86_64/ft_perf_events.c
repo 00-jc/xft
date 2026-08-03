@@ -11,9 +11,10 @@
 /* ************************************************************************** */
 
 #include "syscalls.h"
+#include "bmi.h"
 #include "private/ft_p_syscalls.h"
 
-#ifdef __x86_64__
+#if defined(__x86_64__) && !defined(FT_REQUIRE_LIBC)
 
 __attribute__((__nonnull__(1), __always_inline__))
 inline int	ft_perf_event_open(const t_perf_event_attr *restrict attr,
@@ -35,7 +36,7 @@ inline int	ft_perf_event_open(const t_perf_event_attr *restrict attr,
 		"r"(r10), "r"(r8)
 		: "rcx", "r11", "memory"
 	);
-	return (ret);
+	return ((int)ft_tern(ret < 0, (t_u64a)-1, (t_u64a)ret));
 }
 
 #endif

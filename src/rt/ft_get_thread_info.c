@@ -39,5 +39,5 @@ inline void	ft__get_thread_info(t_xft_rt *__restrict__ const rt)
 	rt->elf.align = ft_tern(rt->elf.align < sizeof(t_uptr), sizeof(t_uptr),
 			rt->elf.align);
 	rt->elf.vaddr += rt->elf.load_bias;
-	rt->elf.memsz = (t_uptr)ft_align_fwd((t_any)rt->elf.memsz, rt->elf.align);
+	rt->elf.memsz = ft_align_fwd_integer(rt->elf.memsz, rt->elf.align);
 }

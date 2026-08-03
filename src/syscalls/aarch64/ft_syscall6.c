@@ -12,7 +12,7 @@
 
 #include "private/ft_p_syscalls.h"
 
-#ifdef __aarch64__
+#if defined(__aarch64__) && !defined(FT_REQUIRE_LIBC)
 
 /*
  *	aarch64 has no single-register asm constraints (unlike x86_64's

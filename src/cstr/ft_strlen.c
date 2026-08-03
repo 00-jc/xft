@@ -15,7 +15,7 @@
 
 #if FT_HAS_512_VEC
 
-__attribute__((pure, __nonnull__(1)))
+__attribute__((pure, __nonnull__(1), __no_sanitize_address__))
 t_size	ft_strlen(const char *restrict str)
 {
 	t_uptr						a;
@@ -43,7 +43,7 @@ t_size	ft_strlen(const char *restrict str)
 
 #elif FT_HAS_256_VEC
 
-__attribute__((pure, __nonnull__(1)))
+__attribute__((pure, __nonnull__(1), __no_sanitize_address__))
 t_size	ft_strlen(const char *restrict str)
 {
 	t_uptr						a;
@@ -71,7 +71,7 @@ t_size	ft_strlen(const char *restrict str)
 
 #else
 
-__attribute__((pure, __nonnull__(1)))
+__attribute__((pure, __nonnull__(1), __no_sanitize_address__))
 t_size	ft_strlen(const char *restrict str)
 {
 	t_uptr						a;

@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/08 09:54:35 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/07/08 09:58:34 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/08/03 02:53:55 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 __attribute__((__nonnull__(1)))
 int	ft_mprotect(t_any addr, t_size size, int prot)
 {
-	return (syscall(SYS_MPROTECT, addr, size, prot));
+	return ((int)syscall(SYS_MPROTECT, addr, size, prot));
 }
 
 #endif

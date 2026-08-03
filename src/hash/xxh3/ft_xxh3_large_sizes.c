@@ -130,5 +130,5 @@ t_u64a	ft_xxh3_hashlong_64b(t_buffer input, t_u64a seed)
 	ft_xxh3_hashlong_internal_loop((t_blk8r) & acc, input, secret);
 	return (ft_xxh3_merge_accs((t_u64 *) & acc,
 			secret.mem + XXH3_SECRET_MERGEACCS_START,
-			(t_u64)input.size * XXH3_PRIME64_1));
+			input.size * XXH3_PRIME64_1));
 }

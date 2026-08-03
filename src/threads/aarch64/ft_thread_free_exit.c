@@ -17,7 +17,7 @@
 #include "threads.h"
 #include "private/ft_p_rt.h"
 
-#ifdef __aarch64__
+#if defined(__aarch64__) && !defined(FT_REQUIRE_LIBC)
 
 /*
  *	ft_exit() only has an out-of-line declaration in syscalls.h, so calls
@@ -30,8 +30,8 @@
 __attribute__((__cold__, __always_inline__, __noreturn__, __unused__))
 static inline void	ft__exit(int status)
 {
-	const register long x8	__asm__("x8") = SYS_EXIT;
-	const register long x0	__asm__("x0") = status;
+	register long x8	__asm__("x8") = SYS_EXIT;
+	register long x0	__asm__("x0") = status;
 
 	__asm__ volatile (
 		"svc #0"

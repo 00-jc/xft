@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "mem.h"
 #include "syscalls.h"
 #include "threads.h"
 
@@ -31,10 +32,11 @@ __attribute__((__always_inline__, __nonnull__(1)))
 inline t_result	ft_get_cpu_count(t_size *__restrict__ const count)
 {
 	t_size		set[128 / sizeof(t_size)];
-	t_size		res;
+	int			res;
 
-	res = (t_size)ft_sched_getaffinity(0, sizeof(set), set);
-	if (__builtin_expect(res >= (t_size)-FT_MAX_ERRNO, 0))
+	ft_bzero(set, sizeof(set));
+	res = ft_sched_getaffinity(0, sizeof(set), set);
+	if (__builtin_expect(res < 0, 0))
 		return (KO);
 	*count = ft__cpu_count(set);
 	return (OK);

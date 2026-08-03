@@ -11,17 +11,18 @@
 /* ************************************************************************** */
 
 #include "syscalls.h"
+#include "bmi.h"
 #include "private/ft_p_syscalls.h"
 
-#ifdef __aarch64__
+#if defined(__aarch64__) && !defined(FT_REQUIRE_LIBC)
 
 __attribute__((__always_inline__))
 inline int	ft_ioctl(int fd, t_u64a request, t_u64a arg)
 {
-	const register long x8	__asm__("x8") = SYS_IOCTL;
+	register long x8	__asm__("x8") = SYS_IOCTL;
 	register long x0		__asm__("x0");
-	const register long x1	__asm__("x1") = (long)request;
-	const register long x2	__asm__("x2") = (long)arg;
+	register long x1	__asm__("x1") = (long)request;
+	register long x2	__asm__("x2") = (long)arg;
 
 	x0 = fd;
 	__asm__ volatile (
@@ -30,7 +31,7 @@ inline int	ft_ioctl(int fd, t_u64a request, t_u64a arg)
 		: "r"(x8), "r"(x1), "r"(x2)
 		: "memory", "cc"
 	);
-	return ((int)x0);
+	return ((int)ft_tern(x0 < 0, (t_u64a)-1, (t_u64a)x0));
 }
 
 #endif

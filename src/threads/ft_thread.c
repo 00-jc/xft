@@ -73,11 +73,11 @@ t_result	ft_thread_spawn(const t_xft_rt *__restrict__ const rt_info,
 
 	o = ft__map_bytes(rt_info, stack_size);
 	map = ft_mmap(o.total_map, PROT_NONE, MAP_PRIVATE | MAP_ANONYMOUS);
-	if (__builtin_expect((t_uptr)map == (t_uptr)MAP_FAILED, 0))
+	if (__builtin_expect(ft_map_failed(map), 0))
 		return (KO);
 	if (__builtin_expect(ft_mprotect(map + o.guard_offset,
 				o.total_map - o.guard_offset, PROT_READ | PROT_WRITE) == -1, 0))
-		return ((void)ft_munmap(map, o.total_map), KO);
+		return (ft_munmap(map, o.total_map), KO);
 	area = ft_fatptr(map + o.tls_offset, o.instance_offset - o.tls_offset);
 	tp = ft__tls_prep(rt_info, area);
 	inst = (t_thread_instance *)(map + o.instance_offset);

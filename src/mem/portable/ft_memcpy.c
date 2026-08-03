@@ -23,3 +23,14 @@ inline void	ft_memcpy_64(t_any restrict dest,
 	((t_blk64w)dest)[0] = x[0];
 	*((t_blk64w)ft_overlap(dest, sizeof(t_u64a), n)) = x[1];
 }
+
+__attribute__((__nonnull__(1, 2), __always_inline__))
+inline void	ft_memmove_64(t_any dest, t_cany const src, t_size n)
+{
+	t_u64a		x[2];
+
+	x[0] = ((t_blk64r)src)[0];
+	x[1] = *((t_blk64r)ft_overlap(src, sizeof(t_u64a), n));
+	((t_blk64w)dest)[0] = x[0];
+	*((t_blk64w)ft_overlap(dest, sizeof(t_u64a), n)) = x[1];
+}

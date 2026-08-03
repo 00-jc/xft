@@ -15,6 +15,12 @@
 
 # include "primitives.h"
 
+/// \brief Owned, growable, type-erased array; the vec.h functions take the
+/// element size explicitly since t_vec itself does not store it.
+/// \note `size` and `buf.size` are **byte** counts, not element counts —
+/// divide by the element's `type_size` (e.g. via ft_vec_len) to get the
+/// element count. `buf` is the allocator-owned backing storage; `size` is
+/// the number of bytes currently in use, `buf.size` is the capacity.
 typedef struct s_vec
 {
 	size_t		size;

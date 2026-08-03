@@ -26,6 +26,6 @@ void	test_bulk_mixed_sizes_fill(t_gpa *gpa, t_buffer *bufs)
 			ft_fatptr((t_u8 *)"mixed alloc", sizeof("mixed alloc") - 1));
 		ft_pin_invariant_msg(bufs[i].size >= sizes[i % BULK_SIZES],
 			ft_fatptr((t_u8 *)"mixed size", sizeof("mixed size") - 1));
-		*(t_u8 *)bufs[i].mem = (t_u8)(i & 0xff);
+		*bufs[i].mem = (t_u8)(i & 0xff);
 	}
 }

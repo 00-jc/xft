@@ -1,0 +1,1 @@
+/usr/lib/llvm/22/bin/clang  -fuse-ld=lld -nostdlib -static -fuse-ld=lld CMakeFiles/arena_bench.dir/bench/arena/arena_bench.c.o CMakeFiles/arena_bench.dir/bench/arena/arena_bench_ops.c.o CMakeFiles/arena_bench.dir/bench/arena/arena_bench_rand.c.o -o arena_bench  libxft.a

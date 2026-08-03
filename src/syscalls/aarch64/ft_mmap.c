@@ -13,7 +13,7 @@
 #include "syscalls.h"
 #include "private/ft_p_syscalls.h"
 
-#ifdef __aarch64__
+#if defined(__aarch64__) && !defined(FT_REQUIRE_LIBC)
 
 __attribute__((__always_inline__))
 inline t_any	ft_mmap(t_size size, long prot, long flags_extra)
@@ -32,9 +32,9 @@ inline t_any	ft_mmap(t_size size, long prot, long flags_extra)
 __attribute__((nonnull(1), __always_inline__))
 inline void	ft_munmap(t_any restrict const mem, t_size size)
 {
-	const register long x8	__asm__("x8") = SYS_MUNMAP;
-	const register long x0	__asm__("x0") = (long)mem;
-	const register long x1	__asm__("x1") = (long)size;
+	register long x8	__asm__("x8") = SYS_MUNMAP;
+	register long x0	__asm__("x0") = (long)mem;
+	register long x1	__asm__("x1") = (long)size;
 
 	__asm__ volatile (
 		"svc #0"

@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/04 18:00:00 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/07/04 22:34:29 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/08/02 20:23:21 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ inline void	ft_mutex_busy(t_mutex *__restrict__ const mutex)
 	t_i32				val;
 	static t_i32 const	contest = FT_CONTESTED;
 
-	((void)(ft_prefetch0((t_any)mutex, sizeof(*mutex))), val = FT_UNLOCKED);
+	((ft_prefetch0((t_any)mutex, sizeof(*mutex))), val = FT_UNLOCKED);
 	iters = 0;
 	while (true)
 	{
@@ -29,7 +29,7 @@ inline void	ft_mutex_busy(t_mutex *__restrict__ const mutex)
 		if (__builtin_expect(val == FT_UNLOCKED, 1))
 		{
 			if (__builtin_expect(__atomic_compare_exchange(mutex,
-						(t_any) & val, (t_any) & contest, true,
+						&val, (t_i32 *) & contest, true,
 						__ATOMIC_ACQUIRE, __ATOMIC_RELAXED), 1))
 				return ;
 		}

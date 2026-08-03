@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/29 23:39:13 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/06/29 23:39:20 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/08/03 00:53:09 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,24 +34,33 @@ inline void	ft_memset_naive(t_any restrict dest,
 	((t_blk8w)dest)[i[6]] = b;
 }
 
-__attribute__((__nonnull__(1), __hot__))
-void	ft_memset(t_any restrict dest,
-	const t_u8 b, t_size n)
+__attribute__((__nonnull__(1), __hot__, returns_nonnull))
+void	*ft_memset(t_any restrict dest,
+	const t_i32 b, t_size n)
 {
 	if (__builtin_expect(n == 0, 0))
-		return ;
+		return (dest);
 	else if (n < 8)
-		ft_memset_naive(dest, b, n);
+		ft_memset_naive(dest, (t_u8)b, n);
 	else if (n < 16)
-		ft_memset_64(dest, b, n);
+		ft_memset_64(dest, (t_u8)b, n);
 	else if (n < 32)
-		ft_memset_128(dest, b, n);
+		ft_memset_128(dest, (t_u8)b, n);
 	else if (n < 64)
-		ft_memset_256(dest, b, n);
+		ft_memset_256(dest, (t_u8)b, n);
 	else if (n < 128)
-		ft_memset_512(dest, b, n);
+		ft_memset_512(dest, (t_u8)b, n);
 	else if (n < FT_LLC_SIZE)
-		ft_memset_512_huge(dest, b, n);
+		ft_memset_512_huge(dest, (t_u8)b, n);
 	else
-		ft_memset_512_streaming(dest, b, n);
+		ft_memset_512_streaming(dest, (t_u8)b, n);
+	return (dest);
 }
+
+#if !defined(FT_REQUIRE_LIBC)
+
+__attribute__((__nonnull__(1), __hot__, returns_nonnull,
+	__weak__, __alias__("ft_memset")))
+t_any	memset(t_any restrict dest, const t_i32 b, t_size n);
+
+#endif

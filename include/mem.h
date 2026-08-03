@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/29 23:39:13 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/07/08 17:35:16 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/08/03 00:51:38 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,10 +26,10 @@
 void			ft_bzero(t_any __restrict__ ptr, t_size n)\
 					__attribute__((__nonnull__(1)));
 
-void			ft_memset(t_any __restrict__ s, const t_u8 c, t_size n)\
+void			*ft_memset(t_any __restrict__ s, const t_i32 c, t_size n)\
 					__attribute__((__nonnull__(1)));
 
-void			ft_memcpy(t_any __restrict__ dest,
+void			*ft_memcpy(t_any __restrict__ dest,
 					t_cany __restrict__ src, t_size n)\
 					__attribute__((__nonnull__(1, 2), __hot__));
 
@@ -37,8 +37,7 @@ void			ft_memtake(t_any __restrict__ dest,
 					t_any __restrict__ src, t_size n)\
 					__attribute__((__nonnull__(1, 2)));
 
-void			ft_memmove(t_any __restrict__ dest,
-					t_cany __restrict__ src, t_size n)\
+void			ft_memmove(t_any dest, t_cany src, t_size n)\
 					__attribute__((__nonnull__(1, 2), __hot__));
 
 t_any			ft_memchr(t_cany __restrict__ ptr, int c, t_size n)\

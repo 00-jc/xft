@@ -10,14 +10,15 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "bmi.h"
 #include "private/ft_p_syscalls.h"
 
-#ifdef __aarch64__
+#if defined(__aarch64__) && !defined(FT_REQUIRE_LIBC)
 
 __attribute__((__always_inline__))
 inline int	ft_set_tid_address(t_any address)
 {
-	const register long x8	__asm__("x8") = SYS_SET_TID_ADDRESS;
+	register long x8	__asm__("x8") = SYS_SET_TID_ADDRESS;
 	register long x0		__asm__("x0");
 
 	x0 = (long)address;
@@ -27,7 +28,7 @@ inline int	ft_set_tid_address(t_any address)
 		: "r"(x8)
 		: "memory", "cc"
 	);
-	return ((int)x0);
+	return ((int)ft_tern(x0 < 0, (t_u64a)-1, (t_u64a)x0));
 }
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/04 18:00:00 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/07/04 22:34:40 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/08/02 20:22:57 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ inline bool	ft__try_lock(t_mutex *__restrict__ const mutex)
 	t_i32				val;
 	static t_i32 const	contest = FT_CONTESTED;
 
-	__atomic_exchange(mutex, (t_any) & contest, &val, __ATOMIC_ACQ_REL);
+	__atomic_exchange(mutex, (t_i32 *) & contest, &val, __ATOMIC_ACQ_REL);
 	if (__builtin_expect(val == FT_UNLOCKED, 1))
 		return (true);
 	return (false);
@@ -36,7 +36,7 @@ inline bool	ft__try_lock_spin(t_mutex *__restrict__ const mutex)
 
 	val = FT_UNLOCKED;
 	if (__builtin_expect(__atomic_compare_exchange(mutex,
-				&val, (t_any) & contest, true, __ATOMIC_ACQUIRE,
+				&val, (t_i32 *) & contest, true, __ATOMIC_ACQUIRE,
 				__ATOMIC_RELAXED), 1))
 		return (true);
 	return (false);
@@ -48,7 +48,7 @@ inline void	ft_mutex_spin(t_mutex *__restrict__ const mutex)
 	t_u64				iters;
 	t_i32				val;
 
-	((void)(ft_prefetch0((t_any)mutex, sizeof(*mutex))), val = FT_UNLOCKED);
+	((ft_prefetch0((t_any)mutex, sizeof(*mutex))), val = FT_UNLOCKED);
 	while (true)
 	{
 		iters = 0;

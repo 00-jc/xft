@@ -25,7 +25,7 @@ inline t_buffer	ft_map_file(const t_u8 *__restrict__ const name, t_u32 flags)
 	if (__builtin_expect(fd == -1, 0))
 		return ((t_buffer){0});
 	ptr = ft_fmap(stat.st_size, fd);
-	if (__builtin_expect((t_uptr)ptr == (t_uptr)MAP_FAILED, 0))
+	if (__builtin_expect(ft_map_failed(ptr), 0))
 		return ((void)ft_close(fd), (t_buffer){0});
 	ft_close(fd);
 	return ((t_buffer){.size = stat.st_size, .mem = ptr});

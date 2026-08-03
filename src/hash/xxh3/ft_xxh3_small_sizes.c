@@ -84,7 +84,7 @@ inline t_u64a	ft_xxh3_len_9to16(t_buffer input, t_buffer secret, t_u64a seed)
 			- seed;
 		input_lo = *(t_blk64r)input.mem ^ bitflip1;
 		input_hi = *(t_blk64r)(input.mem + input.size - 8) ^ bitflip2;
-		acc = (t_u64)input.size + ft_bswap64(input_lo) + input_hi;
+		acc = input.size + ft_bswap64(input_lo) + input_hi;
 		acc += ft_xxh3_mul128_fold64(input_lo, input_hi);
 		return (ft_xxh3_avalanche(acc));
 	}

@@ -31,7 +31,7 @@ inline t_any	get_next_ptr(t_hugepage *page, t_size align)
 	t_u8	*base;
 
 	base = page->data + page->used;
-	addr = ft_align_fwd(base, align - 1);
+	addr = ft_align_fwd(base, align);
 	return (addr);
 }
 
@@ -44,7 +44,7 @@ inline t_hugepage	*new_hugepage(t_hugepage *restrict const prev,
 	if (prev && prev->next && prev->next->page_size >= size)
 		return ((void)(page = prev->next), (void)(page->used = 0), page);
 	page = ft_mmap(size, PROT_READ | PROT_WRITE, flag);
-	if (page == (t_any)MAP_FAILED)
+	if (ft_map_failed(page))
 		return (nullptr);
 	page->page_size = size;
 	page->prev = prev;

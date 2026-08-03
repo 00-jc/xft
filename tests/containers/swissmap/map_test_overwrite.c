@@ -26,6 +26,6 @@ void	test_map_overwrite(t_allocator a)
 	ft_map_insert(a, &m, ft_fatptr((t_u8 *)"ow", 2), (t_u8 *)&v2);
 	got = ft_map_lookup(&m, ft_fatptr((t_u8 *)"ow", 2));
 	ft_pin_invariant(got != nullptr);
-	ft_pin_invariant(*(int *)got == 200);
+	ft_pin_invariant(*got == 200);
 	ft_map_destroy(a, &m);
 }

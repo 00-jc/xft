@@ -12,16 +12,17 @@
 
 #include "private/ft_p_syscalls.h"
 #include "syscalls.h"
+#include "bmi.h"
 
-#ifdef __aarch64__
+#if defined(__aarch64__) && !defined(FT_REQUIRE_LIBC)
 
 __attribute__((__nonnull__(1)))
 int	ft_mprotect(t_any addr, t_size size, int prot)
 {
-	const register long x8	__asm__("x8") = SYS_MPROTECT;
+	register long x8	__asm__("x8") = SYS_MPROTECT;
 	register long x0		__asm__("x0");
-	const register long x1	__asm__("x1") = (long)size;
-	const register long x2	__asm__("x2") = prot;
+	register long x1	__asm__("x1") = (long)size;
+	register long x2	__asm__("x2") = prot;
 
 	x0 = (long)addr;
 	__asm__ volatile (
@@ -30,7 +31,7 @@ int	ft_mprotect(t_any addr, t_size size, int prot)
 		: "r"(x8), "r"(x1), "r"(x2)
 		: "memory", "cc"
 	);
-	return ((int)x0);
+	return ((int)ft_tern(x0 < 0, (t_u64a)-1, (t_u64a)x0));
 }
 
 #endif

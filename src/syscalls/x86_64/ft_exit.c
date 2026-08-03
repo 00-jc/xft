@@ -12,7 +12,7 @@
 
 #include "syscalls.h"
 
-#ifdef __x86_64__
+#if defined(__x86_64__) && !defined(FT_REQUIRE_LIBC)
 
 __attribute__((__cold__, __always_inline__, __noreturn__))
 inline void	ft_exit(int status)

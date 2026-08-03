@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/29 23:39:12 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/06/30 23:17:30 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/08/02 20:16:06 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,10 @@ t_result		ft_stream_flush(t_any __restrict__ const writer)\
 
 t_result		ft_stream_drain(t_any __restrict__ const writer,\
 					t_iovec *__restrict__ bufs, t_size nbufs)\
-					__attribute__((__always_inline__, __nonnull__(1, 2)));
+					__attribute__((__nonnull__(1, 2)));
 
 t_result		ft_stream_fill(t_any __restrict__ const reader)\
-					__attribute__((__always_inline__, __nonnull__(1)));
+					__attribute__((__nonnull__(1)));
 
 t_result		ft_stream_unbuffered_fill(t_any reader, t_u8 *dst,\
 					const t_size len, t_size *total)\
@@ -34,10 +34,10 @@ t_result		ft_raw_flush(t_any __restrict__ const writer)\
 
 t_result		ft_raw_drain(t_any __restrict__ const writer,\
 					t_iovec *__restrict__ bufs, t_size nbufs)\
-					__attribute__((__always_inline__, __nonnull__(1, 2)));
+					__attribute__((__nonnull__(1, 2)));
 
 t_result		ft_raw_fill(t_any __restrict__ const reader)\
-					__attribute__((__always_inline__, __nonnull__(1)));
+					__attribute__((__nonnull__(1)));
 
 t_result		ft_raw_unbuffered_fill(t_any reader, t_u8 *dst,\
 					const t_size len, t_size *total)\

@@ -1,0 +1,43 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_mkdir.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/07/31 00:00:00 by jaicastr          #+#    #+#             */
+/*   Updated: 2026/07/31 00:00:00 by jaicastr         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "syscalls.h"
+#include "bmi.h"
+#include "private/ft_p_syscalls.h"
+
+#if defined(__aarch64__) && !defined(FT_REQUIRE_LIBC)
+
+/*
+ *	aarch64 has no bare "mkdir" syscall, only "mkdirat", same as the
+ *	open/stat pair: AT_FDCWD makes a relative path resolve against the
+ *	cwd, which is what a bare mkdir does.
+ */
+
+__attribute__((__nonnull__(1), __always_inline__))
+inline int	ft_mkdir(const char *restrict path, t_u32a mode)
+{
+	register long x8	__asm__("x8") = SYS_MKDIRAT;
+	register long x0		__asm__("x0");
+	register long x1	__asm__("x1") = (long)path;
+	register long x2	__asm__("x2") = (long)mode;
+
+	x0 = AT_FDCWD;
+	__asm__ volatile (
+		"svc #0"
+		: "+r"(x0)
+		: "r"(x8), "r"(x1), "r"(x2)
+		: "memory", "cc"
+	);
+	return ((int)ft_tern(x0 < 0, (t_u64a)-1, (t_u64a)x0));
+}
+
+#endif

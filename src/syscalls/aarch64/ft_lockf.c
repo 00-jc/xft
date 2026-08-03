@@ -11,18 +11,19 @@
 /* ************************************************************************** */
 
 #include "syscalls.h"
+#include "bmi.h"
 #include "private/ft_p_syscalls.h"
 
-#ifdef __aarch64__
+#if defined(__aarch64__) && !defined(FT_REQUIRE_LIBC)
 
 __attribute__((nonnull(3), __always_inline__))
-inline t_u32a	ft_fcntl(t_u32a fd, t_u32a cmd,
+inline t_i32a	ft_fcntl(t_u32a fd, t_u32a cmd,
 		const t_flock *restrict const arg)
 {
-	const register long x8	__asm__("x8") = SYS_FCNTL;
+	register long x8	__asm__("x8") = SYS_FCNTL;
 	register long x0		__asm__("x0");
-	const register long x1	__asm__("x1") = cmd;
-	const register long x2	__asm__("x2") = (long)arg;
+	register long x1	__asm__("x1") = cmd;
+	register long x2	__asm__("x2") = (long)arg;
 
 	x0 = fd;
 	__asm__ volatile (
@@ -31,10 +32,10 @@ inline t_u32a	ft_fcntl(t_u32a fd, t_u32a cmd,
 		: "r"(x8), "r"(x1), "r"(x2)
 		: "memory", "cc"
 	);
-	return ((t_u32a)x0);
+	return ((t_i32a)ft_tern(x0 < 0, (t_u64a)-1, (t_u64a)x0));
 }
 
-t_u32a	ft_lockf(int fd)
+t_i32a	ft_lockf(int fd)
 {
 	t_flock		fl;
 
@@ -48,7 +49,7 @@ t_u32a	ft_lockf(int fd)
 	return (ft_fcntl((t_u32a)fd, F_SETLKW, &fl));
 }
 
-t_u32a	ft_unlockf(int fd)
+t_i32a	ft_unlockf(int fd)
 {
 	t_flock		fl;
 

@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/29 23:39:13 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/07/15 12:15:11 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/07/31 02:08:41 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,19 @@
 # define SYSCALLS_H
 
 /*
- *	raw syscalls return -errno on failure, with valid errno codes
- *	bounded to [1, 4095] (see Linux arch/.../include/asm/unistd.h and
- *	glibc's MAX_ERRNO); anything else is a legitimate return value
- *	that merely looks negative (e.g. mmap addresses on some archs).
+ *	One failure convention for all three backends: a syscall that
+ *	failed returns -1, and nothing else is negative. glibc's syscall()
+ *	already reports that way, so the libc backend is the shape the
+ *	other two conform to - the raw ones fold the kernel's -errno down
+ *	to -1 with ft_tern at the return. Callers test "< 0", full stop;
+ *	there is no code left to compare against.
+ *
+ *	The mmap family is deliberately outside this. It returns an
+ *	address, and an address is allowed to look negative, so its errors
+ *	still arrive as the kernel's -errno and have to be recognised by
+ *	the band they fall in: valid codes are [1, 4095] (see Linux
+ *	arch/.../include/asm/unistd.h and glibc's MAX_ERRNO), so a return
+ *	in [-4095, -1] is a failure and anything else is a real address.
  */
 # define FT_MAX_ERRNO 4095
 
@@ -134,20 +143,40 @@ typedef struct s_clone_arg
 	t_uptr	tls;
 }	t_clone_arg;
 
+/*
+ *	The wait status word the kernel writes is encoded the same way with
+ *	or without a libc, so these are plain macros rather than a backend:
+ *	a normal exit leaves the low 7 bits clear and the status in bits
+ *	8..15, a signalled death leaves the signal in the low 7.
+ */
+
+# define FT_WNOHANG				1
+# define FT_WUNTRACED			2
+
+/*
+ *	Directory permissions for a build tree: rwxr-xr-x, umask applies.
+ */
+
+# define FT_MKDIR_0755			0755
+
 t_any	ft_mmap(t_size size, long prot, long flags_extra);
 t_any	ft_fmap(t_size size, int fd);
+t_result	ft_map_failed(t_cany ptr)\
+			__attribute__((const));
 void	ft_munmap(t_any __restrict__ const mem, t_size size)\
 			__attribute__((nonnull(1)));
-t_u32a	ft_fcntl(t_u32a fd, t_u32a cmd,\
+t_i32a	ft_fcntl(t_u32a fd, t_u32a cmd,\
 			const t_flock *__restrict__ const arg)\
 			__attribute__((nonnull(3)));
-t_u32a	ft_lockf(int fd);
-t_u32a	ft_unlockf(int fd);
+t_i32a	ft_lockf(int fd);
+t_i32a	ft_unlockf(int fd);
 int		ft_ioctl(int fd, t_u64a request, t_u64a arg);
 int		ft_open(const char *__restrict__ path, int flags)\
 			__attribute__((__nonnull__(1)));
 int		ft_close(int fd);
 int		ft_stat(const char *__restrict__ path, t_stat *statbuf)\
+			__attribute__((__nonnull__(1)));
+int		ft_mkdir(const char *__restrict__ path, t_u32a mode)\
 			__attribute__((__nonnull__(1)));
 
 t_any	ft_mremap(t_size size, t_size new_size,\
@@ -168,20 +197,20 @@ t_i64a	ft_clock_gettime(t_timespec *__restrict__ const ts)\
 
 int		ft_perf_event_open(const t_perf_event_attr *restrict attr,\
 				int group_fd)\
-				__attribute__((__nonnull__(1), __always_inline__));
+				__attribute__((__nonnull__(1)));
 
 int		ft_getpid(void);
 
 int		ft_sched_setaffinity(int pid, t_size cpusetsize,\
 				const t_u64a *restrict const mask)\
-				__attribute__((__nonnull__(3), __always_inline__));
+				__attribute__((__nonnull__(3)));
 
 int		ft_sched_getaffinity(t_i32a pid, t_size cpusetsize,\
 				const t_u64a *__restrict__ mask)\
-				__attribute__((__nonnull__(3), __always_inline__));
+				__attribute__((__nonnull__(3)));
 
 t_ssize	ft_writev(int fd, t_iovec *buffers, t_size len)\
-			__attribute__((__nonnull__(2), __always_inline__));
+			__attribute__((__nonnull__(2)));
 
 long	ft_futex_wait(t_u32a *__restrict__ const uaddr, t_u32a val)\
 			__attribute__((__nonnull__(1)));
@@ -199,5 +228,20 @@ int		ft_sigprocmask(t_u32a flags, t_sigset *__restrict__ const set,
 
 t_i32	ft_clone(const t_clone_arg *__restrict__ const args)\
 			__attribute__((__nonnull__(1)));
+
+t_i32	ft_fork(void);
+
+int		ft_execve(const char *__restrict__ path,\
+			char *const *argv, char *const *envp)\
+			__attribute__((__nonnull__(1, 2)));
+
+/*
+ *	rusage is left as t_any: the struct is arch-shaped like t_stat and
+ *	nothing here needs it yet, so callers pass nullptr and read the
+ *	status word through the FT_W* macros above.
+ */
+
+t_i32	ft_wait4(t_i32 pid, t_i32a *status, t_i32 options,\
+			t_any rusage);
 
 #endif

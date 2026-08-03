@@ -81,9 +81,9 @@ typedef struct s_kernel_ptrs
 
 typedef struct s_phdr
 {
-	t_u64a															phnum;
-	t_elf_phdr *__restrict__ __attribute__	((counted_by(phnum)))	phdr;
-	t_u64a															phent;
+	t_u64a												phnum;
+	t_elf_phdr *__restrict__							phdr;
+	t_u64a												phent;
 }	t_phdr;
 
 typedef struct s_hwcaps

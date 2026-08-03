@@ -22,23 +22,23 @@
  */
 
 __attribute__((__nonnull__(1, 2), __hot__))
-void	ft_memmove(t_any restrict dest, t_cany restrict src, t_size n)
+void	ft_memmove(t_any dest, t_cany src, t_size n)
 {
 	if (__builtin_expect(dest == src || n == 0, 0))
 		return ;
 	if (n < 8)
-		ft_memcpy_naive(dest, src, n);
+		ft_memmove_naive(dest, src, n);
 	else if (n < 16)
-		ft_memcpy_64(dest, src, n);
+		ft_memmove_64(dest, src, n);
 	else if (n < 32)
-		ft_memcpy_128(dest, src, n);
+		ft_memmove_128(dest, src, n);
 	else if (n < 64)
-		ft_memcpy_256(dest, src, n);
+		ft_memmove_256(dest, src, n);
 	else if (n < 128)
-		ft_memcpy_512(dest, src, n);
+		ft_memmove_512(dest, src, n);
 	else if ((t_u8 *)dest <= (t_u8 *)src
 		|| (t_u8 *)dest >= (t_u8 *)src + n)
-		ft_memcpy_512_huge(dest, src, n);
+		ft_memmove_512_fwd(dest, src, n);
 	else
 		ft_memmove_512_huge(dest, src, n);
 }

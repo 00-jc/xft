@@ -11,16 +11,17 @@
 /* ************************************************************************** */
 
 #include "syscalls.h"
+#include "bmi.h"
 #include "private/ft_p_syscalls.h"
 
-#ifdef __x86_64__
+#if defined(__x86_64__) && !defined(FT_REQUIRE_LIBC)
 
 __attribute__((__nonnull__(2), __always_inline__))
 inline t_ssize	ft_writev(int fd, t_iovec *restrict const buffers, t_size len)
 {
 	t_ssize		ret;
 
-	__asm__(
+	__asm__ volatile(
 		"syscall"
 		: "=a"(ret)
 		: "0"(SYS_WRITEV),
@@ -29,7 +30,7 @@ inline t_ssize	ft_writev(int fd, t_iovec *restrict const buffers, t_size len)
 		"d"(len)
 		: "rcx", "r11", "memory"
 		);
-	return (ret);
+	return ((t_ssize)ft_tern(ret < 0, (t_u64a)-1, (t_u64a)ret));
 }
 
 #endif

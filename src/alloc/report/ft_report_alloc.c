@@ -36,13 +36,13 @@ static inline t_buffer	ft_return_ptr(t_reporta *gpa,
 	t_any	new_ptr;
 
 	++gpa->misses;
-	new_ptr = ft_align_fwd(gpa->bmp, align - 1);
+	new_ptr = ft_align_fwd(gpa->bmp, align);
 	if (__builtin_expect(
 			(t_uptr)new_ptr + sizes[1]
 			>= (t_uptr)gpa->slab + gpa->slabsize
 			&& !ft_advance_slab(gpa), 0))
 		return (ft_fatptr(nullptr, 0));
-	new_ptr = ft_align_fwd(gpa->bmp, align - 1);
+	new_ptr = ft_align_fwd(gpa->bmp, align);
 	gpa->avg_frag += (t_f64)((t_f64)((sizes[1] - sizes[0])
 				+ (t_uptr)new_ptr - (t_uptr)gpa->bmp)
 			- gpa->avg_frag) / (t_f64)gpa->n_allocs;
@@ -70,7 +70,7 @@ static inline t_buffer	ft_paged_ptr(t_reporta *gpa, t_size sizes[2])
 	++gpa->paged;
 	new_ptr = ft_mmap(sizes[1], PROT_READ | PROT_WRITE,
 			ft_match_hugepage_flags(sizes[1]));
-	if (__builtin_expect(new_ptr == (t_any)MAP_FAILED, 0))
+	if (__builtin_expect(ft_map_failed(new_ptr), 0))
 		return (ft_fatptr(nullptr, 0));
 	gpa->avg_frag += (t_f64)((t_f64)(sizes[1] - sizes[0]) - gpa->avg_frag)
 		/ (t_f64)gpa->n_allocs;

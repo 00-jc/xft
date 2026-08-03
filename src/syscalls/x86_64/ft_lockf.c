@@ -11,15 +11,16 @@
 /* ************************************************************************** */
 
 #include "syscalls.h"
+#include "bmi.h"
 #include "private/ft_p_syscalls.h"
 
-#ifdef __x86_64__
+#if defined(__x86_64__) && !defined(FT_REQUIRE_LIBC)
 
 __attribute__((nonnull(3), __always_inline__))
-inline t_u32a	ft_fcntl(t_u32a fd, t_u32a cmd,
+inline t_i32a	ft_fcntl(t_u32a fd, t_u32a cmd,
 		const t_flock *restrict const arg)
 {
-	t_u32a	ret;
+	t_i32a	ret;
 
 	__asm__ volatile (
 		"syscall"
@@ -30,10 +31,10 @@ inline t_u32a	ft_fcntl(t_u32a fd, t_u32a cmd,
 		"d" (arg)
 		: "rcx", "r11", "memory"
 	);
-	return (ret);
+	return ((t_i32a)ft_tern(ret < 0, (t_u64a)-1, (t_u64a)ret));
 }
 
-t_u32a	ft_lockf(int fd)
+t_i32a	ft_lockf(int fd)
 {
 	t_flock		fl;
 
@@ -47,7 +48,7 @@ t_u32a	ft_lockf(int fd)
 	return (ft_fcntl((t_u32a)fd, F_SETLKW, &fl));
 }
 
-t_u32a	ft_unlockf(int fd)
+t_i32a	ft_unlockf(int fd)
 {
 	t_flock		fl;
 

@@ -17,10 +17,16 @@
 
 # if defined(__x86_64__) || defined(__aarch64__)
 
+/// \brief `how` values for ft_sigprocmask() on the freestanding (raw
+/// syscall) ABI — numerically identical to the kernel's
+/// SIG_BLOCK/SIG_UNBLOCK/SIG_SETMASK.
 #  define FT_BLOCK		0
 #  define FT_UNBLOCK	1
 #  define FT_SETMASK	2
 
+/// \brief Raw Linux signal numbers for x86_64/aarch64, used directly
+/// (no libc `<signal.h>`) when built freestanding. Both architectures
+/// share the generic Linux signal numbering, so one list covers both.
 #  define FT_SIGHUP		1
 #  define FT_SIGINT		2
 #  define FT_SIGQUIT	3
@@ -56,9 +62,14 @@
 # else
 
 #  include <signal.h>
+/// \brief `how` values for ft_sigprocmask(), aliased to libc's
+/// SIG_BLOCK/SIG_UNBLOCK/SIG_SETMASK when built against libc or on an
+/// arch other than x86_64/aarch64.
 #  define FT_BLOCK		SIG_BLOCK
 #  define FT_UNBLOCK	SIG_UNBLOCK
 #  define FT_SETMASK	SIG_SETMASK
+/// \brief Signal numbers aliased to libc's `<signal.h>` macros, used when
+/// the raw kernel ABI values above are not applicable.
 #  define FT_SIGHUP		SIGHUP
 #  define FT_SIGINT		SIGINT
 #  define FT_SIGQUIT	SIGQUIT
@@ -88,6 +99,9 @@
 #  define FT_SIGWINCH	SIGWINCH
 #  define FT_SIGIO		SIGIO
 #  define FT_SIGSYS		SIGSYS
+/// \note Only defined if the platform's `<signal.h>` provides SIGSTKFLT/
+/// SIGPWR — unlike the raw branch above, these are not guaranteed to exist
+/// on every libc/arch combination reaching this branch.
 #  ifdef SIGSTKFLT
 #   define FT_SIGSTKFLT	SIGSTKFLT
 #  endif
@@ -96,6 +110,11 @@
 #  endif
 # endif
 
+/// \brief Builds a signal set with every signal bit set.
+/// \return A `t_sigset` with all bits set to 1, suitable for passing to
+/// ft_sigprocmask() to block/query every signal at once.
+/// \note `const` and always-inlined: it reads no state and has no
+/// side effects, it only synthesizes a bit pattern.
 t_sigset	ft_sigfillset(void);
 
 #endif

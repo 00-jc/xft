@@ -59,6 +59,6 @@ t_result	ft__thread_clone(t_thread *__restrict__ const thread,
 		ft_exit(result == KO);
 	}
 	if (__builtin_expect(ret < 0, 0))
-		return ((void)ft_munmap(inst->completion.mapped.mem, o.total_map), KO);
+		return (ft_munmap(inst->completion.mapped.mem, o.total_map), KO);
 	return ((void)(thread->handle = ret), OK);
 }

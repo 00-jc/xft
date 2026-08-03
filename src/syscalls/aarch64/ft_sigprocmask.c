@@ -10,28 +10,30 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "bmi.h"
 #include "private/ft_p_syscalls.h"
 #include "types/signal_types.h"
 
-#ifdef __aarch64__
+#if defined(__aarch64__) && !defined(FT_REQUIRE_LIBC)
 
 __attribute__((__always_inline__))
 inline int	ft_sigprocmask(t_u32a flags, t_sigset *__restrict__ const set,
 	t_sigset *__restrict__ const oldest)
 {
-	const register long x8	__asm__("x8") = SYS_RT_SIGPROCMASK;
+	register long x8	__asm__("x8") = SYS_RT_SIGPROCMASK;
 	register long x0		__asm__("x0");
-	const register long x1	__asm__("x1") = (long)set;
-	const register long x2	__asm__("x2") = (long)oldest;
+	register long x1	__asm__("x1") = (long)set;
+	register long x2	__asm__("x2") = (long)oldest;
+	register long x3	__asm__("x3") = FT_SIGSET_SIZE;
 
 	x0 = flags;
 	__asm__ volatile (
 		"svc #0"
 		: "+r"(x0)
-		: "r"(x8), "r"(x1), "r"(x2)
+		: "r"(x8), "r"(x1), "r"(x2), "r"(x3)
 		: "memory", "cc"
 	);
-	return ((int)x0);
+	return ((int)ft_tern(x0 < 0, (t_u64a)-1, (t_u64a)x0));
 }
 
 #endif

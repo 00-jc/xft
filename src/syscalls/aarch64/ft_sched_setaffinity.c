@@ -11,18 +11,19 @@
 /* ************************************************************************** */
 
 #include "syscalls.h"
+#include "bmi.h"
 #include "private/ft_p_syscalls.h"
 
-#ifdef __aarch64__
+#if defined(__aarch64__) && !defined(FT_REQUIRE_LIBC)
 
 __attribute__((__nonnull__(3), __always_inline__))
 inline int	ft_sched_setaffinity(int pid, t_size cpusetsize,
 		const t_u64a *restrict const mask)
 {
-	const register long x8	__asm__("x8") = SYS_SCHED_SETAFFINITY;
+	register long x8	__asm__("x8") = SYS_SCHED_SETAFFINITY;
 	register long x0		__asm__("x0");
-	const register long x1	__asm__("x1") = (long)cpusetsize;
-	const register long x2	__asm__("x2") = (long)mask;
+	register long x1	__asm__("x1") = (long)cpusetsize;
+	register long x2	__asm__("x2") = (long)mask;
 
 	x0 = pid;
 	__asm__ volatile (
@@ -31,7 +32,7 @@ inline int	ft_sched_setaffinity(int pid, t_size cpusetsize,
 		: "r"(x8), "r"(x1), "r"(x2)
 		: "memory", "cc"
 	);
-	return ((int)x0);
+	return ((int)ft_tern(x0 < 0, (t_u64a)-1, (t_u64a)x0));
 }
 
 #endif

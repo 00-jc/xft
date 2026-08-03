@@ -12,13 +12,13 @@
 
 #include "syscalls.h"
 
-#ifdef __aarch64__
+#if defined(__aarch64__) && !defined(FT_REQUIRE_LIBC)
 
 __attribute__((__cold__, __always_inline__, __noreturn__))
 inline void	ft_exit(int status)
 {
-	const register long x8	__asm__("x8") = SYS_EXIT;
-	const register long x0	__asm__("x0") = status;
+	register long x8	__asm__("x8") = SYS_EXIT;
+	register long x0	__asm__("x0") = status;
 
 	__asm__ volatile (
 		"svc #0"

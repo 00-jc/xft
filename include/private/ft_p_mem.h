@@ -36,13 +36,24 @@ void			ft_memcpy_512_huge(t_any __restrict__ dest,\
 					t_size n)\
 					__attribute__((__nonnull__(1, 2)));
 
-void			ft_memmove_512_huge(t_any __restrict__ dest,\
-					t_cany __restrict__ const src,\
+void			ft_memmove_naive(t_any dest, t_cany const src,\
+					t_size n)\
+					__attribute__((__nonnull__(1, 2)));
+
+void			ft_memmove_512_fwd(t_any dest, t_cany const src,\
+					t_size n)\
+					__attribute__((__nonnull__(1, 2)));
+
+void			ft_memmove_512_huge(t_any dest, t_cany const src,\
 					t_size n)\
 					__attribute__((__nonnull__(1, 2)));
 
 void			ft_memcpy_64(t_any __restrict__ dest,
 					t_cany __restrict__ const src,
+					t_size n)\
+					__attribute__((__nonnull__(1, 2)));
+
+void			ft_memmove_64(t_any dest, t_cany const src,\
 					t_size n)\
 					__attribute__((__nonnull__(1, 2)));
 
@@ -63,6 +74,16 @@ void			ft_memcpy_256(t_any __restrict__ dest,
 					__attribute__((__nonnull__(1, 2)));
 void			ft_memcpy_512(t_any __restrict__ dest,
 					t_cany __restrict__ const src,
+					t_size n)\
+					__attribute__((__nonnull__(1, 2)));
+
+void			ft_memmove_128(t_any dest, t_cany const src,\
+					t_size n)\
+					__attribute__((__nonnull__(1, 2)));
+void			ft_memmove_256(t_any dest, t_cany const src,\
+					t_size n)\
+					__attribute__((__nonnull__(1, 2)));
+void			ft_memmove_512(t_any dest, t_cany const src,\
 					t_size n)\
 					__attribute__((__nonnull__(1, 2)));
 

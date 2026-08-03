@@ -18,7 +18,7 @@
 #include "rt.h"
 #include "private/ft_p_rt.h"
 
-#ifdef __x86_64__
+#if defined(__x86_64__) && !defined(FT_REQUIRE_LIBC)
 
 /*
  *	ft_exit() only has an out-of-line declaration in syscalls.h, so calls

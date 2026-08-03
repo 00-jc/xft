@@ -12,8 +12,9 @@
 
 #include "private/ft_p_syscalls.h"
 #include "syscalls.h"
+#include "bmi.h"
 
-#ifdef __x86_64__
+#if defined(__x86_64__) && !defined(FT_REQUIRE_LIBC)
 
 __attribute__((__nonnull__(1)))
 int	ft_mprotect(t_any addr, t_size size, int prot)
@@ -29,7 +30,7 @@ int	ft_mprotect(t_any addr, t_size size, int prot)
 		"d"(prot)
 		: "rcx", "r11", "memory"
 	);
-	return (ret);
+	return ((int)ft_tern(ret < 0, (t_u64a)-1, (t_u64a)ret));
 }
 
 #endif

@@ -33,13 +33,13 @@ static inline t_buffer	ft_return_ptr(t_gpa *gpa, t_size snapped, t_size align)
 {
 	t_any	new_ptr;
 
-	new_ptr = ft_align_fwd(gpa->bmp, align - 1);
+	new_ptr = ft_align_fwd(gpa->bmp, align);
 	if (__builtin_expect(
 			(t_uptr)new_ptr + snapped
 			>= (t_uptr)gpa->slab + gpa->slabsize
 			&& !ft_advance_slab(gpa), 0))
 		return (ft_fatptr(nullptr, 0));
-	new_ptr = ft_align_fwd(gpa->bmp, align - 1);
+	new_ptr = ft_align_fwd(gpa->bmp, align);
 	gpa->bmp = (t_any)((t_blk8w)new_ptr + snapped);
 	return (ft_fatptr(new_ptr, snapped));
 }
@@ -60,7 +60,7 @@ t_buffer	ft_gpa_alloc(t_any alloc, t_size size, t_size align)
 	{
 		new_ptr = ft_mmap(snapped, PROT_READ | PROT_WRITE,
 				ft_match_hugepage_flags(snapped));
-		new_ptr = (t_any)ft_tern(new_ptr == (t_any)MAP_FAILED,
+		new_ptr = (t_any)ft_tern(ft_map_failed(new_ptr),
 				0, (t_uptr)new_ptr);
 		return (ft_fatptr(new_ptr, snapped));
 	}

@@ -13,7 +13,7 @@
 #include "primitives.h"
 #include "syscalls.h"
 
-#ifdef __x86_64__
+#if defined(__x86_64__) && !defined(FT_REQUIRE_LIBC)
 
 __attribute__((__nonnull__(3), __always_inline__))
 inline t_any	ft_mremap(t_size size, t_size new_size,

@@ -17,18 +17,34 @@
 # include "hash.h"
 # include "private/ft_p_asm.h"
 
+/// \brief Default table_size (in buckets) used by ft_map_new.
+/// \note Must be a multiple of 16 (one SSE group); ft_map_with rejects any
+/// capacity that fails `capacity & 15`.
 # ifndef MAP_INITIAL_SIZE
 #  define MAP_INITIAL_SIZE	512
 # endif
 
+/// \brief Mask for the 7-bit H2 hash fragment stored per bucket in `meta`.
+/// \note Derived as `(hash >> 57) & MAP_H2_MASK`, i.e. the top 7 bits of the
+/// 64-bit hash; kept small enough that bit 7 stays free for the
+/// empty/deleted markers below.
 # define MAP_H2_MASK		0x7F
+/// \brief Meta-byte marker: bucket held an entry that was deleted (tombstone).
+/// \note Probing must keep scanning past a MAP_DELETED slot; only a
+/// MAP_EMPTY slot terminates a probe.
 # define MAP_DELETED 		0x80
+/// \brief Meta-byte marker: bucket has never held an entry (probe stop).
 # define MAP_EMPTY			0xFF
 
+/// \name Indices into the internal `t_size data[3..4]` scratch arrays passed
+/// between the swiss-table probing helpers (H2 fragment, block count,
+/// current group, and — for lookup/delete — the key length).
+/// @{
 # define H2		0
 # define NBLK	1
 # define GROUP	2
 # define SIZE	3
+/// @}
 
 # ifdef __clang__
 

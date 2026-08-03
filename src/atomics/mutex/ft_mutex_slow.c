@@ -24,7 +24,7 @@ inline void	ft_mutex_slow(t_mutex *__restrict__ const mutex)
 	val = FT_UNLOCKED;
 	while (true)
 	{
-		__atomic_exchange(mutex, (t_any) & contest, &val, __ATOMIC_ACQ_REL);
+		__atomic_exchange(mutex, (t_i32 *) & contest, &val, __ATOMIC_ACQ_REL);
 		if (__builtin_expect(val == FT_UNLOCKED, 1))
 			return ;
 		ft_futex_wait((t_any)mutex, FT_CONTESTED);

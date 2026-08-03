@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/30 11:58:04 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/06/30 14:03:14 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/08/02 20:33:40 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 __attribute__((const, __always_inline__))
 inline t_writer	ft_get_fs_writer(t_buffer buffer, t_i32 fd)
 {
-	const static t_writer_vtable	fs = (t_writer_vtable)
+	static t_writer_vtable const	fs =
 	{
 		.drain = ft_stream_drain,
 		.flush = ft_stream_flush,
@@ -35,7 +35,7 @@ inline t_writer	ft_get_fs_writer(t_buffer buffer, t_i32 fd)
 __attribute__((const, __always_inline__))
 inline t_reader	ft_get_fs_reader(t_buffer buffer, t_i32 fd)
 {
-	const static t_reader_vtable	fs = (t_reader_vtable)
+	static t_reader_vtable const	fs =
 	{
 		.fill = ft_stream_fill,
 		.unbufered_fill = ft_stream_unbuffered_fill,

@@ -11,22 +11,23 @@
 /* ************************************************************************** */
 
 #include "syscalls.h"
+#include "bmi.h"
 #include "private/ft_p_syscalls.h"
 
-#ifdef __x86_64__
+#if defined(__x86_64__) && !defined(FT_REQUIRE_LIBC)
 
 __attribute__((__always_inline__, __nonnull__(1)))
 inline t_i64a	ft_clock_gettime(t_timespec *__restrict__ const ts)
 {
 	t_i64a	ret;
 
-	__asm__ (
+	__asm__ volatile (
 		"syscall"
 		:"=a"(ret)
 		:"0"(SYS_CLOCK_GETTIME), "D"(1), "S"(ts)
 		:"rcx", "r11", "memory"
 		);
-	return (ret);
+	return ((t_i64a)ft_tern(ret < 0, (t_u64a)-1, (t_u64a)ret));
 }
 
 #endif

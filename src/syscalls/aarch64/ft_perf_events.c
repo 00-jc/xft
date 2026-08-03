@@ -11,15 +11,17 @@
 /* ************************************************************************** */
 
 #include "syscalls.h"
+#include "bmi.h"
 #include "private/ft_p_syscalls.h"
 
-#ifdef __aarch64__
+#if defined(__aarch64__) && !defined(FT_REQUIRE_LIBC)
 
 __attribute__((__nonnull__(1), __always_inline__))
 inline int	ft_perf_event_open(const t_perf_event_attr *restrict attr,
 		int group_fd)
 {
 	long	args[6];
+	long	ret;
 
 	args[0] = (long)attr;
 	args[1] = 0;
@@ -27,7 +29,8 @@ inline int	ft_perf_event_open(const t_perf_event_attr *restrict attr,
 	args[3] = group_fd;
 	args[4] = PERF_FLAG_FD_CLOEXEC;
 	args[5] = 0;
-	return ((int)ft_syscall6(SYS_PERF_EVENT_OPEN, args));
+	ret = ft_syscall6(SYS_PERF_EVENT_OPEN, args);
+	return ((int)ft_tern(ret < 0, (t_u64a)-1, (t_u64a)ret));
 }
 
 #endif

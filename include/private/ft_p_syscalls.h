@@ -15,7 +15,7 @@
 
 # include "syscalls.h"
 
-# if defined(__x86_64__) && defined(__linux__)
+# if defined(__x86_64__) && defined(__linux__) && !defined(FT_REQUIRE_LIBC)
 
 #  ifndef PROT_READ
 #   define PROT_READ                  0x1
@@ -514,7 +514,7 @@
 #  define STDOUT_FILENO					1
 #  define STDIN_FILENO					0
 
-# elif defined(__aarch64__) && defined(__linux__)
+# elif defined(__aarch64__) && defined(__linux__) && !defined(FT_REQUIRE_LIBC)
 
 /*
  *	aarch64 has no bare open/stat syscalls: ft_open/ft_stat go through
@@ -632,6 +632,7 @@
 
 #  define SYS_IOCTL                   29
 #  define SYS_FCNTL                   25
+#  define SYS_MKDIRAT                 34
 #  define SYS_OPENAT                  56
 #  define SYS_CLOSE                   57
 #  define SYS_READ                    63
@@ -649,11 +650,13 @@
 #  define SYS_RT_SIGPROCMASK          135
 #  define SYS_GETPID                  172
 #  define SYS_CLONE                   220
+#  define SYS_EXECVE                  221
 #  define SYS_MUNMAP                  215
 #  define SYS_MREMAP                  216
 #  define SYS_MMAP                    222
 #  define SYS_MPROTECT                226
 #  define SYS_PERF_EVENT_OPEN         241
+#  define SYS_WAIT4                   260
 
 #  define STDERR_FILENO					2
 #  define STDOUT_FILENO					1
@@ -662,6 +665,37 @@
 long	ft_syscall6(long nr, const long args[6]);
 
 # else
+
+#  ifndef CLONE_VM
+#   define CLONE_VM                   0x00000100
+#  endif
+#  ifndef CLONE_FS
+#   define CLONE_FS                   0x00000200
+#  endif
+#  ifndef CLONE_FILES
+#   define CLONE_FILES                0x00000400
+#  endif
+#  ifndef CLONE_SIGHAND
+#   define CLONE_SIGHAND              0x00000800
+#  endif
+#  ifndef CLONE_THREAD
+#   define CLONE_THREAD               0x00010000
+#  endif
+#  ifndef CLONE_SYSVSEM
+#   define CLONE_SYSVSEM              0x00040000
+#  endif
+#  ifndef CLONE_SETTLS
+#   define CLONE_SETTLS               0x00080000
+#  endif
+#  ifndef CLONE_PARENT_SETTID
+#   define CLONE_PARENT_SETTID        0x00100000
+#  endif
+#  ifndef CLONE_CHILD_CLEARTID
+#   define CLONE_CHILD_CLEARTID       0x00200000
+#  endif
+#  ifndef CLONE_CHILD_SETTID
+#   define CLONE_CHILD_SETTID         0x01000000
+#  endif
 
 #  ifndef SYS_READ
 #   define SYS_READ                         SYS_read

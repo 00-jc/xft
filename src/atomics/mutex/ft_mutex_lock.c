@@ -23,7 +23,7 @@ inline void	ft_mutex_lock(t_mutex *__restrict__ const mutex,
 	static t_i32 const	lock = FT_LOCKED;
 
 	val = FT_UNLOCKED;
-	ret = __atomic_compare_exchange(mutex, &val, (t_any) & lock,
+	ret = __atomic_compare_exchange(mutex, &val, (t_i32 *) & lock,
 			false, __ATOMIC_ACQUIRE, __ATOMIC_RELAXED);
 	if (__builtin_expect(ret, 1))
 		return ;

@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/29 23:39:14 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/07/04 13:15:08 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/08/02 20:14:56 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,15 +16,15 @@
 #ifdef FT_REQUIRE_LIBC
 
 __attribute__((__always_inline__))
-t_any	ft_mmap(t_size size, long prot, long flags_extra)
+inline t_any	ft_mmap(t_size size, long prot, long flags_extra)
 {
 	return ((t_any)syscall(SYS_MMAP,
-			size,
 			NULL,
+			size,
 			prot,
-			0,
+			MAP_ANONYMOUS | MAP_PRIVATE | flags_extra,
 			-1,
-			MAP_ANONYMOUS | MAP_PRIVATE | flags_extra
+			0
 		));
 }
 

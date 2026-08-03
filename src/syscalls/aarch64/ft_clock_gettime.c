@@ -11,16 +11,17 @@
 /* ************************************************************************** */
 
 #include "syscalls.h"
+#include "bmi.h"
 #include "private/ft_p_syscalls.h"
 
-#ifdef __aarch64__
+#if defined(__aarch64__) && !defined(FT_REQUIRE_LIBC)
 
 __attribute__((__always_inline__, __nonnull__(1)))
 inline t_i64a	ft_clock_gettime(t_timespec *__restrict__ const ts)
 {
-	const register long x8	__asm__("x8") = SYS_CLOCK_GETTIME;
+	register long x8	__asm__("x8") = SYS_CLOCK_GETTIME;
 	register long x0		__asm__("x0");
-	const register long x1	__asm__("x1") = (long)ts;
+	register long x1	__asm__("x1") = (long)ts;
 
 	x0 = 1;
 	__asm__ volatile (
@@ -29,7 +30,7 @@ inline t_i64a	ft_clock_gettime(t_timespec *__restrict__ const ts)
 		: "r"(x8), "r"(x1)
 		: "memory", "cc"
 	);
-	return (x0);
+	return ((t_i64a)ft_tern(x0 < 0, (t_u64a)-1, (t_u64a)x0));
 }
 
 #endif

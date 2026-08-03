@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/29 23:39:13 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/07/14 11:59:35 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/08/03 00:50:37 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,12 +42,41 @@ inline void	ft_memcpy_naive(t_any restrict dest,
 	((t_blk8w)dest)[i[6]] = s[6];
 }
 
-__attribute__((__nonnull__(1, 2), __hot__))
-void	ft_memcpy(t_any restrict dest,
+__attribute__((__nonnull__(1, 2), __always_inline__))
+inline void	ft_memmove_naive(t_any dest, t_cany const src, t_size n)
+{
+	t_u8	i[7];
+	t_u8	s[7];
+
+	i[0] = 0;
+	i[1] = -(1ULL < n) & 1;
+	i[2] = -(2ULL < n) & 2;
+	i[3] = -(3ULL < n) & 3;
+	i[4] = -(4ULL < n) & 4;
+	i[5] = -(5ULL < n) & 5;
+	i[6] = -(6ULL < n) & 6;
+	s[0] = ((t_blk8r)src)[i[0]];
+	s[1] = ((t_blk8r)src)[i[1]];
+	s[2] = ((t_blk8r)src)[i[2]];
+	s[3] = ((t_blk8r)src)[i[3]];
+	s[4] = ((t_blk8r)src)[i[4]];
+	s[5] = ((t_blk8r)src)[i[5]];
+	s[6] = ((t_blk8r)src)[i[6]];
+	((t_blk8w)dest)[i[0]] = s[0];
+	((t_blk8w)dest)[i[1]] = s[1];
+	((t_blk8w)dest)[i[2]] = s[2];
+	((t_blk8w)dest)[i[3]] = s[3];
+	((t_blk8w)dest)[i[4]] = s[4];
+	((t_blk8w)dest)[i[5]] = s[5];
+	((t_blk8w)dest)[i[6]] = s[6];
+}
+
+__attribute__((__nonnull__(1, 2), __hot__, __returns_nonnull__))
+void	*ft_memcpy(t_any restrict dest,
 	t_cany restrict const src, t_size n)
 {
 	if (__builtin_expect(dest == src || n == 0, 0))
-		return ;
+		return (dest);
 	else if (n < 8)
 		ft_memcpy_naive(dest, src, n);
 	else if (n < 16)
@@ -62,4 +91,13 @@ void	ft_memcpy(t_any restrict dest,
 		ft_memcpy_512_huge(dest, src, n);
 	else
 		ft_memcpy_512_streaming(dest, src, n);
+	return (dest);
 }
+
+#if !defined(FT_REQUIRE_LIBC)
+
+__attribute__((__nonnull__(1, 2), __hot__, __returns_nonnull__,
+	__weak__, __alias__("ft_memcpy")))
+t_any	memcpy(t_any restrict dest, t_cany restrict const src, t_size n);
+
+#endif

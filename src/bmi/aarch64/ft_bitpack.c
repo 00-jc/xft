@@ -37,7 +37,7 @@
 __attribute__((const, __always_inline__))
 inline t_u16a	ft_bitpack128(t_vu128a vec)
 {
-	static const t_vu128a	weights = (t_vu128a)
+	static const t_vu128a	weights =
 	{1, 2, 4, 8, 16, 32, 64, 128, 1, 2, 4, 8, 16, 32, 64, 128};
 	t_u32a					lo;
 	t_u32a					hi;
