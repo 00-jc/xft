@@ -1,8 +1,0 @@
-/home/kiri/xft/build/CMakeFiles/xft.dir
-/home/kiri/xft/build/CMakeFiles/analyze.dir
-/home/kiri/xft/build/CMakeFiles/edit_cache.dir
-/home/kiri/xft/build/CMakeFiles/rebuild_cache.dir
-/home/kiri/xft/build/CMakeFiles/list_install_components.dir
-/home/kiri/xft/build/CMakeFiles/install.dir
-/home/kiri/xft/build/CMakeFiles/install/local.dir
-/home/kiri/xft/build/CMakeFiles/install/strip.dir
