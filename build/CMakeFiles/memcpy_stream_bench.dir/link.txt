@@ -1,1 +1,0 @@
-/usr/lib/llvm/22/bin/clang  -fuse-ld=lld -nostdlib -static -fuse-ld=lld CMakeFiles/memcpy_stream_bench.dir/bench/memcpy/memcpy_stream_bench.c.o CMakeFiles/memcpy_stream_bench.dir/bench/memcpy/memcpy_bench_stream.c.o -o memcpy_stream_bench  libxft.a

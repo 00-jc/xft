@@ -1,1 +1,0 @@
-/usr/lib/llvm/22/bin/clang  -fuse-ld=lld -nostdlib -static -fuse-ld=lld CMakeFiles/gpa_bench.dir/bench/gpa/gpa_bench.c.o CMakeFiles/gpa_bench.dir/bench/gpa/gpa_bench_bulk.c.o CMakeFiles/gpa_bench.dir/bench/gpa/gpa_bench_get.c.o CMakeFiles/gpa_bench.dir/bench/gpa/gpa_bench_ops.c.o CMakeFiles/gpa_bench.dir/bench/gpa/gpa_bench_rand.c.o -o gpa_bench  libxft.a
