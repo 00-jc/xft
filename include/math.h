@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/29 23:39:12 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/06/29 23:39:18 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/09/07 21:56:35 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,36 +115,48 @@ t_4packd		ft_drsqrt_x4(t_4packd d1)\
 					__attribute__ ((const));
 t_8packd		ft_dsqrt_x8(t_8packd d1)\
 					__attribute__ ((const));
-t_3dcoords		ft_3dsub(t_3dcoords a, t_3dcoords b)\
-					__attribute__((const));
-t_3dcoords		ft_3dadd(t_3dcoords a, t_3dcoords b)\
-					__attribute__((const));
-t_f64			ft_3dnorm(t_3dcoords c)\
-					__attribute__((const));
-t_f64			ft_3ddot(t_3dcoords a, t_3dcoords b)\
-					__attribute__((const));
-t_3dcoords		ft_3dunit(t_3dcoords c)\
-					__attribute__((const));
-t_3dcoords		ft_3dmul(t_3dcoords a, t_3dcoords b)\
-					__attribute__((const));
-t_3dcoords		ft_3ddiv(t_3dcoords a, t_3dcoords b)\
-					__attribute__((const));
-t_3dcoords		ft_3dcross(t_3dcoords a, t_3dcoords b)\
-					__attribute__((const));
-t_3dcoordsx8	ft_3dadd8(t_3dcoordsx8 a, t_3dcoordsx8 b)\
-					__attribute__((const));
-t_3dcoordsx8	ft_3dsub8(t_3dcoordsx8 a, t_3dcoordsx8 b)\
-					__attribute__((const));
-t_3dcoordsx8	ft_3dmul8(t_3dcoordsx8 a, t_3dcoordsx8 b)\
-					__attribute__((const));
-t_3dcoordsx8	ft_3ddiv8(t_3dcoordsx8 a, t_3dcoordsx8 b)\
-					__attribute__((const));
-t_3dcoordsx8	ft_3dunit8(t_3dcoordsx8 c)\
-					__attribute__((const));
-t_8packd		ft_3dclampsum8(t_3dcoordsx8 c)\
-					__attribute__((const));
-t_8packd		ft_3dnorm8(t_3dcoordsx8 c)\
-					__attribute__((const));
-t_8packd		ft_3ddot8(t_3dcoordsx8 a, t_3dcoordsx8 b)\
-					__attribute__((const));
+
+t_3dcoords		ft_3dsub(const t_3dcoords *__restrict__ const a,\
+					const t_3dcoords *__restrict__ const b)\
+					__attribute__((__nonnull__(1, 2), pure));
+t_3dcoords		ft_3dadd(const t_3dcoords *__restrict__ const a,\
+					const t_3dcoords *__restrict__ const b)\
+					__attribute__((__nonnull__(1, 2), pure));
+t_f64			ft_3dnorm(const t_3dcoords *__restrict__ const c)\
+					__attribute__((__nonnull__(1), pure));
+t_f64			ft_3ddot(const t_3dcoords *__restrict__ const a,\
+					const t_3dcoords *__restrict__ const b)\
+					__attribute__((__nonnull__(1, 2), pure));
+t_3dcoords		ft_3dunit(const t_3dcoords *__restrict__ const c)\
+					__attribute__((__nonnull__(1), pure));
+t_3dcoords		ft_3dmul(const t_3dcoords *__restrict__ const a,\
+					const t_3dcoords *__restrict__ const b)\
+					__attribute__((__nonnull__(1, 2), pure));
+t_3dcoords		ft_3ddiv(const t_3dcoords *__restrict__ const a,\
+					const t_3dcoords *__restrict__ const b)\
+					__attribute__((__nonnull__(1, 2), pure));
+t_3dcoords		ft_3dcross(const t_3dcoords *__restrict__ const a,\
+					const t_3dcoords *__restrict__ const b)\
+					__attribute__((__nonnull__(1, 2), pure));
+t_3dcoordsx8	ft_3dadd8(const t_3dcoordsx8 *__restrict__ const a,\
+					const t_3dcoordsx8 *__restrict__ const b)\
+					__attribute__((__nonnull__(1, 2), pure));
+t_3dcoordsx8	ft_3dsub8(const t_3dcoordsx8 *__restrict__ const a,\
+					const t_3dcoordsx8 *__restrict__ const b)\
+					__attribute__((__nonnull__(1, 2), pure));
+t_3dcoordsx8	ft_3dmul8(const t_3dcoordsx8 *__restrict__ const a,\
+					const t_3dcoordsx8 *__restrict__ const b)\
+					__attribute__((__nonnull__(1, 2), pure));
+t_3dcoordsx8	ft_3ddiv8(const t_3dcoordsx8 *__restrict__ const a,\
+					const t_3dcoordsx8 *__restrict__ const b)\
+					__attribute__((__nonnull__(1, 2), pure));
+t_3dcoordsx8	ft_3dunit8(const t_3dcoordsx8 *__restrict__ const c)\
+					__attribute__((__nonnull__(1), pure));
+t_8packd		ft_3dclampsum8(const t_3dcoordsx8 *__restrict__ const c)\
+					__attribute__((__nonnull__(1), pure));
+t_8packd		ft_3dnorm8(const t_3dcoordsx8 *__restrict__ const c)\
+					__attribute__((__nonnull__(1), pure));
+t_8packd		ft_3ddot8(const t_3dcoordsx8 *__restrict__ const a,\
+					const t_3dcoordsx8 *__restrict__ const b)\
+					__attribute__((__nonnull__(1, 2), pure));
 #endif
