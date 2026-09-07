@@ -12,7 +12,7 @@
 
 #include "rt.h"
 
-#if !defined(FT_REQUIRE_LIBC) && defined(__aarch64__)
+#if !defined(FT_REQUIRE_LIBC) && defined(__aarch64__) && !defined(FT_NO_RT)
 
 __attribute__((naked, noreturn))
 void	_start(void)

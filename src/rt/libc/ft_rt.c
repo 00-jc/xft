@@ -12,7 +12,7 @@
 
 #include "rt.h"
 
-#ifdef FT_REQUIRE_LIBC
+#if defined(FT_REQUIRE_LIBC) && !defined(FT_NO_RT)
 
 int	main(int argc, char **argv, char **envp)
 {

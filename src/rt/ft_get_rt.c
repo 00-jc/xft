@@ -12,6 +12,8 @@
 
 #include "private/ft_p_rt.h"
 
+#ifndef FT_NO_RT
+
 __attribute__((__nonnull__(1), __hot__, __always_inline__))
 inline t_xft_rt	ft_get_rt(const t_any *sp)
 {
@@ -21,3 +23,5 @@ inline t_xft_rt	ft_get_rt(const t_any *sp)
 	ft_get_auxv_size(&rt, rt.kp.auxv);
 	return (rt);
 }
+
+#endif

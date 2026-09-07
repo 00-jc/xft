@@ -45,6 +45,7 @@ which puts the archive in `<prefix>/lib` and the headers in `<prefix>/include`.
 | `XFT_WERROR` | `ON` | `-Werror` |
 | `XFT_SANITIZE` | `OFF` | ASan + UBSan (forces `XFT_LIBC=ON`, disables LTO) |
 | `XFT_STRICT_ARCH` | `OFF` | Compile only the host's arch backends |
+| `XFT_RT` | `ON` | Build the runtime: entry point + `rt` helpers |
 | `XFT_BUILD_TESTS` | `OFF` | Build the unit test runner (always sanitized) |
 | `XFT_BUILD_FUZZ` | `OFF` | Build the fuzz targets (always sanitized) |
 | `XFT_BUILD_BENCH` | `OFF` | Build the benchmarks (never sanitized) |
@@ -56,13 +57,21 @@ dropped rather than failing the configure; the configure output tells you how ma
 were accepted:
 
 ```
--- xft: flavor=freestanding arch=x86_64 nthreads=16 llc=25165824 cc=GNU
+-- xft: flavor=freestanding arch=x86_64 rt=ON nthreads=16 llc=25165824 cc=GNU
 -- xft: cflags 14/14 warnings 78/78 accepted
 ```
 
 By default both the x86_64 and aarch64 backend directories are compiled (their
 contents are `#ifdef`-guarded on the target); `XFT_STRICT_ARCH=ON` limits the
 source list to the host's.
+
+`XFT_RT=OFF` drops the whole `src/rt` directory: the entry point (`_start`, or
+`main` in the libc flavor) and the `ft_get_rt` / `ft_get_kernel_ptrs` helpers.
+It also defines `FT_NO_RT` on the target, which guards out their declarations in
+`rt.h`, so the archive owns no entry point and you provide your own. The
+`t_xft_rt` types stay, since `threads.h` is built on them. The test, fuzz and
+bench harnesses are `ft_main` programs, so they need `XFT_RT=ON`; asking for
+both is a configure error.
 
 ## Using it
 
@@ -176,8 +185,7 @@ their own backing storage, elements owning memory must be drained first.
 | `ctype.h`, `cstr.h`, `signals.h`, `macros.h` | Character classes, C-string helpers, signal sets, ANSI colors |
 
 `include/private/` holds internals; they are installed alongside the rest but are
-not part of the API. `ash.h` declares a build-driver module that has no
-implementation in this tree yet — it is reachable from `xft.h` but will not link.
+not part of the API.
 
 ## Tests, fuzzing, benchmarks
 
@@ -228,7 +236,7 @@ are explicit, so adding a file means adding it there.
 
 ## Lints
 
-All of this library is norminette compliant.
+All of this library _is_ and _has to be_ norminette compliant.
 
 ---
 

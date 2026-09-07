@@ -14,6 +14,8 @@
 #include "elf.h"
 #include "bmi.h"
 
+#ifndef FT_NO_RT
+
 __attribute__((__nonnull__(1, 2), __hot__, __always_inline__))
 inline void	ft_get_auxv_size(t_xft_rt *__restrict__ const rt, t_auxv auxv)
 {
@@ -34,3 +36,5 @@ inline void	ft_get_auxv_size(t_xft_rt *__restrict__ const rt, t_auxv auxv)
 	}
 	ft__get_thread_info(rt);
 }
+
+#endif

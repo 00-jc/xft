@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/29 23:39:13 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/06/29 23:39:20 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/09/02 22:39:33 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,9 +36,6 @@ void	ft_memmove(t_any dest, t_cany src, t_size n)
 		ft_memmove_256(dest, src, n);
 	else if (n < 128)
 		ft_memmove_512(dest, src, n);
-	else if ((t_u8 *)dest <= (t_u8 *)src
-		|| (t_u8 *)dest >= (t_u8 *)src + n)
-		ft_memmove_512_fwd(dest, src, n);
 	else
 		ft_memmove_512_huge(dest, src, n);
 }

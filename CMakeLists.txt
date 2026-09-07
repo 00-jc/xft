@@ -13,6 +13,7 @@ option(XFT_FAST_MATH     "-ffast-math"                                      ON)
 option(XFT_WERROR        "-Werror"                                          ON)
 option(XFT_SANITIZE      "asan + ubsan build (implies XFT_LIBC, no LTO)"    OFF)
 option(XFT_STRICT_ARCH   "compile only the arch/backend dirs of the host"   OFF)
+option(XFT_RT            "build the runtime: entry point + rt helpers"      ON)
 option(XFT_BUILD_TESTS   "build the unit test runner (always sanitized)"    OFF)
 option(XFT_BUILD_FUZZ    "build the fuzz targets (always sanitized)"        OFF)
 option(XFT_BUILD_BENCH   "build the benchmarks (never sanitized)"           OFF)
@@ -39,6 +40,12 @@ if(XFT_SANITIZE)
   endif()
 endif()
 
+if(NOT XFT_RT AND (XFT_BUILD_TESTS OR XFT_BUILD_FUZZ OR XFT_BUILD_BENCH))
+  message(FATAL_ERROR
+    "xft: the test/fuzz/bench harnesses are ft_main programs and need the "
+    "runtime; reconfigure with -DXFT_RT=ON or drop the harness options")
+endif()
+
 if(XFT_LIBC)
   set(XFT_FLAVOR "libc")
 else()
@@ -62,7 +69,7 @@ if(XFT_GETCONF)
   endif()
 endif()
 
-message(STATUS "xft: flavor=${XFT_FLAVOR} arch=${XFT_ARCH} "
+message(STATUS "xft: flavor=${XFT_FLAVOR} arch=${XFT_ARCH} rt=${XFT_RT} "
                "nthreads=${XFT_NTHREADS} llc=${XFT_LLC} cc=${CMAKE_C_COMPILER_ID}")
 
 set(SRCS_ALLOC
@@ -317,6 +324,10 @@ set(SRCS_TIME
 set(MODULES ALLOC ATOMICS BMI CONTAINERS CSTR CTYPE FMT FUZZER HASH HINT IO
             MATH MEM PERF RNG RT SIGNALS SORT SYSCALLS TAILOR THREADS TIME)
 
+if(NOT XFT_RT)
+  list(REMOVE_ITEM MODULES RT)
+endif()
+
 set(SRCS_ARCH_x86_64
   src/atomics/mutex/ft_mutex_backoff_x86_64.c
   src/bmi/x86_64/ft_bitpack.c
@@ -333,8 +344,13 @@ set(SRCS_ARCH_aarch64
   src/bmi/aarch64/ft_memctz.c
   src/bmi/aarch64/ft_popcount_neon.c)
 
+# the process entry point (_start, or main in the libc flavor); dropped
+# wholesale when XFT_RT=OFF, which also defines FT_NO_RT for the headers.
+set(SRCS_RT_ENTRY_x86_64  src/rt/x86_64/ft_rt.c)
+set(SRCS_RT_ENTRY_aarch64 src/rt/aarch64/ft_rt.c)
+set(SRCS_RT_ENTRY_libc    src/rt/libc/ft_rt.c)
+
 set(SRCS_FREESTANDING_x86_64
-  src/rt/x86_64/ft_rt.c
   src/threads/x86_64/ft_thread_free_exit.c
   src/syscalls/x86_64/ft_clock_gettime.c
   src/syscalls/x86_64/ft_clone.c
@@ -364,7 +380,6 @@ set(SRCS_FREESTANDING_x86_64
   src/syscalls/x86_64/ft_writev.c)
 
 set(SRCS_FREESTANDING_aarch64
-  src/rt/aarch64/ft_rt.c
   src/threads/aarch64/ft_thread_free_exit.c
   src/syscalls/aarch64/ft_clock_gettime.c
   src/syscalls/aarch64/ft_clone.c
@@ -395,7 +410,6 @@ set(SRCS_FREESTANDING_aarch64
   src/syscalls/aarch64/ft_writev.c)
 
 set(SRCS_LIBC
-  src/rt/libc/ft_rt.c
   src/threads/libc/ft_thread_free_exit.c
   src/syscalls/libc/ft_clock_gettime.c
   src/syscalls/libc/ft_clone.c
@@ -440,9 +454,15 @@ function(xft_srcs out libc)
   endforeach()
   if(libc)
     list(APPEND _s ${SRCS_LIBC})
+    if(XFT_RT)
+      list(APPEND _s ${SRCS_RT_ENTRY_libc})
+    endif()
   else()
     foreach(a IN LISTS XFT_BACKEND_ARCHS)
       list(APPEND _s ${SRCS_FREESTANDING_${a}})
+      if(XFT_RT)
+        list(APPEND _s ${SRCS_RT_ENTRY_${a}})
+      endif()
     endforeach()
   endif()
   set(${out} "${_s}" PARENT_SCOPE)
@@ -453,6 +473,9 @@ xft_srcs(SRCS ${XFT_LIBC})
 set(XFT_DEFINES_PUBLIC "")
 if(XFT_LIBC)
   list(APPEND XFT_DEFINES_PUBLIC FT_REQUIRE_LIBC _GNU_SOURCE)
+endif()
+if(NOT XFT_RT)
+  list(APPEND XFT_DEFINES_PUBLIC FT_NO_RT)
 endif()
 set(XFT_DEFINES_PRIVATE FT_NTHREADS=${XFT_NTHREADS} FT_LLC=${XFT_LLC})
 
@@ -742,6 +765,10 @@ function(xft_add_lib name)
   target_compile_definitions(${name} PRIVATE ${XFT_DEFINES_PRIVATE})
   target_compile_options(${name} PRIVATE
     ${CFLAGS} ${WARNS} $<$<CONFIG:Release,RelWithDebInfo,>:-O3>)
+
+  if(NOT XFT_RT)
+    target_compile_definitions(${name} PUBLIC FT_NO_RT)
+  endif()
 
   if(L_LIBC)
     target_compile_definitions(${name} PUBLIC FT_REQUIRE_LIBC _GNU_SOURCE)

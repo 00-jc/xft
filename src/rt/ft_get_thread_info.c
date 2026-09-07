@@ -15,6 +15,8 @@
 #include "elf.h"
 #include "bmi.h"
 
+#ifndef FT_NO_RT
+
 __attribute__((__nonnull__(1), __always_inline__))
 inline void	ft__get_thread_info(t_xft_rt *__restrict__ const rt)
 {
@@ -41,3 +43,5 @@ inline void	ft__get_thread_info(t_xft_rt *__restrict__ const rt)
 	rt->elf.vaddr += rt->elf.load_bias;
 	rt->elf.memsz = ft_align_fwd_integer(rt->elf.memsz, rt->elf.align);
 }
+
+#endif

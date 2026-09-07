@@ -112,17 +112,21 @@ typedef struct s_xft_rt
 
 # endif
 
-# if defined(__x86_64__) && !defined(FT_REQUIRE_LIBC)
+/* FT_NO_RT drops the entry point and the rt helpers; the types above stay
+   because threads.h builds on them. */
+# ifndef FT_NO_RT
+
+#  if defined(__x86_64__) && !defined(FT_REQUIRE_LIBC)
 
 void			_start(void)\
 					__attribute__((noreturn, force_align_arg_pointer));
 
-# elif defined(__aarch64__) && !defined(FT_REQUIRE_LIBC)
+#  elif defined(__aarch64__) && !defined(FT_REQUIRE_LIBC)
 
 void			_start(void)\
 					__attribute__((noreturn));
 
-# endif
+#  endif
 
 void			ft_main(const t_any *__restrict__ const sp)\
 					__attribute__((__nonnull__(1), used, noreturn));
@@ -132,5 +136,7 @@ t_kernel_ptrs	ft_get_kernel_ptrs(const t_any *sp)\
 
 t_xft_rt		ft_get_rt(const t_any *sp)\
 					__attribute__((__nonnull__(1)));
+
+# endif
 
 #endif

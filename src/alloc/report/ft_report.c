@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/29 23:39:13 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/07/01 13:44:07 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/09/02 22:58:37 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,7 @@ static inline void	ft_reporta_report(t_reporta *gpa)
 	args[8] = gpa->n_allocs - gpa->n_frees;
 	args[9] = gpa->slabsize * gpa->slabs;
 	ft_fmt_writer(&writer, ft_fatptr((t_u8 *)R1 R2 R3 R4, size), args);
+	ft_writer_flush(&writer);
 }
 
 __attribute__((__nonnull__(1)))

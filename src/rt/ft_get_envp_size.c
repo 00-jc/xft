@@ -12,6 +12,8 @@
 
 #include "private/ft_p_rt.h"
 
+#ifndef FT_NO_RT
+
 __attribute__((__nonnull__(1), pure, __hot__, __always_inline__))
 inline t_size	ft_get_envp_size(t_rt_arr envp)
 {
@@ -22,3 +24,5 @@ inline t_size	ft_get_envp_size(t_rt_arr envp)
 		++envp;
 	return (((t_uptr)envp - start) / sizeof(t_any));
 }
+
+#endif

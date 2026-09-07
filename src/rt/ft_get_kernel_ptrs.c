@@ -12,6 +12,8 @@
 
 #include "private/ft_p_rt.h"
 
+#ifndef FT_NO_RT
+
 __attribute__((__nonnull__(1), __hot__, __always_inline__))
 inline t_kernel_ptrs	ft_get_kernel_ptrs(const t_any *__restrict__ const sp)
 {
@@ -29,3 +31,5 @@ inline t_kernel_ptrs	ft_get_kernel_ptrs(const t_any *__restrict__ const sp)
 		++kp.auxc;
 	return (kp);
 }
+
+#endif
