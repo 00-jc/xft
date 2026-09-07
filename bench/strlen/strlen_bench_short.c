@@ -1,64 +1,61 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   memset_bench_large.c                               :+:      :+:    :+:   */
+/*   strlen_bench_short.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jaicastr <jaicastr@student.42madrid.com>   +#    +:+     +#          */
+/*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/04/20 16:22:01 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/13 06:14:07 by jaicastr         ###   ########.fr       */
+/*   Created: 2026/09/08 01:33:00 by jaicastr          #+#    #+#             */
+/*   Updated: 2026/09/08 01:33:00 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "tailor.h"
-#include "mem_bench.h"
+#include "cstr_bench.h"
 
-void	ft_memset_test_large_aligned(t_any ptr)
+void	ft_strlen_test_short_aligned(t_any ptr)
 {
-	t_buffer			*buffers;
-	t_buffer			*out;
-	t_size				n;
-	t_size				bufn[3];
-	static const t_u8	c = 0x42;
+	t_buffer	*buffers;
+	t_buffer	*in;
+	t_size		n;
+	t_size		bufn[3];
 
 	n = ft_tailor_getcount(ptr);
 	buffers = ft_get_all_buffers(ptr, bufn);
-	buffers += 26;
-	bufn[0] = 2;
+	buffers += 14;
+	bufn[0] = 4;
 	ft_pin_invariant_msg(buffers != nullptr,
 		ft_fatptr((t_u8 *)"NO BUFFERS", 10));
 	bufn[2] = 0;
 	while (n-- > 0)
 	{
-		out = buffers + (n % bufn[0]);
-		ft_memset(out->mem, c, out->size);
-		bufn[2] += out->size;
-		__asm__("": "+r,m"(out) ::"memory");
+		in = buffers + (n % bufn[0]);
+		bufn[1] = ft_strlen((const char *)in->mem);
+		bufn[2] += bufn[1];
+		__asm__("": "+r,m"(in) ::"memory");
 	}
 	ft_tailor_add_processed_bytes(ptr, bufn[2]);
 }
 
-void	ft_memset_test_large_unaligned(t_any ptr)
+void	ft_strlen_test_short_unaligned(t_any ptr)
 {
-	t_buffer			*buffers;
-	t_buffer			*out;
-	t_size				n;
-	t_size				bufn[3];
-	static const t_u8	c = 0x42;
+	t_buffer	*buffers;
+	t_buffer	*in;
+	t_size		n;
+	t_size		bufn[3];
 
 	n = ft_tailor_getcount(ptr);
 	buffers = ft_get_all_buffers(ptr, bufn);
-	buffers += 12;
-	bufn[0] = 2;
+	bufn[0] = 4;
 	ft_pin_invariant_msg(buffers != nullptr,
 		ft_fatptr((t_u8 *)"NO BUFFERS", 10));
 	bufn[2] = 0;
 	while (n-- > 0)
 	{
-		out = buffers + (n % bufn[0]);
-		ft_memset(out->mem, c, out->size);
-		bufn[2] += out->size;
-		__asm__("": "+r,m"(out) ::"memory");
+		in = buffers + (n % bufn[0]);
+		bufn[1] = ft_strlen((const char *)in->mem);
+		bufn[2] += bufn[1];
+		__asm__("": "+r,m"(in) ::"memory");
 	}
 	ft_tailor_add_processed_bytes(ptr, bufn[2]);
 }

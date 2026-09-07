@@ -1,25 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   memset_bench_large.c                               :+:      :+:    :+:   */
+/*   libc_strlen_large.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jaicastr <jaicastr@student.42madrid.com>   +#    +:+     +#          */
+/*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/04/20 16:22:01 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/05/13 06:14:07 by jaicastr         ###   ########.fr       */
+/*   Created: 2026/09/08 01:34:16 by jaicastr          #+#    #+#             */
+/*   Updated: 2026/09/08 01:34:16 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <string.h>
 #include "tailor.h"
-#include "mem_bench.h"
+#include "libc_bench.h"
 
-void	ft_memset_test_large_aligned(t_any ptr)
+void	ft_libc_strlen_large_aligned(t_any ptr)
 {
-	t_buffer			*buffers;
-	t_buffer			*out;
-	t_size				n;
-	t_size				bufn[3];
-	static const t_u8	c = 0x42;
+	t_buffer	*buffers;
+	t_buffer	*in;
+	t_size		n;
+	t_size		bufn[3];
 
 	n = ft_tailor_getcount(ptr);
 	buffers = ft_get_all_buffers(ptr, bufn);
@@ -30,21 +30,20 @@ void	ft_memset_test_large_aligned(t_any ptr)
 	bufn[2] = 0;
 	while (n-- > 0)
 	{
-		out = buffers + (n % bufn[0]);
-		ft_memset(out->mem, c, out->size);
-		bufn[2] += out->size;
-		__asm__("": "+r,m"(out) ::"memory");
+		in = buffers + (n % bufn[0]);
+		bufn[1] = strlen((const char *)in->mem);
+		bufn[2] += bufn[1];
+		__asm__("": "+r,m"(in) ::"memory");
 	}
 	ft_tailor_add_processed_bytes(ptr, bufn[2]);
 }
 
-void	ft_memset_test_large_unaligned(t_any ptr)
+void	ft_libc_strlen_large_unaligned(t_any ptr)
 {
-	t_buffer			*buffers;
-	t_buffer			*out;
-	t_size				n;
-	t_size				bufn[3];
-	static const t_u8	c = 0x42;
+	t_buffer	*buffers;
+	t_buffer	*in;
+	t_size		n;
+	t_size		bufn[3];
 
 	n = ft_tailor_getcount(ptr);
 	buffers = ft_get_all_buffers(ptr, bufn);
@@ -55,10 +54,10 @@ void	ft_memset_test_large_unaligned(t_any ptr)
 	bufn[2] = 0;
 	while (n-- > 0)
 	{
-		out = buffers + (n % bufn[0]);
-		ft_memset(out->mem, c, out->size);
-		bufn[2] += out->size;
-		__asm__("": "+r,m"(out) ::"memory");
+		in = buffers + (n % bufn[0]);
+		bufn[1] = strlen((const char *)in->mem);
+		bufn[2] += bufn[1];
+		__asm__("": "+r,m"(in) ::"memory");
 	}
 	ft_tailor_add_processed_bytes(ptr, bufn[2]);
 }

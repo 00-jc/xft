@@ -289,8 +289,6 @@ set(SRCS_SORT
   src/sort/ft_qsort.c
   src/sort/ft_qsort_u64s.c)
 
-# the syscall backends themselves are flavor-specific and live in
-# SRCS_FREESTANDING_* / SRCS_LIBC; this is the arch-neutral remainder.
 set(SRCS_SYSCALLS src/syscalls/ft_map_failed.c)
 
 set(SRCS_TAILOR
@@ -344,8 +342,6 @@ set(SRCS_ARCH_aarch64
   src/bmi/aarch64/ft_memctz.c
   src/bmi/aarch64/ft_popcount_neon.c)
 
-# the process entry point (_start, or main in the libc flavor); dropped
-# wholesale when XFT_RT=OFF, which also defines FT_NO_RT for the headers.
 set(SRCS_RT_ENTRY_x86_64  src/rt/x86_64/ft_rt.c)
 set(SRCS_RT_ENTRY_aarch64 src/rt/aarch64/ft_rt.c)
 set(SRCS_RT_ENTRY_libc    src/rt/libc/ft_rt.c)
@@ -918,6 +914,27 @@ set(SRCS_BENCH_memcpy_stream_bench
   bench/memcpy/memcpy_stream_bench.c
   bench/memcpy/memcpy_bench_stream.c)
 
+set(SRCS_BENCH_strlen_bench
+  bench/strlen/strlen_bench.c
+  bench/strlen/strlen_bench_large.c
+  bench/strlen/strlen_bench_medium.c
+  bench/strlen/strlen_bench_short.c
+  bench/strlen/strlen_bench_utils.c
+  bench/strlen/strlen_bench_varied.c)
+
+set(SRCS_BENCH_libc_bench
+  bench/libc/libc_bench.c
+  bench/libc/libc_bench_run.c
+  bench/libc/libc_memcpy_large.c
+  bench/libc/libc_memcpy_medium.c
+  bench/libc/libc_memcpy_short.c
+  bench/libc/libc_memcpy_varied.c
+  bench/libc/libc_strlen_large.c
+  bench/libc/libc_strlen_medium.c
+  bench/libc/libc_strlen_short.c
+  bench/libc/libc_strlen_varied.c
+  bench/strlen/strlen_bench_utils.c)
+
 set(SRCS_BENCH_memmove_bench
   bench/memmove/memmove_bench.c
   bench/memmove/memmove_bench_large.c
@@ -959,7 +976,7 @@ set(SRCS_BENCH_vec_bench
 
 set(BENCH_TARGETS
   memcpy_bench memcpy_stream_bench memmove_bench memset_bench
-  memset_stream_bench gpa_bench arena_bench vec_bench)
+  memset_stream_bench strlen_bench gpa_bench arena_bench vec_bench)
 
 function(xft_add_harness name)
   cmake_parse_arguments(H "" "LIB" "SOURCES;INCLUDES" ${ARGN})
@@ -1006,8 +1023,24 @@ if(XFT_BUILD_BENCH)
     add_dependencies(bench ${b})
     list(APPEND XFT_BENCH_RUN COMMAND $<TARGET_FILE:${b}>)
   endforeach()
+  if(XFT_LIBC AND NOT XFT_SANITIZE)
+    set(XFT_LIBC_BENCH_LIB xft)
+  else()
+    set(XFT_LIBC_BENCH_ARGS LIBC)
+    if(XFT_LTO)
+      list(APPEND XFT_LIBC_BENCH_ARGS LTO)
+    endif()
+    xft_add_lib(xft-libc ${XFT_LIBC_BENCH_ARGS})
+    set(XFT_LIBC_BENCH_LIB xft-libc)
+  endif()
+  xft_add_harness(libc_bench LIB ${XFT_LIBC_BENCH_LIB}
+    SOURCES ${SRCS_BENCH_libc_bench} INCLUDES bench/include)
+  target_compile_options(libc_bench PRIVATE ${CFLAGS_HOSTED} -fno-builtin)
+  add_dependencies(bench libc_bench)
+  list(APPEND XFT_BENCH_RUN COMMAND $<TARGET_FILE:libc_bench>)
+
   add_custom_target(run-bench ${XFT_BENCH_RUN}
-    DEPENDS ${BENCH_TARGETS}
+    DEPENDS ${BENCH_TARGETS} libc_bench
     COMMENT "running benchmarks"
     USES_TERMINAL VERBATIM)
 endif()

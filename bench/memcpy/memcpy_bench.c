@@ -21,8 +21,8 @@ inline void	ft_main(const t_any *__restrict__ const sp)
 		1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2049, (1 << 18), (1 << 20),
 	};
 	static t_u8				bufalign[] = {
-		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-		64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
+		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+		64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
 	};
 	static t_tailor_bench	benches[] = {
 	{ft_memcpy_test_varied, (t_blk8r)"memcpy_test_varied"},

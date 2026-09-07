@@ -212,6 +212,13 @@ cmake --build build --target bench -j
 cmake --build build --target run-bench
 ```
 
+One benchmark is the exception to "always link the plain library": `libc_bench`
+runs the platform's `memcpy` and `strlen` through the same tailor workloads as
+`memcpy_bench` and `strlen_bench`, so its numbers sit next to `ft_memcpy`'s and
+`ft_strlen`'s. It links a hosted copy of the library (`libxft-libc.a`, or the
+main one when `XFT_LIBC=ON`) and is compiled `-fno-builtin` so the calls really
+enter the libc instead of being expanded inline.
+
 There is also an `analyze` target that runs the compiler's static analyzer over the
 current flavor's source list:
 
@@ -227,7 +234,8 @@ src/              implementation, one function per file, grouped by module
                   arch backends under x86_64/, aarch64/, libc/, portable/, vec128|256|512/
 tests/            unit tests, mirrors src/ layout
 fuzz/             fuzz targets for mem, vec, map
-bench/            tailor benchmarks for memcpy/memmove/memset, gpa, arena, vec
+bench/            tailor benchmarks for memcpy/memmove/memset/strlen, gpa, arena,
+                  vec, and libc/ for the same memcpy and strlen tests against a libc
 examples/         standalone programs (not built by CMake)
 ```
 
