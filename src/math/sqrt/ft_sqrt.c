@@ -1,19 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_q_sqrt.c                                        :+:      :+:    :+:   */
+/*   ft_sqrt.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/29 23:39:13 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/06/29 23:39:19 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/09/08 15:13:48 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "math.h"
 
-__attribute__ ((__always_inline__, const))
-inline t_f32	ft_q_sqrt(t_f32 number)
+#ifdef __x86_64__
+
+__attribute__((__always_inline__, const))
+inline t_f32	ft_sqrt(t_f32 number)
+{
+	__asm__("sqrtss %1, %0" : "=x"(number) : "x"(number));
+	return (number);
+}
+
+__attribute__((__always_inline__, const))
+inline t_f64	ft_dsqrt(t_f64 number)
+{
+	__asm__("sqrtsd %1, %0" : "=x"(number) : "x"(number));
+	return (number);
+}
+
+#else
+
+__attribute__((__always_inline__, const))
+inline t_f32	ft_sqrt(t_f32 number)
 {
 	t_u32a		i;
 	t_f32		x2;
@@ -36,8 +54,8 @@ inline t_f32	ft_q_sqrt(t_f32 number)
 	return (number * y);
 }
 
-__attribute__ ((__always_inline__, const))
-inline t_f64	ft_q_dsqrt(t_f64 number)
+__attribute__((__always_inline__, const))
+inline t_f64	ft_dsqrt(t_f64 number)
 {
 	t_u64a	i;
 	t_f64	x2;
@@ -60,14 +78,4 @@ inline t_f64	ft_q_dsqrt(t_f64 number)
 	return (number * y);
 }
 
-__attribute__ ((__always_inline__, const))
-inline t_f32	ft_q_sqrt_round(t_f32 number, t_u8 n)
-{
-	return (ft_roundf(ft_q_sqrt(number), n));
-}
-
-__attribute__ ((__always_inline__, const))
-inline t_f32	ft_q_sqrt_fround(t_f32 number)
-{
-	return (ft_roundff(ft_q_sqrt(number)));
-}
+#endif

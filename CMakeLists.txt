@@ -218,15 +218,13 @@ set(SRCS_MATH
   src/math/3d/ft_3dnorm.c
   src/math/3d/ft_3dsub.c
   src/math/3d/ft_3dunit.c
-  src/math/ft_drsqrt_xn.c
+  src/math/sqrt/ft_rsqrt.c
+  src/math/sqrt/ft_sqrt.c
   src/math/ft_fabs.c
   src/math/ft_pow.c
   src/math/ft_pow_signed.c
-  src/math/ft_q_sqrt.c
   src/math/ft_round.c
-  src/math/ft_rsqrt.c
-  src/math/ft_sqrt.c
-  src/math/ft_sqrt_xn.c)
+)
 
 set(SRCS_MEM
   src/mem/arch/ft_memchr.c

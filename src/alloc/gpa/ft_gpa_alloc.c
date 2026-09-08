@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/29 23:39:13 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/06/29 23:39:19 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/09/08 12:26:26 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,5 +70,6 @@ t_buffer	ft_gpa_alloc(t_any alloc, t_size size, t_size align)
 		gpa->free[freelist] = *(t_any *)new_ptr;
 		return (ft_fatptr(new_ptr, snapped));
 	}
+
 	return (ft_return_ptr(gpa, snapped, align));
 }
