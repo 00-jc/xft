@@ -57,18 +57,11 @@ if(XFT_BUILD_BENCH AND NOT CMAKE_SYSTEM_NAME STREQUAL "Linux")
   )
 endif()
 
-if(XFT_WIN64 AND XFT_SANITIZE)
-  message(
-    FATAL_ERROR
-    "xft: the sanitized build is linux only; reconfigure with -DXFT_SANITIZE=OFF"
-  )
-endif()
-
-if(XFT_WIN64 AND (XFT_BUILD_TESTS OR XFT_BUILD_FUZZ))
-  message(
-    FATAL_ERROR
-    "xft: the test/fuzz harnesses are linux only; drop the harness options"
-  )
+# asan on windows refuses the debug crt (/MDd), which cmake picks for Debug;
+# the sanitized builds (XFT_SANITIZE, or the xft-san test/fuzz variant) take
+# the release dll crt instead
+if(XFT_WIN64 AND (XFT_SANITIZE OR XFT_BUILD_TESTS OR XFT_BUILD_FUZZ))
+  set(CMAKE_MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
 endif()
 
 if(XFT_LIBC AND XFT_WIN64)

@@ -34,7 +34,7 @@ static inline t_size	xft__get_empty(const t_map *restrict const map,
 
 __attribute__((__always_inline__, __nonnull__(1)))
 static inline void	xft__interbuck(t_map *restrict const map,
-	t_bucket buck, t_size empty_lot, t_u128a hash)
+	t_bucket buck, t_size empty_lot, t_u64a hash)
 {
 	map->buckets[empty_lot] = buck;
 	map->meta[empty_lot] = (hash >> 57) & MAP_H2_MASK;

@@ -62,6 +62,13 @@ cmake --build build --target run-bench
 
 Benchmarks use the `tailor` harness (so it's linux-only).
 
+On Windows, the sanitized tests and fuzz targets load `clang_rt.asan_dynamic-<arch>.dll`, which LLVM ships outside `bin`. Put its directory on `PATH` (or the binaries exit with `0xc0000135`):
+
+```powershell
+$res = & clang -print-resource-dir
+$env:PATH = "$res\lib\windows;$env:PATH"
+```
+
 ---
 
 # LICENSE

@@ -46,7 +46,7 @@ inline t_size	xft__map_lookup_offset(const t_map *restrict const map,
 __attribute__((__nonnull__(1)))
 void	xft_map_delete(t_map *restrict const map, t_buffer key)
 {
-	t_u128a		hash;
+	t_u64a		hash;
 	t_u8		h2;
 	t_size		group;
 	t_size		nblks;

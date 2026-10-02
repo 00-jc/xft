@@ -32,7 +32,6 @@ if(CMAKE_C_COMPILER_ID STREQUAL "GNU")
     VERBATIM
   )
 elseif(CMAKE_C_COMPILER_ID MATCHES "Clang")
-  # text output: no .plist files dropped next to the sources
   add_custom_target(
     analyze
     COMMAND

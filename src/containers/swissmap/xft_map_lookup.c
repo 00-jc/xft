@@ -46,7 +46,7 @@ static inline t_any	xft__map_lookup(const t_map *restrict const map,
 __attribute__((__nonnull__(1)))
 t_any	xft_map_lookup(const t_map *restrict const map, t_buffer key)
 {
-	t_u128a		hash;
+	t_u64a		hash;
 	t_u8		h2;
 	t_size		group;
 	t_size		nblks;
