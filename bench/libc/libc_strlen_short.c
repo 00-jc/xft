@@ -14,19 +14,19 @@
 #include "tailor.h"
 #include "libc_bench.h"
 
-void	ft_libc_strlen_short_aligned(t_any ptr)
+void	xft_libc_strlen_short_aligned(t_any ptr)
 {
 	t_buffer	*buffers;
 	t_buffer	*in;
 	t_size		n;
 	t_size		bufn[3];
 
-	n = ft_tailor_getcount(ptr);
-	buffers = ft_get_all_buffers(ptr, bufn);
+	n = xft_tailor_getcount(ptr);
+	buffers = xft_get_all_buffers(ptr, bufn);
 	buffers += 14;
 	bufn[0] = 4;
-	ft_pin_invariant_msg(buffers != nullptr,
-		ft_fatptr((t_u8 *)"NO BUFFERS", 10));
+	xft_pin_invariant_msg(buffers != nullptr,
+		xft_fatptr((t_u8 *)"NO BUFFERS", 10));
 	bufn[2] = 0;
 	while (n-- > 0)
 	{
@@ -35,21 +35,21 @@ void	ft_libc_strlen_short_aligned(t_any ptr)
 		bufn[2] += bufn[1];
 		__asm__("": "+r,m"(in) ::"memory");
 	}
-	ft_tailor_add_processed_bytes(ptr, bufn[2]);
+	xft_tailor_add_processed_bytes(ptr, bufn[2]);
 }
 
-void	ft_libc_strlen_short_unaligned(t_any ptr)
+void	xft_libc_strlen_short_unaligned(t_any ptr)
 {
 	t_buffer	*buffers;
 	t_buffer	*in;
 	t_size		n;
 	t_size		bufn[3];
 
-	n = ft_tailor_getcount(ptr);
-	buffers = ft_get_all_buffers(ptr, bufn);
+	n = xft_tailor_getcount(ptr);
+	buffers = xft_get_all_buffers(ptr, bufn);
 	bufn[0] = 4;
-	ft_pin_invariant_msg(buffers != nullptr,
-		ft_fatptr((t_u8 *)"NO BUFFERS", 10));
+	xft_pin_invariant_msg(buffers != nullptr,
+		xft_fatptr((t_u8 *)"NO BUFFERS", 10));
 	bufn[2] = 0;
 	while (n-- > 0)
 	{
@@ -58,5 +58,5 @@ void	ft_libc_strlen_short_unaligned(t_any ptr)
 		bufn[2] += bufn[1];
 		__asm__("": "+r,m"(in) ::"memory");
 	}
-	ft_tailor_add_processed_bytes(ptr, bufn[2]);
+	xft_tailor_add_processed_bytes(ptr, bufn[2]);
 }

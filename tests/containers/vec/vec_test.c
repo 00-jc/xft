@@ -17,13 +17,13 @@ void	test_vec(t_test *t)
 	t_gpa		gpa;
 	t_allocator	a;
 
-	gpa = ft_gpa();
-	a = ft_gpa_allocator(&gpa);
-	ft_test_print(t, "Testing t_vec...\n");
+	gpa = xft_gpa();
+	a = xft_gpa_allocator(&gpa);
+	xft_test_print(t, "Testing t_vec...\n");
 	test_vec_push_get(a);
 	test_vec_pop(a);
 	test_vec_extend(a);
 	test_vec_clear_reuse(a);
-	ft_gpa_destroy(&gpa);
-	ft_test_print(t, "  t_vec: OK\n");
+	xft_gpa_destroy(&gpa);
+	xft_test_print(t, "  t_vec: OK\n");
 }

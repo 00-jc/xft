@@ -23,10 +23,10 @@ void	test_xxh3(t_test *t)
 		buf[i] = (t_u8)(i % 256);
 		i++;
 	}
-	ft_test_print(t, "Testing ft_xxh3_64bits...\n");
+	xft_test_print(t, "Testing xft_xxh3_64bits...\n");
 	test_xxh3_basic();
 	test_xxh3_edge();
 	test_xxh3_seeds();
 	test_xxh3_lengths(buf);
-	ft_test_print(t, "    ft_xxh3_64bits: OK\n");
+	xft_test_print(t, "    xft_xxh3_64bits: OK\n");
 }

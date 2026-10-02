@@ -13,11 +13,11 @@
 #include "tailor.h"
 #include "vec_bench.h"
 
-t_gpa	*ft_get_bench_vec_gpa(void)
+t_gpa	*xft_get_bench_vec_gpa(void)
 {
 	static t_gpa	gpa = {0};
 
 	if (gpa.slab == nullptr)
-		gpa = ft_gpa();
+		gpa = xft_gpa();
 	return (&gpa);
 }

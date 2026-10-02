@@ -17,10 +17,10 @@ void	test_murmur_diff_input(void)
 	t_u128a	h1;
 	t_u128a	h2;
 
-	h1 = ft_murmur3((t_u8 *)"hello", 5);
-	h2 = ft_murmur3((t_u8 *)"hellp", 5);
-	ft_pin_invariant(h1 != h2);
-	h1 = ft_murmur3((t_u8 *)"ab", 2);
-	h2 = ft_murmur3((t_u8 *)"ba", 2);
-	ft_pin_invariant(h1 != h2);
+	h1 = xft_murmur3((t_u8 *)"hello", 5);
+	h2 = xft_murmur3((t_u8 *)"hellp", 5);
+	xft_pin_invariant(h1 != h2);
+	h1 = xft_murmur3((t_u8 *)"ab", 2);
+	h2 = xft_murmur3((t_u8 *)"ba", 2);
+	xft_pin_invariant(h1 != h2);
 }

@@ -14,14 +14,14 @@
 
 void	test_ctz(void)
 {
-	ft_pin_invariant(ft_memctz_u32(1) == 0);
-	ft_pin_invariant(ft_memctz_u32(2) == 1);
-	ft_pin_invariant(ft_memctz_u32(4) == 2);
-	ft_pin_invariant(ft_memctz_u32(0x80) == 7);
-	ft_pin_invariant(ft_memctz_u32(0x80000000U) == 31);
-	ft_pin_invariant(ft_memctz_u64(1) == 0);
-	ft_pin_invariant(ft_memctz_u64(0x100) == 8);
-	ft_pin_invariant(ft_memctz_u64(0x8000000000000000ULL) == 63);
-	ft_pin_invariant(ft_memctz_u16(1) == 0);
-	ft_pin_invariant(ft_memctz_u16(0x8000) == 15);
+	xft_pin_invariant(xft_memctz_u32(1) == 0);
+	xft_pin_invariant(xft_memctz_u32(2) == 1);
+	xft_pin_invariant(xft_memctz_u32(4) == 2);
+	xft_pin_invariant(xft_memctz_u32(0x80) == 7);
+	xft_pin_invariant(xft_memctz_u32(0x80000000U) == 31);
+	xft_pin_invariant(xft_memctz_u64(1) == 0);
+	xft_pin_invariant(xft_memctz_u64(0x100) == 8);
+	xft_pin_invariant(xft_memctz_u64(0x8000000000000000ULL) == 63);
+	xft_pin_invariant(xft_memctz_u16(1) == 0);
+	xft_pin_invariant(xft_memctz_u16(0x8000) == 15);
 }

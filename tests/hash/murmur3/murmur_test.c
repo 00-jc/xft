@@ -14,10 +14,10 @@
 
 void	test_murmur(t_test *t)
 {
-	ft_test_print(t, "Testing ft_murmur3...\n");
+	xft_test_print(t, "Testing xft_murmur3...\n");
 	test_murmur_deterministic();
 	test_murmur_diff_input();
 	test_murmur_seed();
 	test_murmur_lengths();
-	ft_test_print(t, "  ft_murmur3: OK\n");
+	xft_test_print(t, "  xft_murmur3: OK\n");
 }

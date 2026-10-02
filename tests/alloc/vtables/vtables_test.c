@@ -14,10 +14,10 @@
 
 void	test_vtables(t_test *t)
 {
-	ft_test_print(t, "Testing allocator vtables...\n");
+	xft_test_print(t, "Testing allocator vtables...\n");
 	test_palloc_vtable();
 	test_arena_vtable();
 	test_gpa_vtable();
 	test_gpa_freelist();
-	ft_test_print(t, "  vtables: OK\n");
+	xft_test_print(t, "  vtables: OK\n");
 }

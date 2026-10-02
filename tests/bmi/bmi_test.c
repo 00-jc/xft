@@ -14,10 +14,10 @@
 
 void	test_bmi(t_test *t)
 {
-	ft_test_print(t, "Testing bmi...\n");
+	xft_test_print(t, "Testing bmi...\n");
 	test_ctz();
 	test_clz();
 	test_bswap();
 	test_max();
-	ft_test_print(t, "  bmi: OK\n");
+	xft_test_print(t, "  bmi: OK\n");
 }

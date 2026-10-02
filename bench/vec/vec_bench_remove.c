@@ -16,29 +16,29 @@
 #define RMF_LEN	256
 
 __attribute__((__nonnull__(1)))
-void	ft_vec_bench_remove_front(t_any ptr)
+void	xft_vec_bench_remove_front(t_any ptr)
 {
 	t_allocator	a;
 	t_vec		vec;
 	t_size		n;
 	t_u64		val;
 
-	a = ft_gpa_allocator(ft_get_bench_vec_gpa());
-	vec = ft_vec(a, RMF_LEN, sizeof(t_u64));
-	n = ft_tailor_getcount(ptr);
+	a = xft_gpa_allocator(xft_get_bench_vec_gpa());
+	vec = xft_vec(a, RMF_LEN, sizeof(t_u64));
+	n = xft_tailor_getcount(ptr);
 	val = 0;
 	while (val < RMF_LEN)
 	{
-		ft_vec_push_back(a, &vec, (t_u8 *)&val, sizeof(val));
+		xft_vec_push_back(a, &vec, (t_u8 *)&val, sizeof(val));
 		val++;
 	}
 	while (n-- > 0)
 	{
-		ft_vec_push_back(a, &vec, (t_u8 *)&val, sizeof(val));
-		ft_vec_remove(&vec, 0, sizeof(t_u64));
+		xft_vec_push_back(a, &vec, (t_u8 *)&val, sizeof(val));
+		xft_vec_remove(&vec, 0, sizeof(t_u64));
 		val++;
 	}
-	ft_tailor_add_processed_bytes(ptr,
-		ft_tailor_getcount(ptr) * RMF_LEN * sizeof(t_u64));
-	ft_vec_destroy(a, &vec);
+	xft_tailor_add_processed_bytes(ptr,
+		xft_tailor_getcount(ptr) * RMF_LEN * sizeof(t_u64));
+	xft_vec_destroy(a, &vec);
 }

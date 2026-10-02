@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/29 23:39:13 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/08/04 00:22:56 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/10/02 02:06:30 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,14 +18,6 @@
 extern "C"
 {
 
-# endif
-
-# if !defined(__x86_64__) && !defined(__aarch64__) && !defined(FT_REQUIRE_LIBC)
-# error "Cannot compile freestanding on this arch without FT_REQUIRE_LIBC"
-# endif
-
-# if !defined(__linux__)
-# error "For now this library is linux only"
 # endif
 
 # include "primitives.h"
@@ -42,14 +34,13 @@ extern "C"
 # include "tokenizer.h"
 # include "hint.h"
 # include "timing.h"
-# include "perf.h"
-# include "tailor.h"
 # include "str.h"
+# include "alloc.h"
+# include "rng.h"
 # include "syscalls.h"
 # include "rt.h"
 # include "fmt.h"
 # include "atomics.h"
-# include "threads.h"
 
 #ifdef __cplusplus
 }

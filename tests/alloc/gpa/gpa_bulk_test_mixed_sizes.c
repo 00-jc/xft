@@ -18,16 +18,16 @@ void	test_bulk_mixed_sizes(void)
 	t_gpa		gpa;
 	int			i;
 
-	gpa = ft_gpa();
-	ft_pin_invariant_msg(gpa.slab != nullptr,
-		ft_fatptr((t_u8 *)"gpa init mixed", sizeof("gpa init mixed") - 1));
+	gpa = xft_gpa();
+	xft_pin_invariant_msg(gpa.slab != nullptr,
+		xft_fatptr((t_u8 *)"gpa init mixed", sizeof("gpa init mixed") - 1));
 	test_bulk_mixed_sizes_fill(&gpa, bufs);
 	i = -1;
 	while (++i < BULK_N)
-		ft_pin_invariant_msg(*bufs[i].mem == (t_u8)(i & 0xff),
-			ft_fatptr((t_u8 *)"mixed rw", sizeof("mixed rw") - 1));
+		xft_pin_invariant_msg(*bufs[i].mem == (t_u8)(i & 0xff),
+			xft_fatptr((t_u8 *)"mixed rw", sizeof("mixed rw") - 1));
 	i = -1;
 	while (++i < BULK_N)
-		ft_gpa_free(&gpa, bufs[i]);
-	ft_gpa_destroy(&gpa);
+		xft_gpa_free(&gpa, bufs[i]);
+	xft_gpa_destroy(&gpa);
 }

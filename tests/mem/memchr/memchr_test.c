@@ -14,10 +14,10 @@
 
 void	test_memchr(t_test *t)
 {
-	ft_test_print(t, "Testing ft_memchr...\n");
+	xft_test_print(t, "Testing xft_memchr...\n");
 	test_memchr_basic();
 	test_memchr_edge();
 	test_memchr_misaligned();
 	test_memchr_long();
-	ft_test_print(t, "  ft_memchr: OK\n");
+	xft_test_print(t, "  xft_memchr: OK\n");
 }

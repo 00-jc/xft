@@ -24,10 +24,11 @@ void	test_memchr_long(void)
 		i++;
 	}
 	buf[255] = '\0';
-	ft_pin_invariant(ft_memchr(buf, 'A', 256) == memchr(buf, 'A', 256));
-	ft_pin_invariant(ft_memchr(buf, 'Z', 256) == memchr(buf, 'Z', 256));
-	ft_pin_invariant(ft_memchr(buf + 10, 'A', 100)
+	xft_pin_invariant(xft_memchr(buf, 'A', 256) == memchr(buf, 'A', 256));
+	xft_pin_invariant(xft_memchr(buf, 'Z', 256) == memchr(buf, 'Z', 256));
+	xft_pin_invariant(xft_memchr(buf + 10, 'A', 100)
 		== memchr(buf + 10, 'A', 100));
-	ft_pin_invariant(ft_memchr(buf + 63, 'B', 50) == memchr(buf + 63, 'B', 50));
-	ft_pin_invariant(ft_memchr(buf, '\0', 256) == memchr(buf, '\0', 256));
+	xft_pin_invariant(xft_memchr(buf + 63, 'B', 50)
+		== memchr(buf + 63, 'B', 50));
+	xft_pin_invariant(xft_memchr(buf, '\0', 256) == memchr(buf, '\0', 256));
 }

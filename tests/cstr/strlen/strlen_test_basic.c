@@ -21,9 +21,9 @@ void	test_strlen_basic(void)
 	memcpy(h, "hello", 6);
 	memcpy(w, "world", 6);
 	memcpy(z, "\0\0", 1);
-	ft_pin_invariant(ft_strlen(h) == strlen(h));
-	ft_pin_invariant(ft_strlen(w) == strlen(w));
-	ft_pin_invariant(ft_strlen(z) == strlen(z));
-	ft_pin_invariant(ft_strlen("") == strlen(""));
-	ft_pin_invariant(ft_strlen("a") == strlen("a"));
+	xft_pin_invariant(xft_strlen(h) == strlen(h));
+	xft_pin_invariant(xft_strlen(w) == strlen(w));
+	xft_pin_invariant(xft_strlen(z) == strlen(z));
+	xft_pin_invariant(xft_strlen("") == strlen(""));
+	xft_pin_invariant(xft_strlen("a") == strlen("a"));
 }

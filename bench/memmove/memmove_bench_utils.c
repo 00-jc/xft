@@ -13,7 +13,7 @@
 #include "tailor.h"
 #include "mem_bench.h"
 
-void	ft_memmove_overlap(t_buffer *buffer, t_size shift, t_size invert,
+void	xft_memmove_overlap(t_buffer *buffer, t_size shift, t_size invert,
 	t_size *bytes)
 {
 	t_size	len;
@@ -22,8 +22,8 @@ void	ft_memmove_overlap(t_buffer *buffer, t_size shift, t_size invert,
 		return ;
 	len = buffer->size - shift;
 	if (invert != 0)
-		ft_memmove(buffer->mem, buffer->mem + shift, len);
+		xft_memmove(buffer->mem, buffer->mem + shift, len);
 	else
-		ft_memmove(buffer->mem + shift, buffer->mem, len);
+		xft_memmove(buffer->mem + shift, buffer->mem, len);
 	*bytes += len;
 }

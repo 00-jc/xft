@@ -14,9 +14,9 @@
 
 void	test_gpa_bulk(t_test *t)
 {
-	ft_test_print(t, "Testing gpa bulk alloc/free...\n");
+	xft_test_print(t, "Testing gpa bulk alloc/free...\n");
 	test_bulk_same_size();
 	test_bulk_mixed_sizes();
 	test_bulk_reuse();
-	ft_test_print(t, "  gpa bulk: OK\n");
+	xft_test_print(t, "  gpa bulk: OK\n");
 }

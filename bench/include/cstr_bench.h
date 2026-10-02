@@ -18,15 +18,15 @@
 # include "rt.h"
 # include "tailor.h"
 
-void		ft_fill_strings(t_buffer *buffers, t_size n);
-t_result	ft_strlen_bench_buffers(t_tailor *t);
+void		xft_fill_strings(t_buffer *buffers, t_size n);
+t_result	xft_strlen_bench_buffers(t_tailor *t);
 
-void		ft_strlen_test_varied(t_any ptr);
-void		ft_strlen_test_short_aligned(t_any ptr);
-void		ft_strlen_test_short_unaligned(t_any ptr);
-void		ft_strlen_test_medium_aligned(t_any ptr);
-void		ft_strlen_test_medium_unaligned(t_any ptr);
-void		ft_strlen_test_large_aligned(t_any ptr);
-void		ft_strlen_test_large_unaligned(t_any ptr);
+void		xft_strlen_test_varied(t_any ptr);
+void		xft_strlen_test_short_aligned(t_any ptr);
+void		xft_strlen_test_short_unaligned(t_any ptr);
+void		xft_strlen_test_medium_aligned(t_any ptr);
+void		xft_strlen_test_medium_unaligned(t_any ptr);
+void		xft_strlen_test_large_aligned(t_any ptr);
+void		xft_strlen_test_large_unaligned(t_any ptr);
 
 #endif

@@ -1,0 +1,84 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   xft_memcmp.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/06/29 23:39:13 by jaicastr          #+#    #+#             */
+/*   Updated: 2026/06/29 23:39:20 by jaicastr         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "xft_p_mem.h"
+
+__attribute__((__nonnull__(1, 2), __always_inline__, __used__))
+inline t_ssize	xft_memcmp_finalround(t_cany restrict const ptr1,
+	t_cany restrict const ptr2, t_size offst, t_size n)
+{
+	t_u16a		mask;
+	t_vu128a	load0;
+	t_vu128a	load1;
+	t_size		diffbyte;
+
+	if (n == 0)
+		return (0);
+	offst <<= 4;
+	load0 = *(t_blk128r)xft_overlap((t_blk8r)ptr1 + offst, sizeof(t_vu128a), n);
+	load1 = *(t_blk128r)xft_overlap((t_blk8r)ptr2 + offst, sizeof(t_vu128a), n);
+	mask = xft_bitpack128((t_vu128a)(load0 != load1))
+		& xft_roll_mask(sizeof(t_vu128a), n);
+	if (mask)
+	{
+		diffbyte = xft_memctz_u16(mask);
+		return (load0[diffbyte] - load1[diffbyte]);
+	}
+	return (0);
+}
+
+__attribute__((__nonnull__(1, 2), __always_inline__, __used__))
+inline t_ssize	xft_memcmp_minimal(t_cany restrict const ptr1,
+	t_cany restrict const ptr2, t_size offst, t_size n)
+{
+	t_u8		b1;
+	t_u8		b2;
+
+	b1 = 0;
+	b2 = 0;
+	while (n-- && b1 == b2)
+	{
+		b1 = ((t_blk8r)ptr1)[offst];
+		b2 = ((t_blk8r)ptr2)[offst];
+		++offst;
+	}
+	return (b1 - b2);
+}
+
+__attribute__((__nonnull__(1, 2), __always_inline__, __used__))
+inline t_ssize	xft_memcmp_128(t_cany restrict const ptr1,
+	t_cany restrict const ptr2, t_size n)
+{
+	t_u16a		mask;
+	t_vu128a	load0;
+	t_vu128a	load1;
+	t_size		offst;
+	t_size		diffb;
+
+	offst = 0;
+	if (n < sizeof(t_vu128))
+		return (xft_memcmp_minimal(ptr1, ptr2, offst, n));
+	while (n >= sizeof(t_vu128))
+	{
+		xft_prefetch0(ptr1, sizeof(t_vu128a) << 1);
+		xft_prefetch0(ptr2, sizeof(t_vu128a) << 1);
+		load0 = ((t_blk128r)ptr1)[offst];
+		load1 = ((t_blk128r)ptr2)[offst];
+		mask = xft_bitpack128((t_vu128a)(load1 != load0));
+		diffb = xft_memctz_u16(mask);
+		if (mask)
+			return (load0[diffb] - load1[diffb]);
+		n -= sizeof(t_vu128a);
+		++offst;
+	}
+	return (xft_memcmp_finalround(ptr1, ptr2, offst, n));
+}

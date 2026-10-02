@@ -19,13 +19,13 @@
 # include "alloc/report_allocator.h"
 # include "alloc/arena_alloc.h"
 
-t_allocator	ft_arena_allocator(t_arena *arena)\
+t_allocator	xft_arena_allocator(t_arena *arena)\
 				__attribute__((__nonnull__(1), __const__));
-t_allocator	ft_gpa_allocator(t_gpa *gpa)\
+t_allocator	xft_gpa_allocator(t_gpa *gpa)\
 				__attribute__((__nonnull__(1), __const__));
-t_allocator	ft_reporta_allocator(t_reporta *gpa)\
+t_allocator	xft_reporta_allocator(t_reporta *gpa)\
 				__attribute__((__nonnull__(1), __const__));
-t_allocator	ft_new_page_alloc(void)\
+t_allocator	xft_new_page_alloc(void)\
 				__attribute__((__const__));
 
 #endif

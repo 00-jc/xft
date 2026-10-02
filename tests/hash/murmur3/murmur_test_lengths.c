@@ -20,12 +20,12 @@ void	test_murmur_lengths(void)
 	int		i;
 
 	memset(buf, 'A', 512);
-	prev = ft_murmur3((t_u8 *)buf, 1);
+	prev = xft_murmur3((t_u8 *)buf, 1);
 	i = 2;
 	while (i <= 512)
 	{
-		cur = ft_murmur3((t_u8 *)buf, i);
-		ft_pin_invariant(cur != prev);
+		cur = xft_murmur3((t_u8 *)buf, i);
+		xft_pin_invariant(cur != prev);
 		prev = cur;
 		i += (i < 32) + 1;
 	}

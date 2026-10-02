@@ -17,7 +17,7 @@ void	test_xoshiro_basic(void)
 	t_xoshiro							x;
 	t_u64a __attribute__	((unused))	r;
 
-	ft_xoshiro_init(x);
-	r = ft_xoshiro256ss(x);
+	xft_xoshiro_init(x);
+	r = xft_xoshiro256ss(x);
 	(void)r;
 }

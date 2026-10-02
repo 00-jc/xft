@@ -13,7 +13,7 @@
 #ifndef FUZZ_H
 # define FUZZ_H
 
-# include "private/test.h"
+# include "test.h"
 # include "fuzzer.h"
 # include "rt.h"
 

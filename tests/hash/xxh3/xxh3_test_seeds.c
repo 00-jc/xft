@@ -17,22 +17,22 @@ void	test_xxh3_seeds(void)
 	t_al32_buffer	h;
 	t_misal_buffer	a;
 
-	ft_memcpy(h, "hello", 6);
+	xft_memcpy(h, "hello", 6);
 	a[0] = 'a';
 	a[1] = '\0';
-	ft_pin_invariant_msg(ft_xxh3_64bits((t_buffer){.mem = h, .size = 5}, 0)
-		== H_HELLO5_S0, ft_fatptr((t_u8 *)"hello seed0",
+	xft_pin_invariant_msg(xft_xxh3_64bits((t_buffer){.mem = h, .size = 5}, 0)
+		== H_HELLO5_S0, xft_fatptr((t_u8 *)"hello seed0",
 			sizeof("hello seed0") - 1));
-	ft_pin_invariant_msg(ft_xxh3_64bits((t_buffer){.mem = h, .size = 5}, 1)
-		== H_HELLO5_S1, ft_fatptr((t_u8 *)"hello seed1",
+	xft_pin_invariant_msg(xft_xxh3_64bits((t_buffer){.mem = h, .size = 5}, 1)
+		== H_HELLO5_S1, xft_fatptr((t_u8 *)"hello seed1",
 			sizeof("hello seed1") - 1));
-	ft_pin_invariant_msg(ft_xxh3_64bits((t_buffer){.mem = h, .size = 5}, 42)
-		== H_HELLO5_S42, ft_fatptr((t_u8 *)"hello seed42",
+	xft_pin_invariant_msg(xft_xxh3_64bits((t_buffer){.mem = h, .size = 5}, 42)
+		== H_HELLO5_S42, xft_fatptr((t_u8 *)"hello seed42",
 			sizeof("hello seed42") - 1));
-	ft_pin_invariant_msg(ft_xxh3_64bits((t_buffer){.mem = h, .size = 5},
-			(t_u64) - 1) == H_HELLO5_SFF, ft_fatptr((t_u8 *)"hello seedFF",
+	xft_pin_invariant_msg(xft_xxh3_64bits((t_buffer){.mem = h, .size = 5},
+			(t_u64) - 1) == H_HELLO5_SFF, xft_fatptr((t_u8 *)"hello seedFF",
 			sizeof("hello seedFF") - 1));
-	ft_pin_invariant_msg(ft_xxh3_64bits((t_buffer){.mem = a, .size = 1}, 42)
-		== H_A1_S42, ft_fatptr((t_u8 *)"a seed42",
+	xft_pin_invariant_msg(xft_xxh3_64bits((t_buffer){.mem = a, .size = 1}, 42)
+		== H_A1_S42, xft_fatptr((t_u8 *)"a seed42",
 			sizeof("a seed42") - 1));
 }

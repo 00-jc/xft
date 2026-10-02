@@ -14,9 +14,9 @@
 
 void	test_memset(t_test *t)
 {
-	ft_test_print(t, "Testing ft_memset (SIMD)...\n");
+	xft_test_print(t, "Testing xft_memset (SIMD)...\n");
 	test_memset_basic();
 	test_memset_large();
 	test_memset_misaligned();
-	ft_test_print(t, "  ft_memset: OK\n");
+	xft_test_print(t, "  xft_memset: OK\n");
 }

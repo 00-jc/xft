@@ -39,13 +39,13 @@ inline void	run_all_tests(t_test *t)
 }
 
 __attribute__((__always_inline__))
-inline void	ft_main(const t_any *__restrict__ const sp)
+inline void	xft_main(const t_any *__restrict__ const sp)
 {
 	t_test	t;
 
-	ft_test_init(&t);
+	xft_test_init(&t);
 	run_all_tests(&t);
 	(void)sp;
-	ft_writer_flush(&t.writer);
-	ft_exit(0);
+	xft_writer_flush(&t.writer);
+	xft_exit(0);
 }

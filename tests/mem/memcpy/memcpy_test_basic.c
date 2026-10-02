@@ -19,21 +19,21 @@ void	test_memcpy_basic(void)
 	char	b[20];
 
 	memcpy(src, "hello world12345", 17);
-	ft_memcpy(a, src, 17);
+	xft_memcpy(a, src, 17);
 	memcpy(b, src, 17);
-	ft_pin_invariant(memcmp(a, b, 17) == 0);
-	ft_memcpy(a, src, 0);
-	ft_pin_invariant(memcmp(a, b, 17) == 0);
+	xft_pin_invariant(memcmp(a, b, 17) == 0);
+	xft_memcpy(a, src, 0);
+	xft_pin_invariant(memcmp(a, b, 17) == 0);
 	memcpy(src, "hello world1", 13);
-	ft_memcpy(a, src, 13);
+	xft_memcpy(a, src, 13);
 	memcpy(b, src, 13);
-	ft_pin_invariant(memcmp(a, b, 13) == 0);
-	ft_memcpy(a, src, 0);
-	ft_pin_invariant(memcmp(a, b, 13) == 0);
+	xft_pin_invariant(memcmp(a, b, 13) == 0);
+	xft_memcpy(a, src, 0);
+	xft_pin_invariant(memcmp(a, b, 13) == 0);
 	memcpy(src, "hello world1", 3);
-	ft_memcpy(a, src, 3);
+	xft_memcpy(a, src, 3);
 	memcpy(b, src, 3);
-	ft_pin_invariant(memcmp(a, b, 3) == 0);
-	ft_memcpy(a, src, 0);
-	ft_pin_invariant(memcmp(a, b, 3) == 0);
+	xft_pin_invariant(memcmp(a, b, 3) == 0);
+	xft_memcpy(a, src, 0);
+	xft_pin_invariant(memcmp(a, b, 3) == 0);
 }

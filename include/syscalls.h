@@ -6,50 +6,107 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/29 23:39:13 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/07/31 02:08:41 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/10/02 13:48:08 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SYSCALLS_H
 # define SYSCALLS_H
 
-/*
- *	One failure convention for all three backends: a syscall that
- *	failed returns -1, and nothing else is negative. glibc's syscall()
- *	already reports that way, so the libc backend is the shape the
- *	other two conform to - the raw ones fold the kernel's -errno down
- *	to -1 with ft_tern at the return. Callers test "< 0", full stop;
- *	there is no code left to compare against.
- *
- *	The mmap family is deliberately outside this. It returns an
- *	address, and an address is allowed to look negative, so its errors
- *	still arrive as the kernel's -errno and have to be recognised by
- *	the band they fall in: valid codes are [1, 4095] (see Linux
- *	arch/.../include/asm/unistd.h and glibc's MAX_ERRNO), so a return
- *	in [-4095, -1] is a failure and anything else is a real address.
- */
-# define FT_MAX_ERRNO 4095
+# define XFT_MAX_ERRNO 4095
 
 # include "primitives.h"
 # include "types/timing_types.h"
-# include "private/ft_p_syscalls.h"
 # include "types/signal_types.h"
-# include "linux.h"
 # include "types/io_types.h"
 
-# ifdef FT_REQUIRE_LIBC
+# if defined(XFT_REQUIRE_LIBC) && !defined(_WIN64)
 
 #  include <sys/stat.h>
-#  include <sys/syscall.h>
 #  include <sys/mman.h>
 #  include <fcntl.h>
 #  include <unistd.h>
-#  include <syscall.h>
 
 typedef struct stat		t_stat;
 typedef struct flock	t_flock;
 
 # else
+
+#  ifndef PROT_NONE
+#   define PROT_NONE                  0x0
+#  endif
+#  ifndef PROT_READ
+#   define PROT_READ                  0x1
+#  endif
+#  ifndef PROT_WRITE
+#   define PROT_WRITE                 0x2
+#  endif
+#  ifndef PROT_EXEC
+#   define PROT_EXEC                  0x4
+#  endif
+#  ifndef MAP_PRIVATE
+#   define MAP_PRIVATE                0x02
+#  endif
+#  ifndef MAP_ANONYMOUS
+#   define MAP_ANONYMOUS              0x20
+#  endif
+#  ifndef MAP_FAILED
+#   define MAP_FAILED                 -1
+#  endif
+#  ifndef MREMAP_MAYMOVE
+#   define MREMAP_MAYMOVE             1
+#  endif
+#  ifndef F_RDLCK
+#   define F_RDLCK                    0
+#  endif
+#  ifndef F_WRLCK
+#   define F_WRLCK                    1
+#  endif
+#  ifndef F_UNLCK
+#   define F_UNLCK                    2
+#  endif
+#  ifndef F_SETLK
+#   define F_SETLK                    6
+#  endif
+#  ifndef F_SETLKW
+#   define F_SETLKW                   7
+#  endif
+#  ifndef SEEK_SET
+#   define SEEK_SET                   0
+#  endif
+#  ifndef O_RDONLY
+#   define O_RDONLY                   0
+#  endif
+#  ifndef O_WRONLY
+#   define O_WRONLY                   1
+#  endif
+#  ifndef O_RDWR
+#   define O_RDWR                     2
+#  endif
+#  ifndef O_ACCMODE
+#   define O_ACCMODE                  3
+#  endif
+#  ifndef O_CREAT
+#   define O_CREAT                    0100
+#  endif
+#  ifndef O_EXCL
+#   define O_EXCL                     0200
+#  endif
+#  ifndef O_TRUNC
+#   define O_TRUNC                    01000
+#  endif
+#  ifndef O_APPEND
+#   define O_APPEND                   02000
+#  endif
+#  ifndef STDIN_FILENO
+#   define STDIN_FILENO               0
+#  endif
+#  ifndef STDOUT_FILENO
+#   define STDOUT_FILENO              1
+#  endif
+#  ifndef STDERR_FILENO
+#   define STDERR_FILENO              2
+#  endif
 
 typedef t_u64			t_dev;
 typedef t_u64			t_ino;
@@ -67,15 +124,6 @@ typedef struct s_flock
 	t_i64	l_len;
 	t_i32	l_pid;
 }	t_flock;
-
-/*
- *	the raw kernel struct stat is not the same shape on every
- *	architecture (field order/widths/padding differ), so each arch
- *	gets its own bit-for-bit layout instead of one shared "portable"
- *	guess. Getting this wrong either corrupts st_mode/st_nlink/st_uid
- *	(misaligned fields) or has the stat/newfstatat syscall write past
- *	the end of the struct (missing kernel reserved padding).
- */
 
 #  if defined(__x86_64__)
 
@@ -143,105 +191,82 @@ typedef struct s_clone_arg
 	t_uptr	tls;
 }	t_clone_arg;
 
-/*
- *	The wait status word the kernel writes is encoded the same way with
- *	or without a libc, so these are plain macros rather than a backend:
- *	a normal exit leaves the low 7 bits clear and the status in bits
- *	8..15, a signalled death leaves the signal in the low 7.
- */
+# define XFT_WNOHANG				1
+# define XFT_WUNTRACED			2
 
-# define FT_WNOHANG				1
-# define FT_WUNTRACED			2
+# define XFT_MKDIR_0755			0755
 
-/*
- *	Directory permissions for a build tree: rwxr-xr-x, umask applies.
- */
-
-# define FT_MKDIR_0755			0755
-
-t_any		ft_mmap(t_size size, long prot, long flags_extra);
-t_any		ft_fmap(t_size size, int fd);
-t_result	ft_map_failed(t_cany ptr)\
+t_any		xft_mmap(t_size size, t_u64a prot, t_u64a flags_extra);
+t_any		xft_fmap(t_size size, int fd);
+t_result	xft_map_failed(t_cany ptr)\
 			__attribute__((const));
-void		ft_munmap(t_any __restrict__ const mem, t_size size)\
-			__attribute__((nonnull(1)));
-t_i32a		ft_fcntl(t_u32a fd, t_u32a cmd,\
+void		xft_munmap(t_any __restrict__ const mem, t_size size)\
+			__attribute__((__nonnull__(1)));
+t_i32a		xft_fcntl(t_u32a fd, t_u32a cmd,\
 			const t_flock *__restrict__ const arg)\
-			__attribute__((nonnull(3)));
-t_i32a		ft_lockf(int fd);
-t_i32a		ft_unlockf(int fd);
-int			ft_ioctl(int fd, t_u64a request, t_u64a arg);
-int			ft_open(const char *__restrict__ path, int flags)\
+			__attribute__((__nonnull__(3)));
+t_i32a		xft_lockf(int fd);
+t_i32a		xft_unlockf(int fd);
+int			xft_open(const char *__restrict__ path, int flags)\
 			__attribute__((__nonnull__(1)));
-int			ft_close(int fd);
-int			ft_stat(const char *__restrict__ path, t_stat *statbuf)\
-			__attribute__((__nonnull__(1)));
-int			ft_mkdir(const char *__restrict__ path, t_u32a mode)\
+int			xft_close(int fd);
+int			xft_stat(const char *__restrict__ path, t_stat *statbuf)\
+			__attribute__((__nonnull__(1, 2)));
+int			xft_mkdir(const char *__restrict__ path, t_u32a mode)\
 			__attribute__((__nonnull__(1)));
 
-t_any		ft_mremap(t_size size, t_size new_size,\
-			t_any addr, long flags_extra)\
+t_any		xft_mremap(t_size size, t_size new_size,\
+			t_any addr, t_u64a flags_extra)\
 			__attribute__((__nonnull__(3)));
 
-t_ssize		ft_write(int fd, t_u8 *restrict const buffer, t_size len)\
+t_ssize		xft_write(int fd, t_u8 *restrict const buffer, t_size len)\
 			__attribute__((__nonnull__(2)));
 
-t_ssize		ft_read(int fd, t_u8 *restrict const buffer, t_size len)\
+t_ssize		xft_read(int fd, t_u8 *restrict const buffer, t_size len)\
 			__attribute__((__nonnull__(2)));
 
-void		ft_exit(int status)\
+void		xft_exit(int status)\
 			__attribute__((__cold__, __noreturn__));
 
-t_i64a		ft_clock_gettime(t_timespec *__restrict__ const ts)\
+t_i64a		xft_clock_gettime(t_timespec *__restrict__ const ts)\
 			__attribute__((__nonnull__(1)));
 
-int			ft_perf_event_open(const t_perf_event_attr *restrict attr,\
-				int group_fd)\
-				__attribute__((__nonnull__(1)));
+int			xft_getpid(void);
 
-int			ft_getpid(void);
-
-int			ft_sched_setaffinity(int pid, t_size cpusetsize,\
+int			xft_sched_setaffinity(int pid, t_size cpusetsize,\
 				const t_u64a *restrict const mask)\
 				__attribute__((__nonnull__(3)));
 
-int			ft_sched_getaffinity(t_i32a pid, t_size cpusetsize,\
+int			xft_sched_getaffinity(t_i32a pid, t_size cpusetsize,\
 				const t_u64a *__restrict__ mask)\
 				__attribute__((__nonnull__(3)));
 
-t_ssize		ft_writev(int fd, t_iovec *buffers, t_size len)\
+t_result	xft_get_cpu_count(t_size *count)\
+				__attribute__((__nonnull__(1)));
+
+t_ssize		xft_writev(int fd, t_iovec *buffers, t_size len)\
 			__attribute__((__nonnull__(2)));
 
-long		ft_futex_wait(t_u32a *__restrict__ const uaddr, t_u32a val)\
+t_i64a		xft_futex_wait(t_u32a *__restrict__ const uaddr, t_u32a val)\
 			__attribute__((__nonnull__(1)));
 
-long		ft_futex_wake(t_u32a *__restrict__ const uaddr, t_u32a val)\
+t_i64a		xft_futex_wake(t_u32a *__restrict__ const uaddr, t_u32a val)\
 			__attribute__((__nonnull__(1)));
 
-int			ft_mprotect(t_any addr, t_size size, int prot)\
+int			xft_mprotect(t_any addr, t_size size, int prot)\
 			__attribute__((__nonnull__(1)));
 
-int			ft_set_tid_address(t_any address);
+int			xft_set_tid_address(t_any address);
 
-int			ft_sigprocmask(t_u32a flags, t_sigset *__restrict__ const set,\
+int			xft_sigprocmask(t_u32a flags, t_sigset *__restrict__ const set,\
 			t_sigset *__restrict__ const oldest);
 
-t_i32		ft_clone(const t_clone_arg *__restrict__ const args)\
+t_i32		xft_clone(const t_clone_arg *__restrict__ const args)\
 			__attribute__((__nonnull__(1)));
 
-t_i32		ft_fork(void);
+t_i32		xft_fork(void);
 
-int			ft_execve(const char *__restrict__ path,\
-			char *const *argv, char *const *envp)\
-			__attribute__((__nonnull__(1, 2)));
-
-/*
- *	rusage is left as t_any: the struct is arch-shaped like t_stat and
- *	nothing here needs it yet, so callers pass nullptr and read the
- *	status word through the FT_W* macros above.
- */
-
-t_i32		ft_wait4(t_i32 pid, t_i32a *status, t_i32 options,\
+t_i32		xft_wait4(t_i32 pid, t_i32a *status, t_i32 options,\
 			t_any rusage);
 
 #endif

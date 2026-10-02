@@ -25,14 +25,14 @@ void	test_memmove_backward(void)
 		b[i] = (char)(i & 0xFF);
 		i++;
 	}
-	ft_memmove(a + 10, a + 3, 200);
+	xft_memmove(a + 10, a + 3, 200);
 	memmove(b + 10, b + 3, 200);
-	ft_pin_invariant(memcmp(a, b, 512) == 0);
+	xft_pin_invariant(memcmp(a, b, 512) == 0);
 }
 
 void	test_memmove(t_test *t)
 {
-	ft_test_print(t, "Testing ft_memmove...\n");
+	xft_test_print(t, "Testing xft_memmove...\n");
 	test_memmove_backward();
-	ft_test_print(t, "  ft_memmove: OK\n");
+	xft_test_print(t, "  xft_memmove: OK\n");
 }

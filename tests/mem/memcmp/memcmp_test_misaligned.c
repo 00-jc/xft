@@ -19,12 +19,12 @@ void	test_memcmp_misaligned(void)
 
 	memset(buf, 'A', 128);
 	memset(ref, 'A', 128);
-	ft_pin_invariant(ft_memcmp(buf + 1, ref + 1, 50)
+	xft_pin_invariant(xft_memcmp(buf + 1, ref + 1, 50)
 		== memcmp(buf + 1, ref + 1, 50));
-	ft_pin_invariant(ft_memcmp(buf + 3, ref + 7, 30)
+	xft_pin_invariant(xft_memcmp(buf + 3, ref + 7, 30)
 		== memcmp(buf + 3, ref + 7, 30));
 	buf[10] = 'B';
 	ref[10] = 'C';
-	ft_pin_invariant((ft_memcmp(buf + 1, ref + 1, 20) > 0)
+	xft_pin_invariant((xft_memcmp(buf + 1, ref + 1, 20) > 0)
 		== (memcmp(buf + 1, ref + 1, 20) > 0));
 }

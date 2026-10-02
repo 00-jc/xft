@@ -18,17 +18,17 @@ void	test_gpa_vtable_realloc(t_allocator *alloc, t_buffer buf)
 	t_buffer	rbuf;
 
 	rbuf = alloc->vtable.realloc(alloc->allocator, buf, 512, 8);
-	ft_pin_invariant_msg(rbuf.mem != nullptr,
-		ft_fatptr((t_u8 *)"gpa: realloc non-null",
+	xft_pin_invariant_msg(rbuf.mem != nullptr,
+		xft_fatptr((t_u8 *)"gpa: realloc non-null",
 			sizeof("gpa: realloc non-null") - 1));
-	ft_pin_invariant_msg(rbuf.size >= 512,
-		ft_fatptr((t_u8 *)"gpa: realloc size",
+	xft_pin_invariant_msg(rbuf.size >= 512,
+		xft_fatptr((t_u8 *)"gpa: realloc size",
 			sizeof("gpa: realloc size") - 1));
-	ft_pin_invariant_msg(rbuf.mem[0] == 0xCA,
-		ft_fatptr((t_u8 *)"gpa: realloc data lo",
+	xft_pin_invariant_msg(rbuf.mem[0] == 0xCA,
+		xft_fatptr((t_u8 *)"gpa: realloc data lo",
 			sizeof("gpa: realloc data lo") - 1));
-	ft_pin_invariant_msg(rbuf.mem[63] == 0xFE,
-		ft_fatptr((t_u8 *)"gpa: realloc data hi",
+	xft_pin_invariant_msg(rbuf.mem[63] == 0xFE,
+		xft_fatptr((t_u8 *)"gpa: realloc data hi",
 			sizeof("gpa: realloc data hi") - 1));
 	alloc->vtable.free(alloc->allocator, rbuf);
 	alloc->vtable.destroy(alloc->allocator);

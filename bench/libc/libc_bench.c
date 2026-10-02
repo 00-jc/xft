@@ -14,14 +14,14 @@
 #include "libc_bench.h"
 
 __attribute__((__always_inline__))
-inline void	ft_main(const t_any *__restrict__ const sp)
+inline void	xft_main(const t_any *__restrict__ const sp)
 {
 	t_tailor	t;
 
-	((void)sp, ft_bind_process_to_cpu(0));
-	if (!ft_tailor_new(&t, 2, 2000))
-		ft_exit(1);
-	ft_libc_bench_memcpy(&t);
-	ft_libc_bench_strlen(&t);
-	(ft_tailor_destroy(&t), ft_exit(0));
+	((void)sp, xft_bind_process_to_cpu(0));
+	if (!xft_tailor_new(&t, 2, 2000))
+		xft_exit(1);
+	xft_libc_bench_memcpy(&t);
+	xft_libc_bench_strlen(&t);
+	(xft_tailor_destroy(&t), xft_exit(0));
 }

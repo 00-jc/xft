@@ -15,7 +15,7 @@
 
 # include "primitives.h"
 
-# if defined(FT_REQUIRE_LIBC)
+# if defined(XFT_REQUIRE_LIBC) && !defined(_WIN64)
 
 #  include <time.h>
 

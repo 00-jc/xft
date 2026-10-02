@@ -17,13 +17,13 @@ void	test_map(t_test *t)
 	t_gpa		gpa;
 	t_allocator	a;
 
-	gpa = ft_gpa();
-	a = ft_gpa_allocator(&gpa);
-	ft_test_print(t, "Testing t_map (swissmap)...\n");
+	gpa = xft_gpa();
+	a = xft_gpa_allocator(&gpa);
+	xft_test_print(t, "Testing t_map (swissmap)...\n");
 	test_map_insert_lookup(a);
 	test_map_delete(a);
 	test_map_overwrite(a);
 	test_map_many(a);
-	ft_gpa_destroy(&gpa);
-	ft_test_print(t, "  t_map: OK\n");
+	xft_gpa_destroy(&gpa);
+	xft_test_print(t, "  t_map: OK\n");
 }

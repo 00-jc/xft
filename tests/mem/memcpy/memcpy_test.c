@@ -14,9 +14,9 @@
 
 void	test_memcpy(t_test *t)
 {
-	ft_test_print(t, "Testing ft_memcpy...\n");
+	xft_test_print(t, "Testing xft_memcpy...\n");
 	test_memcpy_basic();
 	test_memcpy_misaligned();
 	test_memcpy_large();
-	ft_test_print(t, "  ft_memcpy: OK\n");
+	xft_test_print(t, "  xft_memcpy: OK\n");
 }

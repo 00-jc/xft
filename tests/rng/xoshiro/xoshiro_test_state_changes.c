@@ -19,14 +19,14 @@ void	test_xoshiro_state_changes(void)
 	int			i;
 	int			same;
 
-	ft_xoshiro_init(x);
+	xft_xoshiro_init(x);
 	i = 0;
 	while (i < 4)
 	{
 		copy[i] = x[i];
 		i++;
 	}
-	ft_xoshiro256ss(x);
+	xft_xoshiro256ss(x);
 	same = 1;
 	i = 0;
 	while (i < 4)
@@ -35,6 +35,6 @@ void	test_xoshiro_state_changes(void)
 			same = 0;
 		i++;
 	}
-	ft_pin_invariant_msg(same == 0,
-		ft_fatptr((t_u8 *)"same != 0", sizeof("same != 0") - 1));
+	xft_pin_invariant_msg(same == 0,
+		xft_fatptr((t_u8 *)"same != 0", sizeof("same != 0") - 1));
 }

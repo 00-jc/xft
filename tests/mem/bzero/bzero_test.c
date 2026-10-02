@@ -19,20 +19,20 @@ void	test_bzero_large(void)
 
 	memset(a, 'A', 4096);
 	memset(b, 'A', 4096);
-	ft_bzero(a, 4096);
+	xft_bzero(a, 4096);
 	memset(b, 0, 4096);
-	ft_pin_invariant(memcmp(a, b, 4096) == 0);
+	xft_pin_invariant(memcmp(a, b, 4096) == 0);
 	memset(a, 'B', 4096);
-	ft_bzero(a + 13, 3000);
-	ft_pin_invariant(a[12] == 'B');
-	ft_pin_invariant(a[13] == 0);
-	ft_pin_invariant(a[3012] == 0);
-	ft_pin_invariant(a[3013] == 'B');
+	xft_bzero(a + 13, 3000);
+	xft_pin_invariant(a[12] == 'B');
+	xft_pin_invariant(a[13] == 0);
+	xft_pin_invariant(a[3012] == 0);
+	xft_pin_invariant(a[3013] == 'B');
 }
 
 void	test_bzero(t_test *t)
 {
-	ft_test_print(t, "Testing ft_bzero...\n");
+	xft_test_print(t, "Testing xft_bzero...\n");
 	test_bzero_large();
-	ft_test_print(t, "  ft_bzero: OK\n");
+	xft_test_print(t, "  xft_bzero: OK\n");
 }

@@ -29,23 +29,23 @@ static void	fuzz_vec_case(t_fuzzer *fz, t_allocator alloc)
 	t_size		n;
 	int			last;
 
-	b = ft_fuzz_get_rand(fz);
+	b = xft_fuzz_get_rand(fz);
 	n = fuzz_vec_len(b);
-	v = ft_vec(alloc, 1, sizeof(int));
-	ft_pin_invariant(v.buf.mem != nullptr);
-	ft_pin_invariant(ft_vec_extend(alloc, &v,
+	v = xft_vec(alloc, 1, sizeof(int));
+	xft_pin_invariant(v.buf.mem != nullptr);
+	xft_pin_invariant(xft_vec_extend(alloc, &v,
 			(t_buffer){.mem = b->mem, .size = n * sizeof(int)}));
-	ft_pin_invariant(ft_vec_len(&v, sizeof(int)) == n);
+	xft_pin_invariant(xft_vec_len(&v, sizeof(int)) == n);
 	if (n != 0)
 	{
-		ft_memcpy(&last, b->mem + (n - 1) * sizeof(int), sizeof(int));
-		ft_pin_invariant(ft_vec_popmv(&v, &last, sizeof(int)));
-		ft_pin_invariant(ft_vec_len(&v, sizeof(int)) == n - 1);
+		xft_memcpy(&last, b->mem + (n - 1) * sizeof(int), sizeof(int));
+		xft_pin_invariant(xft_vec_popmv(&v, &last, sizeof(int)));
+		xft_pin_invariant(xft_vec_len(&v, sizeof(int)) == n - 1);
 	}
-	ft_vec_destroy(alloc, &v);
+	xft_vec_destroy(alloc, &v);
 }
 
-void	ft_main(const t_any *__restrict__ const sp)
+void	xft_main(const t_any *__restrict__ const sp)
 {
 	t_fuzzer	fz;
 	t_allocator	alloc;
@@ -53,14 +53,14 @@ void	ft_main(const t_any *__restrict__ const sp)
 	t_size		n;
 
 	(void)sp;
-	fz = ft_fuzzer_new(ft_new_arena_alloc());
-	ft_pin_invariant(fz.arena.current != nullptr);
-	ft_pin_invariant(ft_fuzzer_add_rand(&fz));
-	alloc = ft_new_page_alloc();
+	fz = xft_fuzzer_new(xft_new_arena_alloc());
+	xft_pin_invariant(fz.arena.current != nullptr);
+	xft_pin_invariant(xft_fuzzer_add_rand(&fz));
+	alloc = xft_new_page_alloc();
 	n = fz.buf_n * 2;
 	i = 0;
 	while (i++ < n)
 		fuzz_vec_case(&fz, alloc);
-	ft_fuzzer_destroy(&fz);
-	ft_exit(0);
+	xft_fuzzer_destroy(&fz);
+	xft_exit(0);
 }

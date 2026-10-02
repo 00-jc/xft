@@ -18,16 +18,16 @@ void	test_bulk_same_size(void)
 	t_gpa		gpa;
 	int			i;
 
-	gpa = ft_gpa();
-	ft_pin_invariant_msg(gpa.slab != nullptr,
-		ft_fatptr((t_u8 *)"gpa init", sizeof("gpa init") - 1));
+	gpa = xft_gpa();
+	xft_pin_invariant_msg(gpa.slab != nullptr,
+		xft_fatptr((t_u8 *)"gpa init", sizeof("gpa init") - 1));
 	test_bulk_same_size_fill(&gpa, bufs);
 	i = -1;
 	while (++i < BULK_N)
-		ft_pin_invariant_msg(*(t_u64 *)bufs[i].mem == (t_u64)i,
-			ft_fatptr((t_u8 *)"bulk rw", sizeof("bulk rw") - 1));
+		xft_pin_invariant_msg(*(t_u64 *)bufs[i].mem == (t_u64)i,
+			xft_fatptr((t_u8 *)"bulk rw", sizeof("bulk rw") - 1));
 	i = BULK_N;
 	while (--i >= 0)
-		ft_gpa_free(&gpa, bufs[i]);
-	ft_gpa_destroy(&gpa);
+		xft_gpa_free(&gpa, bufs[i]);
+	xft_gpa_destroy(&gpa);
 }

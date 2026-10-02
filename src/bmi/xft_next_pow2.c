@@ -1,0 +1,25 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   xft_next_pow2.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/06/29 23:39:14 by jaicastr          #+#    #+#             */
+/*   Updated: 2026/06/29 23:39:20 by jaicastr         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "bmi.h"
+
+__attribute__((const, __always_inline__, __hot__, __used__))
+inline t_size	xft_next_pow2(t_size qword)
+{
+	return (1ULL << (64ULL - xft_memclz_u64(qword - 1)));
+}
+
+__attribute__((const, __always_inline__, __hot__, __used__))
+inline t_size	xft_last_pow2(t_size qword)
+{
+	return (1ULL << (63ULL - xft_memclz_u64(qword)));
+}

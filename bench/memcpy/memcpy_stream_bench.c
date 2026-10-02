@@ -14,30 +14,30 @@
 #include "mem_bench.h"
 
 __attribute__((__always_inline__))
-inline void	ft_main(const t_any *__restrict__ const sp)
+inline void	xft_main(const t_any *__restrict__ const sp)
 {
 	static t_size			bufsizes[] = {
-		FT_LLC + 1, FT_LLC + 1,
-		FT_LLC * 2, FT_LLC * 2,
-		FT_LLC + 1, FT_LLC + 1,
-		FT_LLC * 2, FT_LLC * 2,
+		XFT_LLC + 1, XFT_LLC + 1,
+		XFT_LLC * 2, XFT_LLC * 2,
+		XFT_LLC + 1, XFT_LLC + 1,
+		XFT_LLC * 2, XFT_LLC * 2,
 	};
 	static t_u8				bufalign[] = {
 		1, 1, 1, 1,
 		64, 64, 64, 64,
 	};
 	static t_tailor_bench	benches[] = {
-	{ft_memcpy_test_stream_1x_unaligned, (t_blk8r)"memcpy_stream_1x_unaligned"},
-	{ft_memcpy_test_stream_2x_unaligned, (t_blk8r)"memcpy_stream_2x_unaligned"},
-	{ft_memcpy_test_stream_1x_aligned, (t_blk8r)"memcpy_stream_1x_aligned"},
-	{ft_memcpy_test_stream_2x_aligned, (t_blk8r)"memcpy_stream_2x_aligned"},
+	{xft_memcpy_test_stream_1x_unaligned, (t_blk8r)"memcpy_stream_1x_unalign"},
+	{xft_memcpy_test_stream_2x_unaligned, (t_blk8r)"memcpy_stream_2x_unalign"},
+	{xft_memcpy_test_stream_1x_aligned, (t_blk8r)"memcpy_stream_1x_aligned"},
+	{xft_memcpy_test_stream_2x_aligned, (t_blk8r)"memcpy_stream_2x_aligned"},
 	};
 	t_tailor				t;
 
-	((void)sp, ft_bind_process_to_cpu(0));
-	if (!ft_tailor_new(&t, 2, 2000))
-		ft_exit(1);
-	if (!ft_tailor_buffers(&t, bufsizes, bufalign, 8))
-		ft_exit(1);
-	((void)ft_tailor_bench(&t, benches, 4), ft_tailor_destroy(&t), ft_exit(0));
+	((void)sp, xft_bind_process_to_cpu(0));
+	if (!xft_tailor_new(&t, 2, 2000)
+		|| !xft_tailor_buffers(&t, bufsizes, bufalign, 8))
+		xft_exit(1);
+	((void)xft_tailor_bench(&t, benches, 4),
+		xft_tailor_destroy(&t), xft_exit(0));
 }

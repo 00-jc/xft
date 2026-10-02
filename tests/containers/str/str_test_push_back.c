@@ -16,12 +16,12 @@ void	test_str_push_back(t_allocator a)
 {
 	t_str	s;
 
-	s = ft_str(a, 1);
-	ft_pin_invariant(ft_str_push_back(a, &s, 'h'));
-	ft_pin_invariant(ft_str_push_back(a, &s, 'i'));
-	ft_pin_invariant(s.size == 2);
-	ft_pin_invariant(s.mem[0] == 'h');
-	ft_pin_invariant(s.mem[1] == 'i');
-	ft_pin_invariant(s.mem[2] == 0);
-	ft_str_destroy(a, &s);
+	s = xft_str(a, 1);
+	xft_pin_invariant(xft_str_push_back(a, &s, 'h'));
+	xft_pin_invariant(xft_str_push_back(a, &s, 'i'));
+	xft_pin_invariant(s.size == 2);
+	xft_pin_invariant(s.mem[0] == 'h');
+	xft_pin_invariant(s.mem[1] == 'i');
+	xft_pin_invariant(s.mem[2] == 0);
+	xft_str_destroy(a, &s);
 }

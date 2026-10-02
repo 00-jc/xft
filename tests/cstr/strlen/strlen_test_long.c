@@ -24,8 +24,8 @@ void	test_strlen_long(void)
 		i++;
 	}
 	buf[255] = '\0';
-	ft_pin_invariant(ft_strlen(buf) == strlen(buf));
-	ft_pin_invariant(ft_strlen(buf + 1) == strlen(buf + 1));
-	ft_pin_invariant(ft_strlen(buf + 10) == strlen(buf + 10));
-	ft_pin_invariant(ft_strlen(buf + 63) == strlen(buf + 63));
+	xft_pin_invariant(xft_strlen(buf) == strlen(buf));
+	xft_pin_invariant(xft_strlen(buf + 1) == strlen(buf + 1));
+	xft_pin_invariant(xft_strlen(buf + 10) == strlen(buf + 10));
+	xft_pin_invariant(xft_strlen(buf + 63) == strlen(buf + 63));
 }

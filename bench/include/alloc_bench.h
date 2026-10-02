@@ -16,23 +16,23 @@
 # include "alloc.h"
 # include "rt.h"
 
-t_gpa	*ft_get_bench_gpa(void);
-t_arena	*ft_get_bench_arena(void);
+t_gpa	*xft_get_bench_gpa(void);
+t_arena	*xft_get_bench_arena(void);
 
-void	ft_gpa_bench_8(t_any ptr);
-void	ft_gpa_bench_64(t_any ptr);
-void	ft_gpa_bench_512(t_any ptr);
-void	ft_gpa_bench_8k(t_any ptr);
-void	ft_gpa_bench_varied(t_any ptr);
-void	ft_gpa_bench_random(t_any ptr);
-void	ft_gpa_bulk_bench_64(t_any ptr);
-void	ft_gpa_bulk_bench_512(t_any ptr);
-void	ft_gpa_bulk_bench_mixed(t_any ptr);
+void	xft_gpa_bench_8(t_any ptr);
+void	xft_gpa_bench_64(t_any ptr);
+void	xft_gpa_bench_512(t_any ptr);
+void	xft_gpa_bench_8k(t_any ptr);
+void	xft_gpa_bench_varied(t_any ptr);
+void	xft_gpa_bench_random(t_any ptr);
+void	xft_gpa_bulk_bench_64(t_any ptr);
+void	xft_gpa_bulk_bench_512(t_any ptr);
+void	xft_gpa_bulk_bench_mixed(t_any ptr);
 
-void	ft_arena_bench_8(t_any ptr);
-void	ft_arena_bench_64(t_any ptr);
-void	ft_arena_bench_512(t_any ptr);
-void	ft_arena_bench_varied(t_any ptr);
-void	ft_arena_bench_random(t_any ptr);
+void	xft_arena_bench_8(t_any ptr);
+void	xft_arena_bench_64(t_any ptr);
+void	xft_arena_bench_512(t_any ptr);
+void	xft_arena_bench_varied(t_any ptr);
+void	xft_arena_bench_random(t_any ptr);
 
 #endif

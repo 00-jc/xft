@@ -14,11 +14,11 @@
 
 void	test_bswap(void)
 {
-	ft_pin_invariant(ft_bswap16(0x0102) == 0x0201);
-	ft_pin_invariant(ft_bswap32(0x01020304) == 0x04030201);
-	ft_pin_invariant(ft_bswap64(0x0102030405060708ULL)
+	xft_pin_invariant(xft_bswap16(0x0102) == 0x0201);
+	xft_pin_invariant(xft_bswap32(0x01020304) == 0x04030201);
+	xft_pin_invariant(xft_bswap64(0x0102030405060708ULL)
 		== 0x0807060504030201ULL);
-	ft_pin_invariant(ft_bswap16(0) == 0);
-	ft_pin_invariant(ft_bswap32(0) == 0);
-	ft_pin_invariant(ft_bswap64(0) == 0);
+	xft_pin_invariant(xft_bswap16(0) == 0);
+	xft_pin_invariant(xft_bswap32(0) == 0);
+	xft_pin_invariant(xft_bswap64(0) == 0);
 }

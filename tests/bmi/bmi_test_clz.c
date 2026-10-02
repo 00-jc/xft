@@ -14,12 +14,12 @@
 
 void	test_clz(void)
 {
-	ft_pin_invariant(ft_memclz_u32(1) == 31);
-	ft_pin_invariant(ft_memclz_u32(2) == 30);
-	ft_pin_invariant(ft_memclz_u32(0x80000000U) == 0);
-	ft_pin_invariant(ft_memclz_u32(0xFF) == 24);
-	ft_pin_invariant(ft_memclz_u64(1) == 63);
-	ft_pin_invariant(ft_memclz_u64(0x8000000000000000ULL) == 0);
-	ft_pin_invariant(ft_memclz_u16(1) == 15);
-	ft_pin_invariant(ft_memclz_u16(0x8000) == 0);
+	xft_pin_invariant(xft_memclz_u32(1) == 31);
+	xft_pin_invariant(xft_memclz_u32(2) == 30);
+	xft_pin_invariant(xft_memclz_u32(0x80000000U) == 0);
+	xft_pin_invariant(xft_memclz_u32(0xFF) == 24);
+	xft_pin_invariant(xft_memclz_u64(1) == 63);
+	xft_pin_invariant(xft_memclz_u64(0x8000000000000000ULL) == 0);
+	xft_pin_invariant(xft_memclz_u16(1) == 15);
+	xft_pin_invariant(xft_memclz_u16(0x8000) == 0);
 }

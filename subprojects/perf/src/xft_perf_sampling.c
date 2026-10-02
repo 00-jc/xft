@@ -1,0 +1,74 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   xft_perf_sampling.c                                 :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/06/29 23:39:14 by jaicastr          #+#    #+#             */
+/*   Updated: 2026/06/29 23:39:20 by jaicastr         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "xft_p_perf.h"
+
+__attribute__((__nonnull__(1, 2)))
+void	xft_perf_start_sample(t_perf_counters c, t_perf_sample *t)
+{
+	xft_perf_counters_reset(c);
+	t->ns = xft_get_nanos();
+	xft_perf_counters_start(c);
+}
+
+__attribute__((__nonnull__(1, 2), __always_inline__))
+static inline t_result	xft__get_sample_plexed(t_perf_counters c, t_u64 *v)
+{
+	t_size			i;
+	t_perf_read		t;
+	t_u8			adjust;
+	t_f64			scale;
+
+	i = 0;
+	if (__builtin_expect(xft_read((int)c[i],
+				(t_u8 *)&t, sizeof(t)) != sizeof(t)
+			|| t.running == 0, 0))
+		return (KO);
+	adjust = t.running != t.enabled;
+	if (adjust)
+	{
+		scale = (t_f64)t.enabled / (t_f64)t.running;
+		while (i < t.nr)
+		{
+			v[i] = (t_u64)((t_f64)t.val[i] * scale);
+			++i;
+		}
+	}
+	else
+		xft_memcpy(v, t.val, sizeof(t_u64) * (SW_COUNTERS_N + HW_COUNTERS_N));
+	return (OK);
+}
+
+__attribute__((__nonnull__(2, 3)))
+t_result	xft_perf_collect_sample(t_size n,
+	t_perf_counters c, t_perf_sample *s)
+{
+	t_u64a	v[SW_COUNTERS_N + HW_COUNTERS_N];
+	t_u64a	t;
+
+	xft_perf_counters_stop(c);
+	t = xft_get_nanos();
+	xft_memset(v, 0, (SW_COUNTERS_N + HW_COUNTERS_N) * sizeof(t_u64a));
+	if (__builtin_expect(xft__get_sample_plexed(c, v) == KO, 0))
+		return (KO);
+	s->n = n;
+	s->ns = t - s->ns;
+	s->alignment_faults = v[1];
+	s->page_faults = v[2];
+	s->cycles = v[3];
+	s->instr = v[4];
+	s->cache_ll = v[5];
+	s->cache_miss = v[6];
+	s->branches = v[7];
+	s->branch_miss = v[8];
+	return (OK);
+}

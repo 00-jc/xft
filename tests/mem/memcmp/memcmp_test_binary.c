@@ -29,7 +29,7 @@ void	test_memcmp_binary(void)
 	memcpy(d, a, 5);
 	c[2] = 0x81;
 	d[1] = 0xFE;
-	ft_pin_invariant(ft_memcmp(a, b, 5) == 0);
-	ft_pin_invariant((ft_memcmp(a, c, 5) < 0) == (memcmp(a, c, 5) < 0));
-	ft_pin_invariant((ft_memcmp(a, d, 5) > 0) == (memcmp(a, d, 5) > 0));
+	xft_pin_invariant(xft_memcmp(a, b, 5) == 0);
+	xft_pin_invariant((xft_memcmp(a, c, 5) < 0) == (memcmp(a, c, 5) < 0));
+	xft_pin_invariant((xft_memcmp(a, d, 5) > 0) == (memcmp(a, d, 5) > 0));
 }

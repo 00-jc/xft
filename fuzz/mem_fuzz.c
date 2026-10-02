@@ -19,16 +19,16 @@ static void	fuzz_mem_rw(t_fuzzer *fz)
 	t_u8		y[FUZZ_MEM_CAP + 1];
 	t_size		n;
 
-	a = ft_fuzz_get_rand(fz);
+	a = xft_fuzz_get_rand(fz);
 	n = a->size;
-	ft_memcpy(x, a->mem, n);
+	xft_memcpy(x, a->mem, n);
 	memcpy(y, a->mem, n);
 	if (n > 1)
 	{
-		ft_memmove(x + 1, x, n - 1);
+		xft_memmove(x + 1, x, n - 1);
 		memmove(y + 1, y, n - 1);
 	}
-	ft_pin_invariant(!memcmp(x, y, n));
+	xft_pin_invariant(!memcmp(x, y, n));
 }
 
 static void	fuzz_mem_scan(t_fuzzer *fz)
@@ -38,16 +38,16 @@ static void	fuzz_mem_scan(t_fuzzer *fz)
 	t_size		n;
 	t_u8		c;
 
-	a = ft_fuzz_get_rand(fz);
-	b = ft_fuzz_get_rand(fz);
+	a = xft_fuzz_get_rand(fz);
+	b = xft_fuzz_get_rand(fz);
 	n = a->size;
 	if (b->size < n)
 		n = b->size;
 	c = b->mem[0];
-	ft_pin_invariant(ft_memchr(a->mem, c, a->size)
+	xft_pin_invariant(xft_memchr(a->mem, c, a->size)
 		== memchr(a->mem, c, a->size));
-	ft_pin_invariant(((ft_memcmp(a->mem, b->mem, n) > 0)
-			- (ft_memcmp(a->mem, b->mem, n) < 0))
+	xft_pin_invariant(((xft_memcmp(a->mem, b->mem, n) > 0)
+			- (xft_memcmp(a->mem, b->mem, n) < 0))
 		== ((memcmp(a->mem, b->mem, n) > 0)
 			- (memcmp(a->mem, b->mem, n) < 0)));
 }
@@ -58,13 +58,13 @@ static void	fuzz_mem_fill(t_fuzzer *fz)
 	t_u8		x[FUZZ_MEM_CAP];
 	t_u8		c;
 
-	a = ft_fuzz_get_rand(fz);
+	a = xft_fuzz_get_rand(fz);
 	c = a->mem[0];
-	ft_memcpy(x, a->mem, a->size);
-	ft_memset(x, c, a->size);
-	ft_pin_invariant(ft_memchr(x, c, a->size) == x);
-	ft_bzero(x, a->size);
-	ft_pin_invariant(x[0] == 0 && x[a->size - 1] == 0);
+	xft_memcpy(x, a->mem, a->size);
+	xft_memset(x, c, a->size);
+	xft_pin_invariant(xft_memchr(x, c, a->size) == x);
+	xft_bzero(x, a->size);
+	xft_pin_invariant(x[0] == 0 && x[a->size - 1] == 0);
 }
 
 static void	fuzz_strlen_case(t_fuzzer *fz)
@@ -74,29 +74,29 @@ static void	fuzz_strlen_case(t_fuzzer *fz)
 	t_size		i;
 	t_size		n;
 
-	b = ft_fuzz_get_rand(fz);
+	b = xft_fuzz_get_rand(fz);
 	i = 0;
 	while (i < b->size)
 	{
 		x[i] = (b->mem[i] | 1);
 		++i;
 	}
-	n = ft_fuzz_get_rand_u(fz) % (b->size + 1);
+	n = xft_fuzz_get_rand_u(fz) % (b->size + 1);
 	x[n] = 0;
 	x[b->size] = 0;
-	ft_pin_invariant(ft_strlen(x) == strlen(x));
+	xft_pin_invariant(xft_strlen(x) == strlen(x));
 }
 
-void	ft_main(const t_any *__restrict__ const sp)
+void	xft_main(const t_any *__restrict__ const sp)
 {
 	t_fuzzer	fz;
 	t_size		i;
 	t_size		n;
 
 	(void)sp;
-	fz = ft_fuzzer_new(ft_new_arena_alloc());
-	ft_pin_invariant(fz.arena.current != nullptr);
-	ft_pin_invariant(ft_fuzzer_add_rand(&fz));
+	fz = xft_fuzzer_new(xft_new_arena_alloc());
+	xft_pin_invariant(fz.arena.current != nullptr);
+	xft_pin_invariant(xft_fuzzer_add_rand(&fz));
 	n = fz.buf_n * 2;
 	i = 0;
 	while (i++ < n)
@@ -106,6 +106,6 @@ void	ft_main(const t_any *__restrict__ const sp)
 		fuzz_mem_fill(&fz);
 		fuzz_strlen_case(&fz);
 	}
-	ft_fuzzer_destroy(&fz);
-	ft_exit(0);
+	xft_fuzzer_destroy(&fz);
+	xft_exit(0);
 }

@@ -17,8 +17,6 @@
 # include "types/allocators_types.h"
 # include "atomics.h"
 
-/// \brief A single scatter/gather span, mirroring `struct iovec`, used to
-/// pass buffered + overflow data to a writer's `drain` in one call.
 typedef struct s_iovec
 {
 	t_u8		*mem;
@@ -27,22 +25,13 @@ typedef struct s_iovec
 
 union	u_writer;
 
-/// \brief Backend hooks for a `t_writer`. One instance per backend (fs,
-/// raw/in-memory), selected once at construction and shared as a `static
-/// const` table.
 typedef struct s_writer_vtable
 {
-	/// \brief Push out any bytes still sitting in the writer's staging
-	/// buffer. \return `OK`/`KO`.
 	t_result	(*flush)(t_any __restrict__ const writer);
-	/// \brief Push out \p nbufs iovecs directly (bypassing the staging
-	/// buffer), used when a write is larger than the buffer can hold.
-	/// \return `OK`/`KO`.
 	t_result	(*drain)(t_any __restrict__ const writer,\
 					t_iovec * __restrict__ const bufs, t_size nbufs);
 }	t_writer_vtable;
 
-/// \brief Backend state for a file-descriptor-backed writer.
 typedef struct s_fs_writer
 {
 	t_i32											fd;

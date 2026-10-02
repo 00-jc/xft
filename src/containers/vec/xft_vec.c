@@ -1,0 +1,45 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   xft_vec.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/06/29 23:39:14 by jaicastr          #+#    #+#             */
+/*   Updated: 2026/07/02 13:02:52 by jaicastr         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "vec.h"
+
+t_vec	xft_vec(t_allocator allocator, t_size size, t_size type_size)
+{
+	t_buffer	buf;
+	t_size		mul;
+
+	if (allocator.allocator == nullptr
+		|| allocator.vtable.allocate == nullptr)
+		__builtin_unreachable();
+	mul = size * type_size;
+	if (mul == 0 || (mul / size != type_size))
+		return ((t_vec){0});
+	buf = allocator.vtable.allocate(allocator.allocator, mul,
+			xft_next_pow2(mul));
+	if (__builtin_expect(buf.mem == nullptr, 0))
+		return ((t_vec){0});
+	return ((t_vec){
+		.size = 0,
+		.buf = buf,
+	});
+}
+
+__attribute__((__always_inline__, __nonnull__(2), __used__))
+inline void	xft_vec_destroy(t_allocator allocator, t_vec *v)
+{
+	if (allocator.allocator == nullptr
+		|| allocator.vtable.free == nullptr || v->buf.mem == nullptr)
+		__builtin_unreachable();
+	if (v->buf.mem)
+		allocator.vtable.free(allocator.allocator, v->buf);
+	*v = (t_vec){0};
+}

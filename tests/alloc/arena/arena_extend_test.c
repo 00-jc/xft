@@ -14,10 +14,10 @@
 
 void	test_arena_extend(t_test *t)
 {
-	ft_test_print(t, "Testing arena extend...\n");
+	xft_test_print(t, "Testing arena extend...\n");
 	test_extend_trigger();
 	test_extend_rewind_reuse();
 	test_extend_rewind_grow();
 	test_extend_clean_releases();
-	ft_test_print(t, "  arena extend: OK\n");
+	xft_test_print(t, "  arena extend: OK\n");
 }

@@ -20,20 +20,20 @@ void	test_arena_checkpoint(void)
 	t_any				p2;
 	t_any				p3;
 
-	a = ft_new_arena_alloc();
-	p1 = ft_arena_alloc(&a, 64, 8);
-	cp = ft_arena_checkpoint(&a);
-	p2 = ft_arena_alloc(&a, 128, 8);
-	ft_pin_invariant_msg(p2 != nullptr,
-		ft_fatptr((t_u8 *)"after cp", sizeof("after cp") - 1));
-	ft_arena_rewind(&a, cp);
-	p3 = ft_arena_alloc(&a, 128, 8);
-	ft_pin_invariant_msg(p3 == p2,
-		ft_fatptr((t_u8 *)"rewind addr", sizeof("rewind addr") - 1));
+	a = xft_new_arena_alloc();
+	p1 = xft_arena_alloc(&a, 64, 8);
+	cp = xft_arena_checkpoint(&a);
+	p2 = xft_arena_alloc(&a, 128, 8);
+	xft_pin_invariant_msg(p2 != nullptr,
+		xft_fatptr((t_u8 *)"after cp", sizeof("after cp") - 1));
+	xft_arena_rewind(&a, cp);
+	p3 = xft_arena_alloc(&a, 128, 8);
+	xft_pin_invariant_msg(p3 == p2,
+		xft_fatptr((t_u8 *)"rewind addr", sizeof("rewind addr") - 1));
 	(void)p1;
-	ft_arena_rewind_clean(&a, cp);
-	p3 = ft_arena_alloc(&a, 64, 8);
-	ft_pin_invariant_msg(p3 != nullptr,
-		ft_fatptr((t_u8 *)"after clean", sizeof("after clean") - 1));
-	ft_destroy_arena(&a);
+	xft_arena_rewind_clean(&a, cp);
+	p3 = xft_arena_alloc(&a, 64, 8);
+	xft_pin_invariant_msg(p3 != nullptr,
+		xft_fatptr((t_u8 *)"after clean", sizeof("after clean") - 1));
+	xft_destroy_arena(&a);
 }

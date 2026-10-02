@@ -18,9 +18,9 @@
 
 typedef t_u64a		t_xoshiro[4];
 
-void		ft_xoshiro_init(t_xoshiro xoshiro)\
+void		xft_xoshiro_init(t_xoshiro xoshiro)\
 				__attribute__((__nonnull__(1)));
-t_u64a		ft_xoshiro256ss(t_xoshiro xoshiro)\
+t_u64a		xft_xoshiro256ss(t_xoshiro xoshiro)\
 				__attribute__((__nonnull__(1)));
 
 #endif

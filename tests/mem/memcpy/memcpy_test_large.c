@@ -24,8 +24,8 @@ void	test_memcpy_large(void)
 		a[i] = 'A' + (i % 26);
 		i++;
 	}
-	ft_memcpy(b, a, 4096);
-	ft_pin_invariant(memcmp(a, b, 4096) == 0);
-	ft_memcpy(b + 1, a + 3, 2000);
-	ft_pin_invariant(memcmp(b + 1, a + 3, 2000) == 0);
+	xft_memcpy(b, a, 4096);
+	xft_pin_invariant(memcmp(a, b, 4096) == 0);
+	xft_memcpy(b + 1, a + 3, 2000);
+	xft_pin_invariant(memcmp(b + 1, a + 3, 2000) == 0);
 }

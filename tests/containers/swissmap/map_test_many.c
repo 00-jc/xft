@@ -20,18 +20,18 @@ void	test_map_many(t_allocator a)
 	t_u64a		keys[200];
 	int			i;
 
-	ft_xoshiro_init(rng);
-	m = ft_map_new(a);
+	xft_xoshiro_init(rng);
+	m = xft_map_new(a);
 	i = 0;
 	while (i < 200)
 	{
 		vals[i] = i * 7;
-		keys[i] = ft_xoshiro256ss(rng);
-		ft_map_insert(a, &m,
-			ft_fatptr((t_u8 *)&keys[i], sizeof(t_u64a)), (t_u8 *)&vals[i]);
+		keys[i] = xft_xoshiro256ss(rng);
+		xft_map_insert(a, &m,
+			xft_fatptr((t_u8 *)&keys[i], sizeof(t_u64a)), (t_u8 *)&vals[i]);
 		i++;
 	}
-	ft_pin_invariant(*(int *)ft_map_lookup(&m,
-			ft_fatptr((t_u8 *)&keys[i - 1], sizeof(t_u64a))) == 199 * 7);
-	ft_map_destroy(a, &m);
+	xft_pin_invariant(*(int *)xft_map_lookup(&m,
+			xft_fatptr((t_u8 *)&keys[i - 1], sizeof(t_u64a))) == 199 * 7);
+	xft_map_destroy(a, &m);
 }

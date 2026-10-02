@@ -12,7 +12,7 @@
 
 #include "mem.h"
 
-t_size	ft_max_s(t_size x, t_size y)
+t_size	xft_max_s(t_size x, t_size y)
 {
 	t_size	cnd;
 

@@ -1,0 +1,30 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   xft_murmur_helpers.c                                :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/06/29 23:39:14 by jaicastr          #+#    #+#             */
+/*   Updated: 2026/06/29 23:39:20 by jaicastr         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "xft_p_hash.h"
+
+__attribute__((const, __always_inline__, __used__))
+inline t_u64a	rotl(t_u64a x, t_size r)
+{
+	return ((x << r) | (x >> (64 - r)));
+}
+
+__attribute__((const, __always_inline__, __used__))
+inline t_u64a	fmix64(t_u64a k)
+{
+	k ^= k >> 33;
+	k *= 0xFF51AFD7ED558CCDULL;
+	k ^= k >> 33;
+	k *= 0xC4CEB9FE1A85EC53ULL;
+	k ^= k >> 33;
+	return (k);
+}

@@ -12,9 +12,9 @@
 
 #include "xft.h"
 
-__attribute__((nonnull(1)))
-void	ft_main(const t_any *__restrict__ const sp)
+__attribute__((__nonnull__(1)))
+void	xft_main(const t_any *__restrict__ const sp)
 {
 	__asm__("":: "m"(sp) :"memory");
-	ft_exit(0);
+	xft_exit(0);
 }

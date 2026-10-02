@@ -1,0 +1,50 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   xft_fuzzer_initrand.c                               :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/06/29 23:39:14 by jaicastr          #+#    #+#             */
+/*   Updated: 2026/06/29 23:39:20 by jaicastr         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "fuzzer.h"
+
+__attribute__((__nonnull__(1), __always_inline__))
+static inline t_result	xft_fuzzer_init__internal(t_fuzzer *fuzz, t_size i,
+	t_size n, t_arena_checkpoint c)
+{
+	t_size		len;
+	t_size		align;
+
+	while (i < n)
+	{
+		len = 1 + (xft_xoshiro256ss(fuzz->xo) % (1 << 10));
+		align = 1 << (xft_xoshiro256ss(fuzz->xo) & 6);
+		fuzz->buffers[i].mem = xft_arena_alloc(&fuzz->arena, len, align);
+		if (fuzz->buffers[i].mem == nullptr)
+			return (xft_arena_rewind(&fuzz->arena, c), KO);
+		fuzz->buffers[i].size = len;
+		++i;
+	}
+	return (OK);
+}
+
+__attribute__((__nonnull__(1)))
+t_result	xft_fuzzer_add_rand(t_fuzzer *fuzz)
+{
+	t_arena_checkpoint	c;
+	t_size				n;
+	t_size				i;
+
+	n = XFT_FUZZ_MIN_INIT + (xft_xoshiro256ss(fuzz->xo) % XFT_FUZZ_MAX_INIT);
+	c = xft_arena_checkpoint(&fuzz->arena);
+	fuzz->buffers = xft_arena_alloc(&fuzz->arena, sizeof(t_buffer) * n, 64);
+	if (!fuzz->buffers)
+		return (KO);
+	i = fuzz->buf_n;
+	fuzz->buf_n = n;
+	return (xft_fuzzer_init__internal(fuzz, i, n, c));
+}

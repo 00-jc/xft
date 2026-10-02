@@ -18,18 +18,18 @@ void	test_vec_push_get(t_allocator a)
 	int			val;
 	const int	*got;
 
-	v = ft_vec(a, 4, sizeof(int));
-	ft_pin_invariant(v.buf.mem != nullptr);
-	ft_pin_invariant(ft_vec_len(&v, sizeof(int)) == 0);
+	v = xft_vec(a, 4, sizeof(int));
+	xft_pin_invariant(v.buf.mem != nullptr);
+	xft_pin_invariant(xft_vec_len(&v, sizeof(int)) == 0);
 	val = 42;
-	ft_pin_invariant(ft_vec_push_back(a, &v, (t_u8 *)&val, sizeof(int)));
+	xft_pin_invariant(xft_vec_push_back(a, &v, (t_u8 *)&val, sizeof(int)));
 	val = 99;
-	ft_pin_invariant(ft_vec_push_back(a, &v, (t_u8 *)&val, sizeof(int)));
-	ft_pin_invariant(ft_vec_len(&v, sizeof(int)) == 2);
-	got = ft_vec_get(&v, 0, sizeof(int));
-	ft_pin_invariant(got && *got == 42);
-	got = ft_vec_get(&v, 1, sizeof(int));
-	ft_pin_invariant(got && *got == 99);
-	ft_pin_invariant(ft_vec_get(&v, 2, sizeof(int)) == nullptr);
-	ft_vec_destroy(a, &v);
+	xft_pin_invariant(xft_vec_push_back(a, &v, (t_u8 *)&val, sizeof(int)));
+	xft_pin_invariant(xft_vec_len(&v, sizeof(int)) == 2);
+	got = xft_vec_get(&v, 0, sizeof(int));
+	xft_pin_invariant(got && *got == 42);
+	got = xft_vec_get(&v, 1, sizeof(int));
+	xft_pin_invariant(got && *got == 99);
+	xft_pin_invariant(xft_vec_get(&v, 2, sizeof(int)) == nullptr);
+	xft_vec_destroy(a, &v);
 }

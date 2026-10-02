@@ -15,7 +15,7 @@
 
 # include "mem.h"
 # include "ctype.h"
-# include "private/ft_p_bmi.h"
+# include "xft_p_bmi.h"
 
 typedef struct s_tokenizer
 {
@@ -43,16 +43,16 @@ typedef struct s_eaterset
 	t_512eater	eater512;
 }	t_eaterset;
 
-t_token		ft_eat_while(t_tokenizer *tk, const t_eaterset *set)\
+t_token		xft_eat_while(t_tokenizer *tk, const t_eaterset *set)\
 				__attribute__((__nonnull__(1, 2), __noinline__, __used__));
-t_token		ft_eat_until(t_tokenizer *tk, const t_eaterset *set)\
+t_token		xft_eat_until(t_tokenizer *tk, const t_eaterset *set)\
 				__attribute__((__nonnull__(1, 2), __noinline__, __used__));
-t_u32a		ft_tokenizer_goto(t_tokenizer *tk, t_u8 byte)\
+t_u32a		xft_tokenizer_goto(t_tokenizer *tk, t_u8 byte)\
 				__attribute__((__nonnull__(1)));
-void		ft_skip_whitespace(t_tokenizer *tk)\
+void		xft_skip_whitespace(t_tokenizer *tk)\
 				__attribute__((__nonnull__(1)));
-t_tokenizer	ft_tokenizer_over(t_any mem, t_size size)\
+t_tokenizer	xft_tokenizer_over(t_any mem, t_size size)\
 				__attribute__((__nonnull__(1), const));
-t_u32a		ft_match_next(t_tokenizer *tk, t_u8 expected)\
+t_u32a		xft_match_next(t_tokenizer *tk, t_u8 expected)\
 				__attribute__((__nonnull__(1)));
 #endif

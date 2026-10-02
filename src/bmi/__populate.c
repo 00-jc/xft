@@ -12,8 +12,8 @@
 
 #include "mem.h"
 
-__attribute__((hot, const, __always_inline__))
-inline t_u64	ft_populate(t_u8 y)
+__attribute__((hot, const, __always_inline__, __used__))
+inline t_u64	xft_populate(t_u8 y)
 {
 	t_u64	x;
 

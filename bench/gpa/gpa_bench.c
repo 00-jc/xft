@@ -15,27 +15,27 @@
 #include "rt.h"
 
 __attribute__((__always_inline__))
-inline void	ft_main(const t_any *__restrict__ const sp)
+inline void	xft_main(const t_any *__restrict__ const sp)
 {
 	static t_tailor_bench	benches[] = {
-	{ft_gpa_bench_8, (t_blk8r)"gpa_alloc_free_8"},
-	{ft_gpa_bench_64, (t_blk8r)"gpa_alloc_free_64"},
-	{ft_gpa_bench_512, (t_blk8r)"gpa_alloc_free_512"},
-	{ft_gpa_bench_8k, (t_blk8r)"gpa_alloc_free_8k"},
-	{ft_gpa_bench_varied, (t_blk8r)"gpa_alloc_free_varied"},
-	{ft_gpa_bench_random, (t_blk8r)"gpa_alloc_free_random"},
-	{ft_gpa_bulk_bench_64, (t_blk8r)"gpa_bulk_64"},
-	{ft_gpa_bulk_bench_512, (t_blk8r)"gpa_bulk_512"},
-	{ft_gpa_bulk_bench_mixed, (t_blk8r)"gpa_bulk_mixed"},
+	{xft_gpa_bench_8, (t_blk8r)"gpa_alloc_free_8"},
+	{xft_gpa_bench_64, (t_blk8r)"gpa_alloc_free_64"},
+	{xft_gpa_bench_512, (t_blk8r)"gpa_alloc_free_512"},
+	{xft_gpa_bench_8k, (t_blk8r)"gpa_alloc_free_8k"},
+	{xft_gpa_bench_varied, (t_blk8r)"gpa_alloc_free_varied"},
+	{xft_gpa_bench_random, (t_blk8r)"gpa_alloc_free_random"},
+	{xft_gpa_bulk_bench_64, (t_blk8r)"gpa_bulk_64"},
+	{xft_gpa_bulk_bench_512, (t_blk8r)"gpa_bulk_512"},
+	{xft_gpa_bulk_bench_mixed, (t_blk8r)"gpa_bulk_mixed"},
 	};
 	t_tailor				t;
 
 	(void)sp;
-	ft_bind_process_to_cpu(0);
-	if (!ft_tailor_new(&t, 2, 2000))
-		ft_exit(1);
-	(void)ft_tailor_bench(&t, benches, 9);
-	ft_gpa_destroy(ft_get_bench_gpa());
-	ft_tailor_destroy(&t);
-	ft_exit(0);
+	xft_bind_process_to_cpu(0);
+	if (!xft_tailor_new(&t, 2, 2000))
+		xft_exit(1);
+	(void)xft_tailor_bench(&t, benches, 9);
+	xft_gpa_destroy(xft_get_bench_gpa());
+	xft_tailor_destroy(&t);
+	xft_exit(0);
 }

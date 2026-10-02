@@ -14,10 +14,10 @@
 
 void	test_memcmp(t_test *t)
 {
-	ft_test_print(t, "Testing ft_memcmp...\n");
+	xft_test_print(t, "Testing xft_memcmp...\n");
 	test_memcmp_basic();
 	test_memcmp_binary();
 	test_memcmp_long();
 	test_memcmp_misaligned();
-	ft_test_print(t, "  ft_memcmp: OK\n");
+	xft_test_print(t, "  xft_memcmp: OK\n");
 }

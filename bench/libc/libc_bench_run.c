@@ -13,7 +13,7 @@
 #include "tailor.h"
 #include "libc_bench.h"
 
-void	ft_libc_bench_memcpy(t_tailor *t)
+void	xft_libc_bench_memcpy(t_tailor *t)
 {
 	static t_size			bufsizes[] = {
 		1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2049, (1 << 18), (1 << 20),
@@ -24,33 +24,33 @@ void	ft_libc_bench_memcpy(t_tailor *t)
 		64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
 	};
 	static t_tailor_bench	benches[] = {
-	{ft_libc_memcpy_varied, (t_blk8r)"libc_memcpy_varied"},
-	{ft_libc_memcpy_short_aligned, (t_blk8r)"libc_memcpy_short_aligned"},
-	{ft_libc_memcpy_short_unaligned, (t_blk8r)"libc_memcpy_short_unaligned"},
-	{ft_libc_memcpy_medium_aligned, (t_blk8r)"libc_memcpy_medium_aligned"},
-	{ft_libc_memcpy_medium_unaligned, (t_blk8r)"libc_memcpy_medium_unaligned"},
-	{ft_libc_memcpy_large_aligned, (t_blk8r)"libc_memcpy_large_aligned"},
-	{ft_libc_memcpy_large_unaligned, (t_blk8r)"libc_memcpy_large_unaligned"},
+	{xft_libc_memcpy_varied, (t_blk8r)"libc_memcpy_varied"},
+	{xft_libc_memcpy_short_aligned, (t_blk8r)"libc_memcpy_short_aligned"},
+	{xft_libc_memcpy_short_unaligned, (t_blk8r)"libc_memcpy_short_unaligned"},
+	{xft_libc_memcpy_medium_aligned, (t_blk8r)"libc_memcpy_medium_aligned"},
+	{xft_libc_memcpy_medium_unaligned, (t_blk8r)"libc_memcpy_medium_unaligned"},
+	{xft_libc_memcpy_large_aligned, (t_blk8r)"libc_memcpy_large_aligned"},
+	{xft_libc_memcpy_large_unaligned, (t_blk8r)"libc_memcpy_large_unaligned"},
 	};
 
-	if (!ft_tailor_buffers(t, bufsizes, bufalign, 28))
-		ft_exit(1);
-	(void)ft_tailor_bench(t, benches, 7);
+	if (!xft_tailor_buffers(t, bufsizes, bufalign, 28))
+		xft_exit(1);
+	(void)xft_tailor_bench(t, benches, 7);
 }
 
-void	ft_libc_bench_strlen(t_tailor *t)
+void	xft_libc_bench_strlen(t_tailor *t)
 {
 	static t_tailor_bench	benches[] = {
-	{ft_libc_strlen_varied, (t_blk8r)"libc_strlen_varied"},
-	{ft_libc_strlen_short_aligned, (t_blk8r)"libc_strlen_short_aligned"},
-	{ft_libc_strlen_short_unaligned, (t_blk8r)"libc_strlen_short_unaligned"},
-	{ft_libc_strlen_medium_aligned, (t_blk8r)"libc_strlen_medium_aligned"},
-	{ft_libc_strlen_medium_unaligned, (t_blk8r)"libc_strlen_medium_unaligned"},
-	{ft_libc_strlen_large_aligned, (t_blk8r)"libc_strlen_large_aligned"},
-	{ft_libc_strlen_large_unaligned, (t_blk8r)"libc_strlen_large_unaligned"},
+	{xft_libc_strlen_varied, (t_blk8r)"libc_strlen_varied"},
+	{xft_libc_strlen_short_aligned, (t_blk8r)"libc_strlen_short_aligned"},
+	{xft_libc_strlen_short_unaligned, (t_blk8r)"libc_strlen_short_unaligned"},
+	{xft_libc_strlen_medium_aligned, (t_blk8r)"libc_strlen_medium_aligned"},
+	{xft_libc_strlen_medium_unaligned, (t_blk8r)"libc_strlen_medium_unaligned"},
+	{xft_libc_strlen_large_aligned, (t_blk8r)"libc_strlen_large_aligned"},
+	{xft_libc_strlen_large_unaligned, (t_blk8r)"libc_strlen_large_unaligned"},
 	};
 
-	if (!ft_strlen_bench_buffers(t))
-		ft_exit(1);
-	(void)ft_tailor_bench(t, benches, 7);
+	if (!xft_strlen_bench_buffers(t))
+		xft_exit(1);
+	(void)xft_tailor_bench(t, benches, 7);
 }

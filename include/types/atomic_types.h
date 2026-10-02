@@ -15,10 +15,6 @@
 
 # include "primitives.h"
 
-/*
- *	aligned to a cache line so they do not produce false sharing
- */
-
 typedef volatile uint8_t __attribute__((__aligned__(64)))		t_c_8;
 typedef volatile uint16_t __attribute__((__aligned__(64)))		t_c_16;
 typedef volatile uint32_t __attribute__((__aligned__(64)))		t_c_32;
@@ -36,21 +32,8 @@ typedef enum e_mutex_type
 	BUSY,
 }	t_mutex_type;
 
-# define FT_UNLOCKED 0
-# define FT_LOCKED 1
-# define FT_CONTESTED 2
-# define FUTEX_WAIT               0
-# define FUTEX_WAKE               1
-# define FUTEX_REQUEUE            3
-# define FUTEX_CMP_REQUEUE        4
-# define FUTEX_WAKE_OP            5
-# define FUTEX_LOCK_PI            6
-# define FUTEX_UNLOCK_PI          7
-# define FUTEX_TRYLOCK_PI         8
-# define FUTEX_WAIT_BITSET        9
-# define FUTEX_WAKE_BITSET       10
-# define FUTEX_WAIT_REQUEUE_PI   11
-# define FUTEX_CMP_REQUEUE_PI    12
-# define FUTEX_LOCK_PI2          13
+# define XFT_UNLOCKED 0
+# define XFT_LOCKED 1
+# define XFT_CONTESTED 2
 
 #endif

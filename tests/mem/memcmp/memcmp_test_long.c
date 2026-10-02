@@ -28,6 +28,6 @@ void	test_memcmp_long(void)
 		i++;
 	}
 	c[150] = 'X';
-	ft_pin_invariant(ft_memcmp(a, b, 256) == 0);
-	ft_pin_invariant((ft_memcmp(a, c, 256) != 0) == (memcmp(a, c, 256) != 0));
+	xft_pin_invariant(xft_memcmp(a, b, 256) == 0);
+	xft_pin_invariant((xft_memcmp(a, c, 256) != 0) == (memcmp(a, c, 256) != 0));
 }

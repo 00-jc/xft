@@ -16,8 +16,8 @@
 # include "primitives.h"
 # include <stdbool.h>
 
-void	ft_pin_invariant(int res);
-void	ft_pin_invariant_msg(int res, t_buffer msg);
-void	ft_assume(bool expr);
+void	xft_pin_invariant(int res);
+void	xft_pin_invariant_msg(int res, t_buffer msg);
+void	xft_assume(bool expr);
 
 #endif

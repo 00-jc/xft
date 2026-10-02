@@ -16,16 +16,16 @@ void	test_arena_invalid(void)
 {
 	t_arena	a;
 
-	a = ft_new_arena_alloc();
-	ft_pin_invariant_msg(ft_arena_alloc(&a, 16, 0) == nullptr,
-		ft_fatptr((t_u8 *)"align 0", sizeof("align 0") - 1));
-	ft_pin_invariant_msg(ft_arena_alloc(&a, 16, 3) == nullptr,
-		ft_fatptr((t_u8 *)"align 3", sizeof("align 3") - 1));
-	ft_pin_invariant_msg(ft_arena_alloc(&a, 16, 6) == nullptr,
-		ft_fatptr((t_u8 *)"align 6", sizeof("align 6") - 1));
-	ft_pin_invariant_msg(ft_arena_alloc(&a, 0, 8) == nullptr,
-		ft_fatptr((t_u8 *)"size 0", sizeof("size 0") - 1));
-	ft_pin_invariant_msg(ft_arena_alloc(&a, (t_size)-1, 8) == nullptr,
-		ft_fatptr((t_u8 *)"oversize", sizeof("oversize") - 1));
-	ft_destroy_arena(&a);
+	a = xft_new_arena_alloc();
+	xft_pin_invariant_msg(xft_arena_alloc(&a, 16, 0) == nullptr,
+		xft_fatptr((t_u8 *)"align 0", sizeof("align 0") - 1));
+	xft_pin_invariant_msg(xft_arena_alloc(&a, 16, 3) == nullptr,
+		xft_fatptr((t_u8 *)"align 3", sizeof("align 3") - 1));
+	xft_pin_invariant_msg(xft_arena_alloc(&a, 16, 6) == nullptr,
+		xft_fatptr((t_u8 *)"align 6", sizeof("align 6") - 1));
+	xft_pin_invariant_msg(xft_arena_alloc(&a, 0, 8) == nullptr,
+		xft_fatptr((t_u8 *)"size 0", sizeof("size 0") - 1));
+	xft_pin_invariant_msg(xft_arena_alloc(&a, (t_size)-1, 8) == nullptr,
+		xft_fatptr((t_u8 *)"oversize", sizeof("oversize") - 1));
+	xft_destroy_arena(&a);
 }

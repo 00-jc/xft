@@ -22,8 +22,8 @@ void	test_gpa_freelist_advance(t_allocator *alloc)
 	while (++i < 1000)
 		alloc->vtable.allocate(alloc->allocator, 64, 8);
 	buf = alloc->vtable.allocate(alloc->allocator, 64, 8);
-	ft_pin_invariant_msg(buf.mem != nullptr,
-		ft_fatptr((t_u8 *)"gpa: post-advance alloc",
+	xft_pin_invariant_msg(buf.mem != nullptr,
+		xft_fatptr((t_u8 *)"gpa: post-advance alloc",
 			sizeof("gpa: post-advance alloc") - 1));
 	alloc->vtable.destroy(alloc->allocator);
 }

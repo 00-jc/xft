@@ -19,24 +19,24 @@ void	test_bulk_reuse(void)
 	t_buffer	b;
 	int			i;
 
-	gpa = ft_gpa();
-	ft_pin_invariant_msg(gpa.slab != nullptr,
-		ft_fatptr((t_u8 *)"gpa init reuse", sizeof("gpa init reuse") - 1));
+	gpa = xft_gpa();
+	xft_pin_invariant_msg(gpa.slab != nullptr,
+		xft_fatptr((t_u8 *)"gpa init reuse", sizeof("gpa init reuse") - 1));
 	i = -1;
 	while (++i < BULK_N)
-		bufs[i] = ft_gpa_alloc(&gpa, 128, 8);
+		bufs[i] = xft_gpa_alloc(&gpa, 128, 8);
 	i = BULK_N;
 	while (--i >= 0)
-		ft_gpa_free(&gpa, bufs[i]);
+		xft_gpa_free(&gpa, bufs[i]);
 	i = -1;
 	while (++i < BULK_N)
 	{
-		b = ft_gpa_alloc(&gpa, 128, 8);
-		ft_pin_invariant_msg(b.mem != nullptr,
-			ft_fatptr((t_u8 *)"reuse alloc", sizeof("reuse alloc") - 1));
-		ft_pin_invariant_msg(b.size >= 128,
-			ft_fatptr((t_u8 *)"reuse size", sizeof("reuse size") - 1));
-		ft_gpa_free(&gpa, b);
+		b = xft_gpa_alloc(&gpa, 128, 8);
+		xft_pin_invariant_msg(b.mem != nullptr,
+			xft_fatptr((t_u8 *)"reuse alloc", sizeof("reuse alloc") - 1));
+		xft_pin_invariant_msg(b.size >= 128,
+			xft_fatptr((t_u8 *)"reuse size", sizeof("reuse size") - 1));
+		xft_gpa_free(&gpa, b);
 	}
-	ft_gpa_destroy(&gpa);
+	xft_gpa_destroy(&gpa);
 }

@@ -14,10 +14,10 @@
 
 void	test_xoshiro(t_test *t)
 {
-	ft_test_print(t, "Testing ft_xoshiro256**...\n");
+	xft_test_print(t, "Testing xft_xoshiro256**...\n");
 	test_xoshiro_basic();
 	test_xoshiro_not_constant();
 	test_xoshiro_state_changes();
 	test_xoshiro_init_diff();
-	ft_test_print(t, "  ft_xoshiro256**: OK\n");
+	xft_test_print(t, "  xft_xoshiro256**: OK\n");
 }

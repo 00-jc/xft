@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/29 23:39:12 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/09/08 18:07:00 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/10/02 17:41:46 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,6 @@
 # include "types/allocators_types.h"
 # include "alloc/page_alloc.h"
 # include "alloc/arena_alloc.h"
-
-// GPA
 
 # define GPA_CLASSES 	14ULL
 # define GPA_SLABSIZE	131072ULL
@@ -48,33 +46,33 @@ typedef struct s_reporta
 	t_u8		buffer[REPORTA_BUFFER];
 }	t_reporta;
 
-t_gpa		ft_gpa(void);
-void		ft_gpa_destroy(t_gpa *gpa);
-t_buffer	ft_gpa_alloc(t_any alloc, t_size size, t_size align);
-t_buffer	ft_gpa_realloc(t_any alloc, t_buffer buf, t_size newsize,
+t_gpa		xft_gpa(void);
+void		xft_gpa_destroy(t_gpa *gpa);
+t_buffer	xft_gpa_alloc(t_any alloc, t_size size, t_size align);
+t_buffer	xft_gpa_realloc(t_any alloc, t_buffer buf, t_size newsize,
 				t_size align);
-void		ft_gpa_free(t_any allocator, t_buffer buf);
-t_buffer	ft_alloc_clone(t_any self, t_buffer buffer)\
+void		xft_gpa_free(t_any allocator, t_buffer buf);
+t_buffer	xft_alloc_clone(t_any self, t_buffer buffer)\
 				__attribute__((__nonnull__(1)));
 
-t_reporta	ft_reporta(void);
-void		ft_reporta_destroy(t_reporta *gpa)\
+t_reporta	xft_reporta(void);
+void		xft_reporta_destroy(t_reporta *gpa)\
 				__attribute__((__nonnull__(1)));
-t_buffer	ft_reporta_alloc(t_any alloc, t_size size, t_size align)\
+t_buffer	xft_reporta_alloc(t_any alloc, t_size size, t_size align)\
 				__attribute__((__nonnull__(1)));
-t_buffer	ft_reporta_realloc(t_any alloc, t_buffer buf, t_size newsize,
+t_buffer	xft_reporta_realloc(t_any alloc, t_buffer buf, t_size newsize,
 				t_size align)\
 				__attribute__((__nonnull__(1)));
-void		ft_reporta_free(t_any allocator, t_buffer buf)\
+void		xft_reporta_free(t_any allocator, t_buffer buf)\
 				__attribute__((__nonnull__(1)));
 
-t_allocator	ft_arena_allocator(t_arena *arena)\
+t_allocator	xft_arena_allocator(t_arena *arena)\
 				__attribute__((__nonnull__(1), __const__));
-t_allocator	ft_gpa_allocator(t_gpa *gpa)\
+t_allocator	xft_gpa_allocator(t_gpa *gpa)\
 				__attribute__((__nonnull__(1), __const__));
-t_allocator	ft_reporta_allocator(t_reporta *gpa)\
+t_allocator	xft_reporta_allocator(t_reporta *gpa)\
 				__attribute__((__nonnull__(1), __const__));
-t_allocator	ft_new_page_alloc(void)\
+t_allocator	xft_new_page_alloc(void)\
 				__attribute__((__const__));
 
 #endif

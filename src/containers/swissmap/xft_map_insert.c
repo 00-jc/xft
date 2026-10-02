@@ -1,0 +1,72 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   xft_map_insert.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/06/29 23:39:14 by jaicastr          #+#    #+#             */
+/*   Updated: 2026/06/29 23:39:20 by jaicastr         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "map.h"
+#include "xft_p_map.h"
+
+__attribute__((pure, __nonnull__(1)))
+static inline t_size	xft__get_empty(const t_map *restrict const map,
+	t_size group, t_size nblks)
+{
+	t_u16a		mask;
+
+	if (map->meta == nullptr || map->buckets == nullptr)
+		__builtin_unreachable();
+	while (1)
+	{
+		mask = xft_bitpack128(
+				(t_vu128)(((t_blk128ra)map->meta)[group] >= 0x80)
+				);
+		if (mask)
+			return ((group << 4) + xft_memctz_u16(mask));
+		group = (group + 1) % nblks;
+	}
+}
+
+__attribute__((__always_inline__, __nonnull__(1)))
+static inline void	xft__interbuck(t_map *restrict const map,
+	t_bucket buck, t_size empty_lot, t_u128a hash)
+{
+	map->buckets[empty_lot] = buck;
+	map->meta[empty_lot] = (hash >> 57) & MAP_H2_MASK;
+}
+
+__attribute__((__nonnull__(2, 4)))
+t_result	xft_map_insert(t_allocator allocator, t_map *restrict const map,
+	t_buffer key, t_u8 *restrict const value)
+{
+	t_size		empty_lot;
+	t_bucket	buck;
+	t_u64a		hash;
+	t_size		nblks;
+	t_size		group;
+
+	if (((t_f64)map->count / (t_f64)map->table_size >= 0.85)
+		&& !xft_map_rehash(allocator, map))
+		return (KO);
+	hash = xft_xxh3_64bits(key, 0);
+	nblks = map->table_size >> 4;
+	group = hash % nblks;
+	empty_lot = xft__map_lookup_offset(map, key.mem,
+			(t_size [4]){(hash >> 57) & MAP_H2_MASK, nblks, group, key.size});
+	buck = (t_bucket){
+		.key = key.mem,
+		.key_len = key.size,
+		.value = value,
+	};
+	if (empty_lot <= map->table_size)
+		return (xft__interbuck(map, buck, empty_lot, hash), OK);
+	empty_lot = xft__get_empty(map, group, nblks);
+	xft__interbuck(map, buck, empty_lot, hash);
+	map->count++;
+	return (OK);
+}

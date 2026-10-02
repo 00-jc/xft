@@ -14,9 +14,9 @@
 
 void	test_strlen(t_test *t)
 {
-	ft_test_print(t, "Testing ft_strlen...\n");
+	xft_test_print(t, "Testing xft_strlen...\n");
 	test_strlen_basic();
 	test_strlen_misaligned();
 	test_strlen_long();
-	ft_test_print(t, "  ft_strlen: OK\n");
+	xft_test_print(t, "  xft_strlen: OK\n");
 }

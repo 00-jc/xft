@@ -16,6 +16,6 @@
 # include "primitives.h"
 # include "types/timing_types.h"
 
-t_u64a		ft_get_nanos(void);
+t_u64a		xft_get_nanos(void);
 
 #endif

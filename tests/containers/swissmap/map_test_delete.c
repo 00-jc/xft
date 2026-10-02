@@ -17,11 +17,13 @@ void	test_map_delete(t_allocator a)
 	t_map	m;
 	int		val;
 
-	m = ft_map_new(a);
+	m = xft_map_new(a);
 	val = 10;
-	ft_map_insert(a, &m, ft_fatptr((t_u8 *)"del", 3), (t_u8 *)&val);
-	ft_pin_invariant(ft_map_lookup(&m, ft_fatptr((t_u8 *)"del", 3)) != nullptr);
-	ft_map_delete(&m, ft_fatptr((t_u8 *)"del", 3));
-	ft_pin_invariant(ft_map_lookup(&m, ft_fatptr((t_u8 *)"del", 3)) == nullptr);
-	ft_map_destroy(a, &m);
+	xft_map_insert(a, &m, xft_fatptr((t_u8 *)"del", 3), (t_u8 *)&val);
+	xft_pin_invariant(xft_map_lookup(&m,
+			xft_fatptr((t_u8 *)"del", 3)) != nullptr);
+	xft_map_delete(&m, xft_fatptr((t_u8 *)"del", 3));
+	xft_pin_invariant(xft_map_lookup(&m,
+			xft_fatptr((t_u8 *)"del", 3)) == nullptr);
+	xft_map_destroy(a, &m);
 }

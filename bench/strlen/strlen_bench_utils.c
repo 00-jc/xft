@@ -13,7 +13,7 @@
 #include "tailor.h"
 #include "cstr_bench.h"
 
-void	ft_fill_strings(t_buffer *buffers, t_size n)
+void	xft_fill_strings(t_buffer *buffers, t_size n)
 {
 	t_size	i;
 	t_size	j;
@@ -29,7 +29,7 @@ void	ft_fill_strings(t_buffer *buffers, t_size n)
 	}
 }
 
-t_result	ft_strlen_bench_buffers(t_tailor *t)
+t_result	xft_strlen_bench_buffers(t_tailor *t)
 {
 	static t_size	bufsizes[] = {
 		1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2049, (1 << 18), (1 << 20),
@@ -40,8 +40,8 @@ t_result	ft_strlen_bench_buffers(t_tailor *t)
 		64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
 	};
 
-	if (!ft_tailor_buffers(t, bufsizes, bufalign, 28))
+	if (!xft_tailor_buffers(t, bufsizes, bufalign, 28))
 		return (KO);
-	ft_fill_strings((t_buffer *)t->rand_buffers.mem, t->rand_buffers.size);
+	xft_fill_strings((t_buffer *)t->rand_buffers.mem, t->rand_buffers.size);
 	return (OK);
 }

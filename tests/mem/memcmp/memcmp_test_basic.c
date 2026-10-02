@@ -23,9 +23,9 @@ void	test_memcmp_basic(void)
 	memcpy(b, "hello", 6);
 	memcpy(c, "hellp", 6);
 	memcpy(d, "hellm", 6);
-	ft_pin_invariant(ft_memcmp(a, b, 5) == memcmp(a, b, 5));
-	ft_pin_invariant((ft_memcmp(a, c, 5) < 0) == (memcmp(a, c, 5) < 0));
-	ft_pin_invariant((ft_memcmp(a, d, 5) > 0) == (memcmp(a, d, 5) > 0));
-	ft_pin_invariant(ft_memcmp(a, b, 0) == memcmp(a, b, 0));
-	ft_pin_invariant(ft_memcmp(a, c, 4) == memcmp(a, c, 4));
+	xft_pin_invariant(xft_memcmp(a, b, 5) == memcmp(a, b, 5));
+	xft_pin_invariant((xft_memcmp(a, c, 5) < 0) == (memcmp(a, c, 5) < 0));
+	xft_pin_invariant((xft_memcmp(a, d, 5) > 0) == (memcmp(a, d, 5) > 0));
+	xft_pin_invariant(xft_memcmp(a, b, 0) == memcmp(a, b, 0));
+	xft_pin_invariant(xft_memcmp(a, c, 4) == memcmp(a, c, 4));
 }

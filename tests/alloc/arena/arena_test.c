@@ -14,10 +14,10 @@
 
 void	test_arena(t_test *t)
 {
-	ft_test_print(t, "Testing arena allocator...\n");
+	xft_test_print(t, "Testing arena allocator...\n");
 	test_arena_basic();
 	test_arena_alignment();
 	test_arena_invalid();
 	test_arena_checkpoint();
-	ft_test_print(t, "  arena: OK\n");
+	xft_test_print(t, "  arena: OK\n");
 }

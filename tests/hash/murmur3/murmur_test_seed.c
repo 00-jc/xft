@@ -17,10 +17,10 @@ void	test_murmur_seed(void)
 	t_u128a	h1;
 	t_u128a	h2;
 
-	h1 = ft_murmur3_with_seed((t_u8 *)"test", 0, 4);
-	h2 = ft_murmur3_with_seed((t_u8 *)"test", 1, 4);
-	ft_pin_invariant(h1 != h2);
-	h1 = ft_murmur3_with_seed((t_u8 *)"test", 42, 4);
-	h2 = ft_murmur3_with_seed((t_u8 *)"test", 42, 4);
-	ft_pin_invariant(h1 == h2);
+	h1 = xft_murmur3_with_seed((t_u8 *)"test", 0, 4);
+	h2 = xft_murmur3_with_seed((t_u8 *)"test", 1, 4);
+	xft_pin_invariant(h1 != h2);
+	h1 = xft_murmur3_with_seed((t_u8 *)"test", 42, 4);
+	h2 = xft_murmur3_with_seed((t_u8 *)"test", 42, 4);
+	xft_pin_invariant(h1 == h2);
 }

@@ -56,8 +56,8 @@ typedef struct s_page_alloc
 	t_u8	_pad;
 }	t_page_alloc;
 
-t_buffer	ft_palloc(t_size size);
-t_buffer	ft_palloc_resize(t_buffer b, t_size new_size);
-void		ft_palloc_free(t_buffer b);
+t_buffer	xft_palloc(t_size size);
+t_buffer	xft_palloc_resize(t_buffer b, t_size new_size);
+void		xft_palloc_free(t_buffer b);
 
 #endif

@@ -67,96 +67,96 @@ typedef struct s_3dcoordsx8
 	t_3dcoords	h;
 } __attribute__((aligned(64)))	t_3dcoordsx8;
 
-t_f32			ft_q_sqrt(t_f32 x)\
+t_f32			xft_q_sqrt(t_f32 x)\
 					__attribute__((const));
-t_f64			ft_q_dsqrt(t_f64 number)\
+t_f64			xft_q_dsqrt(t_f64 number)\
 					__attribute__((const));
-t_f32			ft_sqrt(t_f32 number)\
+t_f32			xft_sqrt(t_f32 number)\
 					__attribute__((const));
-t_f64			ft_dsqrt(t_f64 number)\
+t_f64			xft_dsqrt(t_f64 number)\
 					__attribute__((const));
-t_f32			ft_q_sqrt_round(t_f32 number, t_u8 n)\
+t_f32			xft_q_sqrt_round(t_f32 number, t_u8 n)\
 					__attribute__((const));
-t_f32			ft_q_sqrt_fround(t_f32 number)\
+t_f32			xft_q_sqrt_fround(t_f32 number)\
 					__attribute__((const));
-t_f32			ft_roundf(t_f32 x, t_u8 n)\
+t_f32			xft_roundf(t_f32 x, t_u8 n)\
 					__attribute__((const));
-t_f32			ft_floorf(t_f32 x)\
+t_f32			xft_floorf(t_f32 x)\
 					__attribute__((const));
-t_f32			ft_ceilf(t_f32 x)\
+t_f32			xft_ceilf(t_f32 x)\
 					__attribute__((const));
-t_u128			ft_pow_u128(t_u128 x, t_u128 n)\
+t_u128			xft_pow_u128(t_u128 x, t_u128 n)\
 					__attribute__((const));
-t_u64			ft_pow_u64(t_u64 x, t_u64 n)\
+t_u64			xft_pow_u64(t_u64 x, t_u64 n)\
 					__attribute__((const));
-t_u32			ft_pow_u32(t_u32 x, t_u32 n)\
+t_u32			xft_pow_u32(t_u32 x, t_u32 n)\
 					__attribute__((const));
-t_u8			ft_pow_u8(t_u8 x, t_u8 n)\
+t_u8			xft_pow_u8(t_u8 x, t_u8 n)\
 					__attribute__((const));
-int				ft_ipow(int x, t_u64 n)\
+int				xft_ipow(int x, t_u64 n)\
 					__attribute__((const));
-long long		ft_lpow(long long x, t_u64 n)\
+long long		xft_lpow(long long x, t_u64 n)\
 					__attribute__((const));
-t_f32			ft_fpow(t_f32 x, t_u64 n)\
+t_f32			xft_fpow(t_f32 x, t_u64 n)\
 					__attribute__((const));
-t_f64			ft_dpow(t_f64 x, t_u64 n)\
+t_f64			xft_dpow(t_f64 x, t_u64 n)\
 					__attribute__((const));
-t_f32			ft_roundff(t_f32 x)\
+t_f32			xft_roundff(t_f32 x)\
 					__attribute__((const));
-t_f64			ft_fabs(t_f64 x)\
+t_f64			xft_fabs(t_f64 x)\
 					__attribute__((const));
-t_f32			ft_rsqrt(t_f32 number)\
+t_f32			xft_rsqrt(t_f32 number)\
 					__attribute__((const));
-t_f64			ft_drsqrt(t_f64 number)\
+t_f64			xft_drsqrt(t_f64 number)\
 					__attribute__((const));
-t_8packd		ft_drsqrt_x8(t_8packd d1)\
+t_8packd		xft_drsqrt_x8(t_8packd d1)\
 					__attribute__ ((const));
-t_4packd		ft_drsqrt_x4(t_4packd d1)\
+t_4packd		xft_drsqrt_x4(t_4packd d1)\
 					__attribute__ ((const));
-t_8packd		ft_dsqrt_x8(t_8packd d1)\
+t_8packd		xft_dsqrt_x8(t_8packd d1)\
 					__attribute__ ((const));
 
-t_3dcoords		ft_3dsub(const t_3dcoords *__restrict__ const a,\
+t_3dcoords		xft_3dsub(const t_3dcoords *__restrict__ const a,\
 					const t_3dcoords *__restrict__ const b)\
 					__attribute__((__nonnull__(1, 2), pure));
-t_3dcoords		ft_3dadd(const t_3dcoords *__restrict__ const a,\
+t_3dcoords		xft_3dadd(const t_3dcoords *__restrict__ const a,\
 					const t_3dcoords *__restrict__ const b)\
 					__attribute__((__nonnull__(1, 2), pure));
-t_f64			ft_3dnorm(const t_3dcoords *__restrict__ const c)\
+t_f64			xft_3dnorm(const t_3dcoords *__restrict__ const c)\
 					__attribute__((__nonnull__(1), pure));
-t_f64			ft_3ddot(const t_3dcoords *__restrict__ const a,\
+t_f64			xft_3ddot(const t_3dcoords *__restrict__ const a,\
 					const t_3dcoords *__restrict__ const b)\
 					__attribute__((__nonnull__(1, 2), pure));
-t_3dcoords		ft_3dunit(const t_3dcoords *__restrict__ const c)\
+t_3dcoords		xft_3dunit(const t_3dcoords *__restrict__ const c)\
 					__attribute__((__nonnull__(1), pure));
-t_3dcoords		ft_3dmul(const t_3dcoords *__restrict__ const a,\
+t_3dcoords		xft_3dmul(const t_3dcoords *__restrict__ const a,\
 					const t_3dcoords *__restrict__ const b)\
 					__attribute__((__nonnull__(1, 2), pure));
-t_3dcoords		ft_3ddiv(const t_3dcoords *__restrict__ const a,\
+t_3dcoords		xft_3ddiv(const t_3dcoords *__restrict__ const a,\
 					const t_3dcoords *__restrict__ const b)\
 					__attribute__((__nonnull__(1, 2), pure));
-t_3dcoords		ft_3dcross(const t_3dcoords *__restrict__ const a,\
+t_3dcoords		xft_3dcross(const t_3dcoords *__restrict__ const a,\
 					const t_3dcoords *__restrict__ const b)\
 					__attribute__((__nonnull__(1, 2), pure));
-t_3dcoordsx8	ft_3dadd8(const t_3dcoordsx8 *__restrict__ const a,\
+t_3dcoordsx8	xft_3dadd8(const t_3dcoordsx8 *__restrict__ const a,\
 					const t_3dcoordsx8 *__restrict__ const b)\
 					__attribute__((__nonnull__(1, 2), pure));
-t_3dcoordsx8	ft_3dsub8(const t_3dcoordsx8 *__restrict__ const a,\
+t_3dcoordsx8	xft_3dsub8(const t_3dcoordsx8 *__restrict__ const a,\
 					const t_3dcoordsx8 *__restrict__ const b)\
 					__attribute__((__nonnull__(1, 2), pure));
-t_3dcoordsx8	ft_3dmul8(const t_3dcoordsx8 *__restrict__ const a,\
+t_3dcoordsx8	xft_3dmul8(const t_3dcoordsx8 *__restrict__ const a,\
 					const t_3dcoordsx8 *__restrict__ const b)\
 					__attribute__((__nonnull__(1, 2), pure));
-t_3dcoordsx8	ft_3ddiv8(const t_3dcoordsx8 *__restrict__ const a,\
+t_3dcoordsx8	xft_3ddiv8(const t_3dcoordsx8 *__restrict__ const a,\
 					const t_3dcoordsx8 *__restrict__ const b)\
 					__attribute__((__nonnull__(1, 2), pure));
-t_3dcoordsx8	ft_3dunit8(const t_3dcoordsx8 *__restrict__ const c)\
+t_3dcoordsx8	xft_3dunit8(const t_3dcoordsx8 *__restrict__ const c)\
 					__attribute__((__nonnull__(1), pure));
-t_8packd		ft_3dclampsum8(const t_3dcoordsx8 *__restrict__ const c)\
+t_8packd		xft_3dclampsum8(const t_3dcoordsx8 *__restrict__ const c)\
 					__attribute__((__nonnull__(1), pure));
-t_8packd		ft_3dnorm8(const t_3dcoordsx8 *__restrict__ const c)\
+t_8packd		xft_3dnorm8(const t_3dcoordsx8 *__restrict__ const c)\
 					__attribute__((__nonnull__(1), pure));
-t_8packd		ft_3ddot8(const t_3dcoordsx8 *__restrict__ const a,\
+t_8packd		xft_3ddot8(const t_3dcoordsx8 *__restrict__ const a,\
 					const t_3dcoordsx8 *__restrict__ const b)\
 					__attribute__((__nonnull__(1, 2), pure));
 #endif

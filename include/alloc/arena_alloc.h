@@ -37,17 +37,17 @@ typedef struct s_checkpoint
 	t_hugepage		*location;
 }	t_arena_checkpoint;
 
-t_arena				ft_new_arena_alloc(void);
-t_any				ft_arena_alloc(t_arena *__restrict__ const allocator,
+t_arena				xft_new_arena_alloc(void);
+t_any				xft_arena_alloc(t_arena *__restrict__ const allocator,
 						t_size size, t_size align)\
-						__attribute__((nonnull(1)));
-void				ft_destroy_arena(t_arena *alloc)\
 						__attribute__((__nonnull__(1)));
-t_arena_checkpoint	ft_arena_checkpoint(const t_arena *__restrict__ const arena)\
+void				xft_destroy_arena(t_arena *alloc)\
+						__attribute__((__nonnull__(1)));
+t_arena_checkpoint	xft_arena_checkpoint(const t_arena *__restrict__ const arena)\
 						__attribute__((__nonnull__(1), pure));
-void				ft_arena_rewind_clean(t_arena *__restrict__ const arena,
+void				xft_arena_rewind_clean(t_arena *__restrict__ const arena,
 						t_arena_checkpoint checkpoint);
-void				ft_arena_rewind(t_arena *__restrict__ const arena,
+void				xft_arena_rewind(t_arena *__restrict__ const arena,
 						t_arena_checkpoint checkpoint);
 
 #endif

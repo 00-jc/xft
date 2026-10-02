@@ -18,14 +18,14 @@ void	test_map_insert_lookup(t_allocator a)
 	int		val;
 	int		*got;
 
-	m = ft_map_new(a);
+	m = xft_map_new(a);
 	val = 42;
-	ft_pin_invariant(ft_map_insert(a, &m,
-			ft_fatptr((t_u8 *)"key1", 4), (t_u8 *)&val));
-	got = ft_map_lookup(&m, ft_fatptr((t_u8 *)"key1", 4));
-	ft_pin_invariant(got != nullptr);
-	ft_pin_invariant(*got == 42);
-	ft_pin_invariant(ft_map_lookup(&m,
-			ft_fatptr((t_u8 *)"nope", 4)) == nullptr);
-	ft_map_destroy(a, &m);
+	xft_pin_invariant(xft_map_insert(a, &m,
+			xft_fatptr((t_u8 *)"key1", 4), (t_u8 *)&val));
+	got = xft_map_lookup(&m, xft_fatptr((t_u8 *)"key1", 4));
+	xft_pin_invariant(got != nullptr);
+	xft_pin_invariant(*got == 42);
+	xft_pin_invariant(xft_map_lookup(&m,
+			xft_fatptr((t_u8 *)"nope", 4)) == nullptr);
+	xft_map_destroy(a, &m);
 }

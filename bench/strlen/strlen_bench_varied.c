@@ -13,24 +13,24 @@
 #include "tailor.h"
 #include "cstr_bench.h"
 
-void	ft_strlen_test_varied(t_any ptr)
+void	xft_strlen_test_varied(t_any ptr)
 {
 	t_buffer	*buffers;
 	t_buffer	*in;
 	t_size		n;
 	t_size		bufn[3];
 
-	n = ft_tailor_getcount(ptr);
-	buffers = ft_get_all_buffers(ptr, bufn);
-	ft_pin_invariant_msg(buffers != nullptr,
-		ft_fatptr((t_u8 *)"NO BUFFERS", 10));
+	n = xft_tailor_getcount(ptr);
+	buffers = xft_get_all_buffers(ptr, bufn);
+	xft_pin_invariant_msg(buffers != nullptr,
+		xft_fatptr((t_u8 *)"NO BUFFERS", 10));
 	bufn[2] = 0;
 	while (n-- > 0)
 	{
 		in = buffers + (n % bufn[0]);
-		bufn[1] = ft_strlen((const char *)in->mem);
+		bufn[1] = xft_strlen((const char *)in->mem);
 		bufn[2] += bufn[1];
 		__asm__("": "+r,m"(in) ::"memory");
 	}
-	ft_tailor_add_processed_bytes(ptr, bufn[2]);
+	xft_tailor_add_processed_bytes(ptr, bufn[2]);
 }

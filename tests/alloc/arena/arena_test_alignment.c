@@ -26,15 +26,15 @@ void	test_arena_alignment(void)
 	aligns[4] = 16;
 	aligns[5] = 32;
 	aligns[6] = 64;
-	a = ft_new_arena_alloc();
+	a = xft_new_arena_alloc();
 	i = -1;
 	while (++i < 7)
 	{
-		p = ft_arena_alloc(&a, 17, aligns[i]);
-		ft_pin_invariant_msg(p != nullptr,
-			ft_fatptr((t_u8 *)"aligned alloc", sizeof("aligned alloc") - 1));
-		ft_pin_invariant_msg(((t_uptr)p & (aligns[i] - 1)) == 0,
-			ft_fatptr((t_u8 *)"align ok", sizeof("align ok") - 1));
+		p = xft_arena_alloc(&a, 17, aligns[i]);
+		xft_pin_invariant_msg(p != nullptr,
+			xft_fatptr((t_u8 *)"aligned alloc", sizeof("aligned alloc") - 1));
+		xft_pin_invariant_msg(((t_uptr)p & (aligns[i] - 1)) == 0,
+			xft_fatptr((t_u8 *)"align ok", sizeof("align ok") - 1));
 	}
-	ft_destroy_arena(&a);
+	xft_destroy_arena(&a);
 }

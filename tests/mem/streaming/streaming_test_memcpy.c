@@ -24,14 +24,14 @@ static void	fill_pattern(t_buffer buf, t_u8 seed)
 	}
 }
 
-void	test_streaming_ft_memcpy(t_buffer buf[3], t_size dst,
+void	test_streaming_xft_memcpy(t_buffer buf[3], t_size dst,
 	t_size src, t_size len)
 {
 	fill_pattern(buf[0], 17);
 	fill_pattern(buf[1], 91);
 	fill_pattern(buf[2], 91);
-	ft_memcpy(buf[1].mem + dst, buf[0].mem + src, len);
-	ft_memcpy(buf[2].mem + dst, buf[0].mem + src, len);
-	ft_pin_invariant(memcmp(buf[1].mem, buf[2].mem,
-			FT_LLC_SIZE + 128ULL) == 0);
+	xft_memcpy(buf[1].mem + dst, buf[0].mem + src, len);
+	xft_memcpy(buf[2].mem + dst, buf[0].mem + src, len);
+	xft_pin_invariant(memcmp(buf[1].mem, buf[2].mem,
+			XFT_LLC_SIZE + 128ULL) == 0);
 }

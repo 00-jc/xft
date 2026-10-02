@@ -18,19 +18,19 @@ void	test_arena_basic(void)
 	t_u8	*buf;
 	int		i;
 
-	a = ft_new_arena_alloc();
-	ft_pin_invariant_msg(a.current != nullptr,
-		ft_fatptr((t_u8 *)"init", sizeof("init") - 1));
-	buf = ft_arena_alloc(&a, 4096, 16);
-	ft_pin_invariant_msg(buf != nullptr,
-		ft_fatptr((t_u8 *)"alloc", sizeof("alloc") - 1));
+	a = xft_new_arena_alloc();
+	xft_pin_invariant_msg(a.current != nullptr,
+		xft_fatptr((t_u8 *)"init", sizeof("init") - 1));
+	buf = xft_arena_alloc(&a, 4096, 16);
+	xft_pin_invariant_msg(buf != nullptr,
+		xft_fatptr((t_u8 *)"alloc", sizeof("alloc") - 1));
 	i = -1;
 	while (++i < 4096)
 		buf[i] = (t_u8)(i * 31 + 7);
 	i = -1;
 	while (++i < 4096)
-		ft_pin_invariant_msg(buf[i] == (t_u8)(i * 31 + 7),
-			ft_fatptr((t_u8 *)"rw", sizeof("rw") - 1));
+		xft_pin_invariant_msg(buf[i] == (t_u8)(i * 31 + 7),
+			xft_fatptr((t_u8 *)"rw", sizeof("rw") - 1));
 	test_arena_uniq(&a, buf);
-	ft_destroy_arena(&a);
+	xft_destroy_arena(&a);
 }

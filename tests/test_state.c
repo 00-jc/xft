@@ -10,18 +10,18 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "private/test.h"
+#include "test.h"
 
-void	ft_test_init(t_test *t)
+void	xft_test_init(t_test *t)
 {
-	t->writer = ft_get_fs_writer(ft_fatptr(t->buffer, BUFSIZE),
-			ft_get_stdout());
+	t->writer = xft_get_fs_writer(xft_fatptr(t->buffer, BUFSIZE),
+			xft_get_stdout());
 }
 
-void	ft_test_print(t_test *t, const char *msg)
+void	xft_test_print(t_test *t, const char *msg)
 {
 	static t_u64	values;
 
-	ft_fmt_writer(&t->writer, ft_fatptr((t_u8 *)msg, ft_strlen(msg)),
+	xft_fmt_writer(&t->writer, xft_fatptr((t_u8 *)msg, xft_strlen(msg)),
 		&values);
 }

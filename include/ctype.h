@@ -14,12 +14,12 @@
 # define CTYPE_H
 # include "mem.h"
 
-int				ft_isalpha(int c);
-int				ft_isdigit(int c);
-int				ft_isalnum(int c);
-int				ft_isascii(int c);
-int				ft_isxdigit(int c);
-int				ft_isprint(int c);
-int				ft_isspace(int c);
+int				xft_isalpha(int c);
+int				xft_isdigit(int c);
+int				xft_isalnum(int c);
+int				xft_isascii(int c);
+int				xft_isxdigit(int c);
+int				xft_isprint(int c);
+int				xft_isspace(int c);
 
 #endif

@@ -21,9 +21,9 @@ void	test_memset_large(void)
 	i = 0;
 	while (i < 256)
 	{
-		ft_memset(a, (t_u8)i, 4096);
+		xft_memset(a, (t_u8)i, 4096);
 		memset(b, i, 4096);
-		ft_pin_invariant(memcmp(a, b, 4096) == 0);
+		xft_pin_invariant(memcmp(a, b, 4096) == 0);
 		i += 85;
 	}
 }

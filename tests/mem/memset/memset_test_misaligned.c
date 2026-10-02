@@ -21,9 +21,9 @@ void	test_memset_misaligned(void)
 	off = 1;
 	while (off < 64)
 	{
-		ft_memset(a + off, 'Z', 4096 - off);
+		xft_memset(a + off, 'Z', 4096 - off);
 		memset(b + off, 'Z', 4096 - off);
-		ft_pin_invariant(memcmp(a + off, b + off, 4096 - off) == 0);
+		xft_pin_invariant(memcmp(a + off, b + off, 4096 - off) == 0);
 		off += 7;
 	}
 }

@@ -1,0 +1,27 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   xft_3dcross.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/06/29 23:39:13 by jaicastr          #+#    #+#             */
+/*   Updated: 2026/09/07 21:56:35 by jaicastr         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "xft_p_math.h"
+#include "math.h"
+
+__attribute__((__always_inline__, pure, __used__))
+inline t_3dcoords	xft_3dcross(const t_3dcoords *__restrict__ const a,
+	const t_3dcoords *__restrict__ const b)
+{
+	t_v4da	vec;
+	t_v4da	vec1;
+
+	vec = (t_v4da){a->y, a->z, a->x} * (t_v4da){b->z, b->x, b->y};
+	vec1 = (t_v4da){a->z, a->x, a->y} * (t_v4da){b->y, b->z, b->x};
+	vec -= vec1;
+	return (*(const t_3dcoords * restrict const) & vec);
+}

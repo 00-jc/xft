@@ -21,11 +21,11 @@ void	test_memchr_basic(void)
 	memcpy(h, "hello", 6);
 	memcpy(w, "world", 6);
 	z[0] = '\0';
-	ft_pin_invariant(ft_memchr(h, 'h', 5) == memchr(h, 'h', 5));
-	ft_pin_invariant(ft_memchr(h, 'e', 5) == memchr(h, 'e', 5));
-	ft_pin_invariant(ft_memchr(h, 'o', 5) == memchr(h, 'o', 5));
-	ft_pin_invariant(ft_memchr(w, 'w', 5) == memchr(w, 'w', 5));
-	ft_pin_invariant(ft_memchr(h, 'x', 5) == memchr(h, 'x', 5));
-	ft_pin_invariant(ft_memchr(z, 'a', 0) == memchr(z, 'a', 0));
-	ft_pin_invariant(ft_memchr(h, '\0', 6) == memchr(h, '\0', 6));
+	xft_pin_invariant(xft_memchr(h, 'h', 5) == memchr(h, 'h', 5));
+	xft_pin_invariant(xft_memchr(h, 'e', 5) == memchr(h, 'e', 5));
+	xft_pin_invariant(xft_memchr(h, 'o', 5) == memchr(h, 'o', 5));
+	xft_pin_invariant(xft_memchr(w, 'w', 5) == memchr(w, 'w', 5));
+	xft_pin_invariant(xft_memchr(h, 'x', 5) == memchr(h, 'x', 5));
+	xft_pin_invariant(xft_memchr(z, 'a', 0) == memchr(z, 'a', 0));
+	xft_pin_invariant(xft_memchr(h, '\0', 6) == memchr(h, '\0', 6));
 }

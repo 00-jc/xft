@@ -20,22 +20,22 @@ void	test_extend_rewind_grow(void)
 	t_any				p;
 	t_size				big;
 
-	a = ft_new_arena_alloc();
+	a = xft_new_arena_alloc();
 	pages[0] = a.current;
 	big = pages[0]->total - pages[0]->used - 128;
-	ft_arena_alloc(&a, big, 16);
-	cp = ft_arena_checkpoint(&a);
-	p = ft_arena_alloc(&a, 4096, 16);
-	ft_pin_invariant_msg(p != nullptr,
-		ft_fatptr((t_u8 *)"first grow", sizeof("first grow") - 1));
+	xft_arena_alloc(&a, big, 16);
+	cp = xft_arena_checkpoint(&a);
+	p = xft_arena_alloc(&a, 4096, 16);
+	xft_pin_invariant_msg(p != nullptr,
+		xft_fatptr((t_u8 *)"first grow", sizeof("first grow") - 1));
 	pages[1] = a.current;
-	ft_arena_rewind(&a, cp);
-	ft_pin_invariant_msg(a.current == pages[0],
-		ft_fatptr((t_u8 *)"rewound", sizeof("rewound") - 1));
-	p = ft_arena_alloc(&a, 4096, 16);
-	ft_pin_invariant_msg(p != nullptr,
-		ft_fatptr((t_u8 *)"realloc", sizeof("realloc") - 1));
-	ft_pin_invariant_msg(a.current == pages[1],
-		ft_fatptr((t_u8 *)"reuse", sizeof("reuse") - 1));
-	ft_destroy_arena(&a);
+	xft_arena_rewind(&a, cp);
+	xft_pin_invariant_msg(a.current == pages[0],
+		xft_fatptr((t_u8 *)"rewound", sizeof("rewound") - 1));
+	p = xft_arena_alloc(&a, 4096, 16);
+	xft_pin_invariant_msg(p != nullptr,
+		xft_fatptr((t_u8 *)"realloc", sizeof("realloc") - 1));
+	xft_pin_invariant_msg(a.current == pages[1],
+		xft_fatptr((t_u8 *)"reuse", sizeof("reuse") - 1));
+	xft_destroy_arena(&a);
 }

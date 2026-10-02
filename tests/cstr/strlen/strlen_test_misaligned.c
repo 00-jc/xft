@@ -19,8 +19,8 @@ void	test_strlen_misaligned(void)
 
 	memcpy(h, "hello", 6);
 	memcpy(w, "world", 6);
-	ft_pin_invariant(ft_strlen(h + 1) == strlen(h + 1));
-	ft_pin_invariant(ft_strlen(w + 2) == strlen(w + 2));
-	ft_pin_invariant(ft_strlen(h + 3) == strlen(h + 3));
-	ft_pin_invariant(ft_strlen(w + 1) == strlen(w + 1));
+	xft_pin_invariant(xft_strlen(h + 1) == strlen(h + 1));
+	xft_pin_invariant(xft_strlen(w + 2) == strlen(w + 2));
+	xft_pin_invariant(xft_strlen(h + 3) == strlen(h + 3));
+	xft_pin_invariant(xft_strlen(w + 1) == strlen(w + 1));
 }

@@ -6,12 +6,20 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/29 23:39:13 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/07/09 14:39:02 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/10/02 16:36:36 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PRIMITIVES_H
 # define PRIMITIVES_H
+
+# if !defined(__x86_64__) && !defined(__aarch64__) && !defined(XFT_REQUIRE_LIBC)
+#  error "Cannot compile freestanding on this arch without XFT_REQUIRE_LIBC"
+# endif
+
+# if !defined(__linux__) && !defined(_WIN64)
+#  error "xft only supports linux and win64"
+# endif
 
 # include <stdint.h>
 # include <stddef.h>
@@ -49,18 +57,12 @@ typedef double __attribute__((__may_alias__, __aligned__(8)))		t_f64a;
 typedef long double __attribute__((__may_alias__, __aligned__(1)))	t_f80;
 typedef long double __attribute__((__may_alias__, __aligned__(8)))	t_f80a;
 
-// __UINTPTR_TYPE__ (a compiler builtin, not a libc one) is used instead of
-// uintptr_t: these builds don't link libc, and cross-compiling then pulls in
-// the host's <stdint.h>, whose <bits/wordsize.h> keys pointer width off
-// __x86_64__ wrong, and silently 32-bit, for any other compile target.
 typedef __UINTPTR_TYPE__ __attribute__((__may_alias__))				t_uptr;
 typedef void * __attribute__((__may_alias__))						t_any;
 typedef const void * __attribute__((__may_alias__))					t_cany;
 
 typedef t_u64														t_size;
 typedef t_i64														t_ssize;
-
-typedef const t_u8 *__restrict__ *__restrict__						t_rt_arr;
 
 # ifdef __clang__
 

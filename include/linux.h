@@ -6,56 +6,48 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/09 00:00:00 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/07/09 13:49:12 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/10/02 00:49:26 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LINUX_H
 # define LINUX_H
 
-# include "primitives.h"
+# ifdef __linux__
+#  include "primitives.h"
 
-# ifdef FT_REQUIRE_LIBC
+#  ifdef XFT_REQUIRE_LIBC
 
-#  include <linux/perf_event.h>
+#   include <linux/perf_event.h>
 
 typedef struct perf_event_attr	t_perf_event_attr;
 
-# else
+#  else
 
-/*
- *	struct perf_event_attr is stable ABI across every architecture
- *	(the kernel copies it verbatim by size, with no per-arch padding
- *	rules like struct stat has), so one freestanding definition covers
- *	both x86_64 and aarch64. Layout was checked field-by-field against
- *	<linux/perf_event.h> (offsetof + sizeof) with gcc and clang, and
- *	round-tripped live through perf_event_open().
- */
+#   define PERF_TYPE_HARDWARE					0
+#   define PERF_TYPE_SOFTWARE					1
 
-#  define PERF_TYPE_HARDWARE				0
-#  define PERF_TYPE_SOFTWARE				1
+#   define PERF_COUNT_HW_CPU_CYCLES				0
+#   define PERF_COUNT_HW_INSTRUCTIONS			1
+#   define PERF_COUNT_HW_CACHE_LL				2
+#   define PERF_COUNT_HW_CACHE_MISSES			3
+#   define PERF_COUNT_HW_BRANCH_INSTRUCTIONS	4
+#   define PERF_COUNT_HW_BRANCH_MISSES			5
 
-#  define PERF_COUNT_HW_CPU_CYCLES			0
-#  define PERF_COUNT_HW_INSTRUCTIONS		1
-#  define PERF_COUNT_HW_CACHE_LL			2
-#  define PERF_COUNT_HW_CACHE_MISSES		3
-#  define PERF_COUNT_HW_BRANCH_INSTRUCTIONS	4
-#  define PERF_COUNT_HW_BRANCH_MISSES		5
+#   define PERF_COUNT_SW_PAGE_FAULTS			2
+#   define PERF_COUNT_SW_ALIGNMENT_FAULTS		7
+#   define PERF_COUNT_SW_DUMMY					9
 
-#  define PERF_COUNT_SW_PAGE_FAULTS			2
-#  define PERF_COUNT_SW_ALIGNMENT_FAULTS	7
-#  define PERF_COUNT_SW_DUMMY				9
+#   define PERF_FORMAT_TOTAL_TIME_ENABLED		0x01U
+#   define PERF_FORMAT_TOTAL_TIME_RUNNING		0x02U
+#   define PERF_FORMAT_GROUP					0x08U
 
-#  define PERF_FORMAT_TOTAL_TIME_ENABLED	0x01U
-#  define PERF_FORMAT_TOTAL_TIME_RUNNING	0x02U
-#  define PERF_FORMAT_GROUP					0x08U
+#   define PERF_FLAG_FD_CLOEXEC					0x08UL
 
-#  define PERF_FLAG_FD_CLOEXEC				0x08UL
-
-#  define PERF_IOC_FLAG_GROUP				0x01
-#  define PERF_EVENT_IOC_ENABLE				0x2400
-#  define PERF_EVENT_IOC_DISABLE			0x2401
-#  define PERF_EVENT_IOC_RESET				0x2403
+#   define PERF_IOC_FLAG_GROUP					0x01
+#   define PERF_EVENT_IOC_ENABLE				0x2400
+#   define PERF_EVENT_IOC_DISABLE				0x2401
+#   define PERF_EVENT_IOC_RESET					0x2403
 
 typedef union u_linux_perf_period
 {
@@ -163,6 +155,17 @@ typedef struct s_perf_event_attr
 	t_u64a					config3;
 }	t_perf_event_attr;
 
-# endif
+#  endif
 
+int			xft_ioctl(int fd, t_u64a request, t_u64a arg);
+
+int			xft_perf_event_open(const t_perf_event_attr *restrict attr,\
+				int group_fd)\
+				__attribute__((__nonnull__(1)));
+
+# else
+
+#  error "linux.h is linux only"
+
+# endif
 #endif

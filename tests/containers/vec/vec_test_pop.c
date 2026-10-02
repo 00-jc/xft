@@ -18,17 +18,17 @@ void	test_vec_pop(t_allocator a)
 	int		val;
 	int		out;
 
-	v = ft_vec(a, 4, sizeof(int));
+	v = xft_vec(a, 4, sizeof(int));
 	val = 10;
-	ft_vec_push_back(a, &v, (t_u8 *)&val, sizeof(int));
+	xft_vec_push_back(a, &v, (t_u8 *)&val, sizeof(int));
 	val = 20;
-	ft_vec_push_back(a, &v, (t_u8 *)&val, sizeof(int));
+	xft_vec_push_back(a, &v, (t_u8 *)&val, sizeof(int));
 	val = 30;
-	ft_vec_push_back(a, &v, (t_u8 *)&val, sizeof(int));
-	ft_pin_invariant(ft_vec_popmv(&v, &out, sizeof(int)));
-	ft_pin_invariant(out == 30);
-	ft_pin_invariant(ft_vec_len(&v, sizeof(int)) == 2);
-	ft_vec_pop(&v, sizeof(int));
-	ft_pin_invariant(ft_vec_len(&v, sizeof(int)) == 1);
-	ft_vec_destroy(a, &v);
+	xft_vec_push_back(a, &v, (t_u8 *)&val, sizeof(int));
+	xft_pin_invariant(xft_vec_popmv(&v, &out, sizeof(int)));
+	xft_pin_invariant(out == 30);
+	xft_pin_invariant(xft_vec_len(&v, sizeof(int)) == 2);
+	xft_vec_pop(&v, sizeof(int));
+	xft_pin_invariant(xft_vec_len(&v, sizeof(int)) == 1);
+	xft_vec_destroy(a, &v);
 }

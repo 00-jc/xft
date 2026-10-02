@@ -19,8 +19,8 @@ void	test_xoshiro_init_diff(void)
 	int			i;
 	int			diff;
 
-	ft_xoshiro_init(a);
-	ft_xoshiro_init(b);
+	xft_xoshiro_init(a);
+	xft_xoshiro_init(b);
 	diff = 0;
 	i = 0;
 	while (i < 4)
@@ -29,6 +29,6 @@ void	test_xoshiro_init_diff(void)
 			diff = 1;
 		i++;
 	}
-	ft_pin_invariant_msg(diff == 1,
-		ft_fatptr((t_u8 *)"diff != 1", sizeof("diff != 1") - 1));
+	xft_pin_invariant_msg(diff == 1,
+		xft_fatptr((t_u8 *)"diff != 1", sizeof("diff != 1") - 1));
 }

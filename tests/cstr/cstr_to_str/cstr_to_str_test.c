@@ -16,14 +16,14 @@ void	test_cstr_to_str(t_allocator a)
 {
 	t_str	s;
 
-	s = ft_cstr_to_str(a, "hello");
-	ft_pin_invariant(s.mem != nullptr);
-	ft_pin_invariant(s.size == 5);
-	ft_pin_invariant(ft_memcmp(s.mem, "hello", 6) == 0);
-	ft_str_destroy(a, &s);
-	s = ft_cstr_to_str(a, "");
-	ft_pin_invariant(s.mem == nullptr);
-	ft_pin_invariant(s.size == 0);
+	s = xft_cstr_to_str(a, "hello");
+	xft_pin_invariant(s.mem != nullptr);
+	xft_pin_invariant(s.size == 5);
+	xft_pin_invariant(xft_memcmp(s.mem, "hello", 6) == 0);
+	xft_str_destroy(a, &s);
+	s = xft_cstr_to_str(a, "");
+	xft_pin_invariant(s.mem == nullptr);
+	xft_pin_invariant(s.size == 0);
 }
 
 void	test_cstr(t_test *t)
@@ -31,10 +31,10 @@ void	test_cstr(t_test *t)
 	t_gpa		gpa;
 	t_allocator	a;
 
-	gpa = ft_gpa();
-	a = ft_gpa_allocator(&gpa);
-	ft_test_print(t, "Testing ft_cstr_to_str...\n");
+	gpa = xft_gpa();
+	a = xft_gpa_allocator(&gpa);
+	xft_test_print(t, "Testing xft_cstr_to_str...\n");
 	test_cstr_to_str(a);
-	ft_gpa_destroy(&gpa);
-	ft_test_print(t, "  ft_cstr_to_str: OK\n");
+	xft_gpa_destroy(&gpa);
+	xft_test_print(t, "  xft_cstr_to_str: OK\n");
 }

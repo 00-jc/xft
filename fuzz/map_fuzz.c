@@ -33,18 +33,18 @@ static void	fuzz_map_case(t_fuzzer *fz, t_allocator a,
 	int			val;
 	int			*x;
 
-	i = ft_fuzz_get_rand_u(fz) % FUZZ_KEY_SLOTS;
-	val = (int)ft_fuzz_get_rand_u(fz);
-	key = ft_fatptr(keys[i], 2);
-	ft_pin_invariant(ft_map_insert(a, m, key, (t_u8 *)&val));
-	x = ft_map_lookup(m, key);
-	ft_pin_invariant(x != nullptr);
-	ft_pin_invariant(*x == val);
-	ft_map_delete(m, key);
-	ft_pin_invariant(ft_map_lookup(m, key) == nullptr);
+	i = xft_fuzz_get_rand_u(fz) % FUZZ_KEY_SLOTS;
+	val = (int)xft_fuzz_get_rand_u(fz);
+	key = xft_fatptr(keys[i], 2);
+	xft_pin_invariant(xft_map_insert(a, m, key, (t_u8 *)&val));
+	x = xft_map_lookup(m, key);
+	xft_pin_invariant(x != nullptr);
+	xft_pin_invariant(*x == val);
+	xft_map_delete(m, key);
+	xft_pin_invariant(xft_map_lookup(m, key) == nullptr);
 }
 
-void	ft_main(const t_any *__restrict__ const sp)
+void	xft_main(const t_any *__restrict__ const sp)
 {
 	t_fuzzer	fz;
 	t_allocator	a;
@@ -53,16 +53,16 @@ void	ft_main(const t_any *__restrict__ const sp)
 	t_size		i;
 
 	(void)sp;
-	fz = ft_fuzzer_new(ft_new_arena_alloc());
-	ft_pin_invariant(fz.arena.current != nullptr);
-	ft_pin_invariant(ft_fuzzer_add_rand(&fz));
-	a = ft_new_page_alloc();
-	m = ft_map_new(a);
+	fz = xft_fuzzer_new(xft_new_arena_alloc());
+	xft_pin_invariant(fz.arena.current != nullptr);
+	xft_pin_invariant(xft_fuzzer_add_rand(&fz));
+	a = xft_new_page_alloc();
+	m = xft_map_new(a);
 	init_keys(keys);
 	i = 0;
 	while (i++ < fz.buf_n * 2)
 		fuzz_map_case(&fz, a, &m, keys);
-	ft_map_destroy(a, &m);
-	ft_fuzzer_destroy(&fz);
-	ft_exit(0);
+	xft_map_destroy(a, &m);
+	xft_fuzzer_destroy(&fz);
+	xft_exit(0);
 }

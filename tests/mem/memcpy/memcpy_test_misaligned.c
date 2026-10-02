@@ -26,7 +26,7 @@ void	test_memcpy_misaligned(void)
 		i++;
 	}
 	src[255] = '\0';
-	ft_memcpy(a + 1, src + 3, 100);
+	xft_memcpy(a + 1, src + 3, 100);
 	memcpy(b + 1, src + 3, 100);
-	ft_pin_invariant(memcmp(a + 1, b + 1, 100) == 0);
+	xft_pin_invariant(memcmp(a + 1, b + 1, 100) == 0);
 }

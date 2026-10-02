@@ -20,21 +20,21 @@ void	test_extend_clean_releases(void)
 	t_size				big;
 	int					i;
 
-	a = ft_new_arena_alloc();
+	a = xft_new_arena_alloc();
 	base = a.current;
-	cp = ft_arena_checkpoint(&a);
+	cp = xft_arena_checkpoint(&a);
 	big = base->total - base->used - 128;
-	ft_arena_alloc(&a, big, 16);
+	xft_arena_alloc(&a, big, 16);
 	i = -1;
 	while (++i < 4)
-		ft_arena_alloc(&a, 4096, 16);
-	ft_arena_rewind_clean(&a, cp);
-	ft_pin_invariant_msg(a.current == base,
-		ft_fatptr((t_u8 *)"back to base", sizeof("back to base") - 1));
-	ft_pin_invariant_msg(base->next == nullptr,
-		ft_fatptr((t_u8 *)"chain cleared", sizeof("chain cleared") - 1));
-	ft_pin_invariant_msg(ft_arena_alloc(&a, 64, 8) != nullptr,
-		ft_fatptr((t_u8 *)"alloc after clean",
+		xft_arena_alloc(&a, 4096, 16);
+	xft_arena_rewind_clean(&a, cp);
+	xft_pin_invariant_msg(a.current == base,
+		xft_fatptr((t_u8 *)"back to base", sizeof("back to base") - 1));
+	xft_pin_invariant_msg(base->next == nullptr,
+		xft_fatptr((t_u8 *)"chain cleared", sizeof("chain cleared") - 1));
+	xft_pin_invariant_msg(xft_arena_alloc(&a, 64, 8) != nullptr,
+		xft_fatptr((t_u8 *)"alloc after clean",
 			sizeof("alloc after clean") - 1));
-	ft_destroy_arena(&a);
+	xft_destroy_arena(&a);
 }

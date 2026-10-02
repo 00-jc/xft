@@ -16,7 +16,7 @@
 # include "io.h"
 # include "primitives.h"
 
-//	%x -> hex lower (u64 / whole value slot) 
+//	%x -> hex lower (u64 / whole value slot)
 //	%X -> hex upper (u64 / whole value slot)
 //	%p -> hex lower (u64 / whole value slot)
 //	%b -> u8
@@ -32,7 +32,7 @@
 //	%s -> string (ptr)
 //	%f -> double (reinterpret cast from value)
 
-t_result	ft_fmt_writer(t_writer *writer, t_buffer fmt, t_u64 *values)\
+t_result	xft_fmt_writer(t_writer *writer, t_buffer fmt, t_u64 *values)\
 				__attribute__((__nonnull__(1, 3)));
 
 #endif
