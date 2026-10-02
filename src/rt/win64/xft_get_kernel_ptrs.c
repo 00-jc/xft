@@ -16,7 +16,7 @@
 #include <windows.h>
 #include <shellapi.h>
 
-#if defined(_WIN64) && !defined(XFT_NO_RT)
+#if defined(_WIN64)
 
 __attribute__((__nonnull__(1), __hot__, __always_inline__, __used__))
 inline t_kernel_ptrs	xft_get_kernel_ptrs(const t_any *__restrict__ const sp)

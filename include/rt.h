@@ -85,19 +85,15 @@ void			_start(void)\
 void			xft_main(const t_any *__restrict__ const sp)\
 					__attribute__((__nonnull__(1), used, noreturn));
 
+# endif
+
 t_kernel_ptrs	xft_get_kernel_ptrs(const t_any *sp)\
 					__attribute__((__nonnull__(1)));
 
 t_xft_rt		xft_get_rt(const t_any *sp)\
 					__attribute__((__nonnull__(1)));
 
-#  if defined(_WIN64)
-
 void			xft_free_kernel_ptrs(t_kernel_ptrs *kp)\
 					__attribute__((__nonnull__(1)));
-
-#  endif
-
-# endif
 
 #endif

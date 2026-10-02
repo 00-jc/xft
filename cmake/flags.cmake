@@ -72,7 +72,6 @@ set(CFLAGS_RAW
   -finline-functions
   -fvisibility=hidden
   -fcf-protection=full
-  -ftrivial-auto-var-init=zero
   -fno-common
   -fno-semantic-interposition
   -fstrict-aliasing

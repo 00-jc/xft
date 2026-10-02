@@ -31,7 +31,7 @@ This produces `build/libxft.a`. Use `cmake --install build --prefix /usr/local` 
 | `XFT_FAST_MATH` | `ON` | `-ffast-math` |
 | `XFT_SANITIZE` | `OFF` | ASan + UBSan (forces `XFT_LIBC=ON`, disables LTO) |
 | `XFT_STRICT_ARCH` | `ON` | Compile only the host's arch backends |
-| `XFT_RT` | `ON` | Build the runtime: entry point + `rt` helpers |
+| `XFT_RT` | `ON` | xft entry point calling `xft_main`; `OFF` uses libc's and your `main` (forces `XFT_LIBC=ON`) |
 | `XFT_BUILD_TESTS` | `OFF` | Unit tests (always sanitized) |
 | `XFT_BUILD_FUZZ` | `OFF` | Fuzz targets (always sanitized) |
 | `XFT_BUILD_BENCH` | `OFF` | Benchmarks (never sanitized) |

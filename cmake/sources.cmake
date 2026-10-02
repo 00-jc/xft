@@ -196,6 +196,7 @@ set(SRCS_MEM
 set(SRCS_RNG src/rng/xft_xoshiro256ss.c)
 
 set(SRCS_RT_linux
+  src/rt/linux/xft_free_kernel_ptrs.c
   src/rt/linux/xft_get_kernel_ptrs.c
   src/rt/linux/xft_get_rt.c)
 
@@ -226,10 +227,6 @@ set(SRCS_TIME
 
 set(MODULES ALLOC ATOMICS BMI CONTAINERS CSTR CTYPE FMT FUZZER HASH HINT IO
             MATH MEM RNG RT SIGNALS SORT SYSCALLS TIME)
-
-if(NOT XFT_RT)
-  list(REMOVE_ITEM MODULES RT)
-endif()
 
 set(SRCS_ARCH_x86_64
   src/atomics/mutex/xft_mutex_backoff_x86_64.c

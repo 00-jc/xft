@@ -12,7 +12,7 @@
 
 #include "xft_p_rt.h"
 
-#if defined(_WIN64) && !defined(XFT_NO_RT)
+#if defined(_WIN64)
 
 __attribute__((__nonnull__(1), __hot__, __always_inline__, __used__))
 inline t_xft_rt	xft_get_rt(const t_any *sp)

@@ -78,7 +78,6 @@ set(_xft_warns_gcc
   -Wstrict-overflow=5
   -Wmissing-attributes
   -Wmismatched-dealloc
-  -Wtrivial-auto-var-init
   -Wuse-after-free=3
   -Wuseless-cast
   -fstrict-flex-arrays=3

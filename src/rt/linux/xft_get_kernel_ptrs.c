@@ -12,7 +12,7 @@
 
 #include "xft_p_rt.h"
 
-#if defined(__linux__) && !defined(XFT_NO_RT)
+#if defined(__linux__)
 
 __attribute__((__nonnull__(1), __hot__, __always_inline__, __used__))
 inline t_kernel_ptrs	xft_get_kernel_ptrs(const t_any *__restrict__ const sp)
