@@ -47,6 +47,8 @@ add_subdirectory(xft)
 target_link_libraries(myprog PRIVATE xft::xft)
 ```
 
+On Windows, xft calls into the system DLLs even in the freestanding flavor, so it depends on the `kernel32`, `ntdll` and `shell32` import libraries. `xft::xft` links them for you; if you link `libxft.lib` by hand, add them yourself.
+
 Programs include `<xft.h>` and define `xft_main` instead of `main`; it must end with `xft_exit`:
 
 ## Tests and benchmarks
