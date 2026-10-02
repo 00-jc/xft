@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/05 22:11:31 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/10/02 16:38:42 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/10/02 20:07:24 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,24 @@ inline void	xft_fillb(t_u8 *__restrict__ const bytereprs, t_u8 const c)
 	bytereprs[6] = (t_u8)xft_tern((c & (1 << 1)) != 0, '1', '0');
 	bytereprs[7] = (t_u8)xft_tern((c & (1 << 0)) != 0, '1', '0');
 }
+
+#ifdef _WIN64
+
+__attribute__((__always_inline__, __nonnull__(1)))
+inline void	xft_free_ptrs(t_kernel_ptrs *kp)
+{
+	xft_free_kernel_ptrs(kp);
+}
+
+#else
+
+__attribute__((__always_inline__, __nonnull__(1)))
+inline void	xft_free_ptrs(t_kernel_ptrs *kp)
+{
+	(void)kp;
+}
+
+#endif
 
 __attribute__((__always_inline__))
 inline void	xft_main(const t_any *__restrict__ const sp)
@@ -51,5 +69,6 @@ inline void	xft_main(const t_any *__restrict__ const sp)
 	}
 	xft_writer_write(&w, xft_fatptr((t_u8 *)"\n", 1));
 	(void)xft_writer_flush(&w);
+	xft_free_ptrs(&kp);
 	xft_exit(0);
 }

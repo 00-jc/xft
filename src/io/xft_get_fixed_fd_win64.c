@@ -17,8 +17,6 @@
 # define WIN32_LEAN_AND_MEAN
 # include <windows.h>
 
-/* windows has no fixed fds: the std handles are looked up and handed out
-** as the "fd" that the win64 syscalls cast back to a HANDLE */
 __attribute__((__always_inline__, __used__))
 inline t_i32	xft_get_stdin(void)
 {

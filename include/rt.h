@@ -93,7 +93,6 @@ t_xft_rt		xft_get_rt(const t_any *sp)\
 
 #  if defined(_WIN64)
 
-/* argv (LocalFree) and envp (FreeEnvironmentStringsW) come from the system */
 void			xft_free_kernel_ptrs(t_kernel_ptrs *kp)\
 					__attribute__((__nonnull__(1)));
 

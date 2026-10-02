@@ -16,8 +16,6 @@
 
 # if defined(_WIN64)
 
-/* windows: the kernel pointers come from GetCommandLineW and friends, so
-** xft_get_kernel_ptrs ignores sp and there is no stack layout to rely on */
 int	main(void)
 {
 	xft_main((const t_any *)__builtin_frame_address(0));
@@ -26,7 +24,6 @@ int	main(void)
 
 # else
 
-/* the kernel lays argc right below argv, so sp is recovered from argv */
 int	main(int argc, char **argv, char **envp)
 {
 	(void)argc;

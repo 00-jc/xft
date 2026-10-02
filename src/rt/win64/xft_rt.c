@@ -14,8 +14,6 @@
 
 #if defined(_WIN64) && !defined(XFT_REQUIRE_LIBC) && !defined(XFT_NO_RT)
 
-/* windows hands the entry point nothing: xft_main gets a dummy non-null sp
-** that xft_get_kernel_ptrs ignores */
 __attribute__((noreturn))
 void	_start(void)
 {
