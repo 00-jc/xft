@@ -16,7 +16,6 @@
 
 # define WIN32_LEAN_AND_MEAN
 # include <windows.h>
-# pragma comment(lib, "kernel32.lib")
 
 __attribute__((__nonnull__(1)))
 void	xft_free_kernel_ptrs(t_kernel_ptrs *kp)

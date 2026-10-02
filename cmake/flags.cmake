@@ -74,7 +74,6 @@ set(CFLAGS_RAW
   -fcf-protection=full
   -ftrivial-auto-var-init=zero
   -fno-common
-  -fstack-clash-protection
   -fno-semantic-interposition
   -fstrict-aliasing
   -g3)
@@ -84,10 +83,6 @@ if(XFT_NATIVE)
 endif()
 if(XFT_FAST_MATH)
   list(APPEND CFLAGS_RAW -ffast-math)
-endif()
-
-if(XFT_WIN64 AND NOT XFT_LIBC)
-  list(REMOVE_ITEM CFLAGS_RAW -fstack-clash-protection)
 endif()
 
 set(CFLAGS "")
@@ -104,6 +99,9 @@ if(XFT_WIN64)
 endif()
 
 set(CFLAGS_STACK_CHECK_RAW -fstack-protector-all -fstack-check)
+# per variant: freestanding win64 has no __chkstk to probe with, see
+# xft_wants_stack_clash in variants.cmake
+set(CFLAGS_STACK_CLASH_RAW -fstack-clash-protection)
 set(XFT_SAN_FLAGS_RAW
   -fsanitize=address,alignment,undefined
   -fsanitize-recover=null
@@ -112,14 +110,17 @@ set(XFT_SAN_FLAGS_RAW
 set(CFLAGS_HOSTED "")
 set(CFLAGS_FREESTANDING "")
 set(CFLAGS_STACK_CHECK "")
+set(CFLAGS_STACK_CLASH "")
 set(XFT_SAN_FLAGS "")
 set(_xft_ctx_h "${XFT_PROBE_CTX}")
 set(_xft_ctx_f "${XFT_PROBE_CTX}")
 set(_xft_ctx_s "${XFT_PROBE_CTX}")
 set(_xft_ctx_a "${XFT_PROBE_CTX}")
+set(_xft_ctx_c "${XFT_PROBE_CTX}")
 xft_probe(CFLAGS_HOSTED _xft_ctx_h ${CFLAGS_HOSTED_RAW})
 xft_probe(CFLAGS_FREESTANDING _xft_ctx_f ${CFLAGS_FREESTANDING_RAW})
 xft_probe(CFLAGS_STACK_CHECK _xft_ctx_s ${CFLAGS_STACK_CHECK_RAW})
+xft_probe(CFLAGS_STACK_CLASH _xft_ctx_c ${CFLAGS_STACK_CLASH_RAW})
 xft_probe_link(XFT_SAN_FLAGS _xft_ctx_a ${XFT_SAN_FLAGS_RAW})
 
 list(LENGTH CFLAGS_RAW _xft_n_cflags_raw)

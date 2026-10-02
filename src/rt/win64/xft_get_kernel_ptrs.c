@@ -15,8 +15,6 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <shellapi.h>
-#pragma comment(lib, "kernel32.lib")
-#pragma comment(lib, "shell32.lib")
 
 #if defined(_WIN64) && !defined(XFT_NO_RT)
 

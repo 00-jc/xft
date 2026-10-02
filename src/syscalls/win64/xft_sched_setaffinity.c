@@ -17,7 +17,6 @@
 
 # define WIN32_LEAN_AND_MEAN
 # include <windows.h>
-# pragma comment(lib, "kernel32.lib")
 # include <stdbool.h>
 
 __attribute__((__nonnull__(3), __always_inline__, __used__))

@@ -18,7 +18,6 @@
 # define WIN32_LEAN_AND_MEAN
 # define NOMINMAX
 # include <windows.h>
-# pragma comment(lib, "kernel32.lib")
 
 # ifndef S_IFREG
 #  define S_IFIFO	0010000

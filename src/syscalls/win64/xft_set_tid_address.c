@@ -16,7 +16,6 @@
 
 # define WIN32_LEAN_AND_MEAN
 # include <windows.h>
-# pragma comment(lib, "kernel32.lib")
 
 __attribute__((__always_inline__, __used__))
 inline int	xft_set_tid_address(t_any address)

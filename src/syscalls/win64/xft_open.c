@@ -17,7 +17,6 @@
 
 # define WIN32_LEAN_AND_MEAN
 # include <windows.h>
-# pragma comment(lib, "kernel32.lib")
 
 __attribute__((__always_inline__, const, unused, __used__))
 inline DWORD	xft_p_open_access(int flags)

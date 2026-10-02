@@ -26,6 +26,9 @@ function(xft_add_harness name)
     ${name}
     PRIVATE ${CFLAGS} ${XFT_WARNS} $<$<CONFIG:Release,RelWithDebInfo,>:-O3>
   )
+  get_target_property(_libc ${H_LIB} XFT_IS_LIBC)
+  xft_stack_clash_flags(_clash "${_libc}")
+  target_compile_options(${name} PRIVATE ${_clash})
 endfunction()
 
 if(XFT_BUILD_TESTS OR XFT_BUILD_FUZZ)

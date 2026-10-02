@@ -16,7 +16,6 @@
 #ifdef _WIN64
 
 # include <windows.h>
-# pragma comment(lib, "kernel32.lib")
 # include <stdbool.h>
 
 __attribute__((__nonnull__(1), __always_inline__, __used__))

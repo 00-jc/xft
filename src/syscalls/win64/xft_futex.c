@@ -18,8 +18,6 @@
 
 # define WIN32_LEAN_AND_MEAN
 # include <windows.h>
-# pragma comment(lib, "kernel32.lib")
-# pragma comment(lib, "ntdll.lib")
 
 LONG	RtlWaitOnAddress(volatile void *addr, void *cmp, SIZE_T size,
 			LARGE_INTEGER *timeout);

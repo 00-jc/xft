@@ -16,7 +16,6 @@
 
 # define WIN32_LEAN_AND_MEAN
 # include <windows.h>
-# pragma comment(lib, "kernel32.lib")
 
 __attribute__((__cold__, __always_inline__, __noreturn__, __used__))
 inline void	xft_exit(int status)

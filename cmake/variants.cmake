@@ -41,6 +41,17 @@ function(xft_srcs out libc)
   set(${out} "${_s}" PARENT_SCOPE)
 endfunction()
 
+# stack clash protection probes the stack in page steps; freestanding win64
+# builds drop the probes (-mno-stack-arg-probe, no __chkstk), every other
+# flavor keeps them
+function(xft_stack_clash_flags out libc)
+  if(libc OR NOT XFT_WIN64)
+    set(${out} "${CFLAGS_STACK_CLASH}" PARENT_SCOPE)
+  else()
+    set(${out} "" PARENT_SCOPE)
+  endif()
+endfunction()
+
 function(xft_add_lib name)
   cmake_parse_arguments(L "LIBC;SANITIZE;LTO" "" "" ${ARGN})
   if(L_SANITIZE)
@@ -83,6 +94,9 @@ function(xft_add_lib name)
   if(XFT_WIN64)
     target_link_libraries(${name} INTERFACE kernel32 ntdll shell32)
   endif()
+
+  xft_stack_clash_flags(_clash "${L_LIBC}")
+  target_compile_options(${name} PRIVATE ${_clash})
 
   if(L_LIBC)
     target_compile_definitions(${name} PUBLIC XFT_REQUIRE_LIBC)
@@ -207,9 +221,12 @@ function(xft_add_subproject name)
       PRIVATE ${CFLAGS} ${XFT_WARNS} $<$<CONFIG:Release,RelWithDebInfo,>:-O3>
     )
     get_target_property(_libc ${v} XFT_IS_LIBC)
+    set_target_properties(${t} PROPERTIES XFT_IS_LIBC "${_libc}")
     if(_libc)
       target_compile_options(${t} PRIVATE ${CFLAGS_HOSTED})
     endif()
+    xft_stack_clash_flags(_clash "${_libc}")
+    target_compile_options(${t} PRIVATE ${_clash})
     get_target_property(_ipo ${v} INTERPROCEDURAL_OPTIMIZATION)
     if(_ipo)
       set_property(TARGET ${t} PROPERTY INTERPROCEDURAL_OPTIMIZATION ON)

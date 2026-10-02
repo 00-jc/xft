@@ -16,7 +16,6 @@
 
 # define WIN32_LEAN_AND_MEAN
 # include <windows.h>
-# pragma comment(lib, "kernel32.lib")
 
 __attribute__((__always_inline__, __nonnull__(1), __used__))
 inline t_i64a	xft_clock_gettime(t_timespec *__restrict__ const ts)

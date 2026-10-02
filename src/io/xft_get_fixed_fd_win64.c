@@ -16,7 +16,6 @@
 
 # define WIN32_LEAN_AND_MEAN
 # include <windows.h>
-# pragma comment(lib, "kernel32.lib")
 
 /* windows has no fixed fds: the std handles are looked up and handed out
 ** as the "fd" that the win64 syscalls cast back to a HANDLE */
