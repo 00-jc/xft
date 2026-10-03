@@ -121,21 +121,18 @@ else()
   set(_xft_warns_raw ${_xft_warns_common})
 endif()
 
-include(CheckCCompilerFlag)
 set(CMAKE_REQUIRED_FLAGS -Werror)
-set(CMAKE_REQUIRED_QUIET ON)
 
 set(XFT_WARNS "")
 foreach(f IN LISTS _xft_warns_raw)
   string(MAKE_C_IDENTIFIER "XFT_WARN_OK_${f}" _var)
-  check_c_compiler_flag("${f}" ${_var})
+  xft_check_flag("${f}" ${_var})
   if(${_var})
     list(APPEND XFT_WARNS ${f})
   endif()
 endforeach()
 
 unset(CMAKE_REQUIRED_FLAGS)
-unset(CMAKE_REQUIRED_QUIET)
 
 list(LENGTH _xft_warns_raw _n_raw)
 list(LENGTH XFT_WARNS      _n_ok)
