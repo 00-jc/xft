@@ -17,6 +17,10 @@
 #  error "Cannot compile freestanding on this arch without XFT_REQUIRE_LIBC"
 # endif
 
+# if defined(_WIN32) && !defined(_WIN64)
+#  error "xft does not support 32-bit windows"
+# endif
+
 # if !defined(__linux__) && !defined(_WIN64)
 #  error "xft only supports linux and win64"
 # endif
