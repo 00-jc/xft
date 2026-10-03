@@ -17,7 +17,7 @@ void	test_str(t_test *t)
 	t_gpa		gpa;
 	t_allocator	a;
 
-	gpa = xft_gpa();
+	gpa = xft_new_gpa();
 	a = xft_gpa_allocator(&gpa);
 	xft_test_print(t, "Testing t_str...\n");
 	test_str_new(a);

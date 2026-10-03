@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   xft_mremap.c                                        :+:      :+:    :+:   */
+/*   xft_mremap.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -26,6 +26,12 @@ inline t_any	xft_mremap(t_size size, t_size new_size,
 	ret = xft_mmap(new_size, PROT_READ | PROT_WRITE, flags_extra);
 	if (__builtin_expect(xft_map_failed(ret), 0))
 		return (ret);
+	if (__builtin_expect(!xft_mmap_commit(ret, new_size,
+				PROT_READ | PROT_WRITE, flags_extra), 0))
+	{
+		xft_munmap(ret, new_size);
+		return ((t_any)MAP_FAILED);
+	}
 	xft_memcpy(ret, addr, xft_tern(size < new_size, size, new_size));
 	xft_munmap(addr, size);
 	return (ret);

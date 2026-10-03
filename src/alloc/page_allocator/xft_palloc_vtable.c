@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   xft_palloc_vtable.c                                 :+:      :+:    :+:   */
+/*   xft_palloc_vtable.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -37,7 +37,7 @@ static void	palloc_free(t_any alloc, t_buffer old)
 }
 
 __attribute__((__const__))
-t_allocator	xft_new_page_alloc(void)
+t_allocator	xft_page_allocator(void)
 {
 	static t_page_alloc	instance = {0};
 

@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   xft_map.c                                           :+:      :+:    :+:   */
+/*   xft_map.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,7 +12,7 @@
 
 #include "map.h"
 
-t_map	xft_map_with(t_allocator allocator, t_size capacity)
+t_map	xft_new_map_with(t_allocator allocator, t_size capacity)
 {
 	t_buffer	meta_buf;
 	t_buffer	bucket_buf;
@@ -48,9 +48,9 @@ void	xft_map_clear(t_map *map)
 	map->count = 0;
 }
 
-t_map	xft_map_new(t_allocator allocator)
+t_map	xft_new_map(t_allocator allocator)
 {
-	return (xft_map_with(allocator, MAP_INITIAL_SIZE));
+	return (xft_new_map_with(allocator, MAP_INITIAL_SIZE));
 }
 
 __attribute__((__nonnull__(2)))

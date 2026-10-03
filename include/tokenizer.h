@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/10/03 16:00:44 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/10/03 16:00:47 by jaicastr         ###   ########.fr       */
+/*   Created: 2026/10/03 18:01:29 by jaicastr          #+#    #+#             */
+/*   Updated: 2026/10/03 18:01:32 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ t_u32a		xft_tokenizer_goto(t_tokenizer *tk, t_u8 byte)\
 				__attribute__((__nonnull__(1)));
 void		xft_skip_whitespace(t_tokenizer *tk)\
 				__attribute__((__nonnull__(1)));
-t_tokenizer	xft_tokenizer_over(t_any mem, t_size size)\
+t_tokenizer	xft_new_tokenizer(t_any mem, t_size size)\
 				__attribute__((__nonnull__(1), const));
 t_u32a		xft_match_next(t_tokenizer *tk, t_u8 expected)\
 				__attribute__((__nonnull__(1)));

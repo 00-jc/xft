@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   xft_palloc.c                                        :+:      :+:    :+:   */
+/*   xft_palloc.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -22,6 +22,12 @@ inline t_buffer	xft_palloc(t_size size)
 	snapped = xft_match_hugepage(size);
 	flags = xft_match_hugepage_flags(snapped);
 	mem = xft_mmap(snapped, PROT_READ | PROT_WRITE, flags);
+	if (!xft_map_failed(mem) && !xft_mmap_commit(mem, snapped,
+			PROT_READ | PROT_WRITE, flags))
+	{
+		xft_munmap(mem, snapped);
+		mem = (t_any)MAP_FAILED;
+	}
 	return ((t_buffer){
 		.size = snapped,
 		.mem = (t_any)xft_tern(!xft_map_failed(mem), (t_u64a)mem, 0),
@@ -41,6 +47,12 @@ inline t_buffer	xft_palloc_resize(t_buffer b, t_size new_size)
 		return (b);
 	flags = xft_match_hugepage_flags(snapped);
 	mem = xft_mmap(snapped, PROT_READ | PROT_WRITE, flags);
+	if (!xft_map_failed(mem) && !xft_mmap_commit(mem, snapped,
+			PROT_READ | PROT_WRITE, flags))
+	{
+		xft_munmap(mem, snapped);
+		mem = (t_any)MAP_FAILED;
+	}
 	new_b = (t_buffer){
 		.size = snapped,
 		.mem = (t_any)xft_tern(!xft_map_failed(mem), (t_u64a)mem, 0),

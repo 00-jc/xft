@@ -16,7 +16,7 @@ void	test_str_push_back(t_allocator a)
 {
 	t_str	s;
 
-	s = xft_str(a, 1);
+	s = xft_new_str(a, 1);
 	xft_pin_invariant(xft_str_push_back(a, &s, 'h'));
 	xft_pin_invariant(xft_str_push_back(a, &s, 'i'));
 	xft_pin_invariant(s.size == 2);

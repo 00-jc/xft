@@ -18,7 +18,7 @@ void	test_map_insert_lookup(t_allocator a)
 	int		val;
 	int		*got;
 
-	m = xft_map_new(a);
+	m = xft_new_map(a);
 	val = 42;
 	xft_pin_invariant(xft_map_insert(a, &m,
 			xft_fatptr((t_u8 *)"key1", 4), (t_u8 *)&val));

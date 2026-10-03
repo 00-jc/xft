@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   xft_report.c                                        :+:      :+:    :+:   */
+/*   xft_report.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -21,14 +21,18 @@
 #define R3 "     %q\n  avg frag:  %f bytes\n  leaks:     %q\n  owned:"
 #define R4 " %q bytes\n"
 
-t_reporta	xft_reporta(void)
+t_reporta	xft_new_reporta(void)
 {
 	t_reporta		gpa;
 	t_buffer		buf;
 
-	buf = xft_palloc(GPA_SLABSIZE);
-	if (__builtin_expect(buf.mem == nullptr, 0))
+	buf = xft_fatptr(xft_mmap(GPA_SLABSIZE, PROT_READ | PROT_WRITE, 0),
+			GPA_SLABSIZE);
+	if (__builtin_expect(xft_map_failed(buf.mem), 0))
 		return ((t_reporta){0});
+	if (__builtin_expect(!xft_mmap_commit(buf.mem, sizeof(t_any *),
+				PROT_READ | PROT_WRITE, 0), 0))
+		return (xft_munmap(buf.mem, buf.size), (t_reporta){0});
 	xft_memset((t_any)gpa.free, 0, sizeof(t_uptr) * GPA_CLASSES);
 	xft_memset((t_any)gpa.free_depth, 0, sizeof(t_size) * GPA_CLASSES);
 	gpa.slab = buf.mem;

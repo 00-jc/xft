@@ -19,7 +19,7 @@ void	test_vec_extend(t_allocator a)
 	const int	*got;
 	int			i;
 
-	v = xft_vec(a, 2, sizeof(int));
+	v = xft_new_vec(a, 2, sizeof(int));
 	i = 0;
 	while (i < 5)
 	{

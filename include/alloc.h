@@ -46,7 +46,7 @@ typedef struct s_reporta
 	t_u8		buffer[REPORTA_BUFFER];
 }	t_reporta;
 
-t_gpa		xft_gpa(void);
+t_gpa		xft_new_gpa(void);
 void		xft_gpa_destroy(t_gpa *gpa);
 t_buffer	xft_gpa_alloc(t_any alloc, t_size size, t_size align);
 t_buffer	xft_gpa_realloc(t_any alloc, t_buffer buf, t_size newsize,
@@ -55,7 +55,7 @@ void		xft_gpa_free(t_any allocator, t_buffer buf);
 t_buffer	xft_alloc_clone(t_any self, t_buffer buffer)\
 				__attribute__((__nonnull__(1)));
 
-t_reporta	xft_reporta(void);
+t_reporta	xft_new_reporta(void);
 void		xft_reporta_destroy(t_reporta *gpa)\
 				__attribute__((__nonnull__(1)));
 t_buffer	xft_reporta_alloc(t_any alloc, t_size size, t_size align)\
@@ -72,7 +72,7 @@ t_allocator	xft_gpa_allocator(t_gpa *gpa)\
 				__attribute__((__nonnull__(1), __const__));
 t_allocator	xft_reporta_allocator(t_reporta *gpa)\
 				__attribute__((__nonnull__(1), __const__));
-t_allocator	xft_new_page_alloc(void)\
+t_allocator	xft_page_allocator(void)\
 				__attribute__((__const__));
 
 #endif

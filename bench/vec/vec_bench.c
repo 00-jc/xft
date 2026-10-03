@@ -29,7 +29,7 @@ inline void	xft_main(const t_any *__restrict__ const sp)
 
 	(void)sp;
 	xft_bind_process_to_cpu(0);
-	if (!xft_tailor_new(&t, 2, 2000))
+	if (!xft_new_tailor(&t, 2, 2000))
 		xft_exit(1);
 	(void)xft_tailor_bench(&t, benches, 6);
 	xft_gpa_destroy(xft_get_bench_vec_gpa());

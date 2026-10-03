@@ -15,7 +15,7 @@
 
 # include "types/general_allocator_types.h"
 
-t_gpa		xft_gpa(void);
+t_gpa		xft_new_gpa(void);
 void		xft_gpa_destroy(t_gpa *gpa);
 t_buffer	xft_gpa_alloc(t_any alloc, t_size size, t_size align);
 t_buffer	xft_gpa_realloc(t_any alloc, t_buffer buf, t_size newsize,

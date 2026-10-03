@@ -24,7 +24,7 @@ void	xft_vec_bench_read(t_any ptr)
 	t_u64		val;
 
 	a = xft_gpa_allocator(xft_get_bench_vec_gpa());
-	vec = xft_vec(a, READ_FILL, sizeof(t_u64));
+	vec = xft_new_vec(a, READ_FILL, sizeof(t_u64));
 	n = xft_tailor_getcount(ptr);
 	val = 0;
 	while (val < READ_FILL)

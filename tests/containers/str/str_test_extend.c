@@ -18,7 +18,7 @@ void	test_str_extend(t_allocator a)
 	const t_u8	*hello;
 
 	hello = (const t_u8 *)"hello";
-	s = xft_str(a, 1);
+	s = xft_new_str(a, 1);
 	xft_pin_invariant(xft_str_extend(a, &s, hello, 5));
 	xft_pin_invariant(s.size == 5);
 	xft_pin_invariant(xft_memcmp(s.mem, "hello", 6) == 0);

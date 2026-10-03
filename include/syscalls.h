@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/10/03 16:00:44 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/10/03 16:00:47 by jaicastr         ###   ########.fr       */
+/*   Created: 2026/10/03 18:01:29 by jaicastr          #+#    #+#             */
+/*   Updated: 2026/10/03 18:01:32 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -197,6 +197,9 @@ typedef struct s_clone_arg
 # define XFT_MKDIR_0755			0755
 
 t_any		xft_mmap(t_size size, t_u64a prot, t_u64a flags_extra);
+t_result	xft_mmap_commit(t_any ptr, t_size size,\
+				t_u64a prot, t_u64a flags_extra)\
+				__attribute__((__nonnull__(1)));
 t_any		xft_fmap(t_size size, int fd);
 t_result	xft_map_failed(t_cany ptr)\
 			__attribute__((const));

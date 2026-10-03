@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   xft_tailor_new.c                                    :+:      :+:    :+:   */
+/*   xft_tailor_new.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -14,13 +14,13 @@
 #include "io.h"
 
 __attribute__((__nonnull__(1)))
-t_result	xft_tailor_new(t_tailor *t, t_f64 warmup_sec, t_u64a min_samples)
+t_result	xft_new_tailor(t_tailor *t, t_f64 warmup_sec, t_u64a min_samples)
 {
 	t_u64a		actualtime;
 
 	if (!xft_perf_create_counters(t->counters))
 		return (KO);
-	t->arena = xft_new_arena_alloc();
+	t->arena = xft_new_arena();
 	if (!t->arena.current)
 		return (xft_perf_destroy_counters(t->counters), KO);
 	actualtime = (t_u64a)(xft_dtern(warmup_sec < .75, .75, warmup_sec) * 1e9);

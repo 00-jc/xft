@@ -20,7 +20,7 @@ void	test_extend_clean_releases(void)
 	t_size				big;
 	int					i;
 
-	a = xft_new_arena_alloc();
+	a = xft_new_arena();
 	base = a.current;
 	cp = xft_arena_checkpoint(&a);
 	big = base->total - base->used - 128;

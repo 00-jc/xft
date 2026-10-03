@@ -18,6 +18,6 @@ t_gpa	*xft_get_bench_gpa(void)
 	static t_gpa	gpa = {0};
 
 	if (gpa.slab == nullptr)
-		gpa = xft_gpa();
+		gpa = xft_new_gpa();
 	return (&gpa);
 }

@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   xft_fmt_handle_double.c                             :+:      :+:    :+:   */
+/*   xft_fmt_handle_double.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -45,7 +45,7 @@ inline t_size	xft_fmt_double_int(t_u8 *out, t_f64 d, bool neg)
 	if (neg)
 		out[i++] = '-';
 	xft_memcpy(out + i, tmp + j, 20 - j);
-	return (i + 20);
+	return (i + 20 - j);
 }
 
 __attribute__((__nonnull__(1), __always_inline__, __used__))

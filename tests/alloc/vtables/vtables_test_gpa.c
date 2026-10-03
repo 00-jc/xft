@@ -18,7 +18,7 @@ void	test_gpa_vtable(void)
 	t_allocator	alloc;
 	t_buffer	buf;
 
-	gpa = xft_gpa();
+	gpa = xft_new_gpa();
 	xft_pin_invariant_msg(gpa.slab != nullptr,
 		xft_fatptr((t_u8 *)"gpa: init", sizeof("gpa: init") - 1));
 	alloc = xft_gpa_allocator(&gpa);

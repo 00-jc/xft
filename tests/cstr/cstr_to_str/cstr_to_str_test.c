@@ -31,7 +31,7 @@ void	test_cstr(t_test *t)
 	t_gpa		gpa;
 	t_allocator	a;
 
-	gpa = xft_gpa();
+	gpa = xft_new_gpa();
 	a = xft_gpa_allocator(&gpa);
 	xft_test_print(t, "Testing xft_cstr_to_str...\n");
 	test_cstr_to_str(a);

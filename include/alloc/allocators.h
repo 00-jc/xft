@@ -25,7 +25,7 @@ t_allocator	xft_gpa_allocator(t_gpa *gpa)\
 				__attribute__((__nonnull__(1), __const__));
 t_allocator	xft_reporta_allocator(t_reporta *gpa)\
 				__attribute__((__nonnull__(1), __const__));
-t_allocator	xft_new_page_alloc(void)\
+t_allocator	xft_page_allocator(void)\
 				__attribute__((__const__));
 
 #endif

@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/10/03 16:00:44 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/10/03 16:00:47 by jaicastr         ###   ########.fr       */
+/*   Created: 2026/10/03 18:01:29 by jaicastr          #+#    #+#             */
+/*   Updated: 2026/10/03 18:01:32 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,8 +70,8 @@ typedef struct s_map
 
 # endif
 
-t_map		xft_map_with(t_allocator allocator, t_size capacity);
-t_map		xft_map_new(t_allocator allocator);
+t_map		xft_new_map_with(t_allocator allocator, t_size capacity);
+t_map		xft_new_map(t_allocator allocator);
 t_any		xft_map_lookup(const t_map *__restrict__ const map, t_buffer key)\
 				__attribute__((__nonnull__(1)));
 t_result	xft_map_insert(t_allocator allocator,\

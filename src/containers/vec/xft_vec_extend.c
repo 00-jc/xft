@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   xft_vec_extend.c                                    :+:      :+:    :+:   */
+/*   xft_vec_extend.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -13,8 +13,8 @@
 #include "vec.h"
 
 __attribute__((__nonnull__(2), __always_inline__, __used__))
-inline t_result	xft_vec_reserve(t_allocator allocator, t_vec *restrict const vec,
-	t_size n)
+inline t_result	xft_vec_reserve(t_allocator allocator,
+	t_vec *restrict const vec, t_size n)
 {
 	t_buffer	new_buf;
 	t_size		new_cap;

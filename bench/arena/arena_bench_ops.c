@@ -20,7 +20,7 @@ t_arena	*xft_get_bench_arena(void)
 
 	if (arena.current == nullptr)
 	{
-		arena = xft_new_arena_alloc();
+		arena = xft_new_arena();
 		cp = xft_arena_checkpoint(&arena);
 	}
 	xft_arena_rewind(&arena, cp);

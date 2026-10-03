@@ -18,7 +18,7 @@ void	test_str_remove(t_allocator a)
 	const t_u8	*src;
 
 	src = (const t_u8 *)"abc";
-	s = xft_str(a, 1);
+	s = xft_new_str(a, 1);
 	xft_pin_invariant(xft_str_extend(a, &s, src, 3));
 	xft_pin_invariant(s.size == 3);
 	xft_pin_invariant(xft_str_remove(&s, 1));

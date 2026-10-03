@@ -53,11 +53,11 @@ void	xft_main(const t_any *__restrict__ const sp)
 	t_size		i;
 
 	(void)sp;
-	fz = xft_fuzzer_new(xft_new_arena_alloc());
+	fz = xft_new_fuzzer(xft_new_arena());
 	xft_pin_invariant(fz.arena.current != nullptr);
 	xft_pin_invariant(xft_fuzzer_add_rand(&fz));
-	a = xft_new_page_alloc();
-	m = xft_map_new(a);
+	a = xft_page_allocator();
+	m = xft_new_map(a);
 	init_keys(keys);
 	i = 0;
 	while (i++ < fz.buf_n * 2)

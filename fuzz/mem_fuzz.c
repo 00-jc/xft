@@ -94,7 +94,7 @@ void	xft_main(const t_any *__restrict__ const sp)
 	t_size		n;
 
 	(void)sp;
-	fz = xft_fuzzer_new(xft_new_arena_alloc());
+	fz = xft_new_fuzzer(xft_new_arena());
 	xft_pin_invariant(fz.arena.current != nullptr);
 	xft_pin_invariant(xft_fuzzer_add_rand(&fz));
 	n = fz.buf_n * 2;

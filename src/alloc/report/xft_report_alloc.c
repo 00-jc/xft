@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   xft_report_alloc.c                                  :+:      :+:    :+:   */
+/*   xft_report_alloc.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -18,9 +18,13 @@ static inline int	xft_advance_slab(t_reporta *gpa)
 	t_buffer	buf;
 	t_any		*prev;
 
-	buf = xft_palloc(GPA_SLABSIZE);
-	if (__builtin_expect(buf.mem == nullptr, 0))
+	buf = xft_fatptr(xft_mmap(GPA_SLABSIZE, PROT_READ | PROT_WRITE, 0),
+			GPA_SLABSIZE);
+	if (__builtin_expect(xft_map_failed(buf.mem), 0))
 		return (0);
+	if (__builtin_expect(!xft_mmap_commit(buf.mem, sizeof(t_any *),
+				PROT_READ | PROT_WRITE, 0), 0))
+		return (xft_munmap(buf.mem, buf.size), 0);
 	prev = gpa->slab;
 	++gpa->slabs;
 	gpa->slab = buf.mem;
@@ -43,6 +47,9 @@ static inline t_buffer	xft_return_ptr(t_reporta *gpa,
 			&& !xft_advance_slab(gpa), 0))
 		return (xft_fatptr(nullptr, 0));
 	new_ptr = xft_align_fwd(gpa->bmp, align);
+	if (__builtin_expect(!xft_mmap_commit(new_ptr, sizes[1],
+				PROT_READ | PROT_WRITE, 0), 0))
+		return (xft_fatptr(nullptr, 0));
 	gpa->avg_frag += (t_f64)((t_f64)((sizes[1] - sizes[0])
 				+ (t_uptr)new_ptr - (t_uptr)gpa->bmp)
 			- gpa->avg_frag) / (t_f64)gpa->n_allocs;
@@ -72,6 +79,9 @@ static inline t_buffer	xft_paged_ptr(t_reporta *gpa, t_size sizes[2])
 			xft_match_hugepage_flags(sizes[1]));
 	if (__builtin_expect(xft_map_failed(new_ptr), 0))
 		return (xft_fatptr(nullptr, 0));
+	if (__builtin_expect(!xft_mmap_commit(new_ptr, sizes[1],
+				PROT_READ | PROT_WRITE, 0), 0))
+		return (xft_munmap(new_ptr, sizes[1]), xft_fatptr(nullptr, 0));
 	gpa->avg_frag += (t_f64)((t_f64)(sizes[1] - sizes[0]) - gpa->avg_frag)
 		/ (t_f64)gpa->n_allocs;
 	return (xft_fatptr(new_ptr, sizes[1]));

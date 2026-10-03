@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   xft_tokenizer.c                                     :+:      :+:    :+:   */
+/*   xft_tokenizer.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -13,7 +13,7 @@
 #include "xft_p_tok.h"
 
 __attribute__((__nonnull__(1), const, __always_inline__, __used__))
-inline t_tokenizer	xft_tokenizer_over(t_any mem, t_size size)
+inline t_tokenizer	xft_new_tokenizer(t_any mem, t_size size)
 {
 	return ((t_tokenizer){
 		.mem = mem,

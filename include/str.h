@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/10/03 16:00:44 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/10/03 16:00:46 by jaicastr         ###   ########.fr       */
+/*   Created: 2026/10/03 18:01:29 by jaicastr          #+#    #+#             */
+/*   Updated: 2026/10/03 18:01:32 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ typedef struct s_str
 	t_u8	*mem;
 }	t_str;
 
-t_str		xft_str(t_allocator allocator, t_size size);
+t_str		xft_new_str(t_allocator allocator, t_size size);
 void		xft_str_destroy(t_allocator allocator, t_str *str)\
 				__attribute__((__nonnull__(2)));
 t_result	xft_str_extend(t_allocator allocator,\

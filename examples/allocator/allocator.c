@@ -20,7 +20,7 @@ void	xft_main(const t_any *const __restrict__ sp)
 	t_buffer		memory;
 
 	(void)sp;
-	gpa = xft_gpa();
+	gpa = xft_new_gpa();
 	allocator = xft_gpa_allocator(&gpa);
 	memory = allocator.vtable.allocate(allocator.allocator, 1000, 64);
 	if (__builtin_expect(memory.mem == nullptr, 0))

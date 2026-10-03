@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   xft_cstr_to_str.c                                   :+:      :+:    :+:   */
+/*   xft_cstr_to_str.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -19,7 +19,7 @@ t_str	xft_cstr_to_str(t_allocator allocator, const char *cstr)
 	t_size	n;
 
 	n = xft_strlen(cstr);
-	str = xft_str(allocator, n);
+	str = xft_new_str(allocator, n);
 	if (__builtin_expect(str.mem == nullptr, 0))
 		return ((t_str){0});
 	if (__builtin_expect(!xft_str_extend(allocator, &str, (t_any)cstr, n), 0))

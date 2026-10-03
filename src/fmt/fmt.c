@@ -66,5 +66,6 @@ t_result	xft_fmt_writer(t_writer *writer,
 		start = ++subst;
 		subst = xft_memchr(start, '%', maxptr - (t_uptr)start);
 	}
-	return (xft_writer_write(writer, xft_fatptr(start, maxptr - (t_uptr)start)));
+	return (xft_writer_write(writer,
+			xft_fatptr(start, maxptr - (t_uptr)start)));
 }

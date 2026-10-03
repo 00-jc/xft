@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   xft_xxh3_large_sizes.c                              :+:      :+:    :+:   */
+/*   xft_xxh3_large_sizes.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -106,7 +106,8 @@ inline void	xft_xxh3_hashlong_internal_loop(t_blk8r acc, t_buffer input,
 		++n;
 	}
 	nb_stripes = ((input.size - 1) - (blen * nb_blks)) / XXH3_STRIPE_LEN;
-	xft_xxh3_accumulate(acc, input.mem + nb_blks * blen, secret.mem, nb_stripes);
+	xft_xxh3_accumulate(acc, input.mem + nb_blks * blen, secret.mem,
+		nb_stripes);
 	xft_xxh3_accumulate_512(acc, input.mem + input.size - XXH3_STRIPE_LEN,
 		secret.mem + secret.size - XXH3_STRIPE_LEN - XXH3_SECRET_LASTACC_START);
 }

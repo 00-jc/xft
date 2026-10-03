@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   xft_vec.c                                           :+:      :+:    :+:   */
+/*   xft_vec.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,7 +12,7 @@
 
 #include "vec.h"
 
-t_vec	xft_vec(t_allocator allocator, t_size size, t_size type_size)
+t_vec	xft_new_vec(t_allocator allocator, t_size size, t_size type_size)
 {
 	t_buffer	buf;
 	t_size		mul;

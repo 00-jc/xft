@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   xft_tailor_summary.c                                :+:      :+:    :+:   */
+/*   xft_tailor_summary.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -62,8 +62,8 @@ static inline void	xft_sum_counters(t_perf_sample *src, t_perf_sample *sum,
 }
 
 __attribute__((__nonnull__(3, 4), __always_inline__))
-static inline void	xft_init_args(t_perf_sample sum, t_plankb plan, t_u64a *data,
-	t_u64a *args)
+static inline void	xft_init_args(t_perf_sample sum, t_plankb plan,
+	t_u64a *data, t_u64a *args)
 {
 	t_u64a	total_iters;
 	t_u64a	it;

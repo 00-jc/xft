@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/10/03 16:00:45 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/10/03 16:00:47 by jaicastr         ###   ########.fr       */
+/*   Created: 2026/10/03 18:01:30 by jaicastr          #+#    #+#             */
+/*   Updated: 2026/10/03 18:01:32 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ typedef struct s_tailor_report_ctx
 	t_writer *__restrict__ const	writer;
 }	t_tailor_report_ctx;
 
-t_result	xft_tailor_new(t_tailor *t, t_f64 warmup_sec, t_u64a min_samples)\
+t_result	xft_new_tailor(t_tailor *t, t_f64 warmup_sec, t_u64a min_samples)\
 					__attribute__((__nonnull__(1)));
 
 t_result	xft_tailor_bench(t_tailor *t, t_tailor_bench benches[],\

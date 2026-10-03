@@ -17,7 +17,7 @@ void	test_map(t_test *t)
 	t_gpa		gpa;
 	t_allocator	a;
 
-	gpa = xft_gpa();
+	gpa = xft_new_gpa();
 	a = xft_gpa_allocator(&gpa);
 	xft_test_print(t, "Testing t_map (swissmap)...\n");
 	test_map_insert_lookup(a);

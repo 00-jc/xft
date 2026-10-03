@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/10/03 16:00:44 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/10/03 16:00:46 by jaicastr         ###   ########.fr       */
+/*   Created: 2026/10/03 18:01:29 by jaicastr          #+#    #+#             */
+/*   Updated: 2026/10/03 18:01:32 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ typedef struct s_fuzzer
 	t_lastgen	lastgen;
 }	t_fuzzer;
 
-t_fuzzer	xft_fuzzer_new(t_arena arena);
+t_fuzzer	xft_new_fuzzer(t_arena arena);
 t_result	xft_fuzzer_add_rand(t_fuzzer *fuzz)\
 				__attribute__((__nonnull__(1)));
 

@@ -15,7 +15,7 @@
 
 # include "types/report_allocator_primitives.h"
 
-t_reporta	xft_reporta(void);
+t_reporta	xft_new_reporta(void);
 void		xft_reporta_destroy(t_reporta *gpa)\
 				__attribute__((__nonnull__(1)));
 t_buffer	xft_reporta_alloc(t_any alloc, t_size size, t_size align)\

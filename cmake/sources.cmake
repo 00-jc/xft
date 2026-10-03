@@ -1,9 +1,11 @@
 # every source list. needs options.cmake (XFT_WIN64, XFT_RT, XFT_STRICT_ARCH)
 
 set(SRCS_ALLOC
+  src/alloc/arena/xft_arena.c
   src/alloc/arena/xft_arena_alloc.c
   src/alloc/arena/xft_arena_alloc_scopes.c
   src/alloc/arena/xft_arena_alloc_utils.c
+  src/alloc/arena/xft_arena_rewind.c
   src/alloc/arena/xft_arena_vtable.c
   src/alloc/xft_alloc_clone.c
   src/alloc/gpa/xft_gpa.c
@@ -218,6 +220,7 @@ set(SRCS_SORT
   src/sort/xft_qsort_u64s.c)
 
 set(SRCS_SYSCALLS
+  src/syscalls/linux/xft_mmap_commit.c
   src/syscalls/xft_get_cpu_count.c
   src/syscalls/xft_map_failed.c)
 

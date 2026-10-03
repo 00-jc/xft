@@ -22,7 +22,7 @@ void	xft_vec_bench_extend(t_any ptr)
 	t_size				n;
 
 	a = xft_gpa_allocator(xft_get_bench_vec_gpa());
-	vec = xft_vec(a, 64, sizeof(t_u64));
+	vec = xft_new_vec(a, 64, sizeof(t_u64));
 	n = xft_tailor_getcount(ptr);
 	while (n-- > 0)
 		xft_vec_extend(a, &vec,

@@ -21,7 +21,7 @@ void	test_map_many(t_allocator a)
 	int			i;
 
 	xft_xoshiro_init(rng);
-	m = xft_map_new(a);
+	m = xft_new_map(a);
 	i = 0;
 	while (i < 200)
 	{

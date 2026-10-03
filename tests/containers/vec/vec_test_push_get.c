@@ -18,7 +18,7 @@ void	test_vec_push_get(t_allocator a)
 	int			val;
 	const int	*got;
 
-	v = xft_vec(a, 4, sizeof(int));
+	v = xft_new_vec(a, 4, sizeof(int));
 	xft_pin_invariant(v.buf.mem != nullptr);
 	xft_pin_invariant(xft_vec_len(&v, sizeof(int)) == 0);
 	val = 42;

@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   xft_gpa.c                                           :+:      :+:    :+:   */
+/*   xft_gpa.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,14 +12,18 @@
 
 #include "xft_p_gpa.h"
 
-t_gpa	xft_gpa(void)
+t_gpa	xft_new_gpa(void)
 {
 	t_gpa		gpa;
 	t_buffer	buf;
 
-	buf = xft_palloc(GPA_SLABSIZE);
-	if (__builtin_expect(buf.mem == nullptr, 0))
+	buf = xft_fatptr(xft_mmap(GPA_SLABSIZE, PROT_READ | PROT_WRITE, 0),
+			GPA_SLABSIZE);
+	if (__builtin_expect(xft_map_failed(buf.mem), 0))
 		return ((t_gpa){0});
+	if (__builtin_expect(!xft_mmap_commit(buf.mem, sizeof(t_any *),
+				PROT_READ | PROT_WRITE, 0), 0))
+		return (xft_munmap(buf.mem, buf.size), (t_gpa){0});
 	xft_memset((t_any)gpa.free, 0, sizeof(t_uptr) * GPA_CLASSES);
 	gpa.slab = buf.mem;
 	*(t_any *)gpa.slab = nullptr;

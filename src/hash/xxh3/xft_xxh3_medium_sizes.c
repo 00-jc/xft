@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   xft_xxh3_medium_sizes.c                             :+:      :+:    :+:   */
+/*   xft_xxh3_medium_sizes.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -99,7 +99,8 @@ inline t_u64a	xft_xxh3_len_129to240(t_buffer input,
 }
 
 __attribute__((pure, __always_inline__, __used__))
-inline t_u64a	xft_xxh3_hash_short(t_buffer input, t_buffer secret, t_u64a seed)
+inline t_u64a	xft_xxh3_hash_short(t_buffer input, t_buffer secret,
+	t_u64a seed)
 {
 	if (input.size < 129 || input.size > 240
 		|| input.mem == nullptr || secret.mem == nullptr)

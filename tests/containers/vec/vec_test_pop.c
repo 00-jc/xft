@@ -18,7 +18,7 @@ void	test_vec_pop(t_allocator a)
 	int		val;
 	int		out;
 
-	v = xft_vec(a, 4, sizeof(int));
+	v = xft_new_vec(a, 4, sizeof(int));
 	val = 10;
 	xft_vec_push_back(a, &v, (t_u8 *)&val, sizeof(int));
 	val = 20;

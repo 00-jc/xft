@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   xft_arena_alloc_utils.c                             :+:      :+:    :+:   */
+/*   xft_arena_alloc_utils.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/29 23:39:13 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/06/29 23:39:19 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/10/03 18:35:50 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,7 @@ inline t_size	xft_match_paging(t_size requested_size)
 	t_size	page_size;
 
 	page_size = xft_match_hugepage(requested_size + sizeof(t_hugepage));
-	if (page_size < HUGEPAGE_256MB)
-		page_size = HUGEPAGE_256MB;
-	return (page_size);
+	return (xft_tern(page_size < HUGEPAGE_256MB, HUGEPAGE_256MB, page_size));
 }
 
 __attribute__((__nonnull__(1), __returns_nonnull__, __always_inline__))
@@ -47,10 +45,10 @@ inline t_hugepage	*new_hugepage(t_hugepage *restrict const prev,
 	page = xft_mmap(size, PROT_READ | PROT_WRITE, flag);
 	if (xft_map_failed(page))
 		return (nullptr);
-	page->page_size = size;
-	page->prev = prev;
-	page->total = size - sizeof(t_hugepage);
-	page->used = 0;
+	if (!xft_mmap_commit(page, sizeof(t_hugepage), PROT_READ | PROT_WRITE, 0))
+		return (xft_munmap(page, size), nullptr);
+	*page = (t_hugepage){.page_size = size, .prev = prev,
+		.total = size - sizeof(t_hugepage)};
 	if (prev && prev->next)
 	{
 		page->next = prev->next;

@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   xft_map_rehash.c                                    :+:      :+:    :+:   */
+/*   xft_map_rehash.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -20,7 +20,7 @@ t_result	xft_map_rehash(t_allocator allocator, t_map *restrict const map)
 
 	if (map->buckets == nullptr || map->meta == nullptr)
 		__builtin_unreachable();
-	new = xft_map_with(allocator, map->table_size << 1);
+	new = xft_new_map_with(allocator, map->table_size << 1);
 	if (!new.meta || !new.buckets)
 		return (KO);
 	i = 0;

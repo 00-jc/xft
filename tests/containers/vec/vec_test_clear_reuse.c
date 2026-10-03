@@ -18,7 +18,7 @@ void	test_vec_clear_reuse(t_allocator a)
 	int			val;
 	const int	*got;
 
-	v = xft_vec(a, 8, sizeof(int));
+	v = xft_new_vec(a, 8, sizeof(int));
 	val = 100;
 	xft_vec_push_back(a, &v, (t_u8 *)&val, sizeof(int));
 	val = 200;

@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   xft_fuzzer.c                                        :+:      :+:    :+:   */
+/*   xft_fuzzer.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,7 +12,7 @@
 
 #include "fuzzer.h"
 
-t_fuzzer	xft_fuzzer_new(t_arena arena)
+t_fuzzer	xft_new_fuzzer(t_arena arena)
 {
 	t_fuzzer	fz;
 

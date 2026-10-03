@@ -24,7 +24,7 @@ void	xft_vec_bench_remove_front(t_any ptr)
 	t_u64		val;
 
 	a = xft_gpa_allocator(xft_get_bench_vec_gpa());
-	vec = xft_vec(a, RMF_LEN, sizeof(t_u64));
+	vec = xft_new_vec(a, RMF_LEN, sizeof(t_u64));
 	n = xft_tailor_getcount(ptr);
 	val = 0;
 	while (val < RMF_LEN)

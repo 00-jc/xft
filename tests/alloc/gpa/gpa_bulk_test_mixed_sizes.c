@@ -18,7 +18,7 @@ void	test_bulk_mixed_sizes(void)
 	t_gpa		gpa;
 	int			i;
 
-	gpa = xft_gpa();
+	gpa = xft_new_gpa();
 	xft_pin_invariant_msg(gpa.slab != nullptr,
 		xft_fatptr((t_u8 *)"gpa init mixed", sizeof("gpa init mixed") - 1));
 	test_bulk_mixed_sizes_fill(&gpa, bufs);

@@ -16,7 +16,7 @@ void	test_arena_invalid(void)
 {
 	t_arena	a;
 
-	a = xft_new_arena_alloc();
+	a = xft_new_arena();
 	xft_pin_invariant_msg(xft_arena_alloc(&a, 16, 0) == nullptr,
 		xft_fatptr((t_u8 *)"align 0", sizeof("align 0") - 1));
 	xft_pin_invariant_msg(xft_arena_alloc(&a, 16, 3) == nullptr,

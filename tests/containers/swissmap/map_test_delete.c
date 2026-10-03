@@ -17,7 +17,7 @@ void	test_map_delete(t_allocator a)
 	t_map	m;
 	int		val;
 
-	m = xft_map_new(a);
+	m = xft_new_map(a);
 	val = 10;
 	xft_map_insert(a, &m, xft_fatptr((t_u8 *)"del", 3), (t_u8 *)&val);
 	xft_pin_invariant(xft_map_lookup(&m,

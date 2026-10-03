@@ -26,7 +26,7 @@ void	test_arena_alignment(void)
 	aligns[4] = 16;
 	aligns[5] = 32;
 	aligns[6] = 64;
-	a = xft_new_arena_alloc();
+	a = xft_new_arena();
 	i = -1;
 	while (++i < 7)
 	{

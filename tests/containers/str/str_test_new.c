@@ -16,14 +16,14 @@ void	test_str_new(t_allocator a)
 {
 	t_str	s;
 
-	s = xft_str(a, 1);
+	s = xft_new_str(a, 1);
 	xft_pin_invariant(s.mem != nullptr);
 	xft_pin_invariant(s.size == 0);
 	xft_pin_invariant(s.mem[0] == 0);
 	xft_str_destroy(a, &s);
 	xft_pin_invariant(s.mem == nullptr);
 	xft_pin_invariant(s.size == 0);
-	s = xft_str(a, 5);
+	s = xft_new_str(a, 5);
 	xft_pin_invariant(s.mem != nullptr);
 	xft_pin_invariant(s.size == 0);
 	xft_pin_invariant(s.mem[5] == 0);

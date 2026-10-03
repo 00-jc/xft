@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   xft_str.c                                           :+:      :+:    :+:   */
+/*   xft_str.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,7 +12,7 @@
 
 #include "str.h"
 
-t_str	xft_str(t_allocator allocator, t_size size)
+t_str	xft_new_str(t_allocator allocator, t_size size)
 {
 	t_buffer	buf;
 
