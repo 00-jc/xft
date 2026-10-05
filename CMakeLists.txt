@@ -14,3 +14,7 @@ include(cmake/flags.cmake)		# CFLAGS*, XFT_WARNS, toolchain, LTO
 include(cmake/variants.cmake)	# xft libs, subprojects, install
 include(cmake/harness.cmake)	# tests, fuzz, bench
 include(cmake/tools.cmake)		# analyze
+
+add_library(xft_flags INTERFACE)
+add_library(xft::flags ALIAS xft_flags)
+target_compile_options(xft_flags INTERFACE ${CFLAGS} ${XFT_WARNS})
