@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/29 23:39:13 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/06/29 23:39:20 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/10/07 12:05:39 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,31 +49,31 @@ __attribute__((__nonnull__(1, 2), __always_inline__, __hot__, __used__))
 inline void	xft__cpykernel_stream(t_any restrict d,
 	t_cany restrict const s, t_size offset)
 {
-	t_vu256a	*restrict	pd;
-	t_vu256a	*restrict	ps;
+	t_vu256a		*restrict	pd;
+	const t_vu256	*restrict	ps;
 
 	pd = (t_blk256wa)((t_u8 *)d + (offset << 6));
 	ps = (t_blk256r)((const t_u8 *)s + (offset << 6));
 	__asm__ (
-		"vmovdqu %8, %%ymm0\n" "vmovdqu %9, %%ymm1\n" "vmovdqu %10, %%ymm2\n"
-		"vmovdqu %11, %%ymm3\n" "vmovntdq %%ymm0, %0\n" "vmovntdq %%ymm1, %1\n"
-		"vmovntdq %%ymm2, %2\n" "vmovntdq %%ymm3, %3\n" "vmovdqu %12, %%ymm0\n"
-		"vmovdqu %13, %%ymm1\n" "vmovdqu %14, %%ymm2\n" "vmovdqu %15, %%ymm3\n"
-		"vmovntdq %%ymm0, %4\n" "vmovntdq %%ymm1, %5\n" "vmovntdq %%ymm2, %6\n"
-		"vmovntdq %%ymm3, %7" : "=m"(pd[0]), "=m"(pd[1]), "=m"(pd[2]),
-		"=m"(pd[3]), "=m"(pd[4]), "=m"(pd[5]), "=m"(pd[6]), "=m"(pd[7])
-		:"m"(ps[0]), "m"(ps[1]), "m"(ps[2]), "m"(ps[3]), "m"(ps[4]), "m"(ps[5]),
-		"m"(ps[6]), "m"(ps[7]) : "ymm0", "ymm1", "ymm2", "ymm3", "memory");
-	__asm__ ("vmovdqu %8, %%ymm0\n" "vmovdqu %9, %%ymm1\n"
-		"vmovdqu %10, %%ymm2\n" "vmovdqu %11, %%ymm3\n" "vmovntdq %%ymm0, %0\n"
-		"vmovntdq %%ymm1, %1\n" "vmovntdq %%ymm2, %2\n" "vmovntdq %%ymm3, %3\n"
-		"vmovdqu %12, %%ymm0\n" "vmovdqu %13, %%ymm1\n" "vmovdqu %14, %%ymm2\n"
-		"vmovdqu %15, %%ymm3\n" "vmovntdq %%ymm0, %4\n" "vmovntdq %%ymm1, %5\n"
-		"vmovntdq %%ymm2, %6\n" "vmovntdq %%ymm3, %7":"=m"(pd[8]), "=m"(pd[9]),
-		"=m"(pd[10]), "=m"(pd[11]), "=m"(pd[12]), "=m"(pd[13]), "=m"(pd[14]),
-		"=m"(pd[15]) :"m"(ps[8]), "m"(ps[9]), "m"(ps[10]), "m"(ps[11]),
-		"m"(ps[12]), "m"(ps[13]), "m"(ps[14]), "m"(ps[15])
-		:"ymm0", "ymm1", "ymm2", "ymm3", "memory");
+		"vmovdqu 0x000(%[s]), %%ymm0\n" "vmovdqu 0x020(%[s]), %%ymm1\n"
+		"vmovdqu 0x040(%[s]), %%ymm2\n" "vmovdqu 0x060(%[s]), %%ymm3\n"
+		"vmovntdq %%ymm0, 0x000(%[d])\n" "vmovntdq %%ymm1, 0x020(%[d])\n"
+		"vmovntdq %%ymm2, 0x040(%[d])\n" "vmovntdq %%ymm3, 0x060(%[d])\n"
+		"vmovdqu 0x080(%[s]), %%ymm0\n" "vmovdqu 0x0a0(%[s]), %%ymm1\n"
+		"vmovdqu 0x0c0(%[s]), %%ymm2\n" "vmovdqu 0x0e0(%[s]), %%ymm3\n"
+		"vmovntdq %%ymm0, 0x080(%[d])\n" "vmovntdq %%ymm1, 0x0a0(%[d])\n"
+		"vmovntdq %%ymm2, 0x0c0(%[d])\n" "vmovntdq %%ymm3, 0x0e0(%[d])\n"
+		"vmovdqu 0x100(%[s]), %%ymm0\n" "vmovdqu 0x120(%[s]), %%ymm1\n"
+		"vmovdqu 0x140(%[s]), %%ymm2\n" "vmovdqu 0x160(%[s]), %%ymm3\n"
+		"vmovntdq %%ymm0, 0x100(%[d])\n" "vmovntdq %%ymm1, 0x120(%[d])\n"
+		"vmovntdq %%ymm2, 0x140(%[d])\n" "vmovntdq %%ymm3, 0x160(%[d])\n"
+		"vmovdqu 0x180(%[s]), %%ymm0\n" "vmovdqu 0x1a0(%[s]), %%ymm1\n"
+		"vmovdqu 0x1c0(%[s]), %%ymm2\n" "vmovdqu 0x1e0(%[s]), %%ymm3\n"
+		"vmovntdq %%ymm0, 0x180(%[d])\n" "vmovntdq %%ymm1, 0x1a0(%[d])\n"
+		"vmovntdq %%ymm2, 0x1c0(%[d])\n" "vmovntdq %%ymm3, 0x1e0(%[d])"
+		:: [d] "r"(pd), [s] "r"(ps)
+		: "ymm0", "ymm1", "ymm2", "ymm3", "memory"
+		);
 }
 
 #else

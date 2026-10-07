@@ -48,28 +48,22 @@ __attribute__((__nonnull__(1), __always_inline__, __hot__, __used__))
 inline void	xft__setkernel_stream(t_any restrict d,
 	const t_u8 c, t_size offset)
 {
-	t_blk256wa	p;
+	t_vu256a	*restrict	p;
 
 	p = (t_blk256wa)((t_u8 *)d + (offset << 6));
 	__asm__ (
-		"vpbroadcastb %[byte], %%ymm0\n\t"
-		"vmovntdq %%ymm0, %0\n\t" "vmovntdq %%ymm0, %1\n\t"
-		"vmovntdq %%ymm0, %2\n\t" "vmovntdq %%ymm0, %3\n\t"
-		"vmovntdq %%ymm0, %4\n\t" "vmovntdq %%ymm0, %5\n\t"
-		"vmovntdq %%ymm0, %6\n\t" "vmovntdq %%ymm0, %7\n\t"
-		"vmovntdq %%ymm0, %8\n\t" "vmovntdq %%ymm0, %9\n\t"
-		"vmovntdq %%ymm0, %10\n\t" "vmovntdq %%ymm0, %11\n\t"
-		"vmovntdq %%ymm0, %12\n\t" "vmovntdq %%ymm0, %13\n\t"
-		"vmovntdq %%ymm0, %14\n\t" "vmovntdq %%ymm0, %15"
-		: "=m"(p[0]), "=m"(p[1]),
-		"=m"(p[2]), "=m"(p[3]),
-		"=m"(p[4]), "=m"(p[5]),
-		"=m"(p[6]), "=m"(p[7]),
-		"=m"(p[8]), "=m"(p[9]),
-		"=m"(p[10]), "=m"(p[11]),
-		"=m"(p[12]), "=m"(p[13]),
-		"=m"(p[14]), "=m"(p[15])
-		: [byte] "r"((unsigned)c)
+		"vmovd %[byte], %%xmm0\n\t"
+		"vpbroadcastb %%xmm0, %%ymm0\n\t"
+		"vmovntdq %%ymm0, 0x000(%[p])\n\t" "vmovntdq %%ymm0, 0x020(%[p])\n\t"
+		"vmovntdq %%ymm0, 0x040(%[p])\n\t" "vmovntdq %%ymm0, 0x060(%[p])\n\t"
+		"vmovntdq %%ymm0, 0x080(%[p])\n\t" "vmovntdq %%ymm0, 0x0a0(%[p])\n\t"
+		"vmovntdq %%ymm0, 0x0c0(%[p])\n\t" "vmovntdq %%ymm0, 0x0e0(%[p])\n\t"
+		"vmovntdq %%ymm0, 0x100(%[p])\n\t" "vmovntdq %%ymm0, 0x120(%[p])\n\t"
+		"vmovntdq %%ymm0, 0x140(%[p])\n\t" "vmovntdq %%ymm0, 0x160(%[p])\n\t"
+		"vmovntdq %%ymm0, 0x180(%[p])\n\t" "vmovntdq %%ymm0, 0x1a0(%[p])\n\t"
+		"vmovntdq %%ymm0, 0x1c0(%[p])\n\t" "vmovntdq %%ymm0, 0x1e0(%[p])"
+		:
+		: [p] "r"(p), [byte] "r"((unsigned)c)
 		: "ymm0", "memory"
 		);
 }
