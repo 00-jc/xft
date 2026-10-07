@@ -44,7 +44,7 @@
 # ifdef __clang__
 #  define XXH3_PREFETCH_DIST		320
 # else
-#  ifdef __AVX512__
+#  ifdef __AVX512F__
 #   define XXH3_PREFETCH_DIST		512
 #  else
 #   define XXH3_PREFETCH_DIST		384
