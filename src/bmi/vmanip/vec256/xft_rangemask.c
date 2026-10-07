@@ -1,24 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   xft_p_bmi.h                                        :+:      :+:    :+:   */
+/*                                                      :::      ::::::::     */
+/*   xft_rangemask.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/10/03 18:01:29 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/10/03 18:01:32 by jaicastr         ###   ########.fr       */
+/*   Created: 2026/10/07 11:36:24 by jaicastr          #+#    #+#             */
+/*   Updated: 2026/10/07 11:36:24 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef XFT_P_BMI_H
-# define XFT_P_BMI_H
+#include "xft_p_vmanip.h"
 
-# include "xft_p_asm.h"
+#if XFT_HAS_256_VEC
 
-t_u64a		xft_bitpack512(t_vu512a vec)\
-				__attribute__((const));
-
-t_u32a		xft_bitpack256(t_vu256a vec)\
-				__attribute__((const));
+__attribute__((__always_inline__, const))
+inline t_u32a	xft_rangemask256(t_vu256a v, t_u8 lo, t_u8 hi)
+{
+	return (xft_vmask256((t_vu256)(v - xft_vsplat256(lo)
+			<= xft_vsplat256(hi - lo))));
+}
 
 #endif

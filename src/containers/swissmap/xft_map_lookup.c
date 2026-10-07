@@ -26,7 +26,7 @@ static inline t_any	xft__map_lookup(const t_map *restrict const map,
 	sse = ((t_blk128ra)map->meta)[data[GROUP]];
 	while (1)
 	{
-		mask = xft_bitpack128((t_vu128)(sse == h2));
+		mask = xft_vmask128((t_vu128)(sse == h2));
 		while (mask)
 		{
 			i = xft_memctz_u16(mask);

@@ -23,7 +23,7 @@ static inline t_size	xft__get_empty(const t_map *restrict const map,
 		__builtin_unreachable();
 	while (1)
 	{
-		mask = xft_bitpack128(
+		mask = xft_vmask128(
 				(t_vu128)(((t_blk128ra)map->meta)[group] >= 0x80)
 				);
 		if (mask)

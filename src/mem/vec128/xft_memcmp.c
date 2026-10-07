@@ -26,7 +26,7 @@ inline t_ssize	xft_memcmp_finalround(t_cany restrict const ptr1,
 	offst <<= 4;
 	load0 = *(t_blk128r)xft_overlap((t_blk8r)ptr1 + offst, sizeof(t_vu128a), n);
 	load1 = *(t_blk128r)xft_overlap((t_blk8r)ptr2 + offst, sizeof(t_vu128a), n);
-	mask = xft_bitpack128((t_vu128a)(load0 != load1))
+	mask = xft_vmask128((t_vu128a)(load0 != load1))
 		& xft_roll_mask(sizeof(t_vu128a), n);
 	if (mask)
 	{
@@ -73,7 +73,7 @@ inline t_ssize	xft_memcmp_128(t_cany restrict const ptr1,
 		xft_prefetch0(ptr2, sizeof(t_vu128a) << 1);
 		load0 = ((t_blk128r)ptr1)[offst];
 		load1 = ((t_blk128r)ptr2)[offst];
-		mask = xft_bitpack128((t_vu128a)(load1 != load0));
+		mask = xft_vmask128((t_vu128a)(load1 != load0));
 		diffb = xft_memctz_u16(mask);
 		if (mask)
 			return (load0[diffb] - load1[diffb]);

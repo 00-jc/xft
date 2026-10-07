@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/03 18:01:29 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/10/03 18:01:32 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/10/07 11:42:45 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define XFT_P_MEM_H
 
 # include "mem.h"
-# include "xft_p_bmi.h"
+# include "xft_p_asm.h"
 
 # ifndef XFT_LLC_SIZE
 #  define XFT_LLC_SIZE 16777216ULL

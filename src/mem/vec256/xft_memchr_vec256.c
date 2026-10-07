@@ -27,7 +27,7 @@ inline t_any	xft__fix_last_w(const t_u8 *restrict const ptr,
 	{
 		adjusted = (t_vu256 *)xft_overlap((t_any)ptr, sizeof(t_vu256), n);
 		w = (t_vu256a)(*(t_blk256r)adjusted == msk);
-		packed = xft_bitpack256(w) & xft_roll_mask(sizeof(t_vu256a), n);
+		packed = xft_vmask256(w) & xft_roll_mask(sizeof(t_vu256a), n);
 		p = (t_uptr)adjusted + xft_memctz_u32(packed);
 		return ((t_any)(-((t_uptr)(packed != 0)) & p));
 	}
@@ -48,7 +48,7 @@ inline t_any	xft_memchr_256(t_cany restrict ptr, int c, t_size n)
 	{
 		xft_prefetch0(wptr, sizeof(t_vu256) << 1);
 		w = (t_vu256a)(*((t_blk256r)wptr) == (t_u8)c);
-		hasz = xft_bitpack256(w);
+		hasz = xft_vmask256(w);
 		if (hasz)
 			return ((void)(hasz = (t_u32a)xft_memctz_u32(hasz)),
 			(t_any)((t_u8 *)wptr + hasz));

@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "xft_p_bmi.h"
+#include "xft_p_asm.h"
 #include "cstr.h"
 
 #if XFT_HAS_512_VEC
@@ -27,14 +27,14 @@ t_size	xft_strlen(const char *restrict str)
 	a = (t_uptr)str;
 	offst = ((-(t_uptr)str) & (sizeof(t_vu512a) - 1));
 	wp = (t_blk512r)str;
-	w = xft_bitpack512((t_vu512)(wp[0] == 0));
+	w = xft_vmask512((t_vu512)(wp[0] == 0));
 	if (__builtin_expect(w != 0, 1))
 		return (((t_uptr)wp + xft_memctz_u64(w)) - a);
 	wp = (t_blk512r)(str + offst);
 	while (1)
 	{
 		mask = (t_vu512a)(((t_blk512ra)wp)[0] == 0);
-		w = xft_bitpack512(mask);
+		w = xft_vmask512(mask);
 		if (__builtin_expect(w != 0, 1))
 			return (((t_uptr)wp + xft_memctz_u64(w)) - a);
 		++wp;
@@ -55,14 +55,14 @@ t_size	xft_strlen(const char *restrict str)
 	a = (t_uptr)str;
 	offst = ((-(t_uptr)str) & (sizeof(t_vu256a) - 1));
 	wp = (t_blk256r)str;
-	w = xft_bitpack256((t_vu256)(wp[0] == 0));
+	w = xft_vmask256((t_vu256)(wp[0] == 0));
 	if (__builtin_expect(w != 0, 1))
 		return (((t_uptr)wp + xft_memctz_u32(w)) - a);
 	wp = (t_blk256r)(str + offst);
 	while (1)
 	{
 		mask = (t_vu256a)(((t_blk256ra)wp)[0] == 0);
-		w = xft_bitpack256(mask);
+		w = xft_vmask256(mask);
 		if (__builtin_expect(w != 0, 1))
 			return (((t_uptr)wp + xft_memctz_u32(w)) - a);
 		++wp;
@@ -83,14 +83,14 @@ t_size	xft_strlen(const char *restrict str)
 	a = (t_uptr)str;
 	offst = ((-(t_uptr)str) & (sizeof(t_vu128a) - 1));
 	wp = (t_blk128r)str;
-	w = xft_bitpack128((t_vu128)(wp[0] == 0));
+	w = xft_vmask128((t_vu128)(wp[0] == 0));
 	if (__builtin_expect(w != 0, 1))
 		return (((t_uptr)wp + xft_memctz_u16(w)) - a);
 	wp = (t_blk128r)(str + offst);
 	while (1)
 	{
 		mask = (t_vu128a)(((t_blk128ra)wp)[0] == 0);
-		w = xft_bitpack128(mask);
+		w = xft_vmask128(mask);
 		if (__builtin_expect(w != 0, 1))
 			return (((t_uptr)wp + xft_memctz_u16(w)) - a);
 		++wp;

@@ -28,7 +28,7 @@ inline t_ssize	xft_memcmp_finalround(t_cany restrict const ptr1,
 	offst <<= 6;
 	load0 = *(t_blk512r)xft_overlap((t_blk8r)ptr1 + offst, sizeof(t_vu512a), n);
 	load1 = *(t_blk512r)xft_overlap((t_blk8r)ptr2 + offst, sizeof(t_vu512a), n);
-	mask = xft_bitpack512((t_vu512a)(load0 != load1))
+	mask = xft_vmask512((t_vu512a)(load0 != load1))
 		& xft_roll_mask(sizeof(t_vu512a), n);
 	if (mask)
 	{
@@ -57,7 +57,7 @@ inline t_ssize	xft_memcmp_512(t_cany restrict const ptr1,
 		xft_prefetch0(ptr2, sizeof(t_vu512a) << 1);
 		load0 = ((t_blk512r)ptr1)[offst];
 		load1 = ((t_blk512r)ptr2)[offst];
-		mask = xft_bitpack512((t_vu512a)(load1 != load0));
+		mask = xft_vmask512((t_vu512a)(load1 != load0));
 		diffb = xft_memctz_u64(mask);
 		if (mask)
 			return (load0[diffb] - load1[diffb]);

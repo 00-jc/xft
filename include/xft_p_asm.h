@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/03 18:01:29 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/10/03 18:01:32 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/10/07 11:23:45 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,26 +18,19 @@
 typedef t_u8 *__restrict__ const									t_blk8w;
 typedef const t_u8 *__restrict__ const								t_blk8r;
 
-# if defined(__AVX512F__)  || defined(__AVX512BW__)  || \
-    defined(__AVX512DQ__) || defined(__AVX512CD__)  || \
-    defined(__AVX512VL__) || defined(__AVX512IFMA__) || \
-    defined(__AVX512VBMI__) || defined(__AVX512VBMI2__) || \
-    defined(__AVX512VNNI__) || defined(__AVX512BITALG__) || \
-    defined(__AVX512FP16__)
+# if defined(__AVX512BW__)
 
 #  define XFT_HAS_512_VEC 1
 #  define XFT_HAS_256_VEC 1
 #  define XFT_HAS_128_VEC 1
 
-# elif defined(__AVX__)  || defined(__AVX2__) || \
-      defined(__FMA__)  || defined(__FMA4__) || \
-      defined(__XOP__)
+# elif defined(__AVX2__)
 
 #  define XFT_HAS_512_VEC 0
 #  define XFT_HAS_256_VEC 1
 #  define XFT_HAS_128_VEC 1
 
-# elif defined(__SSE__) || defined(__ARM_NEON)
+# elif defined(__SSE2__) || defined(__ARM_NEON)
 
 #  define XFT_HAS_512_VEC 0
 #  define XFT_HAS_256_VEC 0
@@ -103,34 +96,49 @@ typedef const t_vu256a *__restrict__ const							t_blk256ra;
 typedef t_vu512a *__restrict__ const								t_blk512wa;
 typedef const t_vu512a *__restrict__ const							t_blk512ra;
 
-t_vu512			get_high512(void)\
+# if XFT_HAS_512_VEC
+
+t_vu512			xft_vsplat512(t_u8 b)\
 					__attribute__((const));
-t_vu512			get_lones512(void)\
+t_u64a			xft_vmask512(t_vu512 vec)\
 					__attribute__((const));
-t_vu512			get_z512(void)\
+t_u64a			xft_veqmask512(t_vu512 vec, t_u8 b)\
 					__attribute__((const));
-t_vu512			get_mask512(t_u8 x)\
+t_u64a			xft_vtestmask512(t_vu512 vec, t_u8 b)\
+					__attribute__((const));
+t_u64a			xft_rangemask512(t_vu512a v, t_u8 lo, t_u8 hi)\
 					__attribute__((const));
 
-t_vu256			get_high256(void)\
+# endif
+
+# if XFT_HAS_256_VEC
+
+t_vu256			xft_vsplat256(t_u8 b)\
 					__attribute__((const));
-t_vu256			get_lones256(void)\
+t_u32a			xft_vmask256(t_vu256 vec)\
 					__attribute__((const));
-t_vu256			get_z256(void)\
+t_u32a			xft_veqmask256(t_vu256 vec, t_u8 b)\
 					__attribute__((const));
-t_vu256			get_mask256(t_u8 x)\
+t_u32a			xft_vtestmask256(t_vu256 vec, t_u8 b)\
+					__attribute__((const));
+t_u32a			xft_rangemask256(t_vu256a v, t_u8 lo, t_u8 hi)\
 					__attribute__((const));
 
-t_vu128			get_high128(void)\
+# endif
+
+# if XFT_HAS_128_VEC
+
+t_vu128			xft_vsplat128(t_u8 b)\
 					__attribute__((const));
-t_vu128			get_lones128(void)\
+t_u16a			xft_vmask128(t_vu128 vec)\
 					__attribute__((const));
-t_vu128			get_z128(void)\
+t_u16a			xft_veqmask128(t_vu128 vec, t_u8 b)\
 					__attribute__((const));
-t_vu128			get_mask128(t_u8 x)\
+t_u16a			xft_vtestmask128(t_vu128 vec, t_u8 b)\
+					__attribute__((const));
+t_u16a			xft_rangemask128(t_vu128a v, t_u8 lo, t_u8 hi)\
 					__attribute__((const));
 
-t_u16a			xft_bitpack128(t_vu128a vec)\
-					__attribute__((const));
+# endif
 
 #endif

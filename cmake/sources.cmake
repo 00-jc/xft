@@ -37,11 +37,7 @@ set(SRCS_BMI
   src/bmi/__maxs.c
   src/bmi/__populate.c
   src/bmi/xft_align.c
-  src/bmi/xft_bitpack.c
   src/bmi/xft_bswap.c
-  src/bmi/xft_get128.c
-  src/bmi/xft_get256.c
-  src/bmi/xft_get512.c
   src/bmi/xft_memclz.c
   src/bmi/xft_memctz.c
   src/bmi/xft_next_pow2.c
@@ -50,7 +46,22 @@ set(SRCS_BMI
   src/bmi/xft_rotl.c
   src/bmi/xft_tern.c
   src/bmi/xft_to_be_from_be.c
-  src/bmi/xft_to_be_from_le.c)
+  src/bmi/xft_to_be_from_le.c
+  src/bmi/vmanip/vec128/xft_eqmask.c
+  src/bmi/vmanip/vec128/xft_mask.c
+  src/bmi/vmanip/vec128/xft_rangemask.c
+  src/bmi/vmanip/vec128/xft_splat.c
+  src/bmi/vmanip/vec128/xft_testmask.c
+  src/bmi/vmanip/vec256/xft_eqmask.c
+  src/bmi/vmanip/vec256/xft_mask.c
+  src/bmi/vmanip/vec256/xft_rangemask.c
+  src/bmi/vmanip/vec256/xft_splat.c
+  src/bmi/vmanip/vec256/xft_testmask.c
+  src/bmi/vmanip/vec512/xft_eqmask.c
+  src/bmi/vmanip/vec512/xft_mask.c
+  src/bmi/vmanip/vec512/xft_rangemask.c
+  src/bmi/vmanip/vec512/xft_splat.c
+  src/bmi/vmanip/vec512/xft_testmask.c)
 
 set(SRCS_CONTAINERS
   src/containers/str/xft_str.c
@@ -233,7 +244,6 @@ set(MODULES ALLOC ATOMICS BMI CONTAINERS CSTR CTYPE FMT FUZZER HASH HINT IO
 
 set(SRCS_ARCH_x86_64
   src/atomics/mutex/xft_mutex_backoff_x86_64.c
-  src/bmi/x86_64/xft_bitpack.c
   src/bmi/x86_64/xft_bswap.c
   src/bmi/x86_64/xft_memclz.c
   src/bmi/x86_64/xft_memctz.c
@@ -241,7 +251,6 @@ set(SRCS_ARCH_x86_64
 
 set(SRCS_ARCH_aarch64
   src/atomics/mutex/xft_mutex_backoff_aarch64.c
-  src/bmi/aarch64/xft_bitpack.c
   src/bmi/aarch64/xft_bswap.c
   src/bmi/aarch64/xft_memclz.c
   src/bmi/aarch64/xft_memctz.c

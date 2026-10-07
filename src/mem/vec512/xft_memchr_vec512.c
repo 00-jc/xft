@@ -27,7 +27,7 @@ inline t_any	xft__fix_last_w(const t_u8 *restrict const ptr,
 	{
 		adjusted = (t_vu512 *)xft_overlap((t_any)ptr, sizeof(t_vu512), n);
 		w = (t_vu512a)(*(t_blk512r)adjusted == msk);
-		packed = xft_bitpack512(w) & xft_roll_mask(sizeof(t_vu512a), n);
+		packed = xft_vmask512(w) & xft_roll_mask(sizeof(t_vu512a), n);
 		p = (t_uptr)adjusted + xft_memctz_u64(packed);
 		return ((t_any)(-((t_uptr)(packed != 0)) & p));
 	}
@@ -48,7 +48,7 @@ inline t_any	xft_memchr_512(t_cany restrict ptr, int c, t_size n)
 	{
 		xft_prefetch0(wptr, sizeof(t_vu512a) << 1);
 		w = (t_vu512a)(*((t_blk512r)wptr) == (t_u8)c);
-		hasz = xft_bitpack512(w);
+		hasz = xft_vmask512(w);
 		if (hasz)
 			return ((void)(hasz = xft_memctz_u64(hasz)),
 			(t_any)((t_u8 *)wptr + hasz));

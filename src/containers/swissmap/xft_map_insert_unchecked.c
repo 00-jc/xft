@@ -26,7 +26,7 @@ static inline void	xft__map_insert_unchecked(t_map *restrict const map,
 	group = data[GROUP];
 	while (1)
 	{
-		mask = xft_bitpack128(((t_blk128r)map->meta)[group] & 0x80);
+		mask = xft_vmask128(((t_blk128r)map->meta)[group] & 0x80);
 		if (mask)
 		{
 			i = xft_memctz_u16(mask);
