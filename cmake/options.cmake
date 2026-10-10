@@ -21,6 +21,16 @@ if(WIN32 AND NOT CMAKE_C_COMPILER_ID MATCHES "Clang")
   )
 endif()
 
+# clang-cl takes cl-style flags and cmake links through lld-link directly,
+# so the gnu-style flags and link options used everywhere would not apply
+if(WIN32 AND CMAKE_C_COMPILER_FRONTEND_VARIANT STREQUAL "MSVC")
+  message(
+    FATAL_ERROR
+    "xft: clang-cl is not supported, use the gnu-style driver: "
+    "-G Ninja -DCMAKE_C_COMPILER=clang (from a fresh build dir)"
+  )
+endif()
+
 if(XFT_ARCH STREQUAL "unknown" AND NOT XFT_LIBC)
   message(
     FATAL_ERROR
