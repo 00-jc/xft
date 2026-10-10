@@ -30,15 +30,6 @@ typedef __attribute__((vector_size(32), aligned(1), __may_alias__)) t_f64\
 typedef __attribute__((vector_size(32), aligned(32), __may_alias__)) t_u64a\
 																	t_v4u64a;
 
-typedef __attribute__((vector_size(64), aligned(64), __may_alias__)) t_f64\
-																	t_v8da;
-
-typedef __attribute__((vector_size(64), aligned(1), __may_alias__)) t_f64\
-																	t_v8d;
-
-typedef __attribute__((vector_size(64), aligned(64), __may_alias__)) t_u64a\
-																	t_v8u64a;
-
 typedef union u_v2di
 {
 	t_v2u64a	i;
@@ -50,11 +41,5 @@ typedef union u_v4di
 	t_v4u64a	i;
 	t_v4da		d;
 }	t_v4di;
-
-typedef union u_v8di
-{
-	t_v8u64a	i;
-	t_v8da		d;
-}	t_v8di;
 
 #endif

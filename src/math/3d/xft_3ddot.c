@@ -14,16 +14,6 @@
 #include "math.h"
 
 __attribute__((__always_inline__, pure, __used__))
-inline t_8packd	xft_3ddot8(const t_3dcoordsx8 *__restrict__ const a,
-	const t_3dcoordsx8 *__restrict__ const b)
-{
-	t_3dcoordsx8	res;
-
-	res = xft_3dmul8(a, b);
-	return (xft_3dclampsum8(&res));
-}
-
-__attribute__((__always_inline__, pure, __used__))
 inline t_f64	xft_3ddot(const t_3dcoords *__restrict__ const a,
 	const t_3dcoords *__restrict__ const b)
 {

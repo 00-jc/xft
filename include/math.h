@@ -41,31 +41,7 @@ typedef struct s_4packd
 	t_f64	w;
 } __attribute__((aligned(32)))	t_4packd;
 
-typedef struct s_8packd
-{
-	t_f64	x;
-	t_f64	y;
-	t_f64	z;
-	t_f64	w;
-	t_f64	a;
-	t_f64	b;
-	t_f64	c;
-	t_f64	d;
-} __attribute__((aligned(64)))	t_8packd;
-
 typedef t_4packd	t_3dcoords;
-
-typedef struct s_3dcoordsx8
-{
-	t_3dcoords	a;
-	t_3dcoords	b;
-	t_3dcoords	c;
-	t_3dcoords	d;
-	t_3dcoords	e;
-	t_3dcoords	f;
-	t_3dcoords	g;
-	t_3dcoords	h;
-} __attribute__((aligned(64)))	t_3dcoordsx8;
 
 t_f32			xft_q_sqrt(t_f32 x)\
 					__attribute__((const));
@@ -109,11 +85,7 @@ t_f32			xft_rsqrt(t_f32 number)\
 					__attribute__((const));
 t_f64			xft_drsqrt(t_f64 number)\
 					__attribute__((const));
-t_8packd		xft_drsqrt_x8(t_8packd d1)\
-					__attribute__ ((const));
 t_4packd		xft_drsqrt_x4(t_4packd d1)\
-					__attribute__ ((const));
-t_8packd		xft_dsqrt_x8(t_8packd d1)\
 					__attribute__ ((const));
 
 t_3dcoords		xft_3dsub(const t_3dcoords *__restrict__ const a,\
@@ -137,26 +109,5 @@ t_3dcoords		xft_3ddiv(const t_3dcoords *__restrict__ const a,\
 					__attribute__((__nonnull__(1, 2), pure));
 t_3dcoords		xft_3dcross(const t_3dcoords *__restrict__ const a,\
 					const t_3dcoords *__restrict__ const b)\
-					__attribute__((__nonnull__(1, 2), pure));
-t_3dcoordsx8	xft_3dadd8(const t_3dcoordsx8 *__restrict__ const a,\
-					const t_3dcoordsx8 *__restrict__ const b)\
-					__attribute__((__nonnull__(1, 2), pure));
-t_3dcoordsx8	xft_3dsub8(const t_3dcoordsx8 *__restrict__ const a,\
-					const t_3dcoordsx8 *__restrict__ const b)\
-					__attribute__((__nonnull__(1, 2), pure));
-t_3dcoordsx8	xft_3dmul8(const t_3dcoordsx8 *__restrict__ const a,\
-					const t_3dcoordsx8 *__restrict__ const b)\
-					__attribute__((__nonnull__(1, 2), pure));
-t_3dcoordsx8	xft_3ddiv8(const t_3dcoordsx8 *__restrict__ const a,\
-					const t_3dcoordsx8 *__restrict__ const b)\
-					__attribute__((__nonnull__(1, 2), pure));
-t_3dcoordsx8	xft_3dunit8(const t_3dcoordsx8 *__restrict__ const c)\
-					__attribute__((__nonnull__(1), pure));
-t_8packd		xft_3dclampsum8(const t_3dcoordsx8 *__restrict__ const c)\
-					__attribute__((__nonnull__(1), pure));
-t_8packd		xft_3dnorm8(const t_3dcoordsx8 *__restrict__ const c)\
-					__attribute__((__nonnull__(1), pure));
-t_8packd		xft_3ddot8(const t_3dcoordsx8 *__restrict__ const a,\
-					const t_3dcoordsx8 *__restrict__ const b)\
 					__attribute__((__nonnull__(1, 2), pure));
 #endif

@@ -14,15 +14,6 @@
 #include "math.h"
 
 __attribute__((__always_inline__, pure, __used__))
-inline t_8packd	xft_3dnorm8(const t_3dcoordsx8 *__restrict__ const c)
-{
-	t_3dcoordsx8	sq;
-
-	sq = xft_3dmul8(c, c);
-	return (xft_dsqrt_x8(xft_3dclampsum8(&sq)));
-}
-
-__attribute__((__always_inline__, pure, __used__))
 inline t_f64	xft_3dnorm(const t_3dcoords *__restrict__ const c)
 {
 	t_v4da	vec;
