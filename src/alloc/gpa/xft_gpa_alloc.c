@@ -67,10 +67,11 @@ t_buffer	xft_gpa_alloc(t_any alloc, t_size size, t_size align)
 	if (GPA_CLASSES <= freelist)
 		return (xft_palloc(xft_tern(size < align, align, size)));
 	new_ptr = gpa->free[freelist];
-	if (new_ptr)
+	if (new_ptr && (align <= 16 || !((t_uptr)new_ptr & (align - 1))))
 	{
 		gpa->free[freelist] = *(t_any *)new_ptr;
 		return (xft_fatptr(new_ptr, snapped));
 	}
-	return (xft_return_ptr(gpa, snapped, align));
+	return (xft_return_ptr(gpa, snapped,
+			xft_tern(align < 16, xft_tern(snapped < 16, snapped, 16), align)));
 }

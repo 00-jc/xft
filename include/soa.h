@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/10 20:14:38 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/10/10 20:44:52 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/10/10 22:15:12 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ typedef struct s_soa_field_meta
 	t_u32a			offset_from_struct_base;
 }	t_soa_field_meta;
 
-typedef struct	s_soa_context
+typedef struct s_soa_context
 {
 	t_size				total_struct_size;
 	t_size				fields_count;
@@ -32,7 +32,7 @@ typedef struct	s_soa_context
 
 typedef struct s_soa
 {
-	t_any				__restrict__ ptr;
+	t_any __restrict__	ptr;
 	t_size				occupied_elements;
 	t_size				capacity_elements;
 	t_size				allocator_bytes_given;

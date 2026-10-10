@@ -319,6 +319,7 @@ set(SRCS_TEST
   tests/alloc/arena/arena_test_invalid.c
   tests/alloc/arena/arena_test_uniq.c
   tests/alloc/gpa/gpa_bulk_test.c
+  tests/alloc/gpa/gpa_bulk_test_align.c
   tests/alloc/gpa/gpa_bulk_test_mixed_sizes.c
   tests/alloc/gpa/gpa_bulk_test_mixed_sizes_fill.c
   tests/alloc/gpa/gpa_bulk_test_reuse.c

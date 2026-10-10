@@ -22,7 +22,7 @@ t_buffer	xft_reporta_realloc(t_any alloc, t_buffer buf,
 	if (buf.mem == nullptr)
 		__builtin_unreachable();
 	gpa = (t_reporta *)alloc;
-	if (newsize <= buf.size)
+	if (newsize <= buf.size && !((t_uptr)buf.mem & (align - 1)))
 		return (buf);
 	if (GPA_CLASSES <= 60 - xft_memclz_u64(buf.size))
 		return (xft_palloc_resize(buf, newsize));

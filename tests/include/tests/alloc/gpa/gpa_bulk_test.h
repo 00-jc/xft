@@ -24,6 +24,7 @@ void	test_bulk_same_size_fill(t_gpa *gpa, t_buffer *bufs);
 void	test_bulk_mixed_sizes(void);
 void	test_bulk_mixed_sizes_fill(t_gpa *gpa, t_buffer *bufs);
 void	test_bulk_reuse(void);
+void	test_bulk_align(void);
 void	test_gpa_bulk(t_test *t);
 
 #endif
