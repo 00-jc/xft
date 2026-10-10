@@ -6,14 +6,14 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/29 23:39:13 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/06/29 23:39:19 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/10/10 21:18:28 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "xft_p_hugepage.h"
 
-__attribute__((const))
-t_size	xft_match_hugepage(t_size requested_size)
+__attribute__((__always_inline__, const))
+inline t_size	xft_match_hugepage(t_size requested_size)
 {
 	t_size	page_size;
 
@@ -38,8 +38,8 @@ t_size	xft_match_hugepage(t_size requested_size)
 	return (xft_tern(page_size < 8, 8, page_size));
 }
 
-__attribute__((const))
-int	xft_match_hugepage_flags(t_size page_size)
+__attribute__((__always_inline__, const))
+inline int	xft_match_hugepage_flags(t_size page_size)
 {
 	t_u32	flags;
 
