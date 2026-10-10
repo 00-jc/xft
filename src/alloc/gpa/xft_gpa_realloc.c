@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/29 23:39:13 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/06/29 23:39:19 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/10/10 22:20:31 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ t_buffer	xft_gpa_realloc(t_any alloc, t_buffer buf,
 	if (GPA_CLASSES <= 60 - xft_memclz_u64(buf.size))
 		return (xft_palloc_resize(buf, newsize));
 	buf2 = xft_gpa_alloc(gpa, newsize, align);
-	if (!buf2.mem)
+	if (__builtin_expect(!buf2.mem, 0))
 		return (xft_fatptr(nullptr, 0));
 	xft_memcpy(buf2.mem, buf.mem, buf.size);
 	xft_gpa_free(gpa, buf);
