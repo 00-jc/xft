@@ -14,7 +14,7 @@
 
 #if XFT_HAS_512_VEC
 
-__attribute__((__always_inline__, const))
+__attribute__((__always_inline__, const, __used__))
 inline t_u64a	xft_veqmask512(t_vu512 vec, t_u8 b)
 {
 	return (__builtin_ia32_ucmpb512_mask((t_vc512)vec,

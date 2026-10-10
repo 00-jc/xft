@@ -16,7 +16,7 @@
 
 # ifndef __clang__
 
-__attribute__((__always_inline__, const))
+__attribute__((__always_inline__, const, __used__))
 inline t_u64a	xft_vtestmask512(t_vu512 vec, t_u8 b)
 {
 	return (__builtin_ia32_ptestmb512((t_vc512)vec,
@@ -25,7 +25,7 @@ inline t_u64a	xft_vtestmask512(t_vu512 vec, t_u8 b)
 
 # else
 
-__attribute__((__always_inline__, const))
+__attribute__((__always_inline__, const, __used__))
 inline t_u64a	xft_vtestmask512(t_vu512 vec, t_u8 b)
 {
 	return (__builtin_ia32_cmpb512_mask((t_vc512)(vec & xft_vsplat512(b)),

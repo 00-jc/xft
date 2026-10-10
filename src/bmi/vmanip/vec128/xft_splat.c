@@ -14,7 +14,7 @@
 
 #if XFT_HAS_128_VEC
 
-__attribute__((__always_inline__, const))
+__attribute__((__always_inline__, const, __used__))
 inline t_vu128	xft_vsplat128(t_u8 b)
 {
 	return ((t_vu128){} + b);

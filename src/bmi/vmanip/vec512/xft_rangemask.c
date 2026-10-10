@@ -14,7 +14,7 @@
 
 #if XFT_HAS_512_VEC
 
-__attribute__((__always_inline__, const))
+__attribute__((__always_inline__, const, __used__))
 inline t_u64a	xft_rangemask512(t_vu512a v, t_u8 lo, t_u8 hi)
 {
 	return (xft_vmask512((t_vu512)(v - xft_vsplat512(lo)

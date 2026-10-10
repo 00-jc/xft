@@ -14,7 +14,7 @@
 
 #if XFT_HAS_256_VEC
 
-__attribute__((__always_inline__, const))
+__attribute__((__always_inline__, const, __used__))
 inline t_vu256	xft_vsplat256(t_u8 b)
 {
 	return ((t_vu256){} + b);

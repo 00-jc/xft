@@ -15,7 +15,7 @@
 #if XFT_HAS_128_VEC
 # if defined(__x86_64__)
 
-__attribute__((__always_inline__, const))
+__attribute__((__always_inline__, const, __used__))
 inline t_u16a	xft_vmask128(t_vu128 vec)
 {
 	return ((t_u16a)__builtin_ia32_pmovmskb128((t_vc128)vec));
@@ -23,7 +23,7 @@ inline t_u16a	xft_vmask128(t_vu128 vec)
 
 # else
 
-__attribute__((__always_inline__, const))
+__attribute__((__always_inline__, const, __used__))
 inline t_u16a	xft_vmask128(t_vu128 vec)
 {
 	static const t_vu128a	weights = {
