@@ -74,13 +74,6 @@ set(SRCS_CONTAINERS
   src/containers/swissmap/xft_map_insert_unchecked.c
   src/containers/swissmap/xft_map_lookup.c
   src/containers/swissmap/xft_map_rehash.c
-  src/containers/tokenizer/xft_eat_u128.c
-  src/containers/tokenizer/xft_eat_u256.c
-  src/containers/tokenizer/xft_eat_u512.c
-  src/containers/tokenizer/xft_eat_u8.c
-  src/containers/tokenizer/xft_eat_until.c
-  src/containers/tokenizer/xft_eat_while.c
-  src/containers/tokenizer/xft_tokenizer.c
   src/containers/vec/xft_vec.c
   src/containers/vec/xft_vec_bytesize.c
   src/containers/vec/xft_vec_extend.c
