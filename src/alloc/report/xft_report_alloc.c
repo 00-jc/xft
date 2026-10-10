@@ -96,12 +96,14 @@ t_buffer	xft_reporta_alloc(t_any alloc, t_size size, t_size align)
 	t_reporta	*gpa;
 
 	gpa = (t_reporta *)alloc;
-	snapped = xft_match_hugepage(size);
-	snapped = xft_tern(snapped < align, xft_match_hugepage(align), snapped);
+	size = xft_tern(size < 8, 8, size);
+	snapped = xft_next_pow2(size);
+	snapped = xft_tern(snapped < align, xft_next_pow2(align), snapped);
 	freelist = 60 - xft_memclz_u64(snapped);
 	++gpa->n_allocs;
 	if (GPA_CLASSES <= freelist)
-		return (xft_paged_ptr(gpa, (t_size[2]){snapped, size}));
+		return (xft_paged_ptr(gpa, (t_size[2]){size,
+				xft_match_hugepage(xft_tern(size < align, align, size))}));
 	new_ptr = gpa->free[freelist];
 	if (new_ptr)
 		return (xft_reuse_ptr(gpa, freelist, new_ptr,

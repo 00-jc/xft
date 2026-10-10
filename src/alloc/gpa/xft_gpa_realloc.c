@@ -17,20 +17,14 @@ t_buffer	xft_gpa_realloc(t_any alloc, t_buffer buf,
 	t_size newsize, t_size align)
 {
 	t_gpa		*gpa;
-	t_size		freelist[2];
-	t_size		snapped;
 	t_buffer	buf2;
 
 	if (buf.mem == nullptr)
 		__builtin_unreachable();
 	gpa = (t_gpa *)alloc;
-	snapped = xft_match_hugepage(newsize);
-	snapped = xft_tern(snapped < align, xft_match_hugepage(align), snapped);
-	freelist[0] = 60 - xft_memclz_u64(buf.size);
-	freelist[1] = 60 - xft_memclz_u64(snapped);
-	if (freelist[0] == freelist[1] || newsize <= buf.size)
+	if (newsize <= buf.size)
 		return (buf);
-	if (GPA_CLASSES <= freelist[0])
+	if (GPA_CLASSES <= 60 - xft_memclz_u64(buf.size))
 		return (xft_palloc_resize(buf, newsize));
 	buf2 = xft_gpa_alloc(gpa, newsize, align);
 	if (!buf2.mem)

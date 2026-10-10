@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/29 23:39:13 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/10/03 18:33:03 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/10/10 21:25:59 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,11 +60,12 @@ t_buffer	xft_gpa_alloc(t_any alloc, t_size size, t_size align)
 	t_gpa	*gpa;
 
 	gpa = (t_gpa *)alloc;
-	snapped = xft_match_hugepage(size);
-	snapped = xft_tern(snapped < align, xft_match_hugepage(align), snapped);
+	size = xft_tern(size < 8, 8, size);
+	snapped = xft_next_pow2(size);
+	snapped = xft_tern(snapped < align, xft_next_pow2(align), snapped);
 	freelist = 60 - xft_memclz_u64(snapped);
 	if (GPA_CLASSES <= freelist)
-		return (xft_palloc(snapped));
+		return (xft_palloc(xft_tern(size < align, align, size)));
 	new_ptr = gpa->free[freelist];
 	if (new_ptr)
 	{
