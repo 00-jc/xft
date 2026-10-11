@@ -64,6 +64,10 @@ set(SRCS_BMI
   src/bmi/vmanip/vec512/xft_testmask.c)
 
 set(SRCS_CONTAINERS
+  src/containers/soa/xft_soa.c
+  src/containers/soa/xft_soa_append.c
+  src/containers/soa/xft_soa_field.c
+  src/containers/soa/xft_soa_reserve.c
   src/containers/str/xft_str.c
   src/containers/str/xft_str_extend.c
   src/containers/str/xft_str_push_back.c
@@ -339,6 +343,12 @@ set(SRCS_TEST
   tests/bmi/bmi_test_clz.c
   tests/bmi/bmi_test_ctz.c
   tests/bmi/bmi_test_max.c
+  tests/containers/soa/soa_test.c
+  tests/containers/soa/soa_test_append.c
+  tests/containers/soa/soa_test_ctx.c
+  tests/containers/soa/soa_test_grow.c
+  tests/containers/soa/soa_test_new.c
+  tests/containers/soa/soa_test_reserve.c
   tests/containers/str/str_test.c
   tests/containers/str/str_test_extend.c
   tests/containers/str/str_test_new.c

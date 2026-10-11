@@ -25,6 +25,7 @@ void	test_streaming_mem(t_test *t);
 void	test_strlen(t_test *t);
 void	test_cstr(t_test *t);
 void	test_vec(t_test *t);
+void	test_soa(t_test *t);
 void	test_str(t_test *t);
 void	test_map(t_test *t);
 void	test_murmur(t_test *t);

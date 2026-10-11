@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/29 23:39:14 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/07/02 13:02:52 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/10/11 00:16:34 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,16 +15,16 @@
 t_vec	xft_new_vec(t_allocator allocator, t_size size, t_size type_size)
 {
 	t_buffer	buf;
-	t_size		mul;
+	t_size		res;
 
 	if (allocator.allocator == nullptr
 		|| allocator.vtable.allocate == nullptr)
 		__builtin_unreachable();
-	mul = size * type_size;
-	if (mul == 0 || (mul / size != type_size))
+	if ((size == 0) || (type_size == 0)
+		|| __builtin_mul_overflow(size, type_size, &res))
 		return ((t_vec){0});
-	buf = allocator.vtable.allocate(allocator.allocator, mul,
-			xft_next_pow2(mul));
+	buf = allocator.vtable.allocate(allocator.allocator, res,
+			xft_next_pow2(res));
 	if (__builtin_expect(buf.mem == nullptr, 0))
 		return ((t_vec){0});
 	return ((t_vec){

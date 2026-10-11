@@ -26,6 +26,7 @@ inline void	run_all_tests(t_test *t)
 	test_strlen(t);
 	test_cstr(t);
 	test_vec(t);
+	test_soa(t);
 	test_str(t);
 	test_map(t);
 	test_murmur(t);
