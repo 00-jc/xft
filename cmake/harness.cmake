@@ -14,7 +14,8 @@ set(BENCH_TARGETS
   strlen_bench
   gpa_bench
   arena_bench
-  vec_bench)
+  vec_bench
+  soa_bench)
 
 function(xft_add_harness name)
   cmake_parse_arguments(H "" "LIB" "SOURCES;INCLUDES" ${ARGN})

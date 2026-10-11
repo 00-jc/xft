@@ -481,3 +481,10 @@ set(SRCS_BENCH_vec_bench
   bench/vec/vec_bench_read.c
   bench/vec/vec_bench_remove.c
   bench/vec/vec_bench_state.c)
+
+set(SRCS_BENCH_soa_bench
+  bench/soa/soa_bench.c
+  bench/soa/soa_bench_append.c
+  bench/soa/soa_bench_iter.c
+  bench/soa/soa_bench_read.c
+  bench/soa/soa_bench_state.c)
