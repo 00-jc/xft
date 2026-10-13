@@ -69,6 +69,7 @@ set(_xft_warns_clang
   -Wsizeof-array-div
   -Wtautological-constant-in-range-compare
   -Wno-extra-semi-stmt
+  -Wno-static-in-inline
   -Wthread-safety
   -Wdangling)
 
