@@ -80,6 +80,7 @@ set(SRCS_CONTAINERS
   src/containers/swissmap/xft_map_delete.c
   src/containers/swissmap/xft_map_insert.c
   src/containers/swissmap/xft_map_insert_unchecked.c
+  src/containers/swissmap/xft_map_get_bucket_idx.c
   src/containers/swissmap/xft_map_lookup.c
   src/containers/swissmap/xft_map_rehash.c
   src/containers/vec/xft_vec.c

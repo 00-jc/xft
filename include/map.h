@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/03 18:01:29 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/10/03 18:01:32 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/10/13 18:41:49 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,5 +85,8 @@ void		xft_map_delete(t_map *__restrict__ const map, t_buffer key)\
 				__attribute__((__nonnull__(1)));
 void		xft_map_clear(t_map *map)\
 				__attribute__((__nonnull__(1)));
+t_size		xft_map_get_bucket_idx(const t_map *restrict const map,\
+				t_buffer key)\
+				__attribute__((__nonnull__(1), pure));
 
 #endif
