@@ -76,13 +76,11 @@ set(SRCS_CONTAINERS
   src/containers/str/xft_str_extend.c
   src/containers/str/xft_str_push_back.c
   src/containers/str/xft_str_remove.c
-  src/containers/swissmap/xft_map.c
-  src/containers/swissmap/xft_map_delete.c
-  src/containers/swissmap/xft_map_insert.c
-  src/containers/swissmap/xft_map_insert_unchecked.c
-  src/containers/swissmap/xft_map_get_bucket_idx.c
-  src/containers/swissmap/xft_map_lookup.c
-  src/containers/swissmap/xft_map_rehash.c
+  src/containers/swissmap/xft_swissmap.c
+  src/containers/swissmap/xft_swissmap_ctx.c
+  src/containers/swissmap/xft_swissmap_delete.c
+  src/containers/swissmap/xft_swissmap_insert.c
+  src/containers/swissmap/xft_swissmap_lookup.c
   src/containers/vec/xft_vec.c
   src/containers/vec/xft_vec_bytesize.c
   src/containers/vec/xft_vec_extend.c
@@ -361,6 +359,7 @@ set(SRCS_TEST
   tests/containers/str/str_test_push_back.c
   tests/containers/str/str_test_remove.c
   tests/containers/swissmap/map_test.c
+  tests/containers/swissmap/map_test_churn.c
   tests/containers/swissmap/map_test_delete.c
   tests/containers/swissmap/map_test_insert_lookup.c
   tests/containers/swissmap/map_test_many.c
@@ -494,3 +493,11 @@ set(SRCS_BENCH_soa_bench
   bench/soa/soa_bench_iter.c
   bench/soa/soa_bench_read.c
   bench/soa/soa_bench_state.c)
+
+set(SRCS_BENCH_swissmap_bench
+  bench/swissmap/swissmap_bench.c
+  bench/swissmap/swissmap_bench_insert.c
+  bench/swissmap/swissmap_bench_large.c
+  bench/swissmap/swissmap_bench_large_state.c
+  bench/swissmap/swissmap_bench_lookup.c
+  bench/swissmap/swissmap_bench_state.c)

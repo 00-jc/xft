@@ -19,6 +19,7 @@ void	test_map_insert_lookup(t_allocator a);
 void	test_map_delete(t_allocator a);
 void	test_map_overwrite(t_allocator a);
 void	test_map_many(t_allocator a);
+void	test_map_churn(t_allocator a);
 void	test_map(t_test *t);
 
 #endif

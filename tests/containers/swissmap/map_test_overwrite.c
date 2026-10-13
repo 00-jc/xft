@@ -14,18 +14,18 @@
 
 void	test_map_overwrite(t_allocator a)
 {
-	t_map	m;
-	int		v1;
-	int		v2;
-	int		*got;
+	t_swissmap	m;
+	int			v1;
+	int			v2;
+	int			*got;
 
-	m = xft_new_map(a);
+	m = xft_new_swissmap(a);
 	v1 = 100;
 	v2 = 200;
-	xft_map_insert(a, &m, xft_fatptr((t_u8 *)"ow", 2), (t_u8 *)&v1);
-	xft_map_insert(a, &m, xft_fatptr((t_u8 *)"ow", 2), (t_u8 *)&v2);
-	got = xft_map_lookup(&m, xft_fatptr((t_u8 *)"ow", 2));
+	xft_swissmap_insert(a, &m, xft_fatptr((t_u8 *)"ow", 2), (t_u8 *)&v1);
+	xft_swissmap_insert(a, &m, xft_fatptr((t_u8 *)"ow", 2), (t_u8 *)&v2);
+	got = xft_swissmap_lookup(&m, xft_fatptr((t_u8 *)"ow", 2));
 	xft_pin_invariant(got != nullptr);
 	xft_pin_invariant(*got == 200);
-	xft_map_destroy(a, &m);
+	xft_swissmap_destroy(a, &m);
 }
