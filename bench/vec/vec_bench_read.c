@@ -13,8 +13,6 @@
 #include "tailor.h"
 #include "vec_bench.h"
 
-#define READ_FILL	1024
-
 __attribute__((__nonnull__(1)))
 void	xft_vec_bench_read(t_any ptr)
 {
@@ -24,17 +22,17 @@ void	xft_vec_bench_read(t_any ptr)
 	t_u64		val;
 
 	a = xft_gpa_allocator(xft_get_bench_vec_gpa());
-	vec = xft_new_vec(a, READ_FILL, sizeof(t_u64));
+	vec = xft_new_vec(a, VEC_BENCH_READ_FILL, sizeof(t_u64));
 	n = xft_tailor_getcount(ptr);
 	val = 0;
-	while (val < READ_FILL)
+	while (val < VEC_BENCH_READ_FILL)
 	{
 		xft_vec_push_back(a, &vec, (t_u8 *)&val, sizeof(val));
 		val++;
 	}
 	while (n-- > 0)
 	{
-		val = xft_tailor_get_random_num(ptr) % READ_FILL;
+		val = xft_tailor_get_random_num(ptr) % VEC_BENCH_READ_FILL;
 		xft_pin_invariant(xft_vec_get(&vec, val, sizeof(t_u64)) != nullptr);
 	}
 	xft_tailor_add_processed_bytes(ptr,

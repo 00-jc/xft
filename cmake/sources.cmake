@@ -503,3 +503,23 @@ set(SRCS_BENCH_swissmap_bench
   bench/swissmap/swissmap_bench_large_state.c
   bench/swissmap/swissmap_bench_lookup.c
   bench/swissmap/swissmap_bench_state.c)
+
+# xft side reuses the vec/swissmap benches, minus their mains
+set(SRCS_BENCH_stl_bench
+  bench/stl/stl_bench.c
+  bench/stl/stl_bench_run.c
+  bench/stl/stl_bench_umap.cpp
+  bench/stl/stl_bench_umap_large.cpp
+  bench/stl/stl_bench_umap_state.cpp
+  bench/stl/stl_bench_vector.cpp
+  bench/stl/stl_bench_vector_access.cpp
+  bench/swissmap/swissmap_bench_insert.c
+  bench/swissmap/swissmap_bench_large.c
+  bench/swissmap/swissmap_bench_large_state.c
+  bench/swissmap/swissmap_bench_lookup.c
+  bench/swissmap/swissmap_bench_state.c
+  bench/vec/vec_bench_extend.c
+  bench/vec/vec_bench_ops.c
+  bench/vec/vec_bench_read.c
+  bench/vec/vec_bench_remove.c
+  bench/vec/vec_bench_state.c)

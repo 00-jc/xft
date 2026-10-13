@@ -17,6 +17,9 @@
 # include "alloc.h"
 # include "rt.h"
 
+# define VEC_BENCH_READ_FILL	1024
+# define VEC_BENCH_RMF_LEN	256
+
 t_gpa	*xft_get_bench_vec_gpa(void);
 
 void	xft_vec_bench_push_back(t_any ptr);

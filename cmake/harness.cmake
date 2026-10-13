@@ -26,7 +26,11 @@ function(xft_add_harness name)
   target_compile_definitions(${name} PRIVATE ${XFT_DEFINES_PRIVATE})
   target_compile_options(
     ${name}
-    PRIVATE ${CFLAGS} ${XFT_WARNS} $<$<CONFIG:Release,RelWithDebInfo,>:-O3>
+    PRIVATE
+      ${CFLAGS}
+      "$<$<COMPILE_LANGUAGE:C>:${XFT_WARNS}>"
+      "$<$<COMPILE_LANGUAGE:CXX>:${XFT_CXX_WARNS}>"
+      $<$<CONFIG:Release,RelWithDebInfo,>:-O3>
   )
   get_target_property(_libc ${H_LIB} XFT_IS_LIBC)
   xft_stack_clash_flags(_clash "${_libc}")
@@ -64,6 +68,33 @@ if(XFT_BUILD_FUZZ)
   endwhile()
 endif()
 
+# stl_bench pits xft against the std:: containers. it links the xft LTO
+# objects through the C++ driver, so that has to be the same compiler
+if(XFT_BUILD_BENCH)
+  include(CheckLanguage)
+  check_language(CXX)
+  if(CMAKE_CXX_COMPILER)
+    enable_language(CXX)
+    set(CMAKE_CXX_STANDARD 23)
+    set(CMAKE_CXX_STANDARD_REQUIRED ON)
+    if(
+      NOT CMAKE_CXX_COMPILER_ID STREQUAL CMAKE_C_COMPILER_ID
+      OR NOT CMAKE_CXX_COMPILER_VERSION VERSION_EQUAL CMAKE_C_COMPILER_VERSION
+    )
+      message(
+        FATAL_ERROR
+        "xft: stl_bench needs a C++ compiler matching ${CMAKE_C_COMPILER_ID} "
+        "${CMAKE_C_COMPILER_VERSION} (got ${CMAKE_CXX_COMPILER_ID} "
+        "${CMAKE_CXX_COMPILER_VERSION}); pass -DCMAKE_CXX_COMPILER=<c++> "
+        "(from a fresh build dir)"
+      )
+    endif()
+    set(XFT_CXX_WARNS -Wall -Wextra -Wpedantic -Wshadow -Werror)
+  else()
+    message(STATUS "xft: no C++ compiler, skipping stl_bench")
+  endif()
+endif()
+
 if(XFT_BUILD_BENCH)
   add_custom_target(bench COMMENT "benchmarks")
   set(_xft_bench_run "")
@@ -86,11 +117,26 @@ if(XFT_BUILD_BENCH)
   target_compile_options(libc_bench PRIVATE ${CFLAGS_HOSTED} -fno-builtin)
   add_dependencies(bench libc_bench)
   list(APPEND _xft_bench_run COMMAND $<TARGET_FILE:libc_bench>)
+  set(_xft_bench_deps ${BENCH_TARGETS} libc_bench)
+
+  # the std:: side needs a libc, so both sides take the hosted xft
+  if(CMAKE_CXX_COMPILER)
+    xft_add_harness(
+      stl_bench
+      LIB ${XFT_LIBC_BENCH_LIB}-tailor
+      SOURCES ${SRCS_BENCH_stl_bench}
+      INCLUDES bench/include
+    )
+    target_compile_options(stl_bench PRIVATE ${CFLAGS_HOSTED})
+    add_dependencies(bench stl_bench)
+    list(APPEND _xft_bench_run COMMAND $<TARGET_FILE:stl_bench>)
+    list(APPEND _xft_bench_deps stl_bench)
+  endif()
 
   add_custom_target(
     run-bench
     ${_xft_bench_run}
-    DEPENDS ${BENCH_TARGETS} libc_bench
+    DEPENDS ${_xft_bench_deps}
     COMMENT "running benchmarks"
     USES_TERMINAL
     VERBATIM

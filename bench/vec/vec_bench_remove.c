@@ -13,8 +13,6 @@
 #include "tailor.h"
 #include "vec_bench.h"
 
-#define RMF_LEN	256
-
 __attribute__((__nonnull__(1)))
 void	xft_vec_bench_remove_front(t_any ptr)
 {
@@ -24,10 +22,10 @@ void	xft_vec_bench_remove_front(t_any ptr)
 	t_u64		val;
 
 	a = xft_gpa_allocator(xft_get_bench_vec_gpa());
-	vec = xft_new_vec(a, RMF_LEN, sizeof(t_u64));
+	vec = xft_new_vec(a, VEC_BENCH_RMF_LEN, sizeof(t_u64));
 	n = xft_tailor_getcount(ptr);
 	val = 0;
-	while (val < RMF_LEN)
+	while (val < VEC_BENCH_RMF_LEN)
 	{
 		xft_vec_push_back(a, &vec, (t_u8 *)&val, sizeof(val));
 		val++;
@@ -39,6 +37,6 @@ void	xft_vec_bench_remove_front(t_any ptr)
 		val++;
 	}
 	xft_tailor_add_processed_bytes(ptr,
-		xft_tailor_getcount(ptr) * RMF_LEN * sizeof(t_u64));
+		xft_tailor_getcount(ptr) * VEC_BENCH_RMF_LEN * sizeof(t_u64));
 	xft_vec_destroy(a, &vec);
 }
