@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "xft_p_swissmap_probe.h"
+#include "xft_p_swissmap.h"
 
 __attribute__((__flatten__, __nonnull__(1)))
 void	xft_swissmap_delete(t_swissmap *__restrict__ const map,

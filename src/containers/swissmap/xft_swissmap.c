@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "xft_p_swissmap_slot.h"
+#include "xft_p_swissmap.h"
 
 t_swissmap	xft_new_swissmap_with(t_allocator allocator, t_size capacity)
 {

@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                     :::      ::::::::      */
-/*   xft_p_swissmap_probe.h                             :+:      :+:    :+:   */
+/*   xft_swissmap_probe.c                               :+:      :+:    :+:   */
 /*                                                 +:+ +:+         +:+        */
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                             +#+#+#+#+#+   +#+              */
@@ -10,13 +10,10 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef XFT_P_SWISSMAP_PROBE_H
-# define XFT_P_SWISSMAP_PROBE_H
+#include "xft_p_swissmap.h"
 
-# include "xft_p_swissmap_slot.h"
-
-__attribute__((__always_inline__, __unused__, pure, __nonnull__(1)))
-static inline t_swiss_probe	xft__swiss_probe(
+__attribute__((__always_inline__, pure, __nonnull__(1)))
+inline t_swiss_probe	xft__swiss_probe(
 	const t_swissmap *__restrict__ const map, t_buffer key)
 {
 	const t_u64a	hash = xft_xxh3_64bits(key, 0);
@@ -26,7 +23,7 @@ static inline t_swiss_probe	xft__swiss_probe(
 		.nblks = nblks, .group = hash % nblks});
 }
 
-__attribute__((__always_inline__, __unused__, pure, __nonnull__(1)))
+__attribute__((__always_inline__, pure, __nonnull__(1)))
 static inline t_result	xft__swiss_key_eq(
 	const t_soa *__restrict__ const soa, t_size idx, t_buffer key)
 {
@@ -37,10 +34,9 @@ static inline t_result	xft__swiss_key_eq(
 		&& !xft_memcmp(key.mem, keys[idx].mem, key.size));
 }
 
-__attribute__((__always_inline__, __unused__, pure, __nonnull__(1)))
-static inline t_size	xft__swiss_find(
-	const t_swissmap *__restrict__ const map, t_buffer key,
-	t_swiss_probe probe)
+__attribute__((__always_inline__, pure, __nonnull__(1)))
+inline t_size	xft__swiss_find(const t_swissmap *__restrict__ const map,
+	t_buffer key, t_swiss_probe probe)
 {
 	const t_u8 *const	meta = xft__swiss_meta(map);
 	t_vu128				sse;
@@ -64,9 +60,9 @@ static inline t_size	xft__swiss_find(
 	}
 }
 
-__attribute__((__always_inline__, __unused__, pure, __nonnull__(1)))
-static inline t_size	xft__swiss_find_free(
-	const t_swissmap *__restrict__ const map, t_swiss_probe probe)
+__attribute__((__always_inline__, pure, __nonnull__(1)))
+inline t_size	xft__swiss_find_free(const t_swissmap *__restrict__ const map,
+	t_swiss_probe probe)
 {
 	const t_u8 *const	meta = xft__swiss_meta(map);
 	t_u16a				mask;
@@ -79,5 +75,3 @@ static inline t_size	xft__swiss_find_free(
 		probe.group = (probe.group + 1) % probe.nblks;
 	}
 }
-
-#endif

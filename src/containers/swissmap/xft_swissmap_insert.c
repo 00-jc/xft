@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "xft_p_swissmap_probe.h"
+#include "xft_p_swissmap.h"
 
 __attribute__((__always_inline__, __unused__, __nonnull__(1, 3)))
 static inline void	xft__swiss_insert_unchecked(

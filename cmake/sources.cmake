@@ -81,6 +81,8 @@ set(SRCS_CONTAINERS
   src/containers/swissmap/xft_swissmap_delete.c
   src/containers/swissmap/xft_swissmap_insert.c
   src/containers/swissmap/xft_swissmap_lookup.c
+  src/containers/swissmap/xft_swissmap_probe.c
+  src/containers/swissmap/xft_swissmap_slot.c
   src/containers/vec/xft_vec.c
   src/containers/vec/xft_vec_bytesize.c
   src/containers/vec/xft_vec_extend.c
