@@ -16,7 +16,8 @@ set(BENCH_TARGETS
   arena_bench
   vec_bench
   soa_bench
-  swissmap_bench)
+  swissmap_bench
+  indexmap_bench)
 
 function(xft_add_harness name)
   cmake_parse_arguments(H "" "LIB" "SOURCES;INCLUDES" ${ARGN})

@@ -68,6 +68,13 @@ set(SRCS_BMI
   src/bmi/vmanip/vec512/xft_testmask.c)
 
 set(SRCS_CONTAINERS
+  src/containers/indexmap/xft_indexmap.c
+  src/containers/indexmap/xft_indexmap_ctx.c
+  src/containers/indexmap/xft_indexmap_delete.c
+  src/containers/indexmap/xft_indexmap_insert.c
+  src/containers/indexmap/xft_indexmap_lookup.c
+  src/containers/indexmap/xft_indexmap_probe.c
+  src/containers/indexmap/xft_indexmap_slot.c
   src/containers/soa/xft_soa.c
   src/containers/soa/xft_soa_append.c
   src/containers/soa/xft_soa_field.c
@@ -349,6 +356,13 @@ set(SRCS_TEST
   tests/bmi/bmi_test_ctz.c
   tests/bmi/bmi_test_endian.c
   tests/bmi/bmi_test_max.c
+  tests/containers/indexmap/imap_test.c
+  tests/containers/indexmap/imap_test_churn.c
+  tests/containers/indexmap/imap_test_delete.c
+  tests/containers/indexmap/imap_test_dense.c
+  tests/containers/indexmap/imap_test_insert_lookup.c
+  tests/containers/indexmap/imap_test_many.c
+  tests/containers/indexmap/imap_test_overwrite.c
   tests/containers/soa/soa_test.c
   tests/containers/soa/soa_test_append.c
   tests/containers/soa/soa_test_ctx.c
@@ -503,6 +517,14 @@ set(SRCS_BENCH_swissmap_bench
   bench/swissmap/swissmap_bench_large_state.c
   bench/swissmap/swissmap_bench_lookup.c
   bench/swissmap/swissmap_bench_state.c)
+
+set(SRCS_BENCH_indexmap_bench
+  bench/indexmap/indexmap_bench.c
+  bench/indexmap/indexmap_bench_insert.c
+  bench/indexmap/indexmap_bench_large.c
+  bench/indexmap/indexmap_bench_large_state.c
+  bench/indexmap/indexmap_bench_lookup.c
+  bench/indexmap/indexmap_bench_state.c)
 
 # xft side reuses the vec/swissmap benches, minus their mains
 set(SRCS_BENCH_stl_bench

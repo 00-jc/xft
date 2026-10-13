@@ -28,6 +28,7 @@ void	test_vec(t_test *t);
 void	test_soa(t_test *t);
 void	test_str(t_test *t);
 void	test_map(t_test *t);
+void	test_indexmap(t_test *t);
 void	test_murmur(t_test *t);
 void	test_xxh3(t_test *t);
 void	test_bmi(t_test *t);

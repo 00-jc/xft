@@ -29,6 +29,7 @@ inline void	run_all_tests(t_test *t)
 	test_soa(t);
 	test_str(t);
 	test_map(t);
+	test_indexmap(t);
 	test_murmur(t);
 	test_xxh3(t);
 	test_bmi(t);
