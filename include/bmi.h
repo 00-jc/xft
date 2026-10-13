@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/03 18:01:29 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/10/07 11:39:44 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/10/13 12:00:00 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,27 @@ t_u16a			xft_to_be16(t_u16a x)\
 t_u32a			xft_to_be32(t_u32a x)\
 					__attribute__((const));
 t_u64a			xft_to_be64(t_u64a x)\
+					__attribute__((const));
+
+t_u16a			xft_to_le16(t_u16a x)\
+					__attribute__((const));
+t_u32a			xft_to_le32(t_u32a x)\
+					__attribute__((const));
+t_u64a			xft_to_le64(t_u64a x)\
+					__attribute__((const));
+
+t_u16a			xft_from_be16(t_u16a x)\
+					__attribute__((const));
+t_u32a			xft_from_be32(t_u32a x)\
+					__attribute__((const));
+t_u64a			xft_from_be64(t_u64a x)\
+					__attribute__((const));
+
+t_u16a			xft_from_le16(t_u16a x)\
+					__attribute__((const));
+t_u32a			xft_from_le32(t_u32a x)\
+					__attribute__((const));
+t_u64a			xft_from_le64(t_u64a x)\
 					__attribute__((const));
 t_size			xft_roll_mask(t_size chunk_size, t_size n)\
 					__attribute__((const));

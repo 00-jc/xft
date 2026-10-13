@@ -38,6 +38,8 @@ set(SRCS_BMI
   src/bmi/__populate.c
   src/bmi/xft_align.c
   src/bmi/xft_bswap.c
+  src/bmi/xft_from_be.c
+  src/bmi/xft_from_le.c
   src/bmi/xft_memclz.c
   src/bmi/xft_memctz.c
   src/bmi/xft_next_pow2.c
@@ -47,6 +49,8 @@ set(SRCS_BMI
   src/bmi/xft_tern.c
   src/bmi/xft_to_be_from_be.c
   src/bmi/xft_to_be_from_le.c
+  src/bmi/xft_to_le_from_be.c
+  src/bmi/xft_to_le_from_le.c
   src/bmi/vmanip/vec128/xft_eqmask.c
   src/bmi/vmanip/vec128/xft_mask.c
   src/bmi/vmanip/vec128/xft_rangemask.c
@@ -342,6 +346,7 @@ set(SRCS_TEST
   tests/bmi/bmi_test_bswap.c
   tests/bmi/bmi_test_clz.c
   tests/bmi/bmi_test_ctz.c
+  tests/bmi/bmi_test_endian.c
   tests/bmi/bmi_test_max.c
   tests/containers/soa/soa_test.c
   tests/containers/soa/soa_test_append.c

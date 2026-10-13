@@ -18,6 +18,7 @@
 void	test_ctz(void);
 void	test_clz(void);
 void	test_bswap(void);
+void	test_endian(void);
 void	test_max(void);
 void	test_bmi(t_test *t);
 

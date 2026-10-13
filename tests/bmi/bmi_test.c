@@ -18,6 +18,7 @@ void	test_bmi(t_test *t)
 	test_ctz();
 	test_clz();
 	test_bswap();
+	test_endian();
 	test_max();
 	xft_test_print(t, "  bmi: OK\n");
 }
