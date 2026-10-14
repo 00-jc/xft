@@ -25,8 +25,8 @@ inline t_u64a	xft_popcount_u64(t_u64a x)
 	x2 = ((x2 >> 2) & 0x3333333333333333ULL) + (x2 & 0x3333333333333333ULL);
 	x2 = (x2 + (x2 >> 4)) & 0x0F0F0F0F0F0F0F0FuLL;
 	x1 = (t_u32a)(x2 + (x2 >> 32));
-	x = x + (x >> 16);
-	return ((x + (x >> 8)) & 0x0000007F);
+	x1 = x1 + (x1 >> 16);
+	return ((x1 + (x1 >> 8)) & 0x0000007F);
 }
 
 __attribute__((__const__, __always_inline__, __used__))

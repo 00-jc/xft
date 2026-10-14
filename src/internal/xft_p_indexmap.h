@@ -19,7 +19,7 @@
 # include "bmi.h"
 # include "xft_p_asm.h"
 
-# define IMAP_GROUP			16
+# define IMAP_GROUP			XFT_NVEC_SIZE
 # define IMAP_H2_MASK		0x7F
 # define IMAP_DELETED		0x80
 # define IMAP_EMPTY			0xFF

@@ -19,7 +19,7 @@
 # include "bmi.h"
 # include "xft_p_asm.h"
 
-# define SWISS_GROUP		16
+# define SWISS_GROUP		XFT_NVEC_SIZE
 # define SWISS_H2_MASK		0x7F
 # define SWISS_DELETED		0x80
 # define SWISS_EMPTY		0xFF

@@ -23,8 +23,7 @@ void	xft_swissmap_delete(t_swissmap *__restrict__ const map,
 	if (idx == SWISS_NPOS)
 		return ;
 	--map->count;
-	if (xft_vmask128((t_vu128)(((t_blk128ra)meta)[idx / SWISS_GROUP]
-		== SWISS_EMPTY)))
+	if (xft_veqmask(((t_blknra)meta)[idx / SWISS_GROUP], SWISS_EMPTY))
 	{
 		meta[idx] = SWISS_EMPTY;
 		return ;

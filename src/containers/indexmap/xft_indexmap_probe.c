@@ -39,22 +39,22 @@ inline t_size	xft__imap_find(const t_indexmap *__restrict__ const map,
 	t_buffer key, t_imap_probe probe)
 {
 	const t_u8 *const	meta = xft__imap_meta(map);
-	t_vu128				sse;
-	t_u16a				mask;
+	t_nvec				vec;
+	t_nmask				mask;
 	t_size				idx;
 
 	while (1)
 	{
-		sse = ((t_blk128ra)meta)[probe.group];
-		mask = xft_vmask128((t_vu128)(sse == probe.h2));
+		vec = ((t_blknra)meta)[probe.group];
+		mask = xft_veqmask(vec, probe.h2);
 		while (mask)
 		{
-			idx = probe.group * IMAP_GROUP + xft_memctz_u16(mask);
+			idx = probe.group * IMAP_GROUP + xft_memctz_u64(mask);
 			if (xft__imap_key_eq(&map->soa, idx, key))
 				return (idx);
 			mask &= mask - 1;
 		}
-		if (xft_vmask128((t_vu128)(sse == IMAP_EMPTY)))
+		if (xft_veqmask(vec, IMAP_EMPTY))
 			return (INDEXMAP_NPOS);
 		probe.group = (probe.group + 1) % probe.nblks;
 	}
@@ -65,13 +65,13 @@ inline t_size	xft__imap_find_free(const t_indexmap *__restrict__ const map,
 	t_imap_probe probe)
 {
 	const t_u8 *const	meta = xft__imap_meta(map);
-	t_u16a				mask;
+	t_nmask				mask;
 
 	while (1)
 	{
-		mask = xft_vmask128(((t_blk128ra)meta)[probe.group]);
+		mask = xft_vmask(((t_blknra)meta)[probe.group]);
 		if (mask)
-			return (probe.group * IMAP_GROUP + xft_memctz_u16(mask));
+			return (probe.group * IMAP_GROUP + xft_memctz_u64(mask));
 		probe.group = (probe.group + 1) % probe.nblks;
 	}
 }

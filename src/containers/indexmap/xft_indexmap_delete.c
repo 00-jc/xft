@@ -23,8 +23,7 @@ t_size	xft_indexmap_delete(t_indexmap *__restrict__ const map,
 	if (idx == INDEXMAP_NPOS)
 		return (INDEXMAP_NPOS);
 	--map->count;
-	if (xft_vmask128((t_vu128)(((t_blk128ra)meta)[idx / IMAP_GROUP]
-		== IMAP_EMPTY)))
+	if (xft_veqmask(((t_blknra)meta)[idx / IMAP_GROUP], IMAP_EMPTY))
 		meta[idx] = IMAP_EMPTY;
 	else
 	{
