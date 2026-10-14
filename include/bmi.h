@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/03 18:01:29 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/10/13 12:00:00 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/10/14 19:31:25 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,27 +114,20 @@ t_u64			xft_align_fwd_integer(t_u64a n, t_u64 align)\
 t_u64			xft_align_bwd_integer(t_u64a n, t_u64 align)\
 					__attribute__((const, __hot__));
 
-# if XFT_HAS_512_VEC
-
-t_vu512a		xft_vmask_load512(t_cany ptr, t_u64a mask)\
+t_nvec			xft_vsplat(t_u8 b)\
+					__attribute__((const));
+t_nmask			xft_vmask(t_nvec vec)\
+					__attribute__((const));
+t_nmask			xft_veqmask(t_nvec vec, t_u8 b)\
+					__attribute__((const));
+t_nmask			xft_vtestmask(t_nvec vec, t_u8 b)\
+					__attribute__((const));
+t_nmask			xft_vrangemask(t_nveca v, t_u8 lo, t_u8 hi)\
+					__attribute__((const));
+t_nvec			xft_vcompress(t_nvec vec, t_nmask mask)\
+					__attribute__((const));
+t_nveca			xft_vmask_load(t_cany ptr, t_nmask mask)\
 					__attribute__((__nonnull__(1), pure));
-
-# endif
-
-# if XFT_HAS_256_VEC
-
-t_vu256a		xft_vmask_load256(t_cany ptr, t_u32a mask)\
-					__attribute__((__nonnull__(1), pure));
-
-# endif
-
-# if XFT_HAS_128_VEC
-
-t_vu128a		xft_vmask_load128(t_cany ptr, t_u16a mask)\
-					__attribute__((__nonnull__(1), pure));
-
-# endif
-
 t_nvec			xft_vmask_load(t_cany ptr, t_nmask mask)\
 					__attribute__((__nonnull__(1), pure));
 
