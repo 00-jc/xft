@@ -30,6 +30,8 @@ t_u64a			xft_vtestmask512(t_vu512 vec, t_u8 b)\
 					__attribute__((const));
 t_u64a			xft_vrangemask512(t_vu512a v, t_u8 lo, t_u8 hi)\
 					__attribute__((const));
+t_vu512			xft_vcompress512(t_vu512a vec, t_u64a mask)\
+					__attribute__((const));
 
 # endif
 
@@ -45,6 +47,8 @@ t_u32a			xft_vtestmask256(t_vu256 vec, t_u8 b)\
 					__attribute__((const));
 t_u32a			xft_vrangemask256(t_vu256a v, t_u8 lo, t_u8 hi)\
 					__attribute__((const));
+t_vu256			xft_vcompress256(t_vu256a vec, t_u32a mask)\
+					__attribute__((const));
 
 # endif
 
@@ -59,6 +63,8 @@ t_u16a			xft_veqmask128(t_vu128 vec, t_u8 b)\
 t_u16a			xft_vtestmask128(t_vu128 vec, t_u8 b)\
 					__attribute__((const));
 t_u16a			xft_vrangemask128(t_vu128a v, t_u8 lo, t_u8 hi)\
+					__attribute__((const));
+t_vu128			xft_vcompress128(t_vu128a vec, t_u16a mask)\
 					__attribute__((const));
 
 # endif

@@ -57,18 +57,21 @@ set(SRCS_BMI
   src/bmi/native/xft_rangemask.c
   src/bmi/native/xft_splat.c
   src/bmi/native/xft_testmask.c
+  src/bmi/vmanip/vec128/xft_compress_mask.c
   src/bmi/vmanip/vec128/xft_eqmask.c
   src/bmi/vmanip/vec128/xft_mask.c
   src/bmi/vmanip/vec128/xft_masked_load.c
   src/bmi/vmanip/vec128/xft_rangemask.c
   src/bmi/vmanip/vec128/xft_splat.c
   src/bmi/vmanip/vec128/xft_testmask.c
+  src/bmi/vmanip/vec256/xft_compress_mask.c
   src/bmi/vmanip/vec256/xft_eqmask.c
   src/bmi/vmanip/vec256/xft_mask.c
   src/bmi/vmanip/vec256/xft_masked_load.c
   src/bmi/vmanip/vec256/xft_rangemask.c
   src/bmi/vmanip/vec256/xft_splat.c
   src/bmi/vmanip/vec256/xft_testmask.c
+  src/bmi/vmanip/vec512/xft_compress_mask.c
   src/bmi/vmanip/vec512/xft_eqmask.c
   src/bmi/vmanip/vec512/xft_mask.c
   src/bmi/vmanip/vec512/xft_masked_load.c
