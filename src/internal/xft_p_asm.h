@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/14 12:07:33 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/10/14 19:30:13 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/10/14 19:47:40 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ t_vu512			xft_vcompress512(t_vu512a vec, t_u64a mask)\
 					__attribute__((const));
 t_vu512a		xft_vmask_load512(t_cany ptr, t_u64a mask)\
 					__attribute__((__nonnull__(1), pure));
+t_vu512a		xft_viota512(void) __attribute__((const));
 
 # endif
 
@@ -53,6 +54,7 @@ t_vu256			xft_vcompress256(t_vu256a vec, t_u32a mask)\
 					__attribute__((const));
 t_vu256a		xft_vmask_load256(t_cany ptr, t_u32a mask)\
 					__attribute__((__nonnull__(1), pure));
+t_vu256a		xft_viota256(void) __attribute__((const));
 
 # endif
 
@@ -72,6 +74,7 @@ t_vu128			xft_vcompress128(t_vu128a vec, t_u16a mask)\
 					__attribute__((const));
 t_vu128a		xft_vmask_load128(t_cany ptr, t_u16a mask)\
 					__attribute__((__nonnull__(1), pure));
+t_vu128a		xft_viota128(void) __attribute__((const));
 # endif
 
 #endif
