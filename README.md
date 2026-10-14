@@ -27,7 +27,7 @@ A hosted build (`-DXFT_LIBC=ON`) exposes the same API on a normal toolchain, so 
 | Linux x86_64 | yes | yes |
 | Linux aarch64 | yes | yes |
 | Linux, other arches | no | yes |
-| Windows x86_64 | yes | yes* |
+| Windows x86_64 | yes* | yes |
 | Other OSes | no | no |
 
 ## Building
