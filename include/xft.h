@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/03 18:01:29 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/10/10 12:20:22 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/10/14 19:24:27 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ extern "C"
 # include "hint.h"
 # include "timing.h"
 # include "str.h"
+# include "asm.h"
 # include "alloc.h"
 # include "rng.h"
 # include "syscalls.h"
