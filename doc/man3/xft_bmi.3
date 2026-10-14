@@ -158,18 +158,18 @@ and
 to 0 or 1, and
 .Dv XFT_NVEC_SIZE
 to the native vector width in bytes:
-.Bl -column "__AVX512BW__ + __AVX512VL__ + __AVX512VBMI2__" "512" "256" "128" "NVEC"
+.Bl -column "AVX512 BW + VL + DQ + VBMI2" "512" "256" "128" "NVEC"
 .It Sy Target Ta Sy 512 Ta Sy 256 Ta Sy 128 Ta Sy NVEC
-.It __AVX512BW__ + __AVX512VL__ + __AVX512VBMI2__ Ta 1 Ta 1 Ta 1 Ta 64
+.It AVX512 BW + VL + DQ + VBMI2 Ta 1 Ta 1 Ta 1 Ta 64
 .It __AVX2__ Ta 0 Ta 1 Ta 1 Ta 32
 .It __SSE2__ or __ARM_NEON Ta 0 Ta 0 Ta 1 Ta 16
 .It none of the above Ta 0 Ta 0 Ta 0 Ta 8
 .El
 .Pp
-AVX-512F alone is not enough for the 512-bit path: byte-granular masks
-need BW, the 128- and 256-bit masked forms need VL, and byte compaction
-needs VBMI2.
-A CPU without all three uses the AVX2 path.
+AVX-512F alone is not enough for the 512-bit path: byte- and word-granular
+masks need BW, the 128- and 256-bit masked forms need VL, dword and qword
+sign masks need DQ, and byte and word compaction need VBMI2.
+A CPU without all four uses the AVX2 path.
 .Pp
 The native types follow the selected width:
 .Bl -tag -width "t_nmask"
@@ -191,6 +191,28 @@ an integer with one bit per lane:
 .Vt t_u16a
 or
 .Vt t_u8 .
+.It Vt t_nvec16 , t_nvec32 , t_nvec64
+unaligned vectors of
+.Dv XFT_NVEC_SIZE
+bytes with
+.Vt t_u16 ,
+.Vt t_u32
+or
+.Vt t_u64
+lanes.
+.Vt t_nvec16a ,
+.Vt t_nvec32a
+and
+.Vt t_nvec64a
+are the aligned forms.
+.It Vt t_nmask16 , t_nmask32 , t_nmask64
+the mask of the matching lane width, one bit per lane:
+.Vt t_u32a ,
+.Vt t_u16a
+or
+.Vt t_u8
+depending on the lane count
+.Pq Dv XFT_NVEC_SIZE No / lane size .
 .El
 .Pp
 The fixed-width vector types are always defined regardless of target:
@@ -206,13 +228,22 @@ lanes and alignment 1;
 and
 .Vt t_vu512a
 are aligned to their size.
-.Vt t_vu16_512 ,
-.Vt t_vu32_512
-and
-.Vt t_vu64_512
-are 64-byte vectors of 16-, 32- and 64-bit lanes with alignment 1;
-.Vt t_vu64_512a
-is 64-byte aligned.
+.Vt t_vu Ns Ar W Ns _ Ns Ar S
+are
+.Ar S Ns -bit
+vectors of
+.Ar W Ns -bit
+lanes with alignment 1, for
+.Ar W
+in 16, 32 and 64 and
+.Ar S
+in 128, 256 and 512, for example
+.Vt t_vu32_256 ;
+the
+.Vt a
+suffix
+.Pq Vt t_vu32_256a
+gives the form aligned to its size.
 All vector types are
 .Ql may_alias .
 .Pp
@@ -428,11 +459,21 @@ Each has a 128-, 256- and 512-bit form
 .Pf ( Fn xft_vsplat128
 and so on) declared under the matching
 .Dv XFT_HAS_*_VEC ,
-and, except for compaction, a native-width form on
+and a native-width form on
 .Vt t_nvec
 and
-.Vt t_nmask .
+.Vt t_nmask ,
+declared in
+.In bmi.h .
+The functions below operate on byte lanes; see
+.Sx Wider lanes
+for the 16-, 32- and 64-bit forms.
 .Bl -tag -width "xft_vrangemask(v, lo, hi)"
+.It Fn xft_viota
+a vector whose lane
+.Va i
+is
+.Va i .
 .It Fn xft_vsplat b
 a vector with every byte set to
 .Fa b .
@@ -486,6 +527,119 @@ it uses
 otherwise the 128- and 256-bit forms use a scalar loop and the 512-bit
 form is not available.
 .El
+.Ss Wider lanes
+Every primitive above has a 16-, 32- and 64-bit lane form, with
+.Va W
+the lane width in bits.
+The native-width forms are
+.Fn xft_vsplat<W> ,
+.Fn xft_vmask<W> ,
+.Fn xft_veqmask<W> ,
+.Fn xft_vtestmask<W> ,
+.Fn xft_vrangemask<W> ,
+.Fn xft_vcompress<W> ,
+.Fn xft_vmask_load<W>
+and
+.Fn xft_viota<W> ,
+on
+.Vt t_nvec<W> ,
+.Vt t_nvec<W>a
+and
+.Vt t_nmask<W> ,
+with
+.Va W
+one of 16, 32 or 64.
+The sized forms are named
+.Fn xft_v<op><S>_<W> ,
+for example
+.Fn xft_vsplat256_32 ,
+with
+.Va S
+one of 128, 256 or 512 and are declared in the private header
+.Pa src/internal/xft_p_asm.h
+under the matching
+.Dv XFT_HAS_*_VEC .
+.Pp
+They behave like the byte forms with lanes of
+.Va W
+bits, with these differences:
+.Bl -bullet
+.It
+The scalar arguments
+.Fa b ,
+.Fa lo
+and
+.Fa hi
+have the lane type
+.Pf ( Vt t_u16 ,
+.Vt t_u32
+or
+.Vt t_u64 ) .
+.It
+.Fn xft_vmask<W>
+sets bit
+.Va i
+to the sign bit of lane
+.Va i .
+.It
+.Fn xft_vrangemask<W>
+compares lanes unsigned.
+.It
+.Fn xft_vmask_load<W>
+loads whole lanes: lane
+.Va i
+of the result is the lane at
+.Fa ptr
+if bit
+.Va i
+of
+.Fa mask
+is set, and zero otherwise.
+.It
+.Fn xft_vcompress<W>
+packs the selected lanes into the low lanes.
+.El
+.Pp
+With
+.Dv XFT_HAS_512_VEC
+every width uses a single AVX-512 builtin per operation, including the
+masked loads and
+.Ql vpcompress{w,d,q} .
+Without it:
+.Bl -bullet
+.It
+masks come from
+.Ql movmskps ,
+.Ql movmskpd
+or a signed pack followed by
+.Ql pmovmskb ;
+comparisons and splats use vector operators;
+.It
+the 32- and 64-bit masked loads use
+.Ql vpmaskmovd
+and
+.Ql vpmaskmovq
+when
+.Dv XFT_HAS_256_VEC
+is set, which do not fault on unselected lanes;
+.It
+the 16-bit masked loads, the 128-bit loads without AVX2 and the
+native-width fallback use a branch-free load in which every unselected lane
+reads the lowest selected lane and is then cleared.
+They return zero without reading memory if
+.Fa mask
+is 0, and never read outside the selected lanes' addresses;
+.It
+compaction is an iterative loop that moves the lowest set lane each
+iteration.
+.El
+.Pp
+When none of
+.Dv XFT_HAS_128_VEC ,
+.Dv XFT_HAS_256_VEC
+and
+.Dv XFT_HAS_512_VEC
+is set, the native-width forms are a plain lane loop.
 .Sh RETURN VALUES
 Every function returns the value described above.
 None of them fail or set an error.

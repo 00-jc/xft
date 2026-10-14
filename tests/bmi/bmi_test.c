@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "tests/bmi/bmi_test.h"
+#include "tests/bmi/vmanip_test.h"
 
 void	test_bmi(t_test *t)
 {
@@ -20,5 +21,6 @@ void	test_bmi(t_test *t)
 	test_bswap();
 	test_endian();
 	test_max();
+	test_vmanip();
 	xft_test_print(t, "  bmi: OK\n");
 }

@@ -130,4 +130,52 @@ t_nveca			xft_vmask_load(t_cany ptr, t_nmask mask)\
 					__attribute__((__nonnull__(1), pure));
 t_nvec			xft_viota(void) __attribute__((const));
 
+t_nvec16		xft_vsplat16(t_u16 b)\
+					__attribute__((const));
+t_nmask16		xft_vmask16(t_nvec16 vec)\
+					__attribute__((const));
+t_nmask16		xft_veqmask16(t_nvec16 vec, t_u16 b)\
+					__attribute__((const));
+t_nmask16		xft_vtestmask16(t_nvec16 vec, t_u16 b)\
+					__attribute__((const));
+t_nmask16		xft_vrangemask16(t_nvec16a v, t_u16 lo, t_u16 hi)\
+					__attribute__((const));
+t_nvec16		xft_vcompress16(t_nvec16a vec, t_nmask16 mask)\
+					__attribute__((const));
+t_nvec16a		xft_vmask_load16(t_cany ptr, t_nmask16 mask)\
+					__attribute__((__nonnull__(1), pure));
+t_nvec16a		xft_viota16(void) __attribute__((const));
+
+t_nvec32		xft_vsplat32(t_u32 b)\
+					__attribute__((const));
+t_nmask32		xft_vmask32(t_nvec32 vec)\
+					__attribute__((const));
+t_nmask32		xft_veqmask32(t_nvec32 vec, t_u32 b)\
+					__attribute__((const));
+t_nmask32		xft_vtestmask32(t_nvec32 vec, t_u32 b)\
+					__attribute__((const));
+t_nmask32		xft_vrangemask32(t_nvec32a v, t_u32 lo, t_u32 hi)\
+					__attribute__((const));
+t_nvec32		xft_vcompress32(t_nvec32a vec, t_nmask32 mask)\
+					__attribute__((const));
+t_nvec32a		xft_vmask_load32(t_cany ptr, t_nmask32 mask)\
+					__attribute__((__nonnull__(1), pure));
+t_nvec32a		xft_viota32(void) __attribute__((const));
+
+t_nvec64		xft_vsplat64(t_u64 b)\
+					__attribute__((const));
+t_nmask64		xft_vmask64(t_nvec64 vec)\
+					__attribute__((const));
+t_nmask64		xft_veqmask64(t_nvec64 vec, t_u64 b)\
+					__attribute__((const));
+t_nmask64		xft_vtestmask64(t_nvec64 vec, t_u64 b)\
+					__attribute__((const));
+t_nmask64		xft_vrangemask64(t_nvec64a v, t_u64 lo, t_u64 hi)\
+					__attribute__((const));
+t_nvec64		xft_vcompress64(t_nvec64a vec, t_nmask64 mask)\
+					__attribute__((const));
+t_nvec64a		xft_vmask_load64(t_cany ptr, t_nmask64 mask)\
+					__attribute__((__nonnull__(1), pure));
+t_nvec64a		xft_viota64(void) __attribute__((const));
+
 #endif

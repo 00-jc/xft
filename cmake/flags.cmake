@@ -117,8 +117,11 @@ set(CFLAGS_STACK_CHECK_RAW -fstack-protector-all -fstack-check)
 # per variant: freestanding win64 has no __chkstk to probe with, see
 # xft_wants_stack_clash in variants.cmake
 set(CFLAGS_STACK_CLASH_RAW -fstack-clash-protection)
+# no fake stack frames: they are only 32 byte aligned and the code gen stores
+# 64 byte vector locals with aligned zmm moves
 set(XFT_SAN_FLAGS_RAW
   -fsanitize=address,alignment,undefined
+  --param=asan-use-after-return=0
   -fsanitize-recover=null
   -fno-omit-frame-pointer)
 
