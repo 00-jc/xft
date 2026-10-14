@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   __hasz.c                                           :+:      :+:    :+:   */
+/*   xft_populate.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -11,10 +11,16 @@
 /* ************************************************************************** */
 
 #include "mem.h"
-#include "xft_p_asm.h"
 
-__attribute__((__always_inline__, __used__))
-inline t_u64	xft_hasz64(t_u64 x)
+__attribute__((hot, const, __always_inline__, __used__))
+inline t_u64	xft_populate(t_u8 y)
 {
-	return (((x)-LONES_64) & (~x) & HIGHS_64);
+	t_u64	x;
+
+	x = (t_u64)y;
+	x |= x << 8;
+	x |= x << 16;
+	x |= x << 24;
+	x |= x << 32;
+	return (x);
 }

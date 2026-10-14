@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   __maxs.c                                           :+:      :+:    :+:   */
+/*   xft_hasz.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -11,11 +11,10 @@
 /* ************************************************************************** */
 
 #include "mem.h"
+#include "xft_p_asm.h"
 
-t_size	xft_max_s(t_size x, t_size y)
+__attribute__((__always_inline__, __used__))
+inline t_u64	xft_hasz64(t_u64 x)
 {
-	t_size	cnd;
-
-	cnd = -(x < y);
-	return ((cnd & y) | (~cnd & x));
+	return (((x)-LONES_64) & (~x) & HIGHS_64);
 }

@@ -39,7 +39,8 @@ inline t_vu128	xft_vcompress128(t_vu128a vec, t_u16a mask)
 	i = 0;
 	while (mask)
 	{
-		if (i >= sizeof(mask) << 3) __builtin_unreachable();
+		if (i >= sizeof(mask) << 3)
+			__builtin_unreachable();
 		out[i++] = vec[xft_memctz_u16(mask)];
 		mask &= mask - 1;
 	}

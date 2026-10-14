@@ -32,18 +32,18 @@ set(SRCS_ATOMICS
   src/atomics/mutex/xft_mutex_unlock.c)
 
 set(SRCS_BMI
-  src/bmi/__hasz.c
-  src/bmi/__max.c
-  src/bmi/__maxs.c
-  src/bmi/__populate.c
   src/bmi/xft_align.c
   src/bmi/xft_bswap.c
   src/bmi/xft_from_be.c
   src/bmi/xft_from_le.c
+  src/bmi/xft_hasz.c
+  src/bmi/xft_max.c
+  src/bmi/xft_maxs.c
   src/bmi/xft_memclz.c
   src/bmi/xft_memctz.c
   src/bmi/xft_next_pow2.c
   src/bmi/xft_popcount.c
+  src/bmi/xft_populate.c
   src/bmi/xft_rollmask.c
   src/bmi/xft_rotl.c
   src/bmi/xft_tern.c

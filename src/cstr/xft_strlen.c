@@ -29,8 +29,8 @@ inline t_size	xft_strlen(const char *__restrict__ const str)
 	wp = (t_blknr)(str);
 	a = (t_uptr)str;
 	offst = (t_uptr)wp & ALIGN;
-	m = (t_nmask)xft_tern(offst + sizeof(t_nvec) > SIZE,
-			(1ULL << ((SIZE - offst) & 63)) - 1, ~0);
+	m = (t_nmask)(~0ULL >> (64 - xft_tern(offst + sizeof(t_nvec) > SIZE,
+					SIZE - offst, 64)));
 	w = xft_vmask(xft_vmask_load(wp, m) == 0) & m;
 	if (__builtin_expect(w != 0, 1))
 		return (((t_uptr)wp + xft_memctz_u64(w)) - a);

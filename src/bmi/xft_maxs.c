@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   __populate.c                                       :+:      :+:    :+:   */
+/*   xft_maxs.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,15 +12,10 @@
 
 #include "mem.h"
 
-__attribute__((hot, const, __always_inline__, __used__))
-inline t_u64	xft_populate(t_u8 y)
+t_size	xft_max_s(t_size x, t_size y)
 {
-	t_u64	x;
+	t_size	cnd;
 
-	x = (t_u64)y;
-	x |= x << 8;
-	x |= x << 16;
-	x |= x << 24;
-	x |= x << 32;
-	return (x);
+	cnd = -(x < y);
+	return ((cnd & y) | (~cnd & x));
 }
