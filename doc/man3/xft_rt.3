@@ -1,0 +1,268 @@
+.Dd October 14, 2026
+.Dt XFT_RT 3
+.Os xft
+.Sh NAME
+.Nm xft_get_kernel_ptrs ,
+.Nm xft_get_rt ,
+.Nm xft_free_kernel_ptrs ,
+.Nm xft_main
+.Nd program entry point and runtime helpers
+.Sh SYNOPSIS
+.In rt.h
+.Ft t_kernel_ptrs
+.Fn xft_get_kernel_ptrs "const t_any *sp"
+.Ft t_xft_rt
+.Fn xft_get_rt "const t_any *sp"
+.Ft void
+.Fn xft_free_kernel_ptrs "t_kernel_ptrs *kp"
+.Ft void
+.Fn xft_main "const t_any *restrict sp"
+.Sh DESCRIPTION
+.In rt.h
+declares the types that carry the process arguments and the entry points
+that hand them to
+.Nm
+programs.
+On Linux and Windows a program written against
+.Nm
+defines
+.Fn xft_main
+instead of
+.Fn main ;
+the library supplies the real entry point and calls
+.Fn xft_main
+with a pointer to the initial stack.
+.Ss Types
+.Bd -literal -offset indent
+typedef t_u8   t_nat_str;   /* t_u16 on Windows */
+typedef const t_nat_str *__restrict__ *__restrict__ t_rt_arr;
+
+typedef struct s_kernel_ptrs {
+	t_size              argc;
+	t_rt_arr            argv;
+	t_rt_arr            envp;
+} t_kernel_ptrs;
+
+typedef struct s_hwcaps {
+	t_u64a              hwcap;
+	t_u64a              hwcap2;
+} t_hwcaps;
+
+typedef struct s_xft_rt {
+	t_kernel_ptrs       kp;
+} t_xft_rt;
+.Ed
+.Pp
+.Vt t_nat_str
+is the native character type of the platform:
+.Vt t_u8
+on Linux,
+.Vt t_u16
+on Windows, where the kernel provides UTF-16 command lines and environment
+blocks.
+.Vt t_kernel_ptrs
+holds the argument count, the argument vector and the environment vector.
+.Vt t_hwcaps
+is reserved for the auxiliary vector's hardware capability words; it is
+declared but not populated.
+.Vt t_xft_rt
+wraps
+.Vt t_kernel_ptrs
+so that more runtime state can be added without changing the
+.Fn xft_main
+signature.
+.Ss Entry point
+.Fn xft_main
+is the function a program defines.
+It is declared
+.Ql nonnull
+and
+.Ql noreturn
+and must end with
+.Xr xft_exit 3 .
+.Fa sp
+points to the initial stack as it was on entry to the process; it is not a
+.Vt t_kernel_ptrs .
+.Pp
+The library provides the real entry point,
+.Fn _start ,
+for every supported platform when
+.Dv XFT_NO_RT
+is not defined.
+On Linux it does not call into libc:
+.Bl -tag -width "aarch64"
+.It x86_64
+Clears
+.Va rbp ,
+moves
+.Va rsp
+into
+.Va rdi ,
+aligns
+.Va rsp
+to 16 bytes, and calls
+.Fn xft_main
+with the original stack pointer.
+.It aarch64
+Clears
+.Va x29 ,
+passes
+.Va sp
+in
+.Va x0
+after aligning it to 16 bytes, and calls
+.Fn xft_main
+with the unmodified value.
+.El
+.Pp
+On Windows
+.Fn _start
+passes the frame address of the entry point to
+.Fn xft_main ;
+the kernel has already produced the command line through
+.Ql GetCommandLineW .
+.Pp
+With
+.Dv XFT_REQUIRE_LIBC
+set, the library instead defines
+.Fn main
+and forwards to
+.Fn xft_main
+with the stack pointer reconstructed from the arguments:
+on Linux, from the address of
+.Fa argv
+minus one word, which is where
+.Fa argc
+lives; on Windows, from the frame address.
+.Ss Recovering arguments
+.Fn xft_get_kernel_ptrs
+decodes the initial stack into a
+.Vt t_kernel_ptrs .
+The layout is platform specific:
+.Bl -tag -width "Windows"
+.It Linux
+.Fa sp
+is treated as a pointer to a
+.Vt t_u64
+array.
+.Fa argc
+is at index 0,
+.Fa argv
+starts at index 1, and
+.Fa envp
+follows the terminating
+.Dv nullptr
+of
+.Fa argv .
+No allocation is performed and the returned pointers alias the process
+stack.
+.It Windows
+.Fa sp
+is ignored.
+The command line is retrieved with
+.Ql GetCommandLineW
+and split with
+.Ql CommandLineToArgvW ,
+which allocates the argument vector through
+.Ql LocalFree .
+The environment block comes from
+.Ql GetEnvironmentStringsW .
+Both must be released with
+.Fn xft_free_kernel_ptrs .
+.El
+.Pp
+.Fn xft_get_rt
+calls
+.Fn xft_get_kernel_ptrs
+and wraps the result in a
+.Vt t_xft_rt .
+.Pp
+.Fn xft_free_kernel_ptrs
+releases the storage owned by a
+.Vt t_kernel_ptrs
+returned on Windows, via
+.Ql LocalFree
+for
+.Fa argv
+and
+.Ql FreeEnvironmentStringsW
+for
+.Fa envp ,
+then zeroes the structure.
+On Linux it does nothing, since the structure aliases the stack.
+.Sh RETURN VALUES
+.Fn xft_get_kernel_ptrs
+and
+.Fn xft_get_rt
+return the filled structure.
+.Fn xft_free_kernel_ptrs
+returns nothing.
+.Fn xft_main
+does not return.
+.Sh EXAMPLES
+Print the arguments, one per line, then exit successfully.
+.Bd -literal -offset indent
+#include <xft.h>
+
+void	xft_main(const t_any *__restrict__ const sp)
+{
+	t_kernel_ptrs	kp;
+	t_writer		w;
+	t_u8			buf[BUFSIZE];
+	t_size			i;
+
+	kp = xft_get_kernel_ptrs(sp);
+	w = xft_get_fs_writer(xft_fatptr(buf, sizeof(buf)), xft_get_stdout());
+	i = 0;
+	while (i < kp.argc)
+	{
+		xft_writer_write(&w, xft_fatptr((t_u8 *)kp.argv[i],
+				xft_strlen((const char *)kp.argv[i])));
+		xft_writer_write(&w, xft_fatptr((t_u8 *)"\en", 1));
+		++i;
+	}
+	xft_writer_flush(&w);
+	xft_free_kernel_ptrs(&kp);
+	xft_exit(0);
+}
+.Ed
+.Sh SEE ALSO
+.Xr xft_io 3 ,
+.Xr xft_syscalls 3 ,
+.Xr xft 7
+.Sh CAVEATS
+The
+.Fa argc
+and
+.Fa argv
+members of
+.Vt t_kernel_ptrs
+follow the platform's own types.
+On Windows they are UTF-16 and cannot be passed to any
+.Nm
+function that expects a byte buffer without conversion.
+.Pp
+.Fn xft_get_kernel_ptrs
+on Windows performs two allocations that the caller must release; there is
+no equivalent on Linux, and calling
+.Fn xft_free_kernel_ptrs
+on a structure produced on Linux is a no-op.
+.Pp
+.Fn xft_get_kernel_ptrs
+on Linux reads the stack blindly.
+The layout it assumes is the one the kernel passes to a static ELF
+executable; a process started by any other mechanism, or one whose stack has
+been rearranged before
+.Fn xft_main ,
+yields garbage in
+.Fa argc ,
+.Fa argv
+or
+.Fa envp .
+.Pp
+.Vt t_hwcaps
+is never filled.
+Programs that need the auxiliary vector's hardware capabilities must read
+them from
+.Fa sp
+themselves.

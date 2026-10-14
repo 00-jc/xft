@@ -1,0 +1,171 @@
+.Dd October 14, 2026
+.Dt XFT_FMT 3
+.Os xft
+.Sh NAME
+.Nm xft_fmt_writer
+.Nd formatted output to a writer
+.Sh SYNOPSIS
+.In fmt.h
+.Ft t_result
+.Fn xft_fmt_writer "t_writer *writer" "t_buffer fmt" "t_u64 *values"
+.Sh DESCRIPTION
+.Fn xft_fmt_writer
+writes
+.Fa fmt
+to
+.Fa writer ,
+replacing each conversion with the text for the next value taken from
+.Fa values .
+.Fa fmt
+is a length-delimited buffer and need not be NUL-terminated.
+Arguments are not variadic: every value occupies one or two
+.Vt t_u64
+slots of
+.Fa values ,
+consumed in order.
+.Pp
+Literal text and each converted value are passed to
+.Fn xft_writer_write
+separately, so they are staged in the writer and only reach the destination
+when its buffer drains or
+.Fn xft_writer_flush
+is called.
+.Pp
+A conversion is a
+.Ql %
+followed by one character.
+There are no flags, field widths, precisions or length modifiers.
+Decimal output has no padding and no
+.Ql +
+sign; hexadecimal output has no
+.Ql 0x
+prefix.
+.Bl -tag -width Ds
+.It Cm %b , %w , %u , %q
+Unsigned decimal of the low 8, 16, 32 or 64 bits of the slot.
+.It Cm %y , %o , %d , %i
+Signed decimal of the low 8, 16, 32 or 64 bits of the slot, sign-extended.
+.It Cm %X
+Uppercase hexadecimal of the whole slot.
+.It Cm %x , %p
+Lowercase hexadecimal of the whole slot; see
+.Sx CAVEATS .
+.It Cm %f
+The slot bits reinterpreted as a
+.Vt t_f64 .
+Printed as an optional
+.Ql - ,
+the integer part, a
+.Ql \&.
+and exactly six fraction digits, truncated rather than rounded.
+NaN prints
+.Ql nan
+and either infinity prints
+.Ql inf ,
+with no sign.
+Values of at least 2^64 print
+.Ql ovf .
+Negative zero prints
+.Ql 0.000000 .
+.It Cm %s
+Two slots: a pointer, then a byte count.
+That many bytes are copied verbatim; NUL is not special.
+.It Cm %%
+A literal
+.Ql % .
+Consumes no slot.
+.El
+.Pp
+Any other character after
+.Ql % ,
+including
+.Cm %e
+and
+.Cm %m
+which are listed in a comment in
+.In fmt.h ,
+is an error.
+.Sh RETURN VALUES
+.Fn xft_fmt_writer
+returns
+.Dv OK
+if every write succeeded.
+It returns
+.Dv KO
+if a write to
+.Fa writer
+fails or an unknown conversion is found.
+Output produced before the failure has already been passed to
+.Fa writer .
+.Sh EXAMPLES
+.Bd -literal -offset indent
+#include <xft.h>
+
+void	print_particle(t_writer *w, t_u64 id, t_i32 x, t_i32 y)
+{
+	static const char	fmt[] = "particle %q at (%d, %d)\en";
+	t_u64				values[3];
+
+	values[0] = id;
+	values[1] = (t_u32)x;
+	values[2] = (t_u32)y;
+	xft_fmt_writer(w, xft_fatptr((t_u8 *)fmt, sizeof(fmt) - 1), values);
+}
+
+void	print_ratio(t_writer *w, t_f64 r)
+{
+	static const char	fmt[] = "%s = %f\en";
+	static const char	name[] = "ratio";
+	t_u64				values[3];
+
+	values[0] = (t_uptr)name;
+	values[1] = sizeof(name) - 1;
+	values[2] = (t_dp){.f = r}.i;
+	xft_fmt_writer(w, xft_fatptr((t_u8 *)fmt, sizeof(fmt) - 1), values);
+}
+.Ed
+.Pp
+With
+.Fa r
+equal to 0.5,
+.Fn print_ratio
+writes
+.Ql ratio = 0.500000 .
+.Sh SEE ALSO
+.Xr xft_io 3 ,
+.Xr xft_math 3 ,
+.Xr xft 7
+.Sh CAVEATS
+.Fa values
+must not be
+.Dv nullptr
+even when
+.Fa fmt
+has no conversions, and
+.Fa fmt Ns .mem
+must not be
+.Dv nullptr .
+The number of slots is not checked against
+.Fa fmt .
+.Pp
+.Cm %x
+and
+.Cm %p
+are broken: each nonzero digit is ORed with 1 instead of being lowercased, so
+letters stay uppercase and even digits print as the next odd one
+(0xabcdef prints
+.Ql ACCEEG ) .
+A zero value prints
+.Ql 0
+correctly.
+.Pp
+A lone
+.Ql %
+at the very end of
+.Fa fmt
+writes the literal text before it twice, then the
+.Ql % .
+.Pp
+Negative values at or below \-2^64 are not caught by the
+.Ql ovf
+check and convert with undefined behavior.

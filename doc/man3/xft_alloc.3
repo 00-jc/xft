@@ -1,0 +1,277 @@
+.Dd October 14, 2026
+.Dt XFT_ALLOC 3
+.Os xft
+.Sh NAME
+.Nm xft_arena_allocator ,
+.Nm xft_gpa_allocator ,
+.Nm xft_reporta_allocator ,
+.Nm xft_page_allocator ,
+.Nm xft_alloc_clone
+.Nd allocator interface
+.Sh SYNOPSIS
+.In alloc.h
+.Ft t_allocator
+.Fn xft_arena_allocator "t_arena *arena"
+.Ft t_allocator
+.Fn xft_gpa_allocator "t_gpa *gpa"
+.Ft t_allocator
+.Fn xft_reporta_allocator "t_reporta *gpa"
+.Ft t_allocator
+.Fn xft_page_allocator void
+.Ft t_buffer
+.Fn xft_alloc_clone "t_any self" "t_buffer buffer"
+.Sh DESCRIPTION
+Every xft container that owns memory takes a
+.Vt t_allocator
+by value and calls through its vtable.
+A
+.Vt t_allocator
+pairs a table of function pointers with an untyped pointer to the backend
+state:
+.Bd -literal -offset indent
+typedef void     (*t_free)(t_any alloc, t_buffer old);
+typedef t_buffer (*t_reallocate)(t_any alloc, t_buffer old,
+                     t_size new_size, t_size align);
+typedef t_buffer (*t_allocate)(t_any alloc, t_size size,
+                     t_size align);
+typedef void     (*t_destroy)(t_any alloc);
+typedef t_buffer (*t_clone)(t_any self, t_buffer buffer);
+
+typedef struct e_alloc_vtable {
+	t_free        free;
+	t_reallocate  realloc;
+	t_allocate    allocate;
+	t_destroy     destroy;
+	t_clone       clone;
+} t_alloc_vtable;
+
+typedef struct s_allocator {
+	t_alloc_vtable  vtable;
+	t_any           allocator;
+} t_allocator;
+.Ed
+.Pp
+The
+.Fa alloc
+argument of
+.Fa allocate ,
+.Fa realloc ,
+.Fa free
+and
+.Fa destroy
+is the
+.Fa allocator
+member.
+The
+.Fa self
+argument of
+.Fa clone
+is a pointer to the
+.Vt t_allocator
+itself.
+All five types are declared
+.Ql nonnull
+on their first argument.
+.Pp
+Allocations are
+.Vt t_buffer
+fat pointers.
+A failed allocation is signalled by a
+.Dv nullptr
+.Fa mem
+member; the
+.Fa size
+member may still be nonzero, so test
+.Fa mem .
+On success
+.Fa size
+is the usable size, which may be larger than requested.
+A buffer handed back to
+.Fa free
+or
+.Fa realloc
+must be the
+.Vt t_buffer
+exactly as it was returned, since some backends use its
+.Fa size
+to find where it belongs.
+.Pp
+A
+.Vt t_allocator
+does not own its backend state.
+The arena, GPA or report allocator passed to the constructor must outlive
+every copy of the returned
+.Vt t_allocator ,
+and is released only by calling
+.Fa destroy
+or the backend's own destroy function.
+.Pp
+.Fn xft_arena_allocator ,
+.Fn xft_gpa_allocator ,
+.Fn xft_reporta_allocator
+and
+.Fn xft_page_allocator
+build a
+.Vt t_allocator
+around one backend.
+They allocate nothing and are declared
+.Ql const .
+The vtable entries map onto the backends as follows:
+.Bl -tag -width "xft_reporta_allocator"
+.It Fn xft_arena_allocator
+.Fa allocate
+calls
+.Fn xft_arena_alloc
+and returns a buffer of exactly
+.Fa size
+bytes.
+.Fa realloc
+always allocates a new block of
+.Fa new_size
+bytes, copies the smaller of the old and new sizes, and leaves the old block
+in place.
+.Fa free
+does nothing.
+.Fa destroy
+calls
+.Fn xft_destroy_arena .
+See
+.Xr xft_arena 3 .
+.It Fn xft_gpa_allocator
+.Fa allocate ,
+.Fa realloc ,
+.Fa free
+and
+.Fa destroy
+call
+.Fn xft_gpa_alloc ,
+.Fn xft_gpa_realloc ,
+.Fn xft_gpa_free
+and
+.Fn xft_gpa_destroy .
+See
+.Xr xft_gpa 3 .
+.It Fn xft_reporta_allocator
+As above with the
+.Fn xft_reporta_*
+functions.
+.Fa destroy
+prints a usage report to standard error.
+See
+.Xr xft_gpa 3 .
+.It Fn xft_page_allocator
+.Fa allocate ,
+.Fa realloc
+and
+.Fa free
+call
+.Fn xft_palloc ,
+.Fn xft_palloc_resize
+and
+.Fn xft_palloc_free ;
+.Fa align
+is ignored.
+.Fa destroy
+is
+.Dv nullptr .
+The
+.Fa allocator
+member points to a static
+.Vt t_page_alloc
+that carries no state.
+See
+.Xr xft_palloc 3 .
+.El
+.Pp
+All four set
+.Fa clone
+to
+.Fn xft_alloc_clone .
+.Pp
+.Fn xft_alloc_clone
+treats
+.Fa self
+as a
+.Vt "t_allocator *" ,
+allocates
+.Fa buffer Ns .size
+bytes through its
+.Fa allocate
+entry with an alignment of
+.Fa buffer Ns .size
+rounded up to a power of two, and copies
+.Fa buffer Ns .size
+bytes from
+.Fa buffer Ns .mem
+into the new block.
+.Sh RETURN VALUES
+The constructors return the filled
+.Vt t_allocator .
+.Pp
+.Fn xft_alloc_clone
+returns the new buffer as returned by the backend, so its size may exceed
+.Fa buffer Ns .size .
+On failure it returns a buffer with
+.Fa mem
+set to
+.Dv nullptr
+and
+.Fa size
+set to 0.
+.Sh EXAMPLES
+.Bd -literal -offset indent
+#include <xft.h>
+
+__attribute__((__nonnull__(1), __noreturn__))
+void	xft_main(const t_any *const __restrict__ sp)
+{
+	t_gpa		gpa;
+	t_allocator	allocator;
+	t_buffer	memory;
+	t_buffer	copy;
+
+	(void)sp;
+	gpa = xft_new_gpa();
+	if (gpa.slab == nullptr)
+		xft_exit(1);
+	allocator = xft_gpa_allocator(&gpa);
+	memory = allocator.vtable.allocate(allocator.allocator, 1000, 64);
+	if (memory.mem == nullptr)
+	{
+		allocator.vtable.destroy(allocator.allocator);
+		xft_exit(1);
+	}
+	xft_pin_invariant(memory.size >= 1000);
+	copy = allocator.vtable.clone(&allocator, memory);
+	if (copy.mem != nullptr)
+		allocator.vtable.free(allocator.allocator, copy);
+	allocator.vtable.free(allocator.allocator, memory);
+	allocator.vtable.destroy(allocator.allocator);
+	xft_exit(0);
+}
+.Ed
+.Sh SEE ALSO
+.Xr xft_arena 3 ,
+.Xr xft_gpa 3 ,
+.Xr xft_indexmap 3 ,
+.Xr xft_palloc 3 ,
+.Xr xft_soa 3 ,
+.Xr xft_str 3 ,
+.Xr xft_swissmap 3 ,
+.Xr xft_vec 3 ,
+.Xr xft 7
+.Sh CAVEATS
+Calling
+.Fa destroy
+on a page allocator calls a null pointer.
+.Pp
+.Fn xft_alloc_clone
+must be called with a pointer to the
+.Vt t_allocator ,
+not with its
+.Fa allocator
+member.
+.Fa buffer Ns .size
+must be nonzero.
+Through an arena the requested alignment equals the rounded size, so cloning
+large buffers wastes up to that many bytes of padding.

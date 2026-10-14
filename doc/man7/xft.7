@@ -1,0 +1,244 @@
+.Dd October 14, 2026
+.Dt XFT 7
+.Os xft
+.Sh NAME
+.Nm xft
+.Nd freestanding C23 systems library
+.Sh SYNOPSIS
+.In xft.h
+.Ft void
+.Fn xft_main "const t_any *__restrict__ const sp"
+.Sh DESCRIPTION
+.Nm
+is a freestanding C23 library for Linux and 64-bit Windows on x86_64 and
+aarch64.
+It replaces the parts of libc a program normally relies on and links with
+.Fl nostdlib .
+A hosted flavor, selected with
+.Dv XFT_LIBC ,
+exposes the same API on a normal toolchain.
+.Pp
+Programs include
+.In xft.h ,
+which pulls in every public header, and define
+.Fn xft_main
+instead of
+.Fn main .
+.Fn xft_main
+receives the initial stack pointer, from which the runtime helpers recover
+the arguments, environment and auxiliary vector, and must end with
+.Fn xft_exit ;
+see
+.Xr xft_rt 3 .
+.Ss Conventions
+.Bl -bullet
+.It
+Every public symbol is prefixed
+.Ql xft_ .
+.It
+Fallible functions return
+.Vt t_result ,
+which is
+.Dv OK
+(1) or
+.Dv KO
+(0).
+There is no
+.Va errno .
+.It
+Containers and allocating functions take the allocator explicitly as a
+.Vt t_allocator
+argument and, where the element type is not fixed, the element size in bytes.
+See
+.Xr xft_alloc 3 .
+.It
+Integer and floating-point typedefs are fixed-width and encode alignment in
+the name: the plain type has alignment 1 and is safe for unaligned access,
+the
+.Ql a
+suffix carries natural alignment.
+All primitive typedefs are
+.Ql may_alias .
+.El
+.Ss Primitive types
+Declared in
+.In primitives.h :
+.Bl -column "t_u128, t_u128a" "unsigned 128-bit (__uint128_t)"
+.It Vt t_u8 , t_i8 Ta 8-bit integers
+.It Vt t_u16 , t_u16a Ta 16-bit unsigned
+.It Vt t_i16 , t_i16a Ta 16-bit signed
+.It Vt t_u32 , t_u32a Ta 32-bit unsigned
+.It Vt t_i32 , t_i32a Ta 32-bit signed
+.It Vt t_u64 , t_u64a Ta 64-bit unsigned
+.It Vt t_i64 , t_i64a Ta 64-bit signed
+.It Vt t_u128 , t_u128a Ta unsigned 128-bit (__uint128_t)
+.It Vt t_i128 , t_i128a Ta signed 128-bit (__int128_t)
+.It Vt t_f32 , t_f32a Ta float
+.It Vt t_f64 , t_f64a Ta double
+.It Vt t_f80 , t_f80a Ta long double
+.It Vt t_uptr Ta pointer-sized unsigned integer
+.It Vt t_any , t_cany Ta void pointer, const void pointer
+.It Vt t_size Ta alias of t_u64
+.It Vt t_ssize Ta alias of t_i64
+.El
+.Pp
+Compound types:
+.Bd -literal -offset indent
+typedef struct s_buffer {
+	t_size	size;
+	t_u8	*mem;	/* counted_by(size) under clang */
+} t_buffer;
+
+typedef enum e_result { OK = 1, KO = 0 } t_result;
+
+typedef struct s_span {
+	t_size	typesize;
+	t_size	n;
+} t_span;
+.Ed
+.Pp
+.In macros.h
+defines ANSI escape strings:
+.Dv ANSI_RESET ,
+the foreground colors
+.Dv ANSI_BLACK
+through
+.Dv ANSI_WHITE ,
+their bold
+.Dv ANSI_B*
+variants, and the background colors
+.Dv ANSI_BG_RED
+through
+.Dv ANSI_BG_WHITE .
+.Ss Platform checks
+.In primitives.h
+rejects the build with
+.Ic #error
+when compiling freestanding on an architecture other than x86_64 or
+aarch64 without
+.Dv XFT_REQUIRE_LIBC ,
+on 32-bit Windows, and on any operating system other than Linux or Win64.
+.Dv XFT_REQUIRE_LIBC
+is defined publicly by the build when
+.Dv XFT_LIBC
+is on.
+.Ss Subsystems
+.Bl -tag -width "xft_swissmap(3)"
+.It Xr xft_alloc 3
+allocator interface, arena, general purpose, page and reporting allocators
+.It Xr xft_atomics 3
+mutexes and atomic types
+.It Xr xft_bmi 3
+bit manipulation and SIMD mask primitives
+.It Xr xft_cstr 3
+NUL-terminated string functions
+.It Xr xft_ctype 3
+character classification
+.It Xr xft_fmt 3
+formatted output
+.It Xr xft_fuzzer 3
+fuzzing harness
+.It Xr xft_hash 3
+hash functions
+.It Xr xft_hint 3
+runtime invariants and optimizer hints
+.It Xr xft_indexmap 3
+insertion-ordered hash map
+.It Xr xft_io 3
+file descriptors and buffered input/output
+.It Xr xft_math 3
+math functions
+.It Xr xft_mem 3
+memory copy, move, set and compare
+.It Xr xft_rng 3
+pseudo-random number generation
+.It Xr xft_rt 3
+program entry point and runtime
+.It Xr xft_signals 3
+signal handling
+.It Xr xft_soa 3
+structure-of-arrays container
+.It Xr xft_sort 3
+sorting
+.It Xr xft_str 3
+growable strings
+.It Xr xft_swissmap 3
+SIMD open-addressing hash map
+.It Xr xft_syscalls 3
+system call wrappers
+.It Xr xft_timing 3
+clocks and cycle counters
+.It Xr xft_vec 3
+growable arrays
+.El
+.Sh BUILD OPTIONS
+.Nm
+builds with CMake 3.21 or later and GCC or Clang with C23 support.
+Ninja is the supported generator; on Windows only Clang with the GNU-style
+driver is supported.
+The build produces
+.Pa libxft.a ;
+consumers link the
+.Ql xft::xft
+target, which carries the freestanding flags.
+.Bl -tag -width "XFT_BUILD_BENCH"
+.It Dv XFT_LIBC
+Build against a libc instead of freestanding.
+Default off.
+.It Dv XFT_NATIVE
+Compile with
+.Fl march=native Fl mtune=native .
+Default on; forced off when cross compiling.
+.It Dv XFT_LTO
+Link-time optimization.
+Default on.
+.It Dv XFT_FAST_MATH
+Compile with
+.Fl ffast-math .
+Default on.
+.It Dv XFT_SANITIZE
+AddressSanitizer and UndefinedBehaviorSanitizer.
+Forces
+.Dv XFT_LIBC
+on and
+.Dv XFT_LTO
+off.
+Default off.
+.It Dv XFT_STRICT_ARCH
+Compile only the architecture backends of the host.
+Default off.
+.It Dv XFT_RT
+Use the
+.Nm
+entry point, which calls
+.Fn xft_main .
+When off, the libc entry point and the program's
+.Fn main
+are used and
+.Dv XFT_LIBC
+is forced on.
+Default on.
+.It Dv XFT_BUILD_TESTS
+Build the unit tests, always sanitized.
+.It Dv XFT_BUILD_FUZZ
+Build the fuzz targets, always sanitized.
+.It Dv XFT_BUILD_BENCH
+Build the benchmarks, never sanitized.
+Linux only.
+.El
+.Pp
+Warnings are always errors.
+.Sh EXAMPLES
+.Bd -literal -offset indent
+#include <xft.h>
+
+void	xft_main(const t_any *__restrict__ const sp)
+{
+	(void)sp;
+	xft_exit(0);
+}
+.Ed
+.Sh SEE ALSO
+.Xr xft_alloc 3 ,
+.Xr xft_io 3 ,
+.Xr xft_rt 3

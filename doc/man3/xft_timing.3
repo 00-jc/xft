@@ -1,0 +1,135 @@
+.Dd October 14, 2026
+.Dt XFT_TIMING 3
+.Os xft
+.Sh NAME
+.Nm xft_get_nanos
+.Nd monotonic time in nanoseconds
+.Sh SYNOPSIS
+.In timing.h
+.Ft t_u64a
+.Fn xft_get_nanos void
+.Sh DESCRIPTION
+.Fn xft_get_nanos
+returns the time elapsed since an unspecified, per-process epoch, in
+nanoseconds.
+The value is monotonic and never decreases within a single process.
+It is not wall-clock time and cannot be compared across processes.
+.Ss Types
+The header
+.In timing.h
+includes
+.In types/timing_types.h ,
+which defines the time value structure and, on x86_64, a calibration
+record:
+.Bd -literal -offset indent
+/* freestanding, or any build on Windows */
+typedef struct s_timespec {
+	t_i64a	tv_sec;
+	t_i64a	tv_nsec;
+} t_timespec;
+
+/* libc on Linux */
+# include <time.h>
+typedef struct timespec t_timespec;
+
+/* x86_64 only */
+typedef struct s_tsc {
+	t_i64a	base;
+	t_i64a	mult;
+} t_tsc;
+.Ed
+.Pp
+.Vt t_timespec
+follows
+.Vt struct timespec
+on hosted Linux builds and is a hand-rolled equivalent everywhere else.
+.Vt t_tsc
+holds the offset and multiplier used to convert the cycle counter into
+nanoseconds; it is only defined on x86_64.
+.Ss Implementations
+The implementation differs by target.
+.Bl -tag -width "x86_64"
+.It aarch64, freestanding
+Calls
+.Fn xft_clock_gettime ,
+which stores the monotonic time in a
+.Vt t_timespec ,
+and combines the fields into nanoseconds.
+.It x86_64
+Calibrates the cycle counter on the first call by sampling
+.Fn xft_rdtsc
+around a ten-millisecond sleep on
+.Fn xft_clock_gettime .
+The ratio of elapsed nanoseconds to elapsed cycles is stored in a
+.Vt t_tsc ,
+and every call thereafter returns the elapsed cycles since calibration
+scaled by that ratio.
+The calibration state is held in two function-local statics; the first call
+performs the calibration, later calls read the counter and multiply.
+.It Any other target
+Calls the C library's
+.Fn clock_gettime
+with
+.Dv CLOCK_MONOTONIC
+and combines the fields.
+.El
+.Pp
+.Fn xft_rdtsc
+reads the cycle counter.
+It is declared in the private header
+.Pa src/internal/xft_p_time.h
+and is not part of the public API; the only public function on this page is
+.Fn xft_get_nanos .
+.Sh RETURN VALUES
+.Fn xft_get_nanos
+returns the current time in nanoseconds, as a
+.Vt t_u64a .
+The value wraps after roughly 584 years of uptime.
+.Sh EXAMPLES
+Measure the duration of a region in nanoseconds.
+.Bd -literal -offset indent
+#include <xft.h>
+
+t_u64a	time_region(void (*fn)(void))
+{
+	t_u64a	start;
+	t_u64a	stop;
+
+	start = xft_get_nanos();
+	fn();
+	stop = xft_get_nanos();
+	return (stop - start);
+}
+.Ed
+.Sh SEE ALSO
+.Xr xft_rt 3 ,
+.Xr xft_rng 3 ,
+.Xr xft_syscalls 3 ,
+.Xr xft 7
+.Sh CAVEATS
+The epoch is unspecified.
+A difference of two values is meaningful; the values themselves are not.
+.Pp
+On x86_64 the returned time is derived from the cycle counter and inherits
+its caveats: the value is only as accurate as the calibration, and it can
+jump if the thread migrates between sockets whose counters are not
+synchronised, or if the counter frequency changes between calibration and
+measurement.
+Pin the thread to a CPU when precise timing matters.
+.Pp
+The first call on x86_64 blocks for at least ten milliseconds while the
+counter is calibrated.
+Every later call is a counter read and a multiply.
+.Pp
+The initialization of the calibration state is not thread safe.
+Two threads calling
+.Fn xft_get_nanos
+for the first time concurrently can both run the calibration; the resulting
+value is still monotonic but may be less accurate.
+.Pp
+The return value is
+.Vt t_u64a .
+The internal expression on x86_64 casts the product to
+.Vt t_u128
+before shifting, so the multiplication does not overflow, but the final
+result is truncated back to 64 bits.

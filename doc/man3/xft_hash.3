@@ -1,0 +1,149 @@
+.Dd October 14, 2026
+.Dt XFT_HASH 3
+.Os xft
+.Sh NAME
+.Nm xft_murmur3 ,
+.Nm xft_murmur3_with_seed ,
+.Nm xft_xxh3_64bits
+.Nd non-cryptographic hash functions
+.Sh SYNOPSIS
+.In hash.h
+.Ft t_u128a
+.Fn xft_murmur3 "const t_u8 *restrict mem" "t_size size"
+.Ft t_u128a
+.Fn xft_murmur3_with_seed "const t_u8 *restrict mem" "t_size seed" "t_size size"
+.Ft t_u64a
+.Fn xft_xxh3_64bits "t_buffer input" "t_u64a seed"
+.Sh DESCRIPTION
+.In hash.h
+provides the two hash functions used by
+.Xr xft_indexmap 3
+and
+.Xr xft_swissmap 3 :
+a 128-bit Murmur3 and a 64-bit XXH3.
+Neither is cryptographic and neither is keyed.
+Both are
+.Ql pure ,
+allocate nothing, and may be called concurrently from any number of
+threads.
+.Ss Murmur3
+.Fn xft_murmur3_with_seed
+hashes the
+.Fa size
+bytes at
+.Fa mem
+using
+.Fa seed
+as the initial state and returns the 128-bit result.
+The input is consumed in 16-byte blocks; a trailing fragment of up to 15
+bytes is mixed in by
+.Fn xft_murmur3_tail .
+The two 64-bit lanes start at
+.Fa seed ,
+are updated independently per block, and are folded into a single
+.Vt t_u128a
+after the final mix.
+.Pp
+.Fn xft_murmur3
+is
+.Fn xft_murmur3_with_seed
+with
+.Fa seed
+fixed at
+.Ql 0x9e3779b185ebca87 .
+.Pp
+Both functions are declared
+.Ql nonnull
+on their first argument and
+.Ql pure ,
+and read exactly
+.Fa size
+bytes from
+.Fa mem .
+.Ss XXH3
+.Fn xft_xxh3_64bits
+hashes the
+.Fa input Ns .size
+bytes at
+.Fa input Ns .mem
+with the seed
+.Fa seed
+and returns a 64-bit result.
+The function dispatches by input length:
+.Bl -tag -width "241 bytes and up"
+.It 0 to 16 bytes
+.Fn xft_xxh3_len_0to16 ,
+with sub-cases for 0, 1 to 3, 4 to 8 and 9 to 16 bytes.
+.It 17 to 128 bytes
+.Fn xft_xxh3_len_17to128 ,
+mixing 16-byte pairs taken from both ends of the buffer against the secret.
+.It 129 to 240 bytes
+.Fn xft_xxh3_len_129to240 ,
+mixing each 16-byte chunk against a window of the secret.
+.It 241 bytes and up
+.Fn xft_xxh3_hashlong_64b ,
+a stripe-accumulator loop over 512-bit lanes followed by a fold of the eight
+accumulators.
+.El
+.Pp
+The long path derives a custom secret by adding a
+.Fa seed Ns -dependent
+pattern to each 64-bit lane of the default 192-byte secret.
+The default secret itself is the constant table published with the XXH3
+reference implementation and is returned by
+.Fn xft_xxh3_get_secret
+as a
+.Vt t_buffer
+without allocating.
+.Pp
+XXH3 is the default hash of
+.Xr xft_indexmap 3
+and
+.Xr xft_swissmap 3 ,
+which call it with a seed of 0.
+.Sh RETURN VALUES
+Each function returns the hash.
+None of them fail or set an error.
+.Sh EXAMPLES
+.Bd -literal -offset indent
+#include <xft.h>
+
+t_u64	hash_key(const t_u8 *key, t_size len)
+{
+	return (xft_xxh3_64bits(xft_fatptr((t_u8 *)key, len), 0));
+}
+
+t_u128a	hash_key_128(const t_u8 *key, t_size len)
+{
+	return (xft_murmur3(key, len));
+}
+.Ed
+.Sh SEE ALSO
+.Xr xft_indexmap 3 ,
+.Xr xft_swissmap 3 ,
+.Xr xft 7
+.Sh CAVEATS
+Neither function is suitable for adversarial input; an attacker who controls
+the keys can force collisions in a table built on them.
+Use a keyed cryptographic hash for anything exposed to untrusted data.
+.Pp
+.Fn xft_xxh3_64bits
+does not check
+.Fa input Ns .mem
+for
+.Dv nullptr ;
+its internal length helpers reach
+.Ql __builtin_unreachable
+if it is, so
+.Fa input Ns .mem
+must be a valid pointer even for zero-length input.
+.Pp
+The seed of
+.Fn xft_murmur3
+is a compile-time constant.
+Two builds of
+.Nm
+with the same source produce the same hashes; a different seed requires
+calling
+.Fn xft_murmur3_with_seed
+directly.

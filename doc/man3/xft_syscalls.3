@@ -1,0 +1,879 @@
+.Dd October 14, 2026
+.Dt XFT_SYSCALLS 3
+.Os xft
+.Sh NAME
+.Nm xft_mmap ,
+.Nm xft_mmap_commit ,
+.Nm xft_fmap ,
+.Nm xft_map_failed ,
+.Nm xft_munmap ,
+.Nm xft_mremap ,
+.Nm xft_mprotect ,
+.Nm xft_open ,
+.Nm xft_close ,
+.Nm xft_read ,
+.Nm xft_write ,
+.Nm xft_writev ,
+.Nm xft_stat ,
+.Nm xft_mkdir ,
+.Nm xft_fcntl ,
+.Nm xft_lockf ,
+.Nm xft_unlockf ,
+.Nm xft_exit ,
+.Nm xft_getpid ,
+.Nm xft_fork ,
+.Nm xft_clone ,
+.Nm xft_wait4 ,
+.Nm xft_set_tid_address ,
+.Nm xft_sigprocmask ,
+.Nm xft_futex_wait ,
+.Nm xft_futex_wake ,
+.Nm xft_clock_gettime ,
+.Nm xft_sched_getaffinity ,
+.Nm xft_sched_setaffinity ,
+.Nm xft_get_cpu_count ,
+.Nm xft_ioctl ,
+.Nm xft_perf_event_open
+.Nd system call wrappers
+.Sh SYNOPSIS
+.In syscalls.h
+.Ft t_any
+.Fn xft_mmap "t_size size" "t_u64a prot" "t_u64a flags_extra"
+.Ft t_result
+.Fn xft_mmap_commit "t_any ptr" "t_size size" "t_u64a prot" "t_u64a flags_extra"
+.Ft t_any
+.Fn xft_fmap "t_size size" "int fd"
+.Ft t_result
+.Fn xft_map_failed "t_cany ptr"
+.Ft void
+.Fn xft_munmap "t_any mem" "t_size size"
+.Ft t_any
+.Fn xft_mremap "t_size size" "t_size new_size" "t_any addr" "t_u64a flags_extra"
+.Ft int
+.Fn xft_mprotect "t_any addr" "t_size size" "int prot"
+.Ft int
+.Fn xft_open "const char *path" "int flags"
+.Ft int
+.Fn xft_close "int fd"
+.Ft t_ssize
+.Fn xft_read "int fd" "t_u8 *buffer" "t_size len"
+.Ft t_ssize
+.Fn xft_write "int fd" "t_u8 *buffer" "t_size len"
+.Ft t_ssize
+.Fn xft_writev "int fd" "t_iovec *buffers" "t_size len"
+.Ft int
+.Fn xft_stat "const char *path" "t_stat *statbuf"
+.Ft int
+.Fn xft_mkdir "const char *path" "t_u32a mode"
+.Ft t_i32a
+.Fn xft_fcntl "t_u32a fd" "t_u32a cmd" "const t_flock *arg"
+.Ft t_i32a
+.Fn xft_lockf "int fd"
+.Ft t_i32a
+.Fn xft_unlockf "int fd"
+.Ft void
+.Fn xft_exit "int status"
+.Ft int
+.Fn xft_getpid void
+.Ft t_i32
+.Fn xft_fork void
+.Ft t_i32
+.Fn xft_clone "const t_clone_arg *args"
+.Ft t_i32
+.Fn xft_wait4 "t_i32 pid" "t_i32a *status" "t_i32 options" "t_any rusage"
+.Ft int
+.Fn xft_set_tid_address "t_any address"
+.Ft int
+.Fn xft_sigprocmask "t_u32a flags" "t_sigset *set" "t_sigset *oldest"
+.Ft t_i64a
+.Fn xft_futex_wait "t_u32a *uaddr" "t_u32a val"
+.Ft t_i64a
+.Fn xft_futex_wake "t_u32a *uaddr" "t_u32a val"
+.Ft t_i64a
+.Fn xft_clock_gettime "t_timespec *ts"
+.Ft int
+.Fn xft_sched_getaffinity "t_i32a pid" "t_size cpusetsize" "const t_u64a *mask"
+.Ft int
+.Fn xft_sched_setaffinity "int pid" "t_size cpusetsize" "const t_u64a *mask"
+.Ft t_result
+.Fn xft_get_cpu_count "t_size *count"
+.In linux.h
+.Ft int
+.Fn xft_ioctl "int fd" "t_u64a request" "t_u64a arg"
+.Ft int
+.Fn xft_perf_event_open "const t_perf_event_attr *attr" "int group_fd"
+.Sh DESCRIPTION
+These functions are thin wrappers over the operating system interface.
+Every function is implemented by one of three backends, chosen at build time:
+.Bl -tag -width Ds
+.It Linux, freestanding
+Available on x86_64 and aarch64.
+Each wrapper issues the system call itself with inline
+.Ql syscall
+or
+.Ql svc #0 .
+On aarch64, which lacks the legacy calls,
+.Fn xft_open ,
+.Fn xft_stat
+and
+.Fn xft_mkdir
+use the
+.Ql *at
+variants with
+.Dv AT_FDCWD ,
+and
+.Fn xft_fork
+uses
+.Xr clone 2 .
+.It Linux, Dv XFT_LIBC
+Each wrapper calls
+.Xr syscall 2
+with the same arguments; the C library wrappers such as
+.Xr open 2
+are not used.
+This backend uses the
+.Ql *at
+variants and
+.Xr clone 2
+for
+.Fn xft_fork
+on every architecture.
+It is the only backend for architectures other than x86_64 and aarch64.
+.It Windows
+Each wrapper is emulated with
+.Pa kernel32
+and
+.Pa ntdll
+calls, in both freestanding and
+.Dv XFT_LIBC
+builds.
+A file descriptor is a
+.Vt HANDLE
+truncated to
+.Vt int .
+.El
+.Pp
+The header includes
+.In types/timing_types.h ,
+.In types/signal_types.h
+and
+.In types/io_types.h ,
+which define
+.Vt t_timespec
+.Pq Xr xft_timing 3 ,
+.Vt t_sigset
+.Pq Xr xft_signals 3
+and
+.Vt t_iovec
+.Pq Xr xft_io 3 .
+.Ss Memory
+.Fn xft_mmap
+maps
+.Fa size
+bytes of private anonymous memory with protection
+.Fa prot ,
+a mask of
+.Dv PROT_*
+bits.
+.Dv MAP_PRIVATE
+and
+.Dv MAP_ANONYMOUS
+are always set and
+.Fa flags_extra
+is OR-ed in.
+No address hint is given.
+On Windows the range is only reserved with
+.Ql VirtualAlloc(MEM_RESERVE)
+and
+.Fa flags_extra
+is ignored.
+.Pp
+.Fn xft_mmap_commit
+makes a range returned by
+.Fn xft_mmap
+usable.
+On Windows it commits
+.Fa size
+bytes at
+.Fa ptr
+with
+.Ql VirtualAlloc(MEM_COMMIT) .
+On Linux it does nothing and returns
+.Dv OK .
+Portable code calls it after every
+.Fn xft_mmap .
+.Pp
+.Fn xft_fmap
+maps the first
+.Fa size
+bytes of the file open on
+.Fa fd
+read-only and private, at offset 0.
+On Windows it creates a
+.Dv PAGE_READONLY
+file mapping, maps a view of it and closes the mapping handle.
+.Pp
+.Fn xft_map_failed
+tests a pointer returned by
+.Fn xft_mmap ,
+.Fn xft_fmap
+or
+.Fn xft_mremap .
+It is true when
+.Fa ptr
+lies in the last
+.Dv XFT_MAX_ERRNO
+(4095) bytes of the address space, which covers both
+.Dv MAP_FAILED
+and the negative error codes returned by the freestanding backend.
+.Pp
+.Fn xft_munmap
+unmaps
+.Fa size
+bytes at
+.Fa mem .
+Errors are ignored.
+On Windows
+.Fa size
+is ignored;
+.Fa mem
+is released with
+.Ql VirtualFree(MEM_RELEASE) ,
+or with
+.Ql UnmapViewOfFile
+if that fails, so it must be the base address of an
+.Fn xft_mmap
+or
+.Fn xft_fmap
+region.
+.Pp
+.Fn xft_mremap
+resizes the mapping at
+.Fa addr
+from
+.Fa size
+to
+.Fa new_size
+bytes.
+.Dv MREMAP_MAYMOVE
+is always set and
+.Fa flags_extra
+is OR-ed in, so the returned address may differ from
+.Fa addr .
+On Windows a new read-write region is mapped and committed, the first
+.Ql min(size, new_size)
+bytes are copied and the old region is released.
+.Pp
+.Fn xft_mprotect
+sets the protection of
+.Fa size
+bytes at
+.Fa addr
+to
+.Fa prot .
+.Pp
+On Windows
+.Dv PROT_*
+masks become page protections as follows: no access bits give
+.Dv PAGE_NOACCESS ,
+.Dv PROT_READ
+gives
+.Dv PAGE_READONLY ,
+any mask with
+.Dv PROT_WRITE
+gives
+.Dv PAGE_READWRITE ,
+and
+.Dv PROT_EXEC
+selects the matching
+.Dv PAGE_EXECUTE_*
+value.
+.Ss Files
+.Fn xft_open
+opens
+.Fa path
+with
+.Fa flags ,
+a combination of the
+.Dv O_*
+constants.
+There is no mode argument; see
+.Sx CAVEATS .
+On Windows the file is opened with
+.Ql CreateFileA ,
+sharing read, write and delete access, with
+.Dv FILE_FLAG_BACKUP_SEMANTICS
+so directories can be opened.
+.Dv O_CREAT ,
+.Dv O_TRUNC
+and
+.Dv O_EXCL
+select the creation disposition, and
+.Dv O_APPEND
+requests write access without
+.Dv FILE_WRITE_DATA .
+.Pp
+.Fn xft_close
+closes
+.Fa fd .
+.Pp
+.Fn xft_read
+reads up to
+.Fa len
+bytes from
+.Fa fd
+into
+.Fa buffer .
+.Fn xft_write
+writes up to
+.Fa len
+bytes from
+.Fa buffer
+to
+.Fa fd .
+On Windows
+.Fa len
+is clamped to
+.Dv UINT32_MAX ,
+and a read failing with
+.Dv ERROR_BROKEN_PIPE
+returns 0 as end of file.
+.Pp
+.Fn xft_writev
+writes the
+.Fa len
+buffers described by the
+.Vt t_iovec
+array
+.Fa buffers ,
+whose
+.Fa mem
+and
+.Fa size
+members match the layout of
+.Vt struct iovec .
+On Windows it calls
+.Fn xft_write
+once per non-empty buffer and stops at the first short write; it is not atomic.
+.Pp
+.Fn xft_stat
+fills
+.Fa statbuf
+with the status of
+.Fa path ,
+following symbolic links.
+With
+.Dv XFT_LIBC
+on Linux,
+.Vt t_stat
+is
+.Vt struct stat .
+Otherwise it is the kernel layout for the architecture, with the members
+.Fa st_dev ,
+.Fa st_ino ,
+.Fa st_nlink ,
+.Fa st_mode ,
+.Fa st_uid ,
+.Fa st_gid ,
+.Fa st_rdev ,
+.Fa st_size ,
+.Fa st_blksize ,
+.Fa st_blocks ,
+.Fa st_atim ,
+.Fa st_mtim
+and
+.Fa st_ctim .
+On Windows the members are synthesized: permission bits are 0444 for
+read-only files and 0666 otherwise, directories get
+.Dv S_IFDIR
+and 0111, pipes get
+.Dv S_IFIFO ,
+other non-disk files get
+.Dv S_IFCHR ,
+.Fa st_blksize
+is 4096, and
+.Fa st_uid ,
+.Fa st_gid
+and
+.Fa st_rdev
+are 0.
+.Pp
+.Fn xft_mkdir
+creates the directory
+.Fa path
+with permission bits
+.Fa mode ;
+.Dv XFT_MKDIR_0755
+is provided for the common case.
+On Windows
+.Fa mode
+is ignored.
+.Pp
+.Fn xft_fcntl
+issues
+.Xr fcntl 2
+with
+.Fa cmd
+and the lock description
+.Fa arg .
+It is not available on Windows.
+.Pp
+.Fn xft_lockf
+places a blocking lock over the whole file open on
+.Fa fd .
+On Linux it is a shared
+.Dv F_RDLCK
+lock taken with
+.Dv F_SETLKW ;
+on Windows it is an exclusive
+.Ql LockFileEx
+lock.
+.Fn xft_unlockf
+releases it with
+.Dv F_UNLCK
+and
+.Dv F_SETLK ,
+or
+.Ql UnlockFileEx .
+These are record locks, not
+.Xr lockf 3 .
+.Ss Processes and threads
+.Fn xft_exit
+terminates the caller with
+.Fa status .
+On Linux it issues
+.Xr _exit 2 ,
+not
+.Xr exit_group 2 ,
+in both backends: in a multithreaded process only the calling thread ends,
+and with
+.Dv XFT_LIBC
+no
+.Xr atexit 3
+handlers run and no stdio buffers are flushed.
+On Windows it calls
+.Ql ExitProcess .
+.Pp
+.Fn xft_getpid
+returns the process ID.
+.Pp
+.Fn xft_fork
+creates a child process.
+The freestanding x86_64 backend issues
+.Xr fork 2 ;
+the other Linux backends issue
+.Xr clone 2
+with only
+.Dv XFT_SIGCHLD
+as flags.
+With
+.Dv XFT_LIBC
+the C library is bypassed, so its fork handlers do not run.
+On Windows it fails.
+.Pp
+.Fn xft_clone
+issues
+.Xr clone 2
+with the members of
+.Fa args :
+.Fa flags
+.Pq clone flags OR-ed with the exit signal ,
+.Fa stack
+.Pq the child's stack pointer ,
+.Fa ptid ,
+.Fa ctid
+and
+.Fa tls .
+The argument order of each architecture is handled internally.
+The child resumes at the return of the system call on
+.Fa stack ;
+no entry function is called for it.
+The
+.Dv CLONE_*
+constants are not exported by the public headers.
+On Windows it fails.
+.Pp
+.Fn xft_wait4
+waits for the child
+.Fa pid
+and stores its wait status in
+.Fa status
+if not
+.Dv nullptr .
+.Fa options
+is a mask of
+.Dv XFT_WNOHANG
+and
+.Dv XFT_WUNTRACED .
+.Fa rusage
+is passed through to the kernel and may be
+.Dv nullptr .
+On Windows
+.Fa pid
+must name one process,
+.Fa rusage
+and
+.Dv XFT_WUNTRACED
+are ignored, and the status is the low 8 bits of the exit code shifted left by 8.
+.Pp
+.Fn xft_set_tid_address
+sets the address the kernel clears and wakes when the calling thread exits,
+and returns the caller's thread ID.
+On Windows
+.Fa address
+is ignored.
+.Pp
+.Fn xft_sigprocmask
+changes the signal mask of the calling thread.
+.Fa flags
+is
+.Dv XFT_BLOCK ,
+.Dv XFT_UNBLOCK
+or
+.Dv XFT_SETMASK .
+If
+.Fa set
+is not
+.Dv nullptr
+it is applied; if
+.Fa oldest
+is not
+.Dv nullptr
+it receives the previous mask.
+The kernel is told the mask is
+.Dv XFT_SIGSET_SIZE
+bytes.
+On Windows it does nothing except zero
+.Fa *oldest .
+.Ss Synchronization
+.Fn xft_futex_wait
+sleeps until woken by
+.Fn xft_futex_wake ,
+provided
+.Fa *uaddr
+still equals
+.Fa val .
+There is no timeout.
+.Fn xft_futex_wake
+wakes up to
+.Fa val
+threads sleeping on
+.Fa uaddr .
+On Linux these issue
+.Dv FUTEX_WAIT
+and
+.Dv FUTEX_WAKE
+without
+.Dv FUTEX_PRIVATE_FLAG .
+On Windows they use
+.Ql RtlWaitOnAddress
+with a 4-byte comparison, and
+.Ql RtlWakeAddressSingle
+when
+.Fa val
+is 1 or
+.Ql RtlWakeAddressAll
+when it is greater.
+.Ss Time and scheduling
+.Fn xft_clock_gettime
+stores the current
+.Dv CLOCK_MONOTONIC
+time in
+.Fa ts .
+The clock cannot be chosen.
+On Windows the time is derived from
+.Ql QueryPerformanceCounter .
+.Pp
+.Fn xft_sched_getaffinity
+stores the CPU affinity mask of
+.Fa pid
+in the
+.Fa cpusetsize
+bytes at
+.Fa mask .
+.Fn xft_sched_setaffinity
+sets it.
+On Linux a
+.Fa pid
+of 0 means the caller.
+On Windows
+.Fa pid
+is a Windows process ID, only the 64 CPUs of the current processor group are
+seen, the rest of
+.Fa mask
+is zeroed, and
+.Fa cpusetsize
+must be at least 8.
+.Pp
+.Fn xft_get_cpu_count
+stores in
+.Fa *count
+the number of CPUs the process may run on: the population count of a
+128-byte affinity mask, so at most 1024.
+.Ss Linux only
+These are declared in
+.In linux.h ,
+which is not included by
+.In xft.h
+and fails to compile on other systems.
+.Pp
+.Fn xft_ioctl
+issues
+.Xr ioctl 2
+on
+.Fa fd .
+.Pp
+.Fn xft_perf_event_open
+opens a performance counter described by
+.Fa attr
+for the calling thread on any CPU, in the group led by
+.Fa group_fd
+.Pq \-1 for a new group ,
+with
+.Dv PERF_FLAG_FD_CLOEXEC .
+With
+.Dv XFT_LIBC ,
+.Vt t_perf_event_attr
+is
+.Vt struct perf_event_attr .
+Otherwise it is a copy of the kernel layout in which the kernel's anonymous
+unions are the named members
+.Fa period ,
+.Fa wakeup ,
+.Fa bp_addr ,
+.Fa bp_len
+and
+.Fa aux ,
+of types
+.Vt t_linux_perf_period ,
+.Vt t_linux_perf_wakeup ,
+.Vt t_linux_perf_bp_addr ,
+.Vt t_linux_perf_bp_len
+and
+.Vt t_linux_perf_aux .
+The header then also defines
+.Dv PERF_TYPE_HARDWARE ,
+.Dv PERF_TYPE_SOFTWARE ,
+the
+.Dv PERF_COUNT_HW_*
+and
+.Dv PERF_COUNT_SW_*
+event IDs it uses,
+.Dv PERF_FORMAT_TOTAL_TIME_ENABLED ,
+.Dv PERF_FORMAT_TOTAL_TIME_RUNNING ,
+.Dv PERF_FORMAT_GROUP ,
+.Dv PERF_FLAG_FD_CLOEXEC ,
+.Dv PERF_IOC_FLAG_GROUP
+and the
+.Dv PERF_EVENT_IOC_ENABLE ,
+.Dv PERF_EVENT_IOC_DISABLE
+and
+.Dv PERF_EVENT_IOC_RESET
+requests for
+.Fn xft_ioctl .
+.Ss Constants
+With
+.Dv XFT_LIBC
+on Linux the standard constants come from
+.In sys/mman.h ,
+.In fcntl.h
+and
+.In unistd.h .
+Otherwise
+.In syscalls.h
+defines each one that is not already defined, with its Linux value:
+.Dv PROT_NONE ,
+.Dv PROT_READ ,
+.Dv PROT_WRITE ,
+.Dv PROT_EXEC ,
+.Dv MAP_PRIVATE ,
+.Dv MAP_ANONYMOUS ,
+.Dv MAP_FAILED
+(the integer \-1),
+.Dv MREMAP_MAYMOVE ,
+.Dv F_RDLCK ,
+.Dv F_WRLCK ,
+.Dv F_UNLCK ,
+.Dv F_SETLK ,
+.Dv F_SETLKW ,
+.Dv SEEK_SET ,
+.Dv O_RDONLY ,
+.Dv O_WRONLY ,
+.Dv O_RDWR ,
+.Dv O_ACCMODE ,
+.Dv O_CREAT ,
+.Dv O_EXCL ,
+.Dv O_TRUNC ,
+.Dv O_APPEND ,
+.Dv STDIN_FILENO ,
+.Dv STDOUT_FILENO
+and
+.Dv STDERR_FILENO .
+On Windows the
+.Dv STD*_FILENO
+values are not handles; use the descriptors from
+.Xr xft_io 3
+instead.
+.Pp
+Always defined are
+.Dv XFT_MAX_ERRNO
+(4095),
+.Dv XFT_WNOHANG
+(1),
+.Dv XFT_WUNTRACED
+(2) and
+.Dv XFT_MKDIR_0755
+(0755).
+.Sh RETURN VALUES
+Functions returning
+.Vt int ,
+.Vt t_i32 ,
+.Vt t_i32a ,
+.Vt t_i64a
+or
+.Vt t_ssize
+return the non-negative result of the call on success and \-1 on failure.
+The error code is not returned: the freestanding backend discards it, the
+.Dv XFT_LIBC
+backend leaves it in
+.Va errno ,
+and the Windows backend may leave it in
+.Ql GetLastError .
+.Pp
+The results on success are those of the underlying call:
+.Fn xft_open
+returns a descriptor,
+.Fn xft_read ,
+.Fn xft_write
+and
+.Fn xft_writev
+a byte count,
+.Fn xft_getpid
+the process ID,
+.Fn xft_fork
+and
+.Fn xft_clone
+0 in the child and the child's ID in the parent,
+.Fn xft_wait4
+the ID of the child waited for, or 0 if
+.Dv XFT_WNOHANG
+was given and it has not changed state,
+.Fn xft_set_tid_address
+the thread ID,
+.Fn xft_futex_wake
+the number of threads woken
+.Pq always 0 on Windows ,
+.Fn xft_sched_getaffinity
+the number of mask bytes written, and the others 0.
+.Pp
+.Fn xft_mmap ,
+.Fn xft_fmap
+and
+.Fn xft_mremap
+return the address of the mapping or an error value, which must be tested with
+.Fn xft_map_failed
+rather than compared to
+.Dv MAP_FAILED :
+the freestanding backend returns the kernel's negative error code cast to a
+pointer.
+.Pp
+.Fn xft_map_failed
+returns non-zero
+.Pq numerically Dv OK
+if
+.Fa ptr
+is an error value and 0 otherwise; the result is a truth value, not a status.
+.Pp
+.Fn xft_mmap_commit
+and
+.Fn xft_get_cpu_count
+return
+.Dv OK
+on success and
+.Dv KO
+on failure.
+.Pp
+.Fn xft_munmap
+returns nothing.
+.Fn xft_exit
+does not return.
+.Sh EXAMPLES
+Map a file read-only, as
+.Xr xft_io 3
+does:
+.Bd -literal -offset indent
+#include <xft.h>
+
+t_buffer	map_file(const char *name)
+{
+	t_stat	st;
+	int		fd;
+	t_any	ptr;
+
+	if (xft_stat(name, &st) != 0)
+		return ((t_buffer){0});
+	fd = xft_open(name, O_RDONLY);
+	if (fd == -1)
+		return ((t_buffer){0});
+	ptr = xft_fmap(st.st_size, fd);
+	xft_close(fd);
+	if (xft_map_failed(ptr))
+		return ((t_buffer){0});
+	return ((t_buffer){.size = st.st_size, .mem = ptr});
+}
+.Ed
+.Pp
+Allocate committed pages portably, as the page allocator does:
+.Bd -literal -offset indent
+t_any	get_pages(t_size size)
+{
+	t_any	mem;
+
+	mem = xft_mmap(size, PROT_READ | PROT_WRITE, 0);
+	if (xft_map_failed(mem))
+		return (nullptr);
+	if (!xft_mmap_commit(mem, size, PROT_READ | PROT_WRITE, 0))
+	{
+		xft_munmap(mem, size);
+		return (nullptr);
+	}
+	return (mem);
+}
+.Ed
+.Sh SEE ALSO
+.Xr xft_alloc 3 ,
+.Xr xft_atomics 3 ,
+.Xr xft_io 3 ,
+.Xr xft_rt 3 ,
+.Xr xft_signals 3 ,
+.Xr xft_timing 3 ,
+.Xr xft 7
+.Sh CAVEATS
+.Fn xft_open
+takes no mode.
+With
+.Dv O_CREAT ,
+the aarch64 and
+.Dv XFT_LIBC
+backends create the file with mode 0, and the freestanding x86_64 backend does
+not set the mode register, so the mode is indeterminate.
+.Pp
+.Fn xft_lockf
+takes a shared lock on Linux and an exclusive lock on Windows.
+.Pp
+.Fn xft_fcntl
+is declared on Windows but has no definition there.
+.Pp
+.Fa mask
+is declared
+.Ql const
+in
+.Fn xft_sched_getaffinity
+although it is written.
+.Pp
+Code using
+.Vt t_perf_event_attr
+union members must name the union, such as
+.Ql attr.period.sample_period ,
+in freestanding builds, and must not with
+.Dv XFT_LIBC .

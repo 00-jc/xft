@@ -1,0 +1,560 @@
+.Dd October 14, 2026
+.Dt XFT_BMI 3
+.Os xft
+.Sh NAME
+.Nm xft_popcount_u32 ,
+.Nm xft_popcount_u64 ,
+.Nm xft_memctz_u16 ,
+.Nm xft_memctz_u32 ,
+.Nm xft_memctz_u64 ,
+.Nm xft_memctz_u128 ,
+.Nm xft_memclz_u16 ,
+.Nm xft_memclz_u32 ,
+.Nm xft_memclz_u64 ,
+.Nm xft_memclz_u128 ,
+.Nm xft_bswap16 ,
+.Nm xft_bswap32 ,
+.Nm xft_bswap64 ,
+.Nm xft_to_be16 ,
+.Nm xft_to_be32 ,
+.Nm xft_to_be64 ,
+.Nm xft_to_le16 ,
+.Nm xft_to_le32 ,
+.Nm xft_to_le64 ,
+.Nm xft_from_be16 ,
+.Nm xft_from_be32 ,
+.Nm xft_from_be64 ,
+.Nm xft_from_le16 ,
+.Nm xft_from_le32 ,
+.Nm xft_from_le64 ,
+.Nm xft_max_s ,
+.Nm xft_maxu8 ,
+.Nm xft_maxu32 ,
+.Nm xft_maxu64 ,
+.Nm xft_maxu128 ,
+.Nm xft_tern ,
+.Nm xft_dtern ,
+.Nm xft_next_pow2 ,
+.Nm xft_last_pow2 ,
+.Nm xft_align_fwd_integer ,
+.Nm xft_align_bwd_integer ,
+.Nm xft_roll_mask ,
+.Nm xft_rotl64 ,
+.Nm xft_hasz64 ,
+.Nm xft_populate ,
+.Nm xft_vmask_load128 ,
+.Nm xft_vmask_load256 ,
+.Nm xft_vmask_load512 ,
+.Nm xft_vmask_load
+.Nd bit manipulation, byte order and SIMD vector helpers
+.Sh SYNOPSIS
+.In bmi.h
+.Ft t_u32a
+.Fn xft_popcount_u32 "t_u32a x"
+.Ft t_u64a
+.Fn xft_popcount_u64 "t_u64a x"
+.Ft t_size
+.Fn xft_memctz_u16 "t_u16 x"
+.Ft t_size
+.Fn xft_memctz_u32 "t_u32 x"
+.Ft t_size
+.Fn xft_memctz_u64 "t_u64 x"
+.Ft t_size
+.Fn xft_memctz_u128 "t_u128 x"
+.Ft t_size
+.Fn xft_memclz_u16 "t_u16 x"
+.Ft t_size
+.Fn xft_memclz_u32 "t_u32 x"
+.Ft t_size
+.Fn xft_memclz_u64 "t_u64 x"
+.Ft t_size
+.Fn xft_memclz_u128 "t_u128 x"
+.Ft t_u16a
+.Fn xft_bswap16 "t_u16a x"
+.Ft t_u32a
+.Fn xft_bswap32 "t_u32a x"
+.Ft t_u64a
+.Fn xft_bswap64 "t_u64a x"
+.Ft t_u16a
+.Fn xft_to_be16 "t_u16a x"
+.Ft t_u32a
+.Fn xft_to_be32 "t_u32a x"
+.Ft t_u64a
+.Fn xft_to_be64 "t_u64a x"
+.Ft t_u16a
+.Fn xft_to_le16 "t_u16a x"
+.Ft t_u32a
+.Fn xft_to_le32 "t_u32a x"
+.Ft t_u64a
+.Fn xft_to_le64 "t_u64a x"
+.Ft t_u16a
+.Fn xft_from_be16 "t_u16a x"
+.Ft t_u32a
+.Fn xft_from_be32 "t_u32a x"
+.Ft t_u64a
+.Fn xft_from_be64 "t_u64a x"
+.Ft t_u16a
+.Fn xft_from_le16 "t_u16a x"
+.Ft t_u32a
+.Fn xft_from_le32 "t_u32a x"
+.Ft t_u64a
+.Fn xft_from_le64 "t_u64a x"
+.Ft t_size
+.Fn xft_max_s "t_size x" "t_size y"
+.Ft t_u8
+.Fn xft_maxu8 "t_u8 x" "t_u8 y"
+.Ft t_u32
+.Fn xft_maxu32 "t_u32 x" "t_u32 y"
+.Ft t_u64
+.Fn xft_maxu64 "t_u64 x" "t_u64 y"
+.Ft t_u128
+.Fn xft_maxu128 "t_u128 x" "t_u128 y"
+.Ft t_u64a
+.Fn xft_tern "t_u64a cond" "t_u64a value1" "t_u64a value2"
+.Ft t_f64
+.Fn xft_dtern "t_u64a cond" "t_f64 value1" "t_f64 value2"
+.Ft t_size
+.Fn xft_next_pow2 "t_size qword"
+.Ft t_size
+.Fn xft_last_pow2 "t_size qword"
+.Ft t_u64
+.Fn xft_align_fwd_integer "t_u64a n" "t_u64 align"
+.Ft t_u64
+.Fn xft_align_bwd_integer "t_u64a n" "t_u64 align"
+.Ft t_size
+.Fn xft_roll_mask "t_size chunk_size" "t_size n"
+.Ft t_u64a
+.Fn xft_rotl64 "t_u64a hash" "t_size n"
+.Ft t_u64
+.Fn xft_hasz64 "t_u64 x"
+.Ft t_u64
+.Fn xft_populate "t_u8 y"
+.Ft t_vu128a
+.Fn xft_vmask_load128 "t_cany ptr" "t_u16a mask"
+.Ft t_vu256a
+.Fn xft_vmask_load256 "t_cany ptr" "t_u32a mask"
+.Ft t_vu512a
+.Fn xft_vmask_load512 "t_cany ptr" "t_u64a mask"
+.Ft t_nvec
+.Fn xft_vmask_load "t_cany ptr" "t_nmask mask"
+.Sh DESCRIPTION
+.In bmi.h
+includes
+.In asm.h ,
+which selects the native vector width and defines the vector and block
+pointer types used across the library.
+All functions on this page are
+.Ql const
+or
+.Ql pure
+and have no side effects.
+.Ss Vector width selection
+.In asm.h
+inspects the compiler's target macros and defines
+.Dv XFT_HAS_512_VEC ,
+.Dv XFT_HAS_256_VEC
+and
+.Dv XFT_HAS_128_VEC
+to 0 or 1, and
+.Dv XFT_NVEC_SIZE
+to the native vector width in bytes:
+.Bl -column "__AVX512BW__ + __AVX512VL__ + __AVX512VBMI2__" "512" "256" "128" "NVEC"
+.It Sy Target Ta Sy 512 Ta Sy 256 Ta Sy 128 Ta Sy NVEC
+.It __AVX512BW__ + __AVX512VL__ + __AVX512VBMI2__ Ta 1 Ta 1 Ta 1 Ta 64
+.It __AVX2__ Ta 0 Ta 1 Ta 1 Ta 32
+.It __SSE2__ or __ARM_NEON Ta 0 Ta 0 Ta 1 Ta 16
+.It none of the above Ta 0 Ta 0 Ta 0 Ta 8
+.El
+.Pp
+AVX-512F alone is not enough for the 512-bit path: byte-granular masks
+need BW, the 128- and 256-bit masked forms need VL, and byte compaction
+needs VBMI2.
+A CPU without all three uses the AVX2 path.
+.Pp
+The native types follow the selected width:
+.Bl -tag -width "t_nmask"
+.It Vt t_nvec
+unaligned vector of
+.Dv XFT_NVEC_SIZE
+.Vt t_u8
+lanes:
+.Vt t_vu512 ,
+.Vt t_vu256 ,
+.Vt t_vu128 ,
+or an 8-byte vector.
+.It Vt t_nveca
+the same vector, aligned to its size.
+.It Vt t_nmask
+an integer with one bit per lane:
+.Vt t_u64a ,
+.Vt t_u32a ,
+.Vt t_u16a
+or
+.Vt t_u8 .
+.El
+.Pp
+The fixed-width vector types are always defined regardless of target:
+.Vt t_vu128 ,
+.Vt t_vu256
+and
+.Vt t_vu512
+have
+.Vt t_u8
+lanes and alignment 1;
+.Vt t_vu128a ,
+.Vt t_vu256a
+and
+.Vt t_vu512a
+are aligned to their size.
+.Vt t_vu16_512 ,
+.Vt t_vu32_512
+and
+.Vt t_vu64_512
+are 64-byte vectors of 16-, 32- and 64-bit lanes with alignment 1;
+.Vt t_vu64_512a
+is 64-byte aligned.
+All vector types are
+.Ql may_alias .
+.Pp
+The block pointer types are
+.Ql restrict
+and
+.Ql const
+pointers named
+.Vt t_blk Ns Ar W Ns Ar M ,
+where
+.Ar W
+is 8, 32, 64, 128, 256, 512 or
+.Sq n
+(native vector) and
+.Ar M
+is
+.Sq w
+(writable pointee) or
+.Sq r
+(const pointee).
+A trailing
+.Sq a ,
+as in
+.Vt t_blk64ra
+or
+.Vt t_blknwa ,
+points to the aligned variant of the element type.
+.Vt t_blk8w
+and
+.Vt t_blk8r
+have no aligned form.
+.Ss Bit counting
+.Fn xft_popcount_u32
+and
+.Fn xft_popcount_u64
+return the number of set bits in
+.Fa x .
+.Pp
+.Fn xft_memctz_u16
+through
+.Fn xft_memctz_u128
+return the number of trailing zero bits in
+.Fa x ;
+.Fn xft_memclz_u16
+through
+.Fn xft_memclz_u128
+return the number of leading zero bits.
+A zero argument returns the width of the type in bits.
+.Pp
+On x86_64,
+.Fn xft_popcount_*
+use
+.Ql popcnt ,
+and the
+.Fn xft_memctz_*
+and
+.Fn xft_memclz_*
+families use
+.Ql tzcnt
+and
+.Ql lzcnt
+when the target defines
+.Dv __BMI__ .
+On aarch64 they use
+.Ql clz ,
+.Ql rbit
+and, with NEON,
+.Ql cnt .
+Elsewhere a branchless portable version is used.
+.Ss Byte order
+.Fn xft_bswap16 ,
+.Fn xft_bswap32
+and
+.Fn xft_bswap64
+reverse the byte order of
+.Fa x .
+.Pp
+.Fn xft_to_be*
+and
+.Fn xft_to_le*
+convert a host-order value to big- or little-endian order;
+.Fn xft_from_be*
+and
+.Fn xft_from_le*
+convert back to host order.
+Each is either the identity or the matching
+.Fn xft_bswap* ,
+chosen at compile time from
+.Dv __BYTE_ORDER__ .
+.Ss Scalar helpers
+.Fn xft_max_s ,
+.Fn xft_maxu8 ,
+.Fn xft_maxu32 ,
+.Fn xft_maxu64
+and
+.Fn xft_maxu128
+return the larger of two unsigned values without a branch.
+.Pp
+.Fn xft_tern
+returns
+.Fa value1
+if
+.Fa cond
+is 1 and
+.Fa value2
+if it is 0, using masks rather than a branch.
+.Fn xft_dtern
+does the same on the bit patterns of two
+.Vt t_f64
+values.
+.Fa cond
+must be exactly 0 or 1.
+.Pp
+.Fn xft_next_pow2
+returns the smallest power of two greater than or equal to
+.Fa qword .
+.Fn xft_last_pow2
+returns the largest power of two less than or equal to
+.Fa qword .
+.Pp
+.Fn xft_align_fwd_integer
+rounds
+.Fa n
+up to a multiple of
+.Fa align ;
+.Fn xft_align_bwd_integer
+rounds it down.
+.Fa align
+must be a power of two.
+.Pp
+.Fn xft_roll_mask
+returns
+.Ql ~0 << (chunk_size - n) ,
+a mask with the low
+.Fa chunk_size
+\-
+.Fa n
+bits clear.
+.Pp
+.Fn xft_rotl64
+rotates
+.Fa hash
+left by
+.Fa n
+bits.
+.Pp
+.Fn xft_hasz64
+is nonzero if any byte of
+.Fa x
+is zero.
+The lowest set bit is the high bit of the lowest zero byte;
+bits above it may be set spuriously.
+.Pp
+.Fn xft_populate
+returns
+.Fa y
+replicated into all eight bytes of a 64-bit word.
+.Ss Masked loads
+.Fn xft_vmask_load128 ,
+.Fn xft_vmask_load256
+and
+.Fn xft_vmask_load512
+load a vector from
+.Fa ptr ,
+which need not be aligned.
+Byte
+.Va i
+of the result is the byte at
+.Fa ptr Ns Va [i]
+if bit
+.Va i
+of
+.Fa mask
+is set, and zero otherwise.
+.Fn xft_vmask_load
+does the same at the native width.
+They are declared only when the matching
+.Dv XFT_HAS_*_VEC
+macro is 1;
+.Fn xft_vmask_load
+is always declared.
+.Pp
+With
+.Dv XFT_HAS_512_VEC
+all three widths use the AVX-512 masked byte load, which does not access
+unselected bytes.
+Otherwise the 128- and 256-bit loads return zero without reading memory if
+.Fa mask
+is 0.
+If a full-width load from
+.Fa ptr
+would cross a 4096-byte page, they instead load the two aligned chunks
+containing the lowest and highest selected bytes; otherwise they do one
+full-width load.
+Unselected bytes may be read, but never from a page that holds no selected
+byte, so the load does not fault where reading only the selected bytes
+would not.
+Without any SIMD support,
+.Fn xft_vmask_load
+reads only the selected bytes.
+These functions are built without AddressSanitizer instrumentation.
+.Ss Internal vector primitives
+The following functions are used by
+.Xr xft_mem 3 ,
+.Xr xft_cstr 3 ,
+.Xr xft_swissmap 3
+and
+.Xr xft_indexmap 3 .
+They are declared in the private header
+.Pa src/internal/xft_p_asm.h ,
+which is not installed.
+Each has a 128-, 256- and 512-bit form
+.Pf ( Fn xft_vsplat128
+and so on) declared under the matching
+.Dv XFT_HAS_*_VEC ,
+and, except for compaction, a native-width form on
+.Vt t_nvec
+and
+.Vt t_nmask .
+.Bl -tag -width "xft_vrangemask(v, lo, hi)"
+.It Fn xft_vsplat b
+a vector with every byte set to
+.Fa b .
+.It Fn xft_vmask vec
+a mask with bit
+.Va i
+set to the high bit of byte
+.Va i .
+Compiles to
+.Ql pmovmskb
+(128 and 256 bits),
+.Ql vpmovb2m
+(512 bits),
+or a NEON sequence on aarch64.
+.It Fn xft_veqmask vec b
+bit
+.Va i
+set if byte
+.Va i
+equals
+.Fa b .
+.It Fn xft_vtestmask vec b
+bit
+.Va i
+set if byte
+.Va i
+and
+.Fa b
+have a set bit in common.
+.It Fn xft_vrangemask v lo hi
+bit
+.Va i
+set if
+.Fa lo
+\(<= byte
+.Va i
+\(<=
+.Fa hi ,
+compared unsigned.
+.It Fn xft_vcompress vec mask
+the bytes of
+.Fa vec
+selected by
+.Fa mask ,
+packed in order into the low lanes, with the remaining lanes zero.
+Only the sized forms exist.
+With
+.Dv XFT_HAS_512_VEC
+it uses
+.Ql vpcompressb ;
+otherwise the 128- and 256-bit forms use a scalar loop and the 512-bit
+form is not available.
+.El
+.Sh RETURN VALUES
+Every function returns the value described above.
+None of them fail or set an error.
+.Sh EXAMPLES
+Iterate over the set bits of a mask and read a big-endian length:
+.Bd -literal -offset indent
+#include <xft.h>
+
+t_size	sum_selected(const t_u64 *vals, t_u64 mask)
+{
+	t_size	sum;
+
+	sum = 0;
+	while (mask)
+	{
+		sum += vals[xft_memctz_u64(mask)];
+		mask &= mask - 1;
+	}
+	return (sum);
+}
+
+t_u32	read_be32(const t_u8 *hdr)
+{
+	return (xft_from_be32(*(const t_u32 *)hdr));
+}
+.Ed
+.Pp
+Load the first
+.Fa n
+bytes of a buffer, with
+.Fa n
+less than
+.Dv XFT_NVEC_SIZE ,
+without reading past a page boundary:
+.Bd -literal -offset indent
+t_nvec	v;
+
+v = xft_vmask_load(ptr, (t_nmask)(~(-1ULL << n)));
+.Ed
+.Sh SEE ALSO
+.Xr xft_cstr 3 ,
+.Xr xft_hash 3 ,
+.Xr xft_mem 3 ,
+.Xr xft_swissmap 3 ,
+.Xr xft_vec 3 ,
+.Xr xft 7
+.Sh CAVEATS
+.Fn xft_next_pow2 0 ,
+.Fn xft_last_pow2 0 ,
+.Fn xft_next_pow2
+of a value above 2^63,
+and
+.Fn xft_roll_mask
+with
+.Fa chunk_size
+\-
+.Fa n
+outside 0 to 63 are undefined behavior, as they shift by 64 or more.
+.Pp
+On x86_64,
+.Fn xft_popcount_*
+use the
+.Ql popcnt
+instruction unconditionally.
+.Pp
+The portable
+.Fn xft_memclz_u128 ,
+used on x86_64 without
+.Dv __BMI__ ,
+ignores the upper 64 bits of
+.Fa x
+and returns 64 plus the leading zero count of the lower half.

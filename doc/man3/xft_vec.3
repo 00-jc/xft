@@ -1,0 +1,331 @@
+.Dd October 14, 2026
+.Dt XFT_VEC 3
+.Os xft
+.Sh NAME
+.Nm xft_new_vec ,
+.Nm xft_vec_destroy ,
+.Nm xft_vec_len ,
+.Nm xft_vec_push_back ,
+.Nm xft_vec_extend ,
+.Nm xft_vec_reserve ,
+.Nm xft_vec_get ,
+.Nm xft_vec_get_mut ,
+.Nm xft_vec_peek_last ,
+.Nm xft_vec_get_last ,
+.Nm xft_vec_pop ,
+.Nm xft_vec_popmv ,
+.Nm xft_vec_pop_managed ,
+.Nm xft_vec_remove ,
+.Nm xft_vec_remove_managed ,
+.Nm xft_vec_clear
+.Nd untyped growable array
+.Sh SYNOPSIS
+.In vec.h
+.Ft t_vec
+.Fn xft_new_vec "t_allocator allocator" "t_size size" "t_size type_size"
+.Ft void
+.Fn xft_vec_destroy "t_allocator allocator" "t_vec *v"
+.Ft t_size
+.Fn xft_vec_len "const t_vec *v" "t_size type_size"
+.Ft t_result
+.Fn xft_vec_push_back "t_allocator allocator" "t_vec *restrict vec" "const t_u8 *restrict data" "t_size type_size"
+.Ft t_result
+.Fn xft_vec_extend "t_allocator allocator" "t_vec *vec" "t_buffer data"
+.Ft t_result
+.Fn xft_vec_reserve "t_allocator allocator" "t_vec *vec" "t_size n"
+.Ft t_cany
+.Fn xft_vec_get "const t_vec *vec" "t_size idx" "t_size type_size"
+.Ft t_any
+.Fn xft_vec_get_mut "const t_vec *vec" "t_size idx" "t_size type_size"
+.Ft t_cany
+.Fn xft_vec_peek_last "const t_vec *vec" "t_size type_size"
+.Ft t_any
+.Fn xft_vec_get_last "const t_vec *vec" "t_size type_size"
+.Ft void
+.Fn xft_vec_pop "t_vec *v" "t_size type_size"
+.Ft t_result
+.Fn xft_vec_popmv "t_vec *v" "t_any dest" "t_size type_size"
+.Ft t_result
+.Fn xft_vec_pop_managed "t_allocator allocator" "t_vec *v" "size_t type_size"
+.Ft t_result
+.Fn xft_vec_remove "t_vec *v" "t_size i" "t_size type_size"
+.Ft t_result
+.Fn xft_vec_remove_managed "t_allocator allocator" "t_vec *v" "size_t i" "size_t type_size"
+.Ft void
+.Fn xft_vec_clear "t_vec *v"
+.Sh DESCRIPTION
+A
+.Vt t_vec
+is a contiguous byte buffer holding elements of a single size.
+It does not record the element size or the allocator;
+every call that needs them takes
+.Fa type_size
+or
+.Fa allocator
+explicitly, and the caller must pass the same values for the lifetime of
+the vector.
+.Bd -literal -offset indent
+typedef struct s_vec {
+	size_t		size;	/* bytes in use */
+	t_buffer	buf;	/* buf.size is the capacity in bytes */
+} t_vec;
+.Ed
+.Pp
+Both
+.Fa size
+and
+.Fa buf Ns .size
+count bytes, not elements.
+.Pp
+.Fn xft_new_vec
+allocates room for
+.Fa size
+elements of
+.Fa type_size
+bytes each and returns an empty vector.
+The capacity is the
+.Fa size
+of the buffer returned by the allocator, which may exceed the request.
+If
+.Fa size
+or
+.Fa type_size
+is zero, if their product overflows, or if the allocation fails, it returns
+a zeroed
+.Vt t_vec
+whose
+.Fa buf Ns .mem
+is
+.Dv nullptr .
+.Pp
+.Fn xft_vec_destroy
+frees the buffer through
+.Fa allocator
+and zeroes
+.Fa *v .
+It does not free anything the elements point to.
+.Pp
+.Fn xft_vec_len
+returns the number of elements,
+.Fa v Ns ->size
+divided by
+.Fa type_size .
+.Pp
+.Fn xft_vec_push_back
+copies
+.Fa type_size
+bytes from
+.Fa data
+to the end of the vector.
+If the element does not fit, the vector first grows by its current
+capacity through
+.Fn xft_vec_reserve ,
+or by 4 bytes if the capacity is zero.
+Since
+.Fn xft_vec_reserve
+adds to the existing capacity, each growth requests three times the old
+capacity.
+.Pp
+.Fn xft_vec_extend
+appends the
+.Fa data Ns .size
+bytes at
+.Fa data Ns .mem .
+If they do not fit, it calls
+.Fn xft_vec_reserve
+with
+.Fa data Ns .size .
+The byte count need not be a multiple of the element size.
+.Pp
+.Fn xft_vec_reserve
+asks
+.Fa allocator
+to reallocate the buffer to
+.Fa vec Ns ->buf.size
++
+.Fa n
+bytes.
+.Fa n
+is a byte count added to the current capacity, not a target element count.
+The reallocation is always performed, even when the space is already
+available.
+.Pp
+.Fn xft_vec_get
+and
+.Fn xft_vec_get_mut
+return a pointer to element
+.Fa idx ,
+or
+.Dv nullptr
+if
+.Fa idx
+is out of range.
+They differ only in the constness of the result.
+.Pp
+.Fn xft_vec_peek_last
+and
+.Fn xft_vec_get_last
+return a pointer to the last element, or
+.Dv nullptr
+if the vector is empty.
+.Pp
+.Fn xft_vec_pop
+drops the last element.
+It does nothing on an empty vector.
+.Pp
+.Fn xft_vec_popmv
+copies the last element to
+.Fa dest
+and then drops it.
+.Pp
+.Fn xft_vec_remove
+removes element
+.Fa i
+and shifts the following elements down by one, preserving their order.
+.Pp
+.Fn xft_vec_pop_managed
+and
+.Fn xft_vec_remove_managed
+behave like
+.Fn xft_vec_pop
+and
+.Fn xft_vec_remove ,
+but first read the start of the removed element as a
+.Vt t_buffer
+and pass it to the allocator's
+.Fa free .
+They are meant for vectors of
+.Vt t_buffer ,
+or of structures that begin with one, whose memory came from
+.Fa allocator .
+.Pp
+.Fn xft_vec_clear
+sets the length to zero and keeps the buffer.
+.Pp
+No function shrinks the buffer.
+Any call that may grow it
+.Pq Fn xft_vec_push_back , Fn xft_vec_extend , Fn xft_vec_reserve
+may move it, which invalidates every pointer previously returned by the
+accessors.
+.Fn xft_vec_remove
+and
+.Fn xft_vec_remove_managed
+invalidate pointers to the removed element and to those after it.
+.Sh RETURN VALUES
+.Fn xft_new_vec
+returns the new vector, or a zeroed one on failure.
+.Pp
+.Fn xft_vec_push_back ,
+.Fn xft_vec_extend
+and
+.Fn xft_vec_reserve
+return
+.Dv OK
+on success and
+.Dv KO
+if the allocator could not grow the buffer, in which case the vector is
+unchanged.
+.Pp
+.Fn xft_vec_popmv
+and
+.Fn xft_vec_pop_managed
+return
+.Dv KO
+if the vector is empty.
+.Fn xft_vec_remove
+and
+.Fn xft_vec_remove_managed
+return
+.Dv KO
+if
+.Fa i
+is out of range.
+All four return
+.Dv OK
+otherwise.
+.Pp
+.Fn xft_vec_len
+returns the element count.
+The accessors return a pointer or
+.Dv nullptr
+as described above.
+.Sh NOTES
+Allocations and reallocations pass the next power of two of the requested
+byte size as the allocator's alignment argument.
+.Pp
+The accessors compute the result without branching, by masking the address
+with the bounds check.
+.Sh EXAMPLES
+.Bd -literal -offset indent
+#include <xft.h>
+
+t_result	demo(t_allocator a)
+{
+	t_vec		v;
+	int			val;
+	int			out;
+	const int	*got;
+
+	v = xft_new_vec(a, 4, sizeof(int));
+	if (v.buf.mem == nullptr)
+		return (KO);
+	val = 42;
+	if (!xft_vec_push_back(a, &v, (t_u8 *)&val, sizeof(int)))
+		return (xft_vec_destroy(a, &v), KO);
+	val = 99;
+	if (!xft_vec_push_back(a, &v, (t_u8 *)&val, sizeof(int)))
+		return (xft_vec_destroy(a, &v), KO);
+	got = xft_vec_get(&v, 1, sizeof(int));
+	xft_pin_invariant(got != nullptr && *got == 99);
+	xft_pin_invariant(xft_vec_get(&v, 2, sizeof(int)) == nullptr);
+	xft_pin_invariant(xft_vec_popmv(&v, &out, sizeof(int)) && out == 99);
+	xft_pin_invariant(xft_vec_len(&v, sizeof(int)) == 1);
+	xft_vec_destroy(a, &v);
+	return (OK);
+}
+.Ed
+.Sh SEE ALSO
+.Xr xft_alloc 3 ,
+.Xr xft_mem 3 ,
+.Xr xft_soa 3 ,
+.Xr xft_str 3 ,
+.Xr xft 7
+.Sh CAVEATS
+Most functions mark a
+.Dv nullptr
+.Fa buf Ns .mem ,
+or a
+.Dv nullptr
+.Fa allocator Ns .allocator ,
+as unreachable rather than checking it.
+In particular, calling
+.Fn xft_vec_destroy ,
+.Fn xft_vec_push_back ,
+.Fn xft_vec_extend ,
+.Fn xft_vec_popmv
+or
+.Fn xft_vec_remove
+on a vector whose creation failed is undefined behavior.
+.Pp
+.Fn xft_vec_push_back
+assumes the capacity is at least
+.Fa type_size ,
+which holds for vectors made by
+.Fn xft_new_vec
+with the same
+.Fa type_size .
+.Fa data
+must not point into the vector itself, since growth may free it.
+.Pp
+Index arithmetic in the accessors is not checked for overflow.
+.Pp
+.Fn xft_vec_pop_managed
+is declared
+.Ql always_inline
+in
+.In vec.h
+without being
+.Ql inline ,
+so GCC warns
+.Pq Fl Wattributes
+at call sites in other translation units.

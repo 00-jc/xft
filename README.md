@@ -1,103 +1,153 @@
 # xft
 
-A freestanding C23 systems library for Linux and Windows on x86_64 and aarch64.
+A freestanding C23 systems library for Linux and Windows.
 
-`xft` replaces the parts of libc you would normally rely on and links with `-nostdlib`.
+`xft` implements the subset of libc that a systems program typically depends on: memory primitives, containers, allocators, syscall wrappers, I/O, and formatting. It links with `-nostdlib`. Programs that target it define `xft_main` instead of `main` and never touch the C runtime.
 
-A hosted `XFT_LIBC=ON` flavor gives the same API on a normal toolchain.
+A hosted build (`-DXFT_LIBC=ON`) exposes the same API on a normal toolchain, so the library can be used incrementally and tested against the system libc.
 
-- Everything is prefixed `xft_`
-- Typedefs are fixed-width, alignment is encoded in the types
-- Returns `t_result` (`OK` / `KO`) rather than errno
+## Design
 
-## Build
+- **Prefixed.** Every public symbol is `xft_`. There are no macro aliases into the global namespace except the weak `memcpy`/`memset` symbols emitted for the compiler's benefit in freestanding builds.
+- **Explicit error handling.** Fallible functions return `t_result` (`OK` / `KO`). There is no `errno`, and no hidden global state.
+- **Fixed-width, aligned types.** Integer and floating-point typedefs are fixed-width and encode alignment in the name: the plain type has alignment 1 and is safe for unaligned access, the `a` suffix carries natural alignment. Every primitive is `may_alias`.
+- **Allocators are values.** Containers take a `t_allocator` by value and call through a vtable. The backend (arena, GPA, page allocator, reporting allocator) is chosen by the caller; nothing allocates behind your back.
+- **No runtime detection.** ISA-specific paths are selected at compile time from target macros. There is no CPUID dispatch and no lazy initialization or IFuncs.
 
-Requires CMake >= 3.21 and GCC or Clang with C23 support. Ninja is the supported generator
+## Requirements
 
-On Windows, always pass `-G Ninja` (the Visual Studio generators ignore `CMAKE_C_COMPILER`)
+- CMake >= 3.21
+- GCC or Clang with C23 support
+- Ninja (the supported generator; on Windows it is required, since the Visual Studio generators ignore `CMAKE_C_COMPILER`)
+
+## Platform support
+
+| Platform | Freestanding | `XFT_LIBC` |
+| --- | --- | --- |
+| Linux x86_64 | yes | yes |
+| Linux aarch64 | yes | yes |
+| Linux, other arches | no | yes |
+| Windows x86_64 | yes | yes* |
+| Other OSes | no | no |
+
+## Building
 
 ```sh
 cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
 cmake --build build
 ```
 
-This produces `build/libxft.a`. Use `cmake --install build --prefix /usr/local` to install.
+This produces `build/libxft.a`. To install:
+
+```sh
+cmake --install build --prefix /usr/local
+```
+
+### Options
 
 | Option | Default | Effect |
 | --- | --- | --- |
 | `XFT_LIBC` | `OFF` | Build against a libc instead of freestanding |
-| `XFT_NATIVE` | `ON` | `-march=native -mtune=native` (turn off if shipping the binary) |
-| `XFT_LTO` | `ON` | Link-time optimization (Clang + LTO wants `lld`) |
+| `XFT_NATIVE` | `ON` | `-march=native -mtune=native`; turn off when shipping binaries |
+| `XFT_LTO` | `ON` | Link-time optimization; Clang + LTO wants `lld` |
 | `XFT_FAST_MATH` | `ON` | `-ffast-math` |
-| `XFT_SANITIZE` | `OFF` | ASan + UBSan (forces `XFT_LIBC=ON`, disables LTO) |
-| `XFT_STRICT_ARCH` | `ON` | Compile only the host's arch backends |
-| `XFT_RT` | `ON` | xft entry point calling `xft_main`; `OFF` uses libc's and your `main` (forces `XFT_LIBC=ON`) |
+| `XFT_SANITIZE` | `OFF` | ASan + UBSan; forces `XFT_LIBC=ON`, disables LTO |
+| `XFT_STRICT_ARCH` | `OFF` | Compile only the host architecture's backends |
+| `XFT_RT` | `ON` | Use the `xft` entry point calling `xft_main`; `OFF` uses libc's entry point and your `main` (forces `XFT_LIBC=ON`) |
 | `XFT_BUILD_TESTS` | `OFF` | Unit tests (always sanitized) |
 | `XFT_BUILD_FUZZ` | `OFF` | Fuzz targets (always sanitized) |
-| `XFT_BUILD_BENCH` | `OFF` | Benchmarks (never sanitized) |
+| `XFT_BUILD_BENCH` | `OFF` | Benchmarks (never sanitized, Linux only) |
 
 Warnings are always errors. `Release` builds use `-Wall -Wextra -Werror`; every other build type uses the strict set in `cmake/warnings_strict.cmake`.
 
 ## Usage
 
-Link the `xft::xft` target, which carries the freestanding flags for you:
+Link the `xft::xft` target. It carries the freestanding flags for you:
 
 ```cmake
 add_subdirectory(xft)
 target_link_libraries(myprog PRIVATE xft::xft)
 ```
 
-On Windows, xft calls into the system DLLs even in the freestanding flavor, so it depends on the `kernel32`, `ntdll` and `shell32` import libraries. `xft::xft` links them for you; if you link `libxft.lib` by hand, add them yourself.
+Include `<xft.h>` and define `xft_main` instead of `main`. It receives the initial stack pointer, from which the runtime recovers `argc`, `argv`, `envp`, and the auxiliary vector, and it must end with `xft_exit`:
 
-Programs include `<xft.h>` and define `xft_main` instead of `main`; it must end with `xft_exit`
+```c
+#include <xft.h>
 
-## Tests and benchmarks
-
-```sh
-cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DXFT_BUILD_TESTS=ON -DXFT_BUILD_FUZZ=ON
-cmake --build build
-ctest --test-dir build --output-on-failure
-
-cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DXFT_BUILD_BENCH=ON
-cmake --build build --target run-bench
+void
+xft_main(const t_any *__restrict__ const sp)
+{
+	(void)sp;
+	xft_exit(0);
+}
 ```
 
-Benchmarks use the `tailor` harness (so it's linux-only).
+On Windows, `xft` calls into the system DLLs even in the freestanding flavor, so it depends on the `kernel32`, `ntdll`, and `shell32` import libraries. `xft::xft` links them for you; if you link `libxft.lib` by hand, add them yourself.
 
-On Windows, the sanitized tests and fuzz targets load `clang_rt.asan_dynamic-<arch>.dll`, which LLVM ships outside `bin`. Put its directory on `PATH` (or the binaries exit with `0xc0000135`):
+## Subsystems
+
+| Header | Contents |
+| --- | --- |
+| `xft_alloc.h` | Allocator interface; arena, general-purpose, page, and reporting allocators |
+| `xft_atomics.h` | Mutexes and atomic types |
+| `xft_bmi.h` | Bit manipulation, byte order, SIMD mask primitives |
+| `xft_cstr.h` | NUL-terminated string helpers |
+| `xft_ctype.h` | ASCII character classification |
+| `xft_fmt.h` | Formatted output to a writer |
+| `xft_fuzzer.h` | Random input pool for fuzz targets |
+| `xft_hash.h` | XXH3 and Murmur3 |
+| `xft_hint.h` | Runtime invariants and optimizer hints |
+| `xft_indexmap.h` | Open-addressing hash map from byte keys to indices |
+| `xft_io.h` | Buffered readers and writers, standard handles, file mapping |
+| `xft_math.h` | Math functions |
+| `xft_mem.h` | `memcpy`, `memmove`, `memset`, `memchr`, `memcmp`, and friends |
+| `xft_rng.h` | xoshiro256\*\* |
+| `xft_rt.h` | Program entry point and runtime |
+| `xft_signals.h` | Signal masks |
+| `xft_soa.h` | Structure-of-arrays container |
+| `xft_sort.h` | `qsort` variants |
+| `xft_str.h` | Growable NUL-terminated byte string |
+| `xft_swissmap.h` | SIMD open-addressing hash map from byte keys to pointers |
+| `xft_syscalls.h` | System call wrappers |
+| `xft_timing.h` | Clocks and cycle counters |
+| `xft_vec.h` | Untyped growable array |
+
+The full API is documented in section 3 man pages under `doc/man3`.
+
+## Testing
+
+Unit tests and fuzz targets are built with sanitizers and run under CTest:
+
+```sh
+cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release \
+    -DXFT_BUILD_TESTS=ON -DXFT_BUILD_FUZZ=ON
+cmake --build build
+ctest --test-dir build --output-on-failure
+```
+
+On Windows, the sanitized binaries load `clang_rt.asan_dynamic-<arch>.dll`, which LLVM ships outside `bin`. Put its directory on `PATH`:
 
 ```powershell
 $res = & clang -print-resource-dir
 $env:PATH = "$res\lib\windows;$env:PATH"
 ```
 
----
+## Benchmarks
 
-# LICENSE
+Benchmarks use the `tailor` harness and are Linux only:
 
+```sh
+cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DXFT_BUILD_BENCH=ON
+cmake --build build --target run-bench
 ```
-This is free and unencumbered software released into the public domain.
 
-Anyone is free to copy, modify, publish, use, compile, sell, or
-distribute this software, either in source code form or as a compiled
-binary, for any purpose, commercial or non-commercial, and by any
-means.
+## Warning
 
-In jurisdictions that recognize copyright laws, the author or authors
-of this software dedicate any and all copyright interest in the
-software to the public domain. We make this dedication for the benefit
-of the public at large and to the detriment of our heirs and
-successors. We intend this dedication to be an overt act of
-relinquishment in perpetuity of all present and future rights to this
-software under copyright law.
+This has been in development for over a year (apr 2025, but commits were lost), but it still has rough edges even if it has been used for fairly
+nontrivial programs, for any additions or suggestions please refer to [codeberg](https://codeberg.org/00jc/xft)
+and open an issue or pull request, any help at all is very appreciated since this has been a solo project from the
+start.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR
-OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
-ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-OTHER DEALINGS IN THE SOFTWARE.
+## License
 
-For more information, please refer to <https://unlicense.org/>
-```
+Released into the public domain under the [Unlicense](https://unlicense.org/). See `LICENSE` for the full text.

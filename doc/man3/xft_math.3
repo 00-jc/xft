@@ -1,0 +1,383 @@
+.Dd October 14, 2026
+.Dt XFT_MATH 3
+.Os xft
+.Sh NAME
+.Nm xft_fabs ,
+.Nm xft_sqrt ,
+.Nm xft_dsqrt ,
+.Nm xft_rsqrt ,
+.Nm xft_drsqrt ,
+.Nm xft_q_sqrt ,
+.Nm xft_q_dsqrt ,
+.Nm xft_q_sqrt_round ,
+.Nm xft_q_sqrt_fround ,
+.Nm xft_drsqrt_x4 ,
+.Nm xft_pow_u8 ,
+.Nm xft_pow_u32 ,
+.Nm xft_pow_u64 ,
+.Nm xft_pow_u128 ,
+.Nm xft_ipow ,
+.Nm xft_lpow ,
+.Nm xft_fpow ,
+.Nm xft_dpow ,
+.Nm xft_floorf ,
+.Nm xft_ceilf ,
+.Nm xft_roundf ,
+.Nm xft_roundff ,
+.Nm xft_3dadd ,
+.Nm xft_3dsub ,
+.Nm xft_3dmul ,
+.Nm xft_3ddiv ,
+.Nm xft_3ddot ,
+.Nm xft_3dcross ,
+.Nm xft_3dnorm ,
+.Nm xft_3dunit
+.Nd scalar and 3D math
+.Sh SYNOPSIS
+.In math.h
+.Ft t_f32
+.Fn xft_q_sqrt "t_f32 x"
+.Ft t_f64
+.Fn xft_q_dsqrt "t_f64 number"
+.Ft t_f32
+.Fn xft_sqrt "t_f32 number"
+.Ft t_f64
+.Fn xft_dsqrt "t_f64 number"
+.Ft t_f32
+.Fn xft_q_sqrt_round "t_f32 number" "t_u8 n"
+.Ft t_f32
+.Fn xft_q_sqrt_fround "t_f32 number"
+.Ft t_f32
+.Fn xft_roundf "t_f32 x" "t_u8 n"
+.Ft t_f32
+.Fn xft_floorf "t_f32 x"
+.Ft t_f32
+.Fn xft_ceilf "t_f32 x"
+.Ft t_u128
+.Fn xft_pow_u128 "t_u128 x" "t_u128 n"
+.Ft t_u64
+.Fn xft_pow_u64 "t_u64 x" "t_u64 n"
+.Ft t_u32
+.Fn xft_pow_u32 "t_u32 x" "t_u32 n"
+.Ft t_u8
+.Fn xft_pow_u8 "t_u8 x" "t_u8 n"
+.Ft int
+.Fn xft_ipow "int x" "t_u64 n"
+.Ft "long long"
+.Fn xft_lpow "long long x" "t_u64 n"
+.Ft t_f32
+.Fn xft_fpow "t_f32 x" "t_u64 n"
+.Ft t_f64
+.Fn xft_dpow "t_f64 x" "t_u64 n"
+.Ft t_f32
+.Fn xft_roundff "t_f32 x"
+.Ft t_f64
+.Fn xft_fabs "t_f64 x"
+.Ft t_f32
+.Fn xft_rsqrt "t_f32 number"
+.Ft t_f64
+.Fn xft_drsqrt "t_f64 number"
+.Ft t_4packd
+.Fn xft_drsqrt_x4 "t_4packd d1"
+.Ft t_3dcoords
+.Fn xft_3dadd "const t_3dcoords *restrict a" "const t_3dcoords *restrict b"
+.Ft t_3dcoords
+.Fn xft_3dsub "const t_3dcoords *restrict a" "const t_3dcoords *restrict b"
+.Ft t_3dcoords
+.Fn xft_3dmul "const t_3dcoords *restrict a" "const t_3dcoords *restrict b"
+.Ft t_3dcoords
+.Fn xft_3ddiv "const t_3dcoords *restrict a" "const t_3dcoords *restrict b"
+.Ft t_f64
+.Fn xft_3ddot "const t_3dcoords *restrict a" "const t_3dcoords *restrict b"
+.Ft t_3dcoords
+.Fn xft_3dcross "const t_3dcoords *restrict a" "const t_3dcoords *restrict b"
+.Ft t_f64
+.Fn xft_3dnorm "const t_3dcoords *restrict c"
+.Ft t_3dcoords
+.Fn xft_3dunit "const t_3dcoords *restrict c"
+.Sh DESCRIPTION
+.In math.h
+provides scalar square roots, powers, rounding and a small set of 3D vector
+operations.
+It also declares the unions
+.Vt t_fp
+and
+.Vt t_dp ,
+used for bit-level access to
+.Vt t_f32
+and
+.Vt t_f64
+values, and the packed vector types
+.Vt t_2packd ,
+.Vt t_4packd
+and its alias
+.Vt t_3dcoords :
+.Bd -literal -offset indent
+typedef union u_fp { t_f32 f; t_u32 i; } t_fp;
+typedef union u_dp { t_f64 f; t_u64 i; } t_dp;
+
+typedef struct s_2packd {
+	t_f64 x;
+	t_f64 y;
+} __attribute__((aligned(16))) t_2packd;
+
+typedef struct s_4packd {
+	t_f64 x;
+	t_f64 y;
+	t_f64 z;
+	t_f64 w;
+} __attribute__((aligned(32))) t_4packd;
+
+typedef t_4packd t_3dcoords;
+.Ed
+.Pp
+.Vt t_4packd
+and
+.Vt t_3dcoords
+carry a fourth lane
+.Fa w
+that the 3D helpers do not read.
+Every function on this page is
+.Ql const
+or
+.Ql pure
+and none of them allocate or set an error.
+.Ss Absolute value
+.Fn xft_fabs
+clears the sign bit of
+.Fa x
+and returns the result.
+It is a bit operation, not a library call, and preserves NaN payloads.
+.Ss Square roots
+On x86_64,
+.Fn xft_sqrt
+and
+.Fn xft_dsqrt
+compile to
+.Ql sqrtss
+and
+.Ql sqrtsd ,
+which are correctly rounded per IEEE 754.
+.Fn xft_rsqrt
+compiles to
+.Ql rsqrtss ,
+an approximation with roughly 12 bits of precision.
+.Fn xft_drsqrt
+uses the fast inverse square root bit trick followed by two
+Newton-Raphson iterations.
+.Pp
+On every other target,
+.Fn xft_sqrt ,
+.Fn xft_dsqrt ,
+.Fn xft_rsqrt
+and
+.Fn xft_drsqrt
+use the same bit trick with two Newton-Raphson iterations.
+.Fn xft_sqrt
+and
+.Fn xft_dsqrt
+multiply the reciprocal result by the input, so they are approximate as
+well; a negative input returns
+.Ql \-1
+instead of a NaN.
+.Pp
+The
+.Ql q_
+variants
+.Fn xft_q_sqrt ,
+.Fn xft_q_dsqrt ,
+.Fn xft_q_sqrt_round
+and
+.Fn xft_q_sqrt_fround
+are declared in
+.In math.h
+but their implementations are not part of the same translation units as
+the plain variants.
+.Fn xft_drsqrt_x4
+applies
+.Fn xft_drsqrt
+to the four lanes of a
+.Vt t_4packd .
+.Ss Powers
+.Fn xft_pow_u8
+through
+.Fn xft_pow_u128 ,
+.Fn xft_ipow ,
+.Fn xft_lpow ,
+.Fn xft_fpow
+and
+.Fn xft_dpow
+compute
+.Fa x
+raised to
+.Fa n
+by binary exponentiation.
+The exponent is unsigned for every variant; the base is the type in the
+function name.
+Integer overflow is not checked and wraps according to the type of
+.Fa x .
+.Ss Rounding
+.Fn xft_floorf
+and
+.Fn xft_ceilf
+truncate
+.Fa x
+to
+.Vt long long
+and adjust by one when the cast went the wrong way.
+The result is a
+.Vt t_f32
+and the intermediate cast requires
+.Fa x
+to lie within the range of
+.Vt long long .
+.Pp
+.Fn xft_roundf
+rounds
+.Fa x
+to
+.Fa n
+decimal places.
+.Fa n
+is clamped to the range 0 to 7.
+The internal multiplier starts at 0.1 and is multiplied by 10
+.Fa n
+times, so for
+.Fa n
+at least 1 the effective number of decimal places is
+.Fa n
+\- 1.
+For
+.Fa n
+equal to 0 the multiplier remains 0.1 and the result is rounded to one
+tenth.
+.Pp
+.Fn xft_roundff
+rounds
+.Fa x
+to the nearest integer using
+.Ql (int)(x + 0.5)
+for positive values and
+.Ql (int)(x - 0.5)
+for negative values, and returns the result as a
+.Vt t_f32 .
+.Ss 3D vectors
+The
+.Fn xft_3d*
+family operates on
+.Vt t_3dcoords
+values passed by pointer.
+Each function casts the pointer to a 32-byte aligned
+.Vt t_4da
+vector, performs the operation on all four lanes, and casts back to
+.Vt t_3dcoords
+for the return.
+The
+.Fa w
+lane of the result is the
+.Fa w
+lane of the operands; callers that do not use it should leave it zero.
+.Bl -tag -width "xft_3dcross"
+.It Fn xft_3dadd
+Component-wise addition.
+.It Fn xft_3dsub
+Component-wise subtraction.
+.It Fn xft_3dmul
+Component-wise multiplication.
+.It Fn xft_3ddiv
+Component-wise division.
+.It Fn xft_3ddot
+Returns
+.Ql a.x*b.x + a.y*b.y + a.z*b.z .
+.It Fn xft_3dcross
+Returns the cross product
+.Ql a \(mu b .
+.It Fn xft_3dnorm
+Returns
+.Fn xft_dsqrt
+of
+.Ql x\(ha2 + y\(ha2 + z\(ha2 .
+.It Fn xft_3dunit
+Returns the input scaled by
+.Fn xft_drsqrt
+of the same norm, i.e. a unit vector in the direction of
+.Fa c .
+.El
+.Sh RETURN VALUES
+Each function returns the value described above.
+None of them set an error or have a failure mode.
+.Sh EXAMPLES
+.Bd -literal -offset indent
+#include <xft.h>
+
+t_f64	length(t_f64 x, t_f64 y, t_f64 z)
+{
+	t_3dcoords	v;
+
+	v = (t_3dcoords){.x = x, .y = y, .z = z};
+	return (xft_3dnorm(&v));
+}
+
+t_f64	dot(t_f64 ax, t_f64 ay, t_f64 az,
+		t_f64 bx, t_f64 by, t_f64 bz)
+{
+	t_3dcoords	a;
+	t_3dcoords	b;
+
+	a = (t_3dcoords){.x = ax, .y = ay, .z = az};
+	b = (t_3dcoords){.x = bx, .y = by, .z = bz};
+	return (xft_3ddot(&a, &b));
+}
+.Ed
+.Sh SEE ALSO
+.Xr xft_bmi 3 ,
+.Xr xft_fmt 3 ,
+.Xr xft 7
+.Sh CAVEATS
+.Fn xft_sqrt
+and
+.Fn xft_dsqrt
+return
+.Ql \-1
+for a negative input on targets other than x86_64, and a NaN on x86_64.
+The two backends are not interchangeable.
+.Pp
+.Fn xft_rsqrt
+and
+.Fn xft_drsqrt
+are approximations everywhere and are not correctly rounded even on
+x86_64.
+.Pp
+.Fn xft_floorf
+and
+.Fn xft_ceilf
+cast
+.Fa x
+to
+.Vt long long ,
+so
+.Fa x
+must lie within the range of that type.
+.Fn xft_floorf
+also returns positive zero for a negative zero input, because the cast of
+.Ql \-0.0f
+is
+.Ql 0 .
+.Pp
+.Fn xft_roundf
+clamps
+.Fa n
+to 7 and its power-of-ten multiplier is initialised to 0.1 rather than
+1.0, so
+.Fa n
+is effectively off by one for all values at or above 1.
+Pass
+.Fa n
++ 1 or use
+.Fn xft_roundff
+when rounding to an integer.
+.Pp
+The integer power functions do not check for overflow.
+.Pp
+The 3D helpers use GCC and Clang vector extensions and are not portable to
+compilers without them.

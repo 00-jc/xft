@@ -1,0 +1,157 @@
+.Dd October 14, 2026
+.Dt XFT_SORT 3
+.Os xft
+.Sh NAME
+.Nm xft_qsort ,
+.Nm xft_cmp_u64
+.Nd in-place quicksort
+.Sh SYNOPSIS
+.In sort.h
+.Ft void
+.Fn xft_qsort "t_u8 *arr" "t_qsort_ctx *c" "t_size l" "t_size h"
+.Ft int
+.Fn xft_cmp_u64 "t_cany a" "t_cany b"
+.Sh DESCRIPTION
+.In sort.h
+provides an in-place quicksort that operates on untyped bytes and takes the
+element size and the comparator from a caller-supplied context.
+.Bd -literal -offset indent
+typedef struct s_qsort_ctx {
+	t_u8	*buf;		/* scratch buffer for swaps */
+	t_size	size;		/* element size in bytes */
+	int	(*cmp)(t_cany, t_cany);
+} t_qsort_ctx;
+.Ed
+.Pp
+.Fa buf
+must hold at least
+.Fa size
+bytes.
+It is used during each swap and must not overlap the array being sorted.
+.Fa cmp
+returns a negative value if its first argument should be ordered before
+its second, zero if they are equal, and a positive value otherwise.
+.Pp
+.Fn xft_qsort
+sorts the
+.Fa h
+\-
+.Fa l
+elements starting at
+.Fa arr
++
+.Fa l
+\(mu
+.Fa size .
+The half-open interval is the same convention as C's
+.Vt qsort :
+.Fa l
+is the index of the first element to be sorted and
+.Fa h
+is one past the last.
+The comparison uses a Lomuto-style partition around the element at
+.Fa l ,
+then recurses on both sides.
+.Pp
+.Fn xft_cmp_u64
+is a ready-made comparator for arrays of
+.Vt t_u64a .
+It loads the two arguments as 64-bit words and returns
+.Ql (x \*[Gt] y) - (x \*[Lt] y) ,
+so the result is
+.Ql \-1 ,
+.Ql 0
+or
+.Ql 1
+and never overflows.
+.Sh RETURN VALUES
+.Fn xft_qsort
+returns nothing.
+.Fn xft_cmp_u64
+returns the sign of the comparison.
+.Sh EXAMPLES
+Sort an array of
+.Vt t_u64a
+in place.
+.Bd -literal -offset indent
+#include <xft.h>
+
+void	sort_u64s(t_u64a *data, t_size n)
+{
+	t_u64a		scratch;
+	t_qsort_ctx	c;
+
+	c = (t_qsort_ctx){
+		.buf = (t_u8 *)&scratch,
+		.size = sizeof(t_u64a),
+		.cmp = xft_cmp_u64,
+	};
+	xft_qsort((t_u8 *)data, &c, 0, n);
+}
+.Ed
+.Pp
+Sort an array of structures by one field.
+.Bd -literal -offset indent
+typedef struct s_point {
+	t_i32a	x;
+	t_i32a	y;
+} t_point;
+
+static int	cmp_x(t_cany a, t_cany b)
+{
+	const t_point	*pa = a;
+	const t_point	*pb = b;
+
+	return ((pa->x > pb->x) - (pa->x < pb->x));
+}
+
+void	sort_points(t_point *pts, t_size n)
+{
+	t_point		scratch;
+	t_qsort_ctx	c;
+
+	c = (t_qsort_ctx){
+		.buf = (t_u8 *)&scratch,
+		.size = sizeof(t_point),
+		.cmp = cmp_x,
+	};
+	xft_qsort((t_u8 *)pts, &c, 0, n);
+}
+.Ed
+.Sh SEE ALSO
+.Xr xft_mem 3 ,
+.Xr xft_vec 3 ,
+.Xr xft 7
+.Sh CAVEATS
+The sort is not stable.
+Elements that compare equal may be reordered.
+.Pp
+.Fa buf
+must hold exactly one element, not one element per recursion level; the
+recursive calls share the caller's buffer.
+.Pp
+The interval is checked with
+.Ql l + 1 >= h ,
+so calling
+.Fn xft_qsort
+with
+.Fa h
+less than or equal to
+.Fa l
++ 1 returns immediately.
+Passing
+.Fa h
+equal to
+.Fa l
+is accepted and does nothing.
+.Pp
+.Fn xft_qsort
+recurses on both partitions rather than iterating on one side, so the
+recursion depth is linear in the number of elements for already-sorted
+input.
+On a large array that is already ordered this can exhaust the stack.
+.Pp
+.Fa cmp
+must be a total order.
+An inconsistent comparator gives undefined behaviour, as with C's
+.Fn qsort .

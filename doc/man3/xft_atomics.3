@@ -1,0 +1,233 @@
+.Dd October 14, 2026
+.Dt XFT_ATOMICS 3
+.Os xft
+.Sh NAME
+.Nm xft_thread_fence ,
+.Nm xft_signal_fence ,
+.Nm xft_mutex_init ,
+.Nm xft_mutex_lock ,
+.Nm xft_mutex_unlock
+.Nd mutexes and memory fences
+.Sh SYNOPSIS
+.In atomics.h
+.Ft void
+.Fn xft_thread_fence "t_i32a memorder"
+.Ft void
+.Fn xft_signal_fence "t_i32a memorder"
+.Ft void
+.Fn xft_mutex_init "t_mutex *restrict mutex"
+.Ft void
+.Fn xft_mutex_lock "t_mutex *restrict mutex" "const t_mutex_type type"
+.Ft void
+.Fn xft_mutex_unlock "t_mutex *restrict mutex"
+.Sh DESCRIPTION
+.In atomics.h
+provides a single 32-bit mutex primitive and a pair of memory fences.
+The mutex is built directly on C11 atomics and, on Linux, the
+.Xr futex 2
+system call; it does not depend on
+.Xr pthread 3 .
+.Pp
+The types and state constants are declared in
+.In types/atomic_types.h :
+.Bd -literal -offset indent
+typedef volatile  int32_t __attribute__((__aligned__(64))) t_c_i32;
+typedef volatile t_c_i32  t_mutex_nonsh;
+typedef volatile t_i32a   t_mutex;
+
+typedef enum e_mutex_type
+{
+	FAST,
+	SLOW,
+	BUSY,
+}	t_mutex_type;
+
+#define XFT_UNLOCKED  0
+#define XFT_LOCKED    1
+#define XFT_CONTESTED 2
+.Ed
+.Pp
+.Vt t_mutex
+is a 32-bit signed integer.
+Its value is one of
+.Dv XFT_UNLOCKED ,
+.Dv XFT_LOCKED
+or
+.Dv XFT_CONTESTED :
+.Dv XFT_UNLOCKED
+means the mutex is free,
+.Dv XFT_LOCKED
+means it is held and no waiter has been recorded by the unlock path, and
+.Dv XFT_CONTESTED
+means it is held and at least one waiter is asleep on it through
+.Xr futex 2 .
+.Pp
+.Dv XFT_MUTEX_SPIN
+is the number of iterations
+.Fn xft_mutex_lock
+performs on the
+.Dv FAST
+path before sleeping.
+It defaults to 32 and can be redefined before
+.In atomics.h
+is included.
+.Ss Mutex functions
+.Fn xft_mutex_init
+stores
+.Dv XFT_UNLOCKED
+into
+.Fa mutex .
+Nothing is allocated and no system call is made; a mutex in static storage
+that has been zeroed is already in the same state.
+.Pp
+.Fn xft_mutex_lock
+acquires
+.Fa mutex ,
+blocking until it is available.
+Every call first attempts a single acquire compare-and-exchange from
+.Dv XFT_UNLOCKED
+to
+.Dv XFT_LOCKED .
+If it succeeds the function returns without touching the slow path.
+If it fails, execution continues according to
+.Fa type :
+.Bl -tag -width "BUSY"
+.It Dv FAST
+Spin up to
+.Dv XFT_MUTEX_SPIN
+times.
+Each iteration performs a relaxed load; if the mutex reads as
+.Dv XFT_UNLOCKED
+the thread attempts a compare-and-exchange from
+.Dv XFT_UNLOCKED
+to
+.Dv XFT_CONTESTED .
+Between attempts the thread calls
+.Fn xft_mutex_backoff
+with the largest power of two not greater than the current iteration
+count.
+If the spin fails, the thread exchanges the mutex into
+.Dv XFT_CONTESTED
+and, on failure, sleeps in
+.Fn xft_futex_wait
+with the expected value
+.Dv XFT_CONTESTED .
+It retries the exchange after each wake-up.
+This is the general purpose choice.
+.It Dv BUSY
+Spin forever, attempting the same
+.Dv XFT_CONTESTED
+exchange and backing off between attempts.
+No system call is made.
+Suitable when the critical section is short and contention is expected to
+be rare.
+.It Dv SLOW
+Exchange the mutex into
+.Dv XFT_CONTESTED
+and, if the previous value was not
+.Dv XFT_UNLOCKED ,
+sleep in
+.Fn xft_futex_wait .
+There is no spin phase.
+Suitable when the lock is expected to be heavily contended.
+.El
+.Pp
+The
+.Fa type
+argument selects the failure path only; the initial compare-and-exchange
+from
+.Dv XFT_UNLOCKED
+to
+.Dv XFT_LOCKED
+is shared by all three.
+Passing a value that is not one of the three enumerators reaches
+.Ql __builtin_unreachable .
+.Pp
+.Fn xft_mutex_unlock
+releases
+.Fa mutex .
+It performs a release fetch-and-subtract of one.
+If the previous value was
+.Dv XFT_CONTESTED ,
+the mutex is stored back to
+.Dv XFT_UNLOCKED
+and one thread is woken via
+.Fn xft_futex_wake .
+If the previous value was
+.Dv XFT_LOCKED ,
+the fetch-and-subtract leaves the mutex at
+.Dv XFT_UNLOCKED
+and no wake-up is issued.
+.Ss Memory fences
+.Fn xft_thread_fence
+issues a hardware memory fence with the memory order given by
+.Fa memorder .
+.Fn xft_signal_fence
+issues a compiler fence with the same argument.
+.Ss Backoff
+The internal
+.Fn xft_mutex_backoff
+executes
+.Fa n
+relaxation instructions:
+.Ql pause
+on x86_64,
+.Ql yield
+on aarch64, or an empty memory-clobbering
+.Ql asm
+statement elsewhere.
+The spin loops call it with a count derived from the current iteration
+number through
+.Fn xft_last_pow2 ,
+so the number of instructions in a single backoff step stays bounded by
+the loop's own iteration cap.
+.Sh RETURN VALUES
+These functions return nothing.
+.Fn xft_mutex_lock
+blocks until it holds the mutex; it has no failure mode.
+.Sh EXAMPLES
+.Bd -literal -offset indent
+#include <xft.h>
+
+static t_mutex	g_lock;
+
+void	init(void)
+{
+	xft_mutex_init(&g_lock);
+}
+
+void	critical_section(void)
+{
+	xft_mutex_lock(&g_lock, FAST);
+	/* ... */
+	xft_mutex_unlock(&g_lock);
+}
+.Ed
+.Sh SEE ALSO
+.Xr xft_syscalls 3 ,
+.Xr xft 7
+.Sh CAVEATS
+.Fn xft_mutex_lock
+with a
+.Fa type
+outside
+.Dv FAST ,
+.Dv SLOW
+and
+.Dv BUSY
+reaches
+.Ql __builtin_unreachable
+and compiles to undefined behaviour at the call site.
+.Pp
+.Fn xft_mutex_unlock
+does not check that the mutex is held.
+Calling it on an unlocked mutex performs a release fetch-and-subtract on
+.Dv XFT_UNLOCKED ,
+leaving the mutex underflowed.
+.Pp
+The mutex does not track its owner and is not recursive; locking it twice
+from the same thread deadlocks.
+.Pp
+.Dv BUSY
+mutexes can starve other threads on a uniprocessor or an over-subscribed
+system, since the spin loop never yields through the kernel.

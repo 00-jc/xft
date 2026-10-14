@@ -1,0 +1,226 @@
+.Dd October 14, 2026
+.Dt XFT_FUZZER 3
+.Os xft
+.Sh NAME
+.Nm xft_new_fuzzer ,
+.Nm xft_fuzzer_add_rand ,
+.Nm xft_fuzz_get_rand ,
+.Nm xft_fuzz_get_rand_u ,
+.Nm xft_fuzz_get_rand_d ,
+.Nm xft_fuzzer_destroy
+.Nd random input pool for fuzz targets
+.Sh SYNOPSIS
+.In fuzzer.h
+.Fd #define XFT_FUZZ_MIN_INIT 50000
+.Fd #define XFT_FUZZ_MAX_INIT 300000
+.Ft t_fuzzer
+.Fn xft_new_fuzzer "t_arena arena"
+.Ft t_result
+.Fn xft_fuzzer_add_rand "t_fuzzer *fuzz"
+.Ft t_buffer *
+.Fn xft_fuzz_get_rand "t_fuzzer *fuzz"
+.Ft t_u64a
+.Fn xft_fuzz_get_rand_u "t_fuzzer *fuzz"
+.Ft t_f64
+.Fn xft_fuzz_get_rand_d "t_fuzzer *fuzz"
+.Ft void
+.Fn xft_fuzzer_destroy "t_fuzzer *f"
+.Sh DESCRIPTION
+A fuzzer is a pool of randomly sized buffers carved from an arena plus a
+xoshiro256** generator used to pick buffers and produce random numbers.
+.In fuzzer.h
+is not included by
+.In xft.h .
+.Ss Types
+.Bl -tag -width Ds
+.It Vt t_fuzzer
+.Fa xo ,
+the
+.Vt t_xoshiro
+state;
+.Fa arena ,
+which owns all memory;
+.Fa buffers
+and
+.Fa buf_n ,
+the pool and its length;
+.Fa lastgen ,
+the last value handed out.
+.It Vt t_lastgen
+.Fa type ,
+a
+.Vt t_lastgentype
+.Pq Dv BUFFER , UNSIGNED , DOUBLE ,
+and
+.Fa as ,
+a
+.Vt t_lastgenval
+with members
+.Fa u ,
+.Fa d
+and
+.Fa b .
+Only the member matching the generator that set it is meaningful.
+.El
+.Ss Functions
+.Fn xft_new_fuzzer
+returns a fuzzer that takes ownership of
+.Fa arena ,
+with an empty pool.
+The generator is seeded by
+.Fn xft_xoshiro_init ,
+which mixes in a stack address and
+.Fn xft_get_nanos ,
+so runs are not reproducible.
+.Fa lastgen
+is left uninitialized.
+.Pp
+.Fn xft_fuzzer_add_rand
+fills the pool.
+It picks a count
+.Fa n
+in
+.Bq Dv XFT_FUZZ_MIN_INIT , Dv XFT_FUZZ_MIN_INIT No + Dv XFT_FUZZ_MAX_INIT No \- 1 ,
+allocates an array of
+.Fa n
+.Vt t_buffer
+from the arena, sets
+.Fa buf_n
+to
+.Fa n ,
+and allocates each buffer from the arena with a random size from 1 to 1024
+bytes and a random alignment of 1, 4, 16 or 64.
+The buffer contents are not written; they hold whatever the arena returns,
+which for fresh arena pages is all zero bytes.
+.Pp
+.Fn xft_fuzz_get_rand
+returns a uniformly chosen buffer from the pool.
+.Fn xft_fuzz_get_rand_u
+returns 64 random bits.
+.Fn xft_fuzz_get_rand_d
+returns 64 random bits reinterpreted as a
+.Vt t_f64 ,
+so it can be any value including NaN, infinities and subnormals.
+Each records its result in
+.Fa fuzz Ns .lastgen .
+.Pp
+.Fn xft_fuzzer_destroy
+destroys the arena, releasing the pool and every buffer.
+.Ss Fuzz targets
+The fuzz targets live in
+.Pa fuzz/
+and are built when CMake is configured with
+.Fl D Ns Dv XFT_BUILD_FUZZ Ns =ON ,
+which requires
+.Dv XFT_RT
+since the targets are
+.Fn xft_main
+programs.
+They are
+.Cm fuzz_mem
+.Pq Pa fuzz/mem_fuzz.c ,
+.Cm fuzz_vec
+.Pq Pa fuzz/vec_fuzz.c
+and
+.Cm fuzz_map
+.Pq Pa fuzz/map_fuzz.c ,
+grouped under the
+.Cm fuzz
+build target.
+They always link a sanitized hosted build of the library
+.Pq Cm xft-san ,
+or the main library if
+.Dv XFT_SANITIZE
+is already on, and are registered with CTest under the label
+.Cm fuzz .
+.Pp
+Each target creates a fuzzer over
+.Fn xft_new_arena ,
+fills it once, runs
+.Fa buf_n
+\(mu 2 cases comparing xft routines against libc or checking container
+invariants with
+.Xr xft_hint 3 ,
+then destroys the fuzzer and exits with status 0.
+A failed check exits with status 1.
+.Sh RETURN VALUES
+.Fn xft_new_fuzzer
+returns the fuzzer by value.
+.Fn xft_fuzzer_add_rand
+returns
+.Dv OK
+on success and
+.Dv KO
+if an arena allocation fails.
+.Fn xft_fuzz_get_rand
+returns a pointer into the pool, valid until
+.Fn xft_fuzzer_destroy .
+.Sh EXAMPLES
+Build and run the fuzz targets:
+.Bd -literal -offset indent
+cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release \e
+	-DXFT_BUILD_FUZZ=ON
+cmake --build build --target fuzz
+ctest --test-dir build -L fuzz --output-on-failure
+.Ed
+.Pp
+A target, after
+.Pa fuzz/mem_fuzz.c :
+.Bd -literal -offset indent
+#include <xft.h>
+#include <fuzzer.h>
+
+void	xft_main(const t_any *__restrict__ const sp)
+{
+	t_fuzzer	fz;
+	t_buffer	*b;
+	t_size		i;
+
+	(void)sp;
+	fz = xft_new_fuzzer(xft_new_arena());
+	xft_pin_invariant(fz.arena.current != nullptr);
+	xft_pin_invariant(xft_fuzzer_add_rand(&fz));
+	i = 0;
+	while (i++ < fz.buf_n * 2)
+	{
+		b = xft_fuzz_get_rand(&fz);
+		xft_pin_invariant(xft_memchr(b->mem, b->mem[0], b->size)
+			== b->mem);
+	}
+	xft_fuzzer_destroy(&fz);
+	xft_exit(0);
+}
+.Ed
+.Sh SEE ALSO
+.Xr xft_alloc 3 ,
+.Xr xft_hint 3 ,
+.Xr xft_mem 3 ,
+.Xr xft_rng 3 ,
+.Xr xft 7
+.Sh CAVEATS
+.Fn xft_fuzz_get_rand
+divides by
+.Fa buf_n ;
+call
+.Fn xft_fuzzer_add_rand
+first.
+.Pp
+.Fn xft_fuzzer_add_rand
+is only correct when called once.
+A second call allocates a fresh array, leaves its first
+.Fa buf_n
+entries uninitialized and, if the new count is smaller, shrinks the pool
+without initializing anything.
+If a buffer allocation fails, the arena is rewound but
+.Fa buffers
+and
+.Fa buf_n
+still describe the rewound memory.
+.Pp
+.Fn xft_fuzz_get_rand_d
+records
+.Dv UNSIGNED ,
+not
+.Dv DOUBLE ,
+in
+.Fa lastgen Ns .type .

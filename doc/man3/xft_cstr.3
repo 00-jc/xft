@@ -1,0 +1,115 @@
+.Dd October 14, 2026
+.Dt XFT_CSTR 3
+.Os xft
+.Sh NAME
+.Nm xft_strlen ,
+.Nm xft_cstr_to_str
+.Nd NUL-terminated string helpers
+.Sh SYNOPSIS
+.In cstr.h
+.Ft t_size
+.Fn xft_strlen "const char *restrict str"
+.Ft t_str
+.Fn xft_cstr_to_str "t_allocator allocator" "const char *cstr"
+.Sh DESCRIPTION
+.Fn xft_strlen
+returns the number of bytes in
+.Fa str
+before the terminating NUL byte.
+It scans in native vectors of 64, 32, 16 or 8 bytes, depending on whether the
+library was built for AVX-512, AVX2, SSE2 or NEON, or no SIMD.
+The first load starts at
+.Fa str
+and is masked so that it does not cross into the next 4 KiB page; the
+following loads are aligned to the vector size.
+No alignment of
+.Fa str
+is required.
+The function is
+.Ql always_inline .
+.Pp
+.Fn xft_cstr_to_str
+copies the NUL-terminated string
+.Fa cstr
+into a new
+.Vt t_str
+allocated through
+.Fa allocator .
+The allocation requests
+.Fn xft_strlen cstr
++ 1 bytes, aligned to the next power of two of that size.
+The copy includes the terminating NUL, so
+.Fa .mem
+of the result is itself NUL-terminated.
+The result is owned by the caller and is released with
+.Fn xft_str_destroy
+using the same allocator.
+.Sh RETURN VALUES
+.Fn xft_strlen
+returns the length of
+.Fa str .
+.Pp
+.Fn xft_cstr_to_str
+returns a
+.Vt t_str
+whose
+.Fa .size
+is the length of
+.Fa cstr ,
+whose
+.Fa .capacity
+is the size of the block returned by the allocator, and whose
+.Fa .mem
+holds the copy.
+If the allocation fails, or if
+.Fa cstr
+is empty, it returns a zeroed
+.Vt t_str
+with
+.Fa .mem
+set to
+.Dv nullptr ;
+no memory is allocated for an empty string.
+.Sh EXAMPLES
+.Bd -literal -offset indent
+#include <xft.h>
+
+void	copy_name(void)
+{
+	t_gpa		gpa;
+	t_allocator	a;
+	t_str		s;
+
+	gpa = xft_new_gpa();
+	a = xft_gpa_allocator(&gpa);
+	s = xft_cstr_to_str(a, "hello");
+	xft_pin_invariant(s.mem != nullptr);
+	xft_pin_invariant(s.size == xft_strlen("hello"));
+	xft_pin_invariant(xft_memcmp(s.mem, "hello", 6) == 0);
+	xft_str_destroy(a, &s);
+	xft_gpa_destroy(&gpa);
+}
+.Ed
+.Sh SEE ALSO
+.Xr xft_alloc 3 ,
+.Xr xft_ctype 3 ,
+.Xr xft_mem 3 ,
+.Xr xft_str 3 ,
+.Xr xft 7
+.Sh CAVEATS
+.Fn xft_strlen
+reads past the terminating NUL, up to the end of the aligned vector that
+contains it.
+These extra bytes never lie in a 4 KiB page that holds no byte of the
+string, so the over-read cannot fault on systems with pages of 4 KiB or
+larger.
+The function is excluded from AddressSanitizer instrumentation for this
+reason.
+.Pp
+An empty
+.Fa cstr
+and an allocation failure produce the same result from
+.Fn xft_cstr_to_str .
+Callers that need to tell them apart must check the length of
+.Fa cstr
+first.

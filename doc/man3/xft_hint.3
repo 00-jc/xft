@@ -1,0 +1,72 @@
+.Dd October 14, 2026
+.Dt XFT_HINT 3
+.Os xft
+.Sh NAME
+.Nm xft_pin_invariant ,
+.Nm xft_pin_invariant_msg ,
+.Nm xft_assume
+.Nd runtime invariants and optimizer hints
+.Sh SYNOPSIS
+.In hint.h
+.Ft void
+.Fn xft_pin_invariant "int res"
+.Ft void
+.Fn xft_pin_invariant_msg "int res" "t_buffer msg"
+.Ft void
+.Fn xft_assume "bool expr"
+.Sh DESCRIPTION
+.Fn xft_pin_invariant
+checks a condition that must hold for the program to continue.
+If
+.Fa res
+is zero the process exits immediately with status 1.
+No message is printed and no signal is raised.
+.Pp
+.Fn xft_pin_invariant_msg
+behaves like
+.Fn xft_pin_invariant ,
+but first writes
+.Fa msg
+to standard error.
+.Fa msg Ns .mem
+must not be
+.Dv nullptr .
+.Pp
+.Fn xft_assume
+tells the compiler that
+.Fa expr
+is true, using
+.Ql __attribute__((assume)) .
+It emits no code and performs no check;
+if
+.Fa expr
+is false at run time the behavior is undefined.
+.Pp
+All three functions are
+.Ql always_inline .
+The failure paths are kept out of line and marked cold, so a passing check
+costs one compare and branch.
+.Sh RETURN VALUES
+These functions return nothing.
+On failure,
+.Fn xft_pin_invariant
+and
+.Fn xft_pin_invariant_msg
+do not return.
+.Sh EXAMPLES
+.Bd -literal -offset indent
+#include <xft.h>
+
+static const t_u8	g_msg[] = "index out of range\en";
+
+void	check(t_size idx, t_size len)
+{
+	xft_pin_invariant_msg(idx < len,
+		(t_buffer){.size = sizeof(g_msg) - 1, .mem = (t_u8 *)g_msg});
+	xft_assume(len % 8 == 0);
+}
+.Ed
+.Sh SEE ALSO
+.Xr xft_io 3 ,
+.Xr xft_rt 3 ,
+.Xr xft 7

@@ -1,0 +1,132 @@
+.Dd October 14, 2026
+.Dt XFT_CTYPE 3
+.Os xft
+.Sh NAME
+.Nm xft_isalpha ,
+.Nm xft_isdigit ,
+.Nm xft_isalnum ,
+.Nm xft_isascii ,
+.Nm xft_isxdigit ,
+.Nm xft_isprint ,
+.Nm xft_isspace
+.Nd ASCII character classification
+.Sh SYNOPSIS
+.In ctype.h
+.Ft int
+.Fn xft_isalpha "int c"
+.Ft int
+.Fn xft_isdigit "int c"
+.Ft int
+.Fn xft_isalnum "int c"
+.Ft int
+.Fn xft_isascii "int c"
+.Ft int
+.Fn xft_isxdigit "int c"
+.Ft int
+.Fn xft_isprint "int c"
+.Ft int
+.Fn xft_isspace "int c"
+.Sh DESCRIPTION
+These functions test whether
+.Fa c
+belongs to a class of ASCII characters.
+They use no locale and no lookup table; each is a short branchless
+arithmetic test.
+Unlike
+.Xr isalpha 3
+and its relatives, any
+.Vt int
+value is a valid argument, including negative values and
+.Dv EOF .
+.Bl -tag -width "xft_isxdigit()"
+.It Fn xft_isalpha
+.Ql A
+to
+.Ql Z
+and
+.Ql a
+to
+.Ql z .
+.It Fn xft_isdigit
+.Ql 0
+to
+.Ql 9 .
+.It Fn xft_isalnum
+.Fn xft_isalpha
+or
+.Fn xft_isdigit .
+.It Fn xft_isascii
+0 to 127.
+.It Fn xft_isxdigit
+.Ql 0
+to
+.Ql 9 ,
+.Ql A
+to
+.Ql F
+and
+.Ql a
+to
+.Ql f .
+.It Fn xft_isprint
+0x20 (space) to 0x7e
+.Pq Ql ~ .
+.It Fn xft_isspace
+space, and
+.Ql \et ,
+.Ql \en ,
+.Ql \ev ,
+.Ql \ef
+and
+.Ql \er
+(0x09 to 0x0d).
+.El
+.Sh RETURN VALUES
+Each function returns 1 if
+.Fa c
+is in its class and 0 otherwise.
+.Sh EXAMPLES
+.Bd -literal -offset indent
+#include <xft.h>
+
+t_size	skip_blanks(const char *s, t_size i)
+{
+	while (xft_isspace((t_u8)s[i]))
+		i++;
+	return (i);
+}
+
+t_result	parse_u64(const char *s, t_u64 *out)
+{
+	t_u64	n;
+	t_size	i;
+
+	i = skip_blanks(s, 0);
+	if (!xft_isdigit((t_u8)s[i]))
+		return (KO);
+	n = 0;
+	while (xft_isdigit((t_u8)s[i]))
+		n = n * 10 + (t_u64)(s[i++] - '0');
+	*out = n;
+	return (OK);
+}
+.Ed
+.Sh SEE ALSO
+.Xr xft_cstr 3 ,
+.Xr xft_fmt 3 ,
+.Xr xft_str 3 ,
+.Xr xft 7
+.Sh CAVEATS
+.Fn xft_isxdigit
+tests the letter ranges on the low 8 bits of
+.Fa c
+only, so values above 255 or below 0 whose low byte is
+.Ql A
+to
+.Ql F
+or
+.Ql a
+to
+.Ql f
+are reported as hexadecimal digits.
+The other functions reject every value outside 0 to 127.

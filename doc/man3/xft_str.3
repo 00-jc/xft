@@ -1,0 +1,200 @@
+.Dd October 14, 2026
+.Dt XFT_STR 3
+.Os xft
+.Sh NAME
+.Nm xft_new_str ,
+.Nm xft_str_destroy ,
+.Nm xft_str_extend ,
+.Nm xft_str_reserve ,
+.Nm xft_str_push_back ,
+.Nm xft_str_remove
+.Nd growable NUL-terminated byte string
+.Sh SYNOPSIS
+.In str.h
+.Ft t_str
+.Fn xft_new_str "t_allocator allocator" "t_size size"
+.Ft void
+.Fn xft_str_destroy "t_allocator allocator" "t_str *str"
+.Ft t_result
+.Fn xft_str_extend "t_allocator allocator" "t_str *restrict str" "const t_u8 *restrict mem" "t_size n"
+.Ft t_result
+.Fn xft_str_reserve "t_allocator allocator" "t_str *restrict str" "t_size n"
+.Ft t_result
+.Fn xft_str_push_back "t_allocator allocator" "t_str *restrict str" "const t_u8 byte"
+.Ft t_result
+.Fn xft_str_remove "t_str *restrict v" "t_size i"
+.Sh DESCRIPTION
+A
+.Vt t_str
+is a heap byte string that keeps a NUL byte after its contents.
+The allocator is not stored; the caller passes the same one to every call
+that may allocate or free.
+.Bd -literal -offset indent
+typedef struct s_str {
+	t_size	size;		/* bytes in use, excluding the NUL */
+	t_size	capacity;	/* bytes allocated, including the NUL */
+	t_u8	*mem;
+} t_str;
+.Ed
+.Pp
+.Fn xft_new_str
+allocates
+.Fa size
++ 1 bytes, stores a NUL at
+.Fa mem Ns [0]
+and returns an empty string.
+.Fa capacity
+is the size of the buffer returned by the allocator, which may exceed the
+request.
+.Pp
+.Fn xft_str_destroy
+frees the buffer, if any, and zeroes
+.Fa *str .
+.Pp
+.Fn xft_str_extend
+appends
+.Fa n
+bytes from
+.Fa mem .
+It copies
+.Fa n
++ 1 bytes, so the byte at
+.Fa mem Ns Bq Fa n
+becomes the new terminator; it must be readable and should be NUL.
+If the result does not fit, it first calls
+.Fn xft_str_reserve
+with
+.Fa n .
+.Pp
+.Fn xft_str_reserve
+asks the allocator to reallocate the buffer to
+.Fa capacity
++
+.Fa n
++ 1 bytes.
+.Fa n
+is added to the current capacity, not to the length, and the reallocation
+is performed even if the space is already available.
+.Pp
+.Fn xft_str_push_back
+appends
+.Fa byte
+and writes a new terminator after it.
+When
+.Fa size
++ 1 reaches
+.Fa capacity ,
+it first calls
+.Fn xft_str_reserve
+with twice the capacity, or 4 if the capacity is zero, which requests
+roughly three times the old capacity.
+.Pp
+.Fn xft_str_remove
+deletes the byte at index
+.Fa i
+and shifts the rest of the string, terminator included, down by one.
+It never reallocates.
+.Pp
+No function shrinks the buffer.
+Any call that may grow it can move
+.Fa mem ,
+invalidating pointers into the string.
+.Sh RETURN VALUES
+.Fn xft_new_str
+returns the new string.
+If
+.Fa size
+is zero or the allocation fails it returns a zeroed
+.Vt t_str
+whose
+.Fa mem
+is
+.Dv nullptr .
+.Pp
+.Fn xft_str_extend ,
+.Fn xft_str_reserve
+and
+.Fn xft_str_push_back
+return
+.Dv OK
+on success and
+.Dv KO
+if the allocator could not grow the buffer, in which case the string is
+unchanged.
+.Pp
+.Fn xft_str_remove
+returns
+.Dv KO
+if
+.Fa v Ns ->mem
+is
+.Dv nullptr
+or
+.Fa i
+is not less than
+.Fa size ,
+and
+.Dv OK
+otherwise.
+.Sh NOTES
+Allocations and reallocations pass the next power of two of the requested
+byte size as the allocator's alignment argument.
+.Pp
+.Xr xft_cstr 3
+provides
+.Fn xft_cstr_to_str ,
+which builds a
+.Vt t_str
+from a C string.
+.Sh EXAMPLES
+.Bd -literal -offset indent
+#include <xft.h>
+
+t_result	demo(t_allocator a)
+{
+	t_str	s;
+
+	s = xft_new_str(a, 1);
+	if (s.mem == nullptr)
+		return (KO);
+	if (!xft_str_extend(a, &s, (const t_u8 *)"abc", 3)
+		|| !xft_str_push_back(a, &s, 'd'))
+		return (xft_str_destroy(a, &s), KO);
+	xft_pin_invariant(xft_str_remove(&s, 1));
+	/* s.mem is "acd", s.size is 3 */
+	xft_pin_invariant(!xft_str_remove(&s, 5));
+	xft_str_destroy(a, &s);
+	return (OK);
+}
+.Ed
+.Sh SEE ALSO
+.Xr xft_alloc 3 ,
+.Xr xft_cstr 3 ,
+.Xr xft_mem 3 ,
+.Xr xft_vec 3 ,
+.Xr xft 7
+.Sh CAVEATS
+.Fn xft_str_extend ,
+.Fn xft_str_reserve
+and
+.Fn xft_str_push_back
+treat a
+.Dv nullptr
+.Fa mem
+as unreachable, so they must not be called on a string whose creation
+failed.
+.Fn xft_str_destroy ,
+.Fn xft_str_reserve
+and
+.Fn xft_str_push_back
+likewise treat a
+.Dv nullptr
+.Fa allocator Ns .allocator
+as unreachable.
+.Pp
+.Fn xft_str_extend
+reads one byte past
+.Fa n ;
+appending from a buffer that is not NUL-terminated at
+.Fa mem Ns Bq Fa n
+leaves the string unterminated.

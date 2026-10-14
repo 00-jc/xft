@@ -1,0 +1,217 @@
+.Dd October 14, 2026
+.Dt XFT_INDEXMAP 3
+.Os xft
+.Sh NAME
+.Nm xft_new_indexmap ,
+.Nm xft_new_indexmap_with ,
+.Nm xft_indexmap_insert ,
+.Nm xft_indexmap_lookup ,
+.Nm xft_indexmap_delete ,
+.Nm xft_indexmap_clear ,
+.Nm xft_indexmap_destroy
+.Nd open addressing hash map from byte keys to indices
+.Sh SYNOPSIS
+.In indexmap.h
+.Fd #define INDEXMAP_INITIAL_SIZE 512
+.Fd #define INDEXMAP_NPOS __SIZE_MAX__
+.Ft t_indexmap
+.Fn xft_new_indexmap "t_allocator allocator"
+.Ft t_indexmap
+.Fn xft_new_indexmap_with "t_allocator allocator" "t_size capacity"
+.Ft t_result
+.Fn xft_indexmap_insert "t_allocator allocator" "t_indexmap *restrict map" "t_buffer key" "t_size value"
+.Ft t_size
+.Fn xft_indexmap_lookup "const t_indexmap *restrict map" "t_buffer key"
+.Ft t_size
+.Fn xft_indexmap_delete "t_indexmap *restrict map" "t_buffer key"
+.Ft void
+.Fn xft_indexmap_clear "t_indexmap *restrict map"
+.Ft void
+.Fn xft_indexmap_destroy "t_allocator allocator" "t_indexmap *restrict map"
+.Sh DESCRIPTION
+A
+.Vt t_indexmap
+is the same SwissTable style hash map as
+.Xr xft_swissmap 3 ,
+but its values are
+.Vt t_size
+integers stored inline, typically indices into a separate array, instead of
+pointers.
+It does not preserve insertion order and has no iteration interface.
+.Bd -literal -offset indent
+typedef struct s_indexmap {
+	t_soa	soa;
+	t_size	count;		/* live entries */
+	t_size	tombstones;	/* deleted slots not yet reclaimed */
+} t_indexmap;
+.Ed
+.Pp
+Slots are kept in a
+.Vt t_soa
+with three columns: a one byte control array, the keys and the values.
+Slots are grouped by the width of the host's preferred SIMD vector, 64, 32,
+16 or 8 bytes depending on the ISA the library was built for, and each probe
+compares a whole group of control bytes at once.
+.Pp
+Keys are hashed with
+.Fn xft_xxh3_64bits
+using seed 0.
+The hash modulo the number of groups picks the first group, and its top
+7 bits are stored in the control byte.
+Probing is linear, one group at a time, and a lookup stops at the first
+group that contains an empty slot.
+Two keys are equal when they have the same size and the same bytes.
+.Pp
+The map stores the key
+.Vt t_buffer
+as given.
+It does not copy or free the key bytes; they must stay valid and unchanged
+while the entry is in the map.
+.Pp
+.Fn xft_new_indexmap_with
+creates an empty map with
+.Fa capacity
+slots.
+.Fa capacity
+must be a nonzero multiple of the group width.
+.Fn xft_new_indexmap
+is
+.Fn xft_new_indexmap_with
+with
+.Dv INDEXMAP_INITIAL_SIZE .
+.Pp
+.Fn xft_indexmap_insert
+maps
+.Fa key
+to
+.Fa value .
+If the key is already present, both its stored key buffer and its value are
+replaced and
+.Fa count
+is unchanged.
+Otherwise the entry goes in the first empty or deleted slot along the probe
+sequence.
+.Pp
+Before probing, if live entries plus tombstones reach 85% of the capacity,
+the map is rebuilt into a new allocation.
+The new capacity is double the old one when live entries are at least
+42.5% of the capacity; otherwise it is the same, and the rebuild only
+discards tombstones.
+The old storage is then freed.
+.Pp
+.Fn xft_indexmap_lookup
+returns the value stored for
+.Fa key .
+.Pp
+.Fn xft_indexmap_delete
+removes
+.Fa key
+if present and returns the value it had.
+If the slot's group still contains an empty slot the slot is marked empty;
+otherwise it becomes a tombstone, counted in
+.Fa tombstones ,
+which a later insert may reuse.
+.Pp
+.Fn xft_indexmap_clear
+marks every slot empty and resets
+.Fa count
+and
+.Fa tombstones ,
+keeping the allocation.
+It does nothing on a map with no storage.
+.Pp
+.Fn xft_indexmap_destroy
+frees the storage and zeroes
+.Fa *map .
+.Sh RETURN VALUES
+.Fn xft_new_indexmap
+and
+.Fn xft_new_indexmap_with
+return the new map.
+If
+.Fa capacity
+is zero or not a multiple of the group width, or the allocation fails, they
+return a zeroed map whose
+.Fa soa Ns .ptr
+is
+.Dv nullptr .
+.Pp
+.Fn xft_indexmap_insert
+returns
+.Dv OK
+on success and
+.Dv KO
+if a required rebuild could not allocate, in which case the map is
+unchanged.
+.Pp
+.Fn xft_indexmap_lookup
+returns the stored value, and
+.Fn xft_indexmap_delete
+returns the removed value.
+Both return
+.Dv INDEXMAP_NPOS
+if
+.Fa key
+is not present.
+.Sh NOTES
+.Dv INDEXMAP_INITIAL_SIZE
+is guarded by
+.Ic #ifndef ,
+but
+.Fn xft_new_indexmap
+is compiled into the library, so overriding it only takes effect when the
+library itself is built with the new value.
+.Pp
+A rebuild may be triggered by an insert that only overwrites an existing
+key.
+.Sh EXAMPLES
+.Bd -literal -offset indent
+#include <xft.h>
+
+t_result	demo(t_allocator a)
+{
+	t_indexmap	m;
+
+	m = xft_new_indexmap(a);
+	if (m.soa.ptr == nullptr)
+		return (KO);
+	if (!xft_indexmap_insert(a, &m, xft_fatptr((t_u8 *)"del", 3), 10)
+		|| !xft_indexmap_insert(a, &m, xft_fatptr((t_u8 *)"keep", 4), 11))
+		return (xft_indexmap_destroy(a, &m), KO);
+	xft_pin_invariant(xft_indexmap_delete(&m,
+			xft_fatptr((t_u8 *)"del", 3)) == 10);
+	xft_pin_invariant(xft_indexmap_lookup(&m,
+			xft_fatptr((t_u8 *)"del", 3)) == INDEXMAP_NPOS);
+	xft_pin_invariant(xft_indexmap_lookup(&m,
+			xft_fatptr((t_u8 *)"keep", 4)) == 11);
+	xft_pin_invariant(m.count == 1);
+	xft_indexmap_destroy(a, &m);
+	return (OK);
+}
+.Ed
+.Sh SEE ALSO
+.Xr xft_alloc 3 ,
+.Xr xft_hash 3 ,
+.Xr xft_soa 3 ,
+.Xr xft_swissmap 3 ,
+.Xr xft_vec 3 ,
+.Xr xft 7
+.Sh CAVEATS
+A stored value equal to
+.Dv INDEXMAP_NPOS
+cannot be told apart from a missing key.
+.Pp
+.Fn xft_indexmap_lookup
+and
+.Fn xft_indexmap_delete
+divide by the number of groups, so calling them on a map whose creation
+failed is undefined behavior.
+.Fn xft_indexmap_insert
+on such a map returns
+.Dv KO .
+.Pp
+.Fn xft_indexmap_destroy
+treats a
+.Dv nullptr
+.Fa allocator Ns .allocator
+as unreachable.

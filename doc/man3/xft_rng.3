@@ -1,0 +1,125 @@
+.Dd October 14, 2026
+.Dt XFT_RNG 3
+.Os xft
+.Sh NAME
+.Nm xft_xoshiro_init ,
+.Nm xft_xoshiro256ss
+.Nd xoshiro256** pseudo-random number generator
+.Sh SYNOPSIS
+.In rng.h
+.Ft void
+.Fn xft_xoshiro_init "t_xoshiro xoshiro"
+.Ft t_u64a
+.Fn xft_xoshiro256ss "t_xoshiro xoshiro"
+.Sh DESCRIPTION
+.In rng.h
+provides a 256-bit state pseudorandom generator.
+It does not depend on a global seed and has no locking; a
+.Vt t_xoshiro
+value is a plain four-word array the caller owns.
+.Bd -literal -offset indent
+typedef t_u64a t_xoshiro[4];
+.Ed
+.Pp
+.Fn xft_xoshiro_init
+seeds the four words of
+.Fa xoshiro .
+It mixes a private static counter, the address of
+.Fa xoshiro ,
+and the current monotonic time from
+.Xr xft_timing 3
+into a starting value, then runs that value through four invocations of the
+SplitMix64 finalizer.
+Each resulting word is OR-ed with a small odd constant
+.Po
+1, 2, 4, 8
+.Pc
+so that the four lanes start out distinct and none of them is zero.
+.Pp
+.Fn xft_xoshiro256ss
+advances the state and returns 64 bits.
+The generator is the standard xoshiro256** except for the multiplier used
+in the output function; see
+.Sx CAVEATS .
+.Bd -literal -offset indent
+t3  = s[1] + (s[1] << 1);       /* 3 * s[1] */
+res = rotl64(t3, 7);
+res = res + (res << 3);         /* 9 * rotl64(t3, 7) */
+t   = s[1] << 17;
+s[2] ^= s[0];
+s[3] ^= s[1];
+s[1] ^= s[2];
+s[0] ^= s[3];
+s[2] ^= t;
+s[3]  = rotl64(s[3], 45);
+return (res);
+.Ed
+.Pp
+The state update is performed after the output value is computed, so the
+first call after
+.Fn xft_xoshiro_init
+uses the seeded state directly.
+.Pp
+Neither function allocates.
+.Fn xft_xoshiro256ss
+mutates
+.Fa xoshiro
+in place; the caller is responsible for keeping each generator's state on a
+single thread.
+.Sh RETURN VALUES
+.Fn xft_xoshiro256ss
+returns 64 pseudo-random bits.
+.Fn xft_xoshiro_init
+returns nothing.
+.Sh EXAMPLES
+.Bd -literal -offset indent
+#include <xft.h>
+
+t_u64	roll_die(t_xoshiro state)
+{
+	return (xft_xoshiro256ss(state) % 6 + 1);
+}
+
+t_u64	random_u64(void)
+{
+	static t_xoshiro	state;
+	static bool			seeded = false;
+
+	if (!seeded)
+	{
+		xft_xoshiro_init(state);
+		seeded = true;
+	}
+	return (xft_xoshiro256ss(state));
+}
+.Ed
+.Sh SEE ALSO
+.Xr xft_fuzzer 3 ,
+.Xr xft_hash 3 ,
+.Xr xft_timing 3 ,
+.Xr xft 7
+.Sh CAVEATS
+The state transition deviates from the published xoshiro256** algorithm in
+the output function: the reference implementation rotates
+.Ql s[1] * 5 ,
+while this library rotates
+.Ql s[1] * 3 .
+A given state therefore does not produce the same sequence as a reference
+implementation seeded identically.
+.Pp
+The output of
+.Fn xft_xoshiro256ss
+is not cryptographically secure.
+It is suitable for simulation, hashing seeds and fuzz input, not for keys
+or nonces.
+.Pp
+.Fn xft_xoshiro_init
+is not thread safe because of the static counter it updates.
+Calling it from two threads concurrently can produce two generators with
+the same initial state.
+.Pp
+.Fn xft_xoshiro_init
+calls
+.Fn xft_get_nanos ,
+which on x86_64 lazily calibrates the cycle counter.
+The first call is significantly slower than the rest.

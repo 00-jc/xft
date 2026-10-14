@@ -1,0 +1,145 @@
+.Dd October 14, 2026
+.Dt XFT_SIGNALS 3
+.Os xft
+.Sh NAME
+.Nm xft_sigfillset
+.Nd signal set helpers and signal number constants
+.Sh SYNOPSIS
+.In signals.h
+.Ft t_sigset
+.Fn xft_sigfillset void
+.Sh DESCRIPTION
+.In signals.h
+provides an opaque signal set type and a single helper that fills it.
+The signal numbers, the operation constants for
+.Xr xft_sigprocmask 3 ,
+and the size of the set all come from this header.
+.Ss Types and constants
+The set type is defined in
+.In types/signal_types.h .
+In a freestanding build on x86_64 or aarch64 it is an 8-byte aligned 64-bit
+word, and
+.Dv XFT_SIGSET_SIZE
+is 8.
+Otherwise
+.Vt t_sigset
+is
+.Vt sigset_t
+from the platform's
+.In signal.h .
+.Bd -literal -offset indent
+#define XFT_SIGSET_SIZE 8
+
+/* freestanding x86_64 / aarch64 */
+typedef t_u64a t_sigset;
+
+/* libc, or any other architecture */
+# include <signal.h>
+typedef sigset_t t_sigset;
+.Ed
+.Pp
+The operation flags passed to
+.Xr xft_sigprocmask 3
+are
+.Bd -literal -offset indent
+#define XFT_BLOCK    0
+#define XFT_UNBLOCK  1
+#define XFT_SETMASK  2
+.Ed
+.Pp
+On a freestanding build the signal numbers are defined by the header
+itself, using the Linux values:
+.Dv XFT_SIGHUP ,
+.Dv XFT_SIGINT ,
+.Dv XFT_SIGQUIT ,
+.Dv XFT_SIGILL ,
+.Dv XFT_SIGTRAP ,
+.Dv XFT_SIGABRT ,
+.Dv XFT_SIGBUS ,
+.Dv XFT_SIGFPE ,
+.Dv XFT_SIGKILL ,
+.Dv XFT_SIGUSR1 ,
+.Dv XFT_SIGSEGV ,
+.Dv XFT_SIGUSR2 ,
+.Dv XFT_SIGPIPE ,
+.Dv XFT_SIGALRM ,
+.Dv XFT_SIGTERM ,
+.Dv XFT_SIGSTKFLT ,
+.Dv XFT_SIGCHLD ,
+.Dv XFT_SIGCONT ,
+.Dv XFT_SIGSTOP ,
+.Dv XFT_SIGTSTP ,
+.Dv XFT_SIGTTIN ,
+.Dv XFT_SIGTTOU ,
+.Dv XFT_SIGURG ,
+.Dv XFT_SIGXCPU ,
+.Dv XFT_SIGXFSZ ,
+.Dv XFT_SIGVTALRM ,
+.Dv XFT_SIGPROF ,
+.Dv XFT_SIGWINCH ,
+.Dv XFT_SIGIO ,
+.Dv XFT_SIGPWR
+and
+.Dv XFT_SIGSYS .
+On a hosted build they are aliases for the platform's own
+.Dv SIG*
+constants; the library still exposes the
+.Ql XFT_
+names so callers do not have to include
+.In signal.h
+themselves.
+.Ss Filling a set
+.Fn xft_sigfillset
+returns a set with every bit set, i.e.
+.Ql sizeof(t_sigset)
+bytes of
+.Ql 0xff .
+It is
+.Ql const
+and does not touch any global state.
+.Sh RETURN VALUES
+.Fn xft_sigfillset
+returns the filled set.
+.Sh EXAMPLES
+Block every signal, then restore the previous mask.
+.Bd -literal -offset indent
+#include <xft.h>
+
+void	block_everything(void)
+{
+	t_sigset	all;
+	t_sigset	old;
+
+	all = xft_sigfillset();
+	xft_sigprocmask(XFT_SETMASK, &all, &old);
+	/* ... */
+	xft_sigprocmask(XFT_SETMASK, &old, nullptr);
+}
+.Ed
+.Sh SEE ALSO
+.Xr xft_rt 3 ,
+.Xr xft_syscalls 3 ,
+.Xr xft 7
+.Sh CAVEATS
+The
+.Vt t_sigset
+type differs between builds.
+On a freestanding x86_64 or aarch64 build it is exactly 8 bytes; the libc
+.Vt sigset_t
+on Linux is 128 bytes.
+Code that assumes one or the other will not link, or will silently truncate
+the mask, when the build flavor changes.
+.Pp
+Only the signal numbers listed above are defined by the header.
+Any other signal, real-time signal, or the platform's
+.Dv SIGRTMIN
+through
+.Dv SIGRTMAX
+range, must be named numerically.
+.Pp
+.Fn xft_sigfillset
+sets every bit, including bits that do not correspond to any signal the
+kernel can deliver.
+Passing the result to
+.Xr xft_sigprocmask 3
+is valid, but the kernel will ignore the reserved bits.

@@ -1,0 +1,424 @@
+.Dd October 14, 2026
+.Dt XFT_MEM 3
+.Os xft
+.Sh NAME
+.Nm xft_memcpy ,
+.Nm xft_memmove ,
+.Nm xft_memset ,
+.Nm xft_bzero ,
+.Nm xft_memchr ,
+.Nm xft_memcmp ,
+.Nm xft_memtake ,
+.Nm xft_membroadcast ,
+.Nm xft_prefetch0 ,
+.Nm xft_prefetch1 ,
+.Nm xft_prefetch2 ,
+.Nm xft_prefetchnta ,
+.Nm xft_overlap ,
+.Nm xft_fatptr ,
+.Nm xft_align_fwd ,
+.Nm xft_align_bkw ,
+.Nm xft_stfence ,
+.Nm xft_ldfence
+.Nd raw memory operations
+.Sh SYNOPSIS
+.In mem.h
+.Fd #define LONES_64 0x0101010101010101ULL
+.Fd #define HIGHS_64 0x8080808080808080ULL
+.Fd #define XFT_PAGE_ALIGN 0x1000ULL
+.Ft void *
+.Fn xft_memcpy "t_any restrict dest" "t_cany restrict src" "t_size n"
+.Ft void
+.Fn xft_memmove "t_any dest" "t_cany src" "t_size n"
+.Ft void *
+.Fn xft_memset "t_any restrict s" "const t_i32 c" "t_size n"
+.Ft void
+.Fn xft_bzero "t_any restrict ptr" "t_size n"
+.Ft t_any
+.Fn xft_memchr "t_cany restrict ptr" "int c" "t_size n"
+.Ft t_ssize
+.Fn xft_memcmp "t_cany restrict dest" "t_cany restrict src" "t_size n"
+.Ft void
+.Fn xft_memtake "t_any restrict dest" "t_any restrict src" "t_size n"
+.Ft void
+.Fn xft_membroadcast "t_any dst" "t_any src" "t_size chunks" "t_size n"
+.Ft void
+.Fn xft_prefetch0 "t_cany restrict ptr" "t_size size"
+.Ft void
+.Fn xft_prefetch1 "t_cany restrict ptr" "t_size size"
+.Ft void
+.Fn xft_prefetch2 "t_cany restrict ptr" "t_size size"
+.Ft void
+.Fn xft_prefetchnta "t_cany restrict ptr" "t_size size"
+.Ft t_any
+.Fn xft_overlap "t_cany restrict ptr" "t_size chunk_size" "t_size rem_size"
+.Ft t_buffer
+.Fn xft_fatptr "t_blk8r mem" "t_size size"
+.Ft t_any
+.Fn xft_align_fwd "t_any ptr" "const t_size align"
+.Ft t_any
+.Fn xft_align_bkw "t_any ptr" "const t_size align"
+.Ft void
+.Fn xft_stfence void
+.Ft void
+.Fn xft_ldfence void
+.Sh DESCRIPTION
+.Fn xft_memcpy
+copies
+.Fa n
+bytes from
+.Fa src
+to
+.Fa dest .
+The regions must not overlap, except that
+.Fa dest
+equal to
+.Fa src
+is accepted and does nothing.
+No alignment is required.
+.Pp
+.Fn xft_memmove
+copies
+.Fa n
+bytes from
+.Fa src
+to
+.Fa dest
+like
+.Fn xft_memcpy ,
+but the regions may overlap; see
+.Sx CAVEATS
+for a limitation.
+Unlike
+.Xr memmove 3
+it returns nothing.
+.Pp
+.Fn xft_memset
+fills
+.Fa n
+bytes at
+.Fa s
+with
+.Fa c
+converted to
+.Vt t_u8 .
+.Fn xft_bzero
+is
+.Fn xft_memset
+with a fill byte of zero.
+.Pp
+.Fn xft_memchr
+returns a pointer to the first byte equal to
+.Fa c ,
+converted to
+.Vt t_u8 ,
+among the first
+.Fa n
+bytes of
+.Fa ptr .
+.Pp
+.Fn xft_memcmp
+compares the first
+.Fa n
+bytes of
+.Fa dest
+and
+.Fa src
+as unsigned bytes.
+.Pp
+.Fn xft_memtake
+moves
+.Fa n
+bytes from
+.Fa src
+to
+.Fa dest
+with
+.Fn xft_memmove ,
+then zeroes the
+.Fa n
+bytes at
+.Fa src .
+The regions must not overlap.
+It does nothing if
+.Fa n
+is zero.
+.Pp
+.Fn xft_membroadcast
+writes
+.Fa n
+consecutive copies of the
+.Fa chunks Ns -byte
+block at
+.Fa src
+to
+.Fa dst ,
+for a total of
+.Fa chunks
+\(mu
+.Fa n
+bytes.
+Despite its name,
+.Fa chunks
+is the size of one block in bytes, not a count.
+Each copy is done with
+.Fn xft_memcpy ,
+so
+.Fa src
+must not overlap the destination.
+It does nothing if either size is zero.
+.Pp
+.Fn xft_prefetch0 ,
+.Fn xft_prefetch1 ,
+.Fn xft_prefetch2
+and
+.Fn xft_prefetchnta
+issue
+.Ql prefetcht0 ,
+.Ql prefetcht1 ,
+.Ql prefetcht2
+and
+.Ql prefetchnta
+respectively for the cache line holding
+.Fa ptr
++
+.Fa size .
+.Fa size
+is a byte offset from
+.Fa ptr ,
+not a length; a single line is prefetched.
+Prefetch instructions do not fault.
+On targets other than x86_64 these functions do nothing.
+.Pp
+.Fn xft_overlap
+returns
+.Fa ptr
++
+.Fa rem_size
+\-
+.Fa chunk_size ,
+the start of the last
+.Fa chunk_size Ns -byte
+window of a
+.Fa rem_size Ns -byte
+region.
+It is the building block of the overlapping-tail technique used by the copy
+routines: a region of any length between
+.Fa chunk_size
+and twice
+.Fa chunk_size
+is covered by one access at
+.Fa ptr
+and one at the returned address.
+.Fa rem_size
+must be at least
+.Fa chunk_size .
+.Pp
+.Fn xft_fatptr
+returns a
+.Vt t_buffer
+with
+.Fa .mem
+set to
+.Fa mem
+and
+.Fa .size
+set to
+.Fa size .
+The const qualifier of
+.Fa mem
+is dropped.
+Nothing is allocated or copied.
+.Pp
+.Fn xft_align_fwd
+rounds
+.Fa ptr
+up to the next multiple of
+.Fa align ;
+.Fn xft_align_bkw
+rounds it down.
+A pointer that is already aligned is returned unchanged.
+.Fa align
+must be a non-zero power of two.
+.Pp
+.Fn xft_stfence
+and
+.Fn xft_ldfence
+emit
+.Ql sfence
+and
+.Ql lfence
+on x86_64, with a compiler memory barrier.
+On other targets both emit a sequentially consistent thread fence.
+.Fn xft_stfence
+is needed after non-temporal stores before other threads may observe them;
+the streaming paths of
+.Fn xft_memcpy
+and
+.Fn xft_memset
+already issue it.
+.Pp
+.Dv LONES_64
+and
+.Dv HIGHS_64
+hold 0x01 and 0x80 in every byte lane, for the SWAR test
+.Ql (x - LONES_64) & ~x & HIGHS_64 ,
+which is non-zero when a 64-bit word contains a zero byte.
+.Dv XFT_PAGE_ALIGN
+is 0x1000 unless defined before
+.In mem.h
+is included.
+The library does not reference it.
+.Ss Dispatch
+The backend is chosen at compile time from the target ISA; there is no
+run-time CPU detection.
+.Fn xft_memcpy ,
+.Fn xft_memmove
+and
+.Fn xft_memset
+select a path by size:
+.Bl -tag -width "n >= XFT_LLC_SIZE"
+.It n < 8
+byte accesses at clamped indices, with no branch on
+.Fa n .
+.It 8 \(<= n < 128
+two overlapping accesses of 8, 16, 32 or 64 bytes, one at the start and one
+ending at the last byte.
+For copies, both loads complete before either store.
+.It n \(>= 128
+one unaligned 64-byte access at the start, then 64-byte aligned stores to the
+destination, 256 bytes per iteration, then an overlapping tail.
+.Fn xft_memmove
+runs this loop from the end of the destination toward the start.
+.It n \(>= XFT_LLC_SIZE
+.Fn xft_memcpy
+and
+.Fn xft_memset
+only: non-temporal stores, 512 bytes per iteration, followed by
+.Fn xft_stfence .
+Non-temporal stores are used on x86_64 with AVX2 or AVX-512; elsewhere this
+path uses ordinary aligned stores.
+.Dv XFT_LLC_SIZE
+is 16 MiB unless defined when the library is built.
+.El
+.Pp
+.Fn xft_memchr
+and
+.Fn xft_memcmp
+work in native vectors of 64, 32, 16 or 8 bytes, for AVX-512 (BW, VL and
+VBMI2), AVX2, SSE2 or NEON, and no SIMD respectively.
+Buffers of at least one vector are processed with unaligned full-vector
+loads and an overlapping tail, and never read outside the
+.Fa n
+bytes.
+Shorter buffers use a masked load; see
+.Sx CAVEATS .
+.Pp
+In freestanding builds,
+.Fn xft_memcpy
+and
+.Fn xft_memset
+are also exported as weak
+.Fn memcpy
+and
+.Fn memset
+symbols, so compiler-generated calls resolve to them.
+There is no
+.Fn memmove
+alias.
+.Sh RETURN VALUES
+.Fn xft_memcpy
+returns
+.Fa dest .
+.Fn xft_memset
+returns
+.Fa s .
+.Pp
+.Fn xft_memchr
+returns a pointer to the matching byte, or
+.Dv nullptr
+if there is none or
+.Fa n
+is zero.
+.Pp
+.Fn xft_memcmp
+returns zero if the regions are equal or
+.Fa n
+is zero.
+Otherwise it returns the difference of the first pair of differing bytes,
+taken as unsigned values, so the result lies in [\-255, 255].
+.Pp
+.Fn xft_overlap ,
+.Fn xft_align_fwd
+and
+.Fn xft_align_bkw
+return the computed address.
+.Fn xft_fatptr
+returns the buffer.
+The remaining functions return nothing.
+.Sh EXAMPLES
+.Bd -literal -offset indent
+#include <xft.h>
+
+/* buf has room for len + 1 bytes */
+void	insert_after_colon(t_u8 *buf, t_size len, t_u8 b)
+{
+	t_u8	*p;
+	t_size	at;
+
+	p = xft_memchr(buf, ':', len);
+	if (p == nullptr)
+		return ;
+	at = (t_size)(p - buf) + 1;
+	xft_memmove(buf + at + 1, buf + at, len - at);
+	buf[at] = b;
+}
+
+t_buffer	aligned_window(t_u8 *base, t_size size)
+{
+	t_u8	*start;
+
+	start = xft_align_fwd(base, 64);
+	xft_bzero(start, size - (t_size)(start - base));
+	return (xft_fatptr(start, size - (t_size)(start - base)));
+}
+.Ed
+.Sh SEE ALSO
+.Xr xft_alloc 3 ,
+.Xr xft_atomics 3 ,
+.Xr xft_bmi 3 ,
+.Xr xft_cstr 3 ,
+.Xr xft 7
+.Sh CAVEATS
+For
+.Fa n
+of 128 or more,
+.Fn xft_memmove
+always copies from high to low addresses, keeping only the first and last 64
+bytes in registers.
+When
+.Fa dest
+is below
+.Fa src
+and the regions overlap, bytes of
+.Fa src
+can be overwritten before they are read, and the result is wrong.
+Sizes below 128 are safe in either direction.
+.Pp
+On AVX2, SSE2 and NEON,
+.Fn xft_memchr
+and
+.Fn xft_memcmp
+with
+.Fa n
+below the vector size load a full vector from
+.Fa ptr
+and discard the bytes past
+.Fa n .
+They may therefore read past the end of the buffer, but never into another
+4 KiB page: when the vector would cross a page boundary, aligned loads that
+stay in the pages holding the requested bytes are used instead.
+The masked load is not instrumented by AddressSanitizer.
+With AVX-512 a hardware masked load is used and nothing past
+.Fa n
+is read.

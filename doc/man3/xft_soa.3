@@ -1,0 +1,272 @@
+.Dd October 14, 2026
+.Dt XFT_SOA 3
+.Os xft
+.Sh NAME
+.Nm xft_new_soa ,
+.Nm xft_soa_reserve ,
+.Nm xft_soa_append_from_struct ,
+.Nm xft_soa_append_from_struct_unchecked ,
+.Nm xft_soa_fields ,
+.Nm xft_destroy_soa
+.Nd structure of arrays container
+.Sh SYNOPSIS
+.In soa.h
+.Ft t_soa
+.Fn xft_new_soa "t_allocator allocator" "t_size initial_element_capacity" "const t_soa_context *restrict ctx"
+.Ft t_result
+.Fn xft_soa_reserve "t_allocator allocator" "t_soa *restrict soa" "const t_soa_context *restrict ctx" "t_size elements_to_reserve"
+.Ft t_result
+.Fn xft_soa_append_from_struct "t_allocator allocator" "t_soa *restrict soa" "t_any restrict _struct" "const t_soa_context *restrict ctx"
+.Ft void
+.Fn xft_soa_append_from_struct_unchecked "t_soa *restrict soa" "t_any restrict _struct" "const t_soa_context *restrict ctx"
+.Ft t_any
+.Fn xft_soa_fields "const t_soa *restrict soa" "const t_soa_context *restrict ctx" "t_size field_idx"
+.Ft void
+.Fn xft_destroy_soa "t_allocator allocator" "t_soa *soa"
+.Sh DESCRIPTION
+A
+.Vt t_soa
+stores a sequence of records as one dense array per field, all inside a
+single allocation.
+The record layout is described by a
+.Vt t_soa_context
+that the caller builds and passes to every call; the container does not
+keep a reference to it.
+.Bd -literal -offset indent
+typedef struct s_soa_field_meta {
+	t_u32a	size;
+	t_u32a	offset_from_struct_base;
+	t_u32a	size_of_prev_fields;
+} t_soa_field_meta;
+
+typedef struct s_soa_context {
+	t_size			total_struct_size;
+	t_size			max_alignment;
+	t_size			fields_count;
+	t_soa_field_meta	entries[];
+} t_soa_context;
+
+typedef struct s_soa {
+	t_any restrict	ptr;
+	t_size		occupied_elements;
+	t_size		capacity_elements;
+	t_size		allocator_bytes_given;
+} t_soa;
+.Ed
+.Pp
+Each entry of the context describes one column:
+.Fa size
+is the size of the field,
+.Fa offset_from_struct_base
+is its offset in the source structure, and
+.Fa size_of_prev_fields
+is the sum of the sizes of the entries before it.
+.Fa total_struct_size
+is the sum of all field sizes, without padding.
+.Fa max_alignment
+must be a nonzero power of two and is used as the allocation alignment.
+Nothing checks that the entries are consistent with each other.
+.Pp
+Column
+.Ar k
+starts at
+.Fa ptr
++
+.Fa capacity_elements
+\(mu
+.Fa entries Ns [ Ns Ar k Ns ].size_of_prev_fields .
+.Fa capacity_elements
+is always a multiple of
+.Fa max_alignment ,
+so every column starts on a
+.Fa max_alignment
+boundary.
+.Pp
+.Fn xft_new_soa
+rounds
+.Fa initial_element_capacity
+up to a multiple of
+.Fa ctx Ns ->max_alignment
+and allocates that many records.
+.Pp
+.Fn xft_soa_reserve
+ensures there is room for
+.Fa elements_to_reserve
+more records.
+If there already is, it does nothing.
+Otherwise the new capacity is the larger of twice the current capacity and
+the occupied count plus
+.Fa elements_to_reserve ,
+rounded up to a multiple of
+.Fa max_alignment .
+The buffer is reallocated and each column is moved to its new offset,
+last column first, so existing records are preserved.
+.Pp
+.Fn xft_soa_append_from_struct
+reserves room for one record and then calls
+.Fn xft_soa_append_from_struct_unchecked .
+.Pp
+.Fn xft_soa_append_from_struct_unchecked
+copies each field described by
+.Fa ctx
+from the structure at
+.Fa _struct
+into the end of its column and increments
+.Fa occupied_elements .
+It assumes there is free capacity.
+.Pp
+.Fn xft_soa_fields
+returns a pointer to the first element of column
+.Fa field_idx .
+The column holds
+.Fa occupied_elements
+valid entries.
+.Pp
+.Fn xft_destroy_soa
+frees the buffer, if any, and zeroes
+.Fa *soa .
+.Pp
+Reallocation by
+.Fn xft_soa_reserve
+or
+.Fn xft_soa_append_from_struct
+moves every column, even when the allocator resizes in place, so all
+pointers returned by
+.Fn xft_soa_fields
+must be fetched again afterwards.
+.Sh RETURN VALUES
+.Fn xft_new_soa
+returns the new container.
+If
+.Fa initial_element_capacity ,
+.Fa total_struct_size
+or
+.Fa max_alignment
+is zero,
+.Fa max_alignment
+is not a power of two, or the allocation fails, it returns a zeroed
+.Vt t_soa
+whose
+.Fa ptr
+is
+.Dv nullptr .
+.Pp
+.Fn xft_soa_reserve
+and
+.Fn xft_soa_append_from_struct
+return
+.Dv OK
+on success and
+.Dv KO
+if reallocation fails, in which case the container is unchanged.
+.Pp
+.Fn xft_soa_fields
+never returns
+.Dv nullptr
+for a valid container.
+.Sh EXAMPLES
+Build a context for a five field record, fill a container and update two
+columns in place, as in
+.Pa examples/soa/soa_example.c :
+.Bd -literal -offset indent
+#include <xft.h>
+
+typedef struct s_particle {
+	t_u64a	id;
+	t_i32a	x;
+	t_i32a	y;
+	t_i32a	vx;
+	t_i32a	vy;
+} t_particle;
+
+#define FIELDS 5
+
+static t_buffer	particle_ctx_new(t_allocator a)
+{
+	static const t_u32	sizes[FIELDS] = {8, 4, 4, 4, 4};
+	static const t_u32	offs[FIELDS] = {
+		__builtin_offsetof(t_particle, id),
+		__builtin_offsetof(t_particle, x),
+		__builtin_offsetof(t_particle, y),
+		__builtin_offsetof(t_particle, vx),
+		__builtin_offsetof(t_particle, vy)};
+	t_buffer		buf;
+	t_soa_context	*ctx;
+	t_size			i;
+
+	buf = a.vtable.allocate(a.allocator, sizeof(t_soa_context)
+			+ FIELDS * sizeof(t_soa_field_meta),
+			alignof(t_soa_context));
+	if (buf.mem == nullptr)
+		return (buf);
+	ctx = (t_soa_context *)buf.mem;
+	*ctx = (t_soa_context){.max_alignment = alignof(t_particle),
+		.fields_count = FIELDS};
+	i = 0;
+	while (i < FIELDS)
+	{
+		ctx->entries[i] = (t_soa_field_meta){.size = sizes[i],
+			.offset_from_struct_base = offs[i],
+			.size_of_prev_fields = (t_u32)ctx->total_struct_size};
+		ctx->total_struct_size += sizes[i++];
+	}
+	return (buf);
+}
+
+static t_result	step(t_allocator a, const t_soa_context *ctx)
+{
+	t_soa		soa;
+	t_particle	p;
+	t_i32a		*x;
+	const t_i32a	*vx;
+	t_size		i;
+
+	soa = xft_new_soa(a, 4, ctx);
+	if (soa.ptr == nullptr)
+		return (KO);
+	while (soa.occupied_elements < 16)
+	{
+		p = (t_particle){.id = soa.occupied_elements,
+			.vx = (t_i32)soa.occupied_elements, .vy = -1};
+		if (!xft_soa_append_from_struct(a, &soa, &p, ctx))
+			return (xft_destroy_soa(a, &soa), KO);
+	}
+	x = xft_soa_fields(&soa, ctx, 1);
+	vx = xft_soa_fields(&soa, ctx, 3);
+	i = 0;
+	while (i < soa.occupied_elements)
+	{
+		x[i] += vx[i];
+		++i;
+	}
+	xft_destroy_soa(a, &soa);
+	return (OK);
+}
+.Ed
+.Sh SEE ALSO
+.Xr xft_alloc 3 ,
+.Xr xft_indexmap 3 ,
+.Xr xft_swissmap 3 ,
+.Xr xft_vec 3 ,
+.Xr xft 7
+.Sh CAVEATS
+A
+.Dv nullptr
+.Fa allocator Ns .allocator
+or missing vtable entry is treated as unreachable.
+.Fn xft_soa_fields
+treats
+.Fa field_idx
+\(>=
+.Fa fields_count
+as unreachable.
+.Pp
+.Fn xft_soa_append_from_struct_unchecked
+does not check capacity;
+calling it on a full container writes past the end of every column.
+.Pp
+The capacity arithmetic in
+.Fn xft_new_soa
+and
+.Fn xft_soa_reserve
+is not checked for overflow.
