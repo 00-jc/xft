@@ -113,36 +113,19 @@ void			xft_memset_512_huge(t_any __restrict__ dest,
 					const t_u8 b, t_size n)\
 					__attribute__((__nonnull__(1)));
 
-t_any			xft_memchr_minimal(t_cany ptr,
+t_any			xft_memchr_short(t_cany __restrict__ const ptr,
 					t_u8 c, t_size n)\
 					__attribute__((__nonnull__(1)));
 
-t_any			xft_memchr_128(t_cany ptr,\
-					int c, t_size n)\
+t_any			xft_memchr_tail(t_cany __restrict__ const ptr,
+					t_u8 c, t_size n)\
 					__attribute__((__nonnull__(1)));
 
-t_any			xft_memchr_256(t_cany ptr,
-					int c, t_size n)\
-					__attribute__((__nonnull__(1)));
-
-t_any			xft_memchr_512(t_cany ptr,
-					int c, t_size n)\
-					__attribute__((__nonnull__(1)));
-
-t_ssize			xft_memcmp_minimal(t_cany __restrict__ const ptr1,
-					t_cany __restrict__ const ptr2, t_size offst,\
-					t_size n)\
-					__attribute__((__nonnull__(1, 2)));
-
-t_ssize			xft_memcmp_128(t_cany __restrict__ const ptr1,
+t_ssize			xft_memcmp_short(t_cany __restrict__ const ptr1,
 					t_cany __restrict__ const ptr2, t_size n)\
 					__attribute__((__nonnull__(1, 2)));
 
-t_ssize			xft_memcmp_256(t_cany __restrict__ const ptr1,
-					t_cany __restrict__ const ptr2, t_size n)\
-					__attribute__((__nonnull__(1, 2)));
-
-t_ssize			xft_memcmp_512(t_cany __restrict__ const ptr1,
+t_ssize			xft_memcmp_tail(t_cany __restrict__ const ptr1,
 					t_cany __restrict__ const ptr2, t_size n)\
 					__attribute__((__nonnull__(1, 2)));
 

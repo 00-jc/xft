@@ -14,8 +14,8 @@
 
 #if XFT_HAS_256_VEC
 
-__attribute__((__always_inline__, const, __used__))
-inline t_u32a	xft_rangemask256(t_vu256a v, t_u8 lo, t_u8 hi)
+__attribute__((__always_inline__, __flatten__, const, __used__))
+inline t_u32a	xft_vrangemask256(t_vu256a v, t_u8 lo, t_u8 hi)
 {
 	return (xft_vmask256((t_vu256)(v - xft_vsplat256(lo)
 			<= xft_vsplat256(hi - lo))));

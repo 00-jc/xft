@@ -13,7 +13,7 @@
 #ifndef BMI_H
 # define BMI_H
 
-# include "xft_p_asm.h"
+# include "asm.h"
 # include "primitives.h"
 
 t_u64			xft_hasz64(t_u64 x)\
@@ -113,5 +113,29 @@ t_u64			xft_align_fwd_integer(t_u64a n, t_u64 align)\
 
 t_u64			xft_align_bwd_integer(t_u64a n, t_u64 align)\
 					__attribute__((const, __hot__));
+
+# if XFT_HAS_512_VEC
+
+t_vu512a		xft_vmask_load512(t_cany ptr, t_u64a mask)\
+					__attribute__((__nonnull__(1), pure));
+
+# endif
+
+# if XFT_HAS_256_VEC
+
+t_vu256a		xft_vmask_load256(t_cany ptr, t_u32a mask)\
+					__attribute__((__nonnull__(1), pure));
+
+# endif
+
+# if XFT_HAS_128_VEC
+
+t_vu128a		xft_vmask_load128(t_cany ptr, t_u16a mask)\
+					__attribute__((__nonnull__(1), pure));
+
+# endif
+
+t_nvec			xft_vmask_load(t_cany ptr, t_nmask mask)\
+					__attribute__((__nonnull__(1), pure));
 
 #endif

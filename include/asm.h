@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   xft_p_asm.h                                        :+:      :+:    :+:   */
+/*   asm.h                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef XFT_P_ASM_H
-# define XFT_P_ASM_H
+#ifndef ASM_H
+# define ASM_H
 
 # include "primitives.h"
 
@@ -98,47 +98,45 @@ typedef const t_vu512a *__restrict__ const							t_blk512ra;
 
 # if XFT_HAS_512_VEC
 
-t_vu512			xft_vsplat512(t_u8 b)\
-					__attribute__((const));
-t_u64a			xft_vmask512(t_vu512 vec)\
-					__attribute__((const));
-t_u64a			xft_veqmask512(t_vu512 vec, t_u8 b)\
-					__attribute__((const));
-t_u64a			xft_vtestmask512(t_vu512 vec, t_u8 b)\
-					__attribute__((const));
-t_u64a			xft_rangemask512(t_vu512a v, t_u8 lo, t_u8 hi)\
-					__attribute__((const));
+#  define XFT_NVEC_SIZE 64
+
+typedef t_vu512														t_nvec;
+typedef t_vu512a													t_nveca;
+typedef t_u64a														t_nmask;
+
+# elif XFT_HAS_256_VEC
+
+#  define XFT_NVEC_SIZE 32
+
+typedef t_vu256														t_nvec;
+typedef t_vu256a													t_nveca;
+typedef t_u32a														t_nmask;
+
+# elif XFT_HAS_128_VEC
+
+#  define XFT_NVEC_SIZE 16
+
+typedef t_vu128														t_nvec;
+typedef t_vu128a													t_nveca;
+typedef t_u16a														t_nmask;
+
+# else
+
+#  define XFT_NVEC_SIZE 8
+
+typedef __attribute__((vector_size(8), aligned(1), __may_alias__)) t_u8\
+																	t_nvec;
+
+typedef __attribute__((vector_size(8), aligned(8), __may_alias__)) t_u8\
+																	t_nveca;
+
+typedef t_u8														t_nmask;
 
 # endif
 
-# if XFT_HAS_256_VEC
-
-t_vu256			xft_vsplat256(t_u8 b)\
-					__attribute__((const));
-t_u32a			xft_vmask256(t_vu256 vec)\
-					__attribute__((const));
-t_u32a			xft_veqmask256(t_vu256 vec, t_u8 b)\
-					__attribute__((const));
-t_u32a			xft_vtestmask256(t_vu256 vec, t_u8 b)\
-					__attribute__((const));
-t_u32a			xft_rangemask256(t_vu256a v, t_u8 lo, t_u8 hi)\
-					__attribute__((const));
-
-# endif
-
-# if XFT_HAS_128_VEC
-
-t_vu128			xft_vsplat128(t_u8 b)\
-					__attribute__((const));
-t_u16a			xft_vmask128(t_vu128 vec)\
-					__attribute__((const));
-t_u16a			xft_veqmask128(t_vu128 vec, t_u8 b)\
-					__attribute__((const));
-t_u16a			xft_vtestmask128(t_vu128 vec, t_u8 b)\
-					__attribute__((const));
-t_u16a			xft_rangemask128(t_vu128a v, t_u8 lo, t_u8 hi)\
-					__attribute__((const));
-
-# endif
+typedef t_nvec *__restrict__ const									t_blknw;
+typedef const t_nvec *__restrict__ const							t_blknr;
+typedef t_nveca *__restrict__ const									t_blknwa;
+typedef const t_nveca *__restrict__ const							t_blknra;
 
 #endif

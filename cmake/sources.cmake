@@ -51,18 +51,27 @@ set(SRCS_BMI
   src/bmi/xft_to_be_from_le.c
   src/bmi/xft_to_le_from_be.c
   src/bmi/xft_to_le_from_le.c
+  src/bmi/native/xft_eqmask.c
+  src/bmi/native/xft_mask.c
+  src/bmi/native/xft_masked_load.c
+  src/bmi/native/xft_rangemask.c
+  src/bmi/native/xft_splat.c
+  src/bmi/native/xft_testmask.c
   src/bmi/vmanip/vec128/xft_eqmask.c
   src/bmi/vmanip/vec128/xft_mask.c
+  src/bmi/vmanip/vec128/xft_masked_load.c
   src/bmi/vmanip/vec128/xft_rangemask.c
   src/bmi/vmanip/vec128/xft_splat.c
   src/bmi/vmanip/vec128/xft_testmask.c
   src/bmi/vmanip/vec256/xft_eqmask.c
   src/bmi/vmanip/vec256/xft_mask.c
+  src/bmi/vmanip/vec256/xft_masked_load.c
   src/bmi/vmanip/vec256/xft_rangemask.c
   src/bmi/vmanip/vec256/xft_splat.c
   src/bmi/vmanip/vec256/xft_testmask.c
   src/bmi/vmanip/vec512/xft_eqmask.c
   src/bmi/vmanip/vec512/xft_mask.c
+  src/bmi/vmanip/vec512/xft_masked_load.c
   src/bmi/vmanip/vec512/xft_rangemask.c
   src/bmi/vmanip/vec512/xft_splat.c
   src/bmi/vmanip/vec512/xft_testmask.c)
@@ -202,16 +211,10 @@ set(SRCS_MEM
   src/mem/portable/xft_memset.c
   src/mem/streaming/xft_memcpy_streaming.c
   src/mem/streaming/xft_memset_streaming.c
-  src/mem/vec128/xft_memchr.c
-  src/mem/vec128/xft_memcmp.c
   src/mem/vec128/xft_memcpy.c
   src/mem/vec128/xft_memset.c
-  src/mem/vec256/xft_memchr_vec256.c
-  src/mem/vec256/xft_memcmp_vec256.c
   src/mem/vec256/xft_memcpy_vec256.c
   src/mem/vec256/xft_memset_vec256.c
-  src/mem/vec512/xft_memchr_vec512.c
-  src/mem/vec512/xft_memcmp_vec512.c
   src/mem/vec512/xft_memcpy_vec512.c
   src/mem/vec512/xft_memset_vec512.c)
 
