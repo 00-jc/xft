@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/03 18:01:29 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/10/14 19:49:37 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/10/14 19:51:30 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,6 +128,6 @@ t_nvec			xft_vcompress(t_nvec vec, t_nmask mask)\
 					__attribute__((const));
 t_nveca			xft_vmask_load(t_cany ptr, t_nmask mask)\
 					__attribute__((__nonnull__(1), pure));
-t_nvec			xft_vitoa(void) __attribute__((const));
+t_nvec			xft_viota(void) __attribute__((const));
 
 #endif
