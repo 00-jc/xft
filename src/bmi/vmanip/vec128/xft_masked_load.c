@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/14 12:02:20 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/10/14 12:50:41 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/10/14 13:55:26 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,8 @@
 
 #if XFT_HAS_512_VEC
 
-__attribute__((__nonnull__(1), pure, __no_sanitize_address__, __always_inline__, __flatten__))
+__attribute__((__nonnull__(1), pure, __no_sanitize_address__,
+	__always_inline__, __flatten__))
 inline t_vu128a	xft_vmask_load128(t_cany ptr, t_u16a mask)
 {
 	return ((t_vu128a)__builtin_ia32_loaddquqi128_mask(ptr,
@@ -23,7 +24,8 @@ inline t_vu128a	xft_vmask_load128(t_cany ptr, t_u16a mask)
 
 #elif XFT_HAS_128_VEC
 
-__attribute__((__nonnull__(1), pure, __no_sanitize_address__, __always_inline__))
+__attribute__((__nonnull__(1), pure, __no_sanitize_address__,
+	__always_inline__))
 static inline t_vu128	xft__vmask_load128_split(t_cany ptr, t_u16a mask)
 {
 	t_vu128a	buf[2];
@@ -39,7 +41,8 @@ static inline t_vu128	xft__vmask_load128_split(t_cany ptr, t_u16a mask)
 	return (*(t_blk128r)((const t_u8 *)buf + off));
 }
 
-__attribute__((__nonnull__(1), pure, __no_sanitize_address__, __always_inline__, __flatten__))
+__attribute__((__nonnull__(1), pure, __no_sanitize_address__,
+	__always_inline__, __flatten__))
 inline t_vu128a	xft_vmask_load128(t_cany ptr, t_u16a mask)
 {
 	const t_vu128	bit = {1, 2, 4, 8, 16, 32, 64, -128,
