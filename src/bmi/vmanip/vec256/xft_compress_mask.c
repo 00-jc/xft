@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/14 17:40:00 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/10/14 17:40:53 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/10/14 20:00:39 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 #if XFT_HAS_512_VEC
 
-__attribute__((__always_inline__, __flatten__, const))
+__attribute__((__always_inline__, __flatten__, const, __used__))
 inline t_vu256	xft_vcompress256(t_vu256a vec, t_u32a mask)
 {
 	return ((t_vu256)__builtin_ia32_compressqi256_mask((t_vc256)vec,
@@ -29,7 +29,7 @@ inline t_vu256	xft_vcompress256(t_vu256a vec, t_u32a mask)
  *	since we need pshuf lut tables, @Revise for a workaround.
  */
 
-__attribute__((__always_inline__, __flatten__, const))
+__attribute__((__always_inline__, __flatten__, const, __used__))
 inline t_vu256	xft_vcompress256(t_vu256a vec, t_u32a mask)
 {
 	t_vu256a	out;

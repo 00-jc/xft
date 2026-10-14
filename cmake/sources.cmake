@@ -58,6 +58,7 @@ set(SRCS_BMI
   src/bmi/native/xft_rangemask.c
   src/bmi/native/xft_splat.c
   src/bmi/native/xft_testmask.c
+  src/bmi/native/xft_compress_mask.c
   src/bmi/vmanip/vec128/xft_iota.c
   src/bmi/vmanip/vec128/xft_compress_mask.c
   src/bmi/vmanip/vec128/xft_eqmask.c

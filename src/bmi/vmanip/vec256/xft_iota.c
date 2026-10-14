@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/14 19:43:11 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/10/14 19:44:46 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/10/14 20:00:24 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 #ifdef XFT_HAS_256_VEC
 
-__attribute__((__const__, __always_inline__))
+__attribute__((__const__, __always_inline__, __used__))
 inline t_vu256a	xft_viota256(void)
 {
 	return ((t_vu256a){
