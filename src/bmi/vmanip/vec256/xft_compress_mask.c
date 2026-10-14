@@ -6,13 +6,13 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/14 17:40:00 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/10/14 20:00:39 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/10/14 20:10:41 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "xft_p_vmanip.h"
 
-#if XFT_HAS_512_VEC
+#ifdef XFT_HAS_512_VEC
 
 __attribute__((__always_inline__, __flatten__, const, __used__))
 inline t_vu256	xft_vcompress256(t_vu256a vec, t_u32a mask)
@@ -21,7 +21,7 @@ inline t_vu256	xft_vcompress256(t_vu256a vec, t_u32a mask)
 			(t_vc256)xft_vsplat256(0), mask));
 }
 
-#elif XFT_HAS_256_VEC
+#elif defined(XFT_HAS_256_VEC)
 
 /*
  *	Recreating this with full simd-register stuff

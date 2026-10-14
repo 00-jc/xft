@@ -6,13 +6,13 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/14 16:59:14 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/10/14 20:00:58 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/10/14 20:10:50 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "xft_p_vmanip.h"
 
-#if XFT_HAS_512_VEC
+#ifdef XFT_HAS_512_VEC
 
 __attribute__((__always_inline__, __flatten__, const, __used__))
 inline t_vu512	xft_vcompress512(t_vu512a vec, t_u64a mask)

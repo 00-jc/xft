@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/14 19:43:11 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/10/14 20:00:17 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/10/14 20:09:04 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #ifdef XFT_HAS_512_VEC
 
 __attribute__((__const__, __always_inline__, __used__))
-inline t_vu512a	xft_iota(void)
+inline t_vu512a	xft_iota512(void)
 {
 	return ((t_vu512a){
 		0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
