@@ -86,9 +86,7 @@ to
 .Fa dest
 like
 .Fn xft_memcpy ,
-but the regions may overlap; see
-.Sx CAVEATS
-for a limitation.
+but the regions may overlap.
 Unlike
 .Xr memmove 3
 it returns nothing.
@@ -289,7 +287,11 @@ For copies, both loads complete before either store.
 one unaligned 64-byte access at the start, then 64-byte aligned stores to the
 destination, 256 bytes per iteration, then an overlapping tail.
 .Fn xft_memmove
-runs this loop from the end of the destination toward the start.
+copies forward when
+.Fa dest
+is below
+.Fa src
+and backward otherwise.
 .It n \(>= XFT_LLC_SIZE
 .Fn xft_memcpy
 and
@@ -390,21 +392,6 @@ t_buffer	aligned_window(t_u8 *base, t_size size)
 .Xr xft_cstr 3 ,
 .Xr xft 7
 .Sh CAVEATS
-For
-.Fa n
-of 128 or more,
-.Fn xft_memmove
-always copies from high to low addresses, keeping only the first and last 64
-bytes in registers.
-When
-.Fa dest
-is below
-.Fa src
-and the regions overlap, bytes of
-.Fa src
-can be overwritten before they are read, and the result is wrong.
-Sizes below 128 are safe in either direction.
-.Pp
 On AVX2, SSE2 and NEON,
 .Fn xft_memchr
 and
