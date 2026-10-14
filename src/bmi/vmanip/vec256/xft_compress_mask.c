@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/14 17:40:00 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/10/14 17:39:57 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/10/14 17:40:53 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,9 +39,9 @@ inline t_vu256	xft_vcompress256(t_vu256a vec, t_u32a mask)
 	i = 0;
 	while (mask)
 	{
+		if (i >= sizeof(mask) << 3) __builtin_unreachable();
 		out[i++] = vec[xft_memctz_u32(mask)];
 		mask &= mask - 1;
-		if (i >= sizeof(mask) << 3) __builtin_unreachable();
 	}
 	return (out);
 }
