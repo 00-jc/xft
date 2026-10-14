@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/29 23:39:13 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/10/14 13:39:52 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/10/14 13:44:37 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,8 @@
 #define ALIGN 0xFFFULL
 #define SIZE 0x1000ULL
 
-__attribute__((pure, __nonnull__(1), __no_sanitize_address__))
-t_size	xft_strlen(const char *restrict str)
+__attribute__((pure, __nonnull__(1), __no_sanitize_address__, __always_inline__))
+inline t_size	xft_strlen(const char *restrict str)
 {
 	t_uptr						a;
 	t_nmask						w;
