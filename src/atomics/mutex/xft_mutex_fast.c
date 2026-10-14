@@ -48,7 +48,7 @@ inline void	xft_mutex_spin(t_mutex *__restrict__ const mutex)
 	t_u64				iters;
 	t_i32				val;
 
-	((xft_prefetch0((t_any)mutex, sizeof(*mutex))), val = XFT_UNLOCKED);
+	((xft_prefetch_write0((t_any)mutex, sizeof(*mutex))), val = XFT_UNLOCKED);
 	while (true)
 	{
 		iters = 0;

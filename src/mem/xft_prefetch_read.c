@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   xft_prefetch_intrin.c                              :+:      :+:    :+:   */
+/*   xft_prefetch_read.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,62 +12,30 @@
 
 #include "mem.h"
 
-#ifdef __x86_64__
-
 __attribute__((__nonnull__(1), __always_inline__, __used__))
-inline void	xft_prefetch0(t_cany restrict const ptr,
+inline void	xft_prefetch_read0(t_cany restrict const ptr,
 	t_size distance)
 {
-	t_u8	*addr;
-
-	addr = (t_u8 *)ptr + distance;
-	__asm__(
-		"prefetcht0 %0"
-		:
-		: "m"(*addr)
-		);
+	__builtin_prefetch((const t_u8 *)ptr + distance, 0, 3);
 }
 
 __attribute__((__nonnull__(1), __always_inline__, __used__))
-inline void	xft_prefetch1(t_cany restrict const ptr,
+inline void	xft_prefetch_read1(t_cany restrict const ptr,
 	t_size distance)
 {
-	t_u8	*addr;
-
-	addr = (t_u8 *)ptr + distance;
-	__asm__(
-		"prefetcht1 %0"
-		:
-		: "m"(*addr)
-		);
+	__builtin_prefetch((const t_u8 *)ptr + distance, 0, 2);
 }
 
 __attribute__((__nonnull__(1), __always_inline__, __used__))
-inline void	xft_prefetch2(t_cany restrict const ptr,
+inline void	xft_prefetch_read2(t_cany restrict const ptr,
 	t_size distance)
 {
-	t_u8	*addr;
-
-	addr = (t_u8 *)ptr + distance;
-	__asm__(
-		"prefetcht2 %0"
-		:
-		: "m"(*addr)
-		);
+	__builtin_prefetch((const t_u8 *)ptr + distance, 0, 1);
 }
 
 __attribute__((__nonnull__(1), __always_inline__, __used__))
-inline void	xft_prefetchnta(t_cany restrict const ptr,
+inline void	xft_prefetch_readnta(t_cany restrict const ptr,
 	t_size distance)
 {
-	t_u8	*addr;
-
-	addr = (t_u8 *)ptr + distance;
-	__asm__(
-		"prefetchnta %0"
-		:
-		: "m"(*addr)
-		);
+	__builtin_prefetch((const t_u8 *)ptr + distance, 0, 0);
 }
-
-#endif

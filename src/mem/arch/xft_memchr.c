@@ -51,7 +51,7 @@ t_any	xft_memchr(t_cany restrict ptr, int c, t_size n)
 	wptr = (const t_nvec *)ptr;
 	while (n >= sizeof(t_nvec))
 	{
-		xft_prefetch0(wptr, sizeof(t_nvec) << 1);
+		xft_prefetch_read0(wptr, sizeof(t_nvec) << 1);
 		hasz = xft_veqmask(*wptr, (t_u8)c);
 		if (hasz)
 			return ((t_any)((const t_u8 *)wptr + xft_memctz_u64(hasz)));

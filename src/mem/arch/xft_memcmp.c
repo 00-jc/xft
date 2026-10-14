@@ -67,8 +67,8 @@ t_ssize	xft_memcmp(t_cany restrict const dest,
 	offst = 0;
 	while (n >= sizeof(t_nvec))
 	{
-		xft_prefetch0((t_blk8r)dest + offst, sizeof(t_nvec) << 1);
-		xft_prefetch0((t_blk8r)src + offst, sizeof(t_nvec) << 1);
+		xft_prefetch_read0((t_blk8r)dest + offst, sizeof(t_nvec) << 1);
+		xft_prefetch_read0((t_blk8r)src + offst, sizeof(t_nvec) << 1);
 		load0 = *(t_blknr)((t_blk8r)dest + offst);
 		load1 = *(t_blknr)((t_blk8r)src + offst);
 		mask = xft_vmask((t_nvec)(load1 != load0));

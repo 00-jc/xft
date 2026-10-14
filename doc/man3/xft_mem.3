@@ -10,10 +10,14 @@
 .Nm xft_memcmp ,
 .Nm xft_memtake ,
 .Nm xft_membroadcast ,
-.Nm xft_prefetch0 ,
-.Nm xft_prefetch1 ,
-.Nm xft_prefetch2 ,
-.Nm xft_prefetchnta ,
+.Nm xft_prefetch_read0 ,
+.Nm xft_prefetch_read1 ,
+.Nm xft_prefetch_read2 ,
+.Nm xft_prefetch_readnta ,
+.Nm xft_prefetch_write0 ,
+.Nm xft_prefetch_write1 ,
+.Nm xft_prefetch_write2 ,
+.Nm xft_prefetch_writenta ,
 .Nm xft_overlap ,
 .Nm xft_fatptr ,
 .Nm xft_align_fwd ,
@@ -43,13 +47,21 @@
 .Ft void
 .Fn xft_membroadcast "t_any dst" "t_any src" "t_size chunks" "t_size n"
 .Ft void
-.Fn xft_prefetch0 "t_cany restrict ptr" "t_size size"
+.Fn xft_prefetch_read0 "t_cany restrict ptr" "t_size size"
 .Ft void
-.Fn xft_prefetch1 "t_cany restrict ptr" "t_size size"
+.Fn xft_prefetch_read1 "t_cany restrict ptr" "t_size size"
 .Ft void
-.Fn xft_prefetch2 "t_cany restrict ptr" "t_size size"
+.Fn xft_prefetch_read2 "t_cany restrict ptr" "t_size size"
 .Ft void
-.Fn xft_prefetchnta "t_cany restrict ptr" "t_size size"
+.Fn xft_prefetch_readnta "t_cany restrict ptr" "t_size size"
+.Ft void
+.Fn xft_prefetch_write0 "t_cany restrict ptr" "t_size size"
+.Ft void
+.Fn xft_prefetch_write1 "t_cany restrict ptr" "t_size size"
+.Ft void
+.Fn xft_prefetch_write2 "t_cany restrict ptr" "t_size size"
+.Ft void
+.Fn xft_prefetch_writenta "t_cany restrict ptr" "t_size size"
 .Ft t_any
 .Fn xft_overlap "t_cany restrict ptr" "t_size chunk_size" "t_size rem_size"
 .Ft t_buffer
@@ -166,18 +178,16 @@ so
 must not overlap the destination.
 It does nothing if either size is zero.
 .Pp
-.Fn xft_prefetch0 ,
-.Fn xft_prefetch1 ,
-.Fn xft_prefetch2
+.Fn xft_prefetch_read0 ,
+.Fn xft_prefetch_read1 ,
+.Fn xft_prefetch_read2 ,
+.Fn xft_prefetch_readnta ,
+.Fn xft_prefetch_write0 ,
+.Fn xft_prefetch_write1 ,
+.Fn xft_prefetch_write2
 and
-.Fn xft_prefetchnta
-issue
-.Ql prefetcht0 ,
-.Ql prefetcht1 ,
-.Ql prefetcht2
-and
-.Ql prefetchnta
-respectively for the cache line holding
+.Fn xft_prefetch_writenta
+hint that the cache line holding
 .Fa ptr
 +
 .Fa size .
@@ -185,8 +195,19 @@ respectively for the cache line holding
 is a byte offset from
 .Fa ptr ,
 not a length; a single line is prefetched.
-Prefetch instructions do not fault.
-On targets other than x86_64 these functions do nothing.
+The
+.Em read
+variants expect the line to be loaded from, the
+.Em write
+variants expect it to be stored to.
+The suffix selects temporal locality:
+.Ql 0
+for the closest cache level (highest locality) down to
+.Ql 2 ,
+and
+.Ql nta
+for non-temporal data.
+Prefetches do not fault, and are no-ops on targets without a prefetch instruction.
 .Pp
 .Fn xft_overlap
 returns

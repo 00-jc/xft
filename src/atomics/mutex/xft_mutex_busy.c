@@ -21,7 +21,7 @@ inline void	xft_mutex_busy(t_mutex *__restrict__ const mutex)
 	t_i32				val;
 	static t_i32 const	contest = XFT_CONTESTED;
 
-	((xft_prefetch0((t_any)mutex, sizeof(*mutex))), val = XFT_UNLOCKED);
+	((xft_prefetch_write0((t_any)mutex, sizeof(*mutex))), val = XFT_UNLOCKED);
 	iters = 0;
 	while (true)
 	{

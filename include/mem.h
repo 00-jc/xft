@@ -50,16 +50,28 @@ t_ssize			xft_memcmp(t_cany __restrict__ const dest,
 void			xft_membroadcast(t_any dst, t_any src, t_size chunks, t_size n)\
 					__attribute__((__nonnull__(1, 2)));
 
-void			xft_prefetch0(t_cany __restrict__ const ptr, t_size size)\
+void			xft_prefetch_read0(t_cany __restrict__ const ptr, t_size size)\
 					__attribute__((__nonnull__(1)));
 
-void			xft_prefetch1(t_cany __restrict__ const ptr, t_size size)\
+void			xft_prefetch_read1(t_cany __restrict__ const ptr, t_size size)\
 					__attribute__((__nonnull__(1)));
 
-void			xft_prefetch2(t_cany __restrict__ const ptr, t_size size)\
+void			xft_prefetch_read2(t_cany __restrict__ const ptr, t_size size)\
 					__attribute__((__nonnull__(1)));
 
-void			xft_prefetchnta(t_cany __restrict__ const ptr, t_size size)\
+void			xft_prefetch_readnta(t_cany __restrict__ const ptr, t_size size)\
+					__attribute__((__nonnull__(1)));
+
+void			xft_prefetch_write0(t_cany __restrict__ const ptr, t_size size)\
+					__attribute__((__nonnull__(1)));
+
+void			xft_prefetch_write1(t_cany __restrict__ const ptr, t_size size)\
+					__attribute__((__nonnull__(1)));
+
+void			xft_prefetch_write2(t_cany __restrict__ const ptr, t_size size)\
+					__attribute__((__nonnull__(1)));
+
+void			xft_prefetch_writenta(t_cany __restrict__ const ptr, t_size size)\
 					__attribute__((__nonnull__(1)));
 
 t_any			xft_overlap(t_cany __restrict__ ptr,\

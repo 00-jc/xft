@@ -74,7 +74,7 @@ inline void	xft_xxh3_accumulate(t_blk8r accs,
 	while (n < nb_stripes)
 	{
 		in = (t_any)(input + (n * XXH3_STRIPE_LEN));
-		xft_prefetch0(in, XXH3_PREFETCH_DIST);
+		xft_prefetch_read0(in, XXH3_PREFETCH_DIST);
 		xft_xxh3_accumulate_512(accs, in,
 			secret + (n * XXH3_SECRET_CONSUME_RATE));
 		++n;

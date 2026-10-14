@@ -305,8 +305,8 @@ set(SRCS_MEM
   src/mem/xft_memtake.c
   src/mem/xft_movs.c
   src/mem/xft_overlap.c
-  src/mem/xft_prefetch_intrin.c
-  src/mem/xft_prefetch_noop.c
+  src/mem/xft_prefetch_read.c
+  src/mem/xft_prefetch_write.c
   src/mem/xft_stfence.c
   src/mem/hugebranches/xft_memcpy_huge.c
   src/mem/hugebranches/xft_memmove_huge.c

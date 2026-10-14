@@ -19,7 +19,7 @@ inline void	xft_mutex_unlock(t_mutex *__restrict__ const mutex)
 {
 	t_i32				val;
 
-	xft_prefetch0((t_any)mutex, sizeof(*mutex));
+	xft_prefetch_write0((t_any)mutex, sizeof(*mutex));
 	val = __atomic_fetch_sub(mutex, 1, __ATOMIC_RELEASE);
 	if (__builtin_expect(val == XFT_CONTESTED, 1))
 	{
