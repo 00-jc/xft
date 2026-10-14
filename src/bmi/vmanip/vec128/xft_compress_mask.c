@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/14 17:40:00 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/10/14 17:34:12 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/10/14 17:39:43 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ inline t_vu128	xft_vcompress128(t_vu128a vec, t_u16a mask)
 	{
 		out[i++] = vec[xft_memctz_u16(mask)];
 		mask &= mask - 1;
-		if (i >= sizeof(mask)) __builtin_unreachable();
+		if (i >= sizeof(mask) << 3) __builtin_unreachable();
 	}
 	return (out);
 }
