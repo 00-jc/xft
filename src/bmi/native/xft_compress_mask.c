@@ -12,7 +12,7 @@
 
 #include "xft_p_vmanip.h"
 
-#ifdef XFT_HAS_512_VEC
+#if XFT_HAS_512_VEC
 
 __attribute__((const, __always_inline__, __used__))
 inline t_nvec	xft_vcompress(t_nvec vec, t_nmask mask)
@@ -20,7 +20,7 @@ inline t_nvec	xft_vcompress(t_nvec vec, t_nmask mask)
 	return (xft_vcompress512(vec, mask));
 }
 
-#elif defined(XFT_HAS_256_VEC)
+#elif XFT_HAS_256_VEC
 
 __attribute__((const, __always_inline__, __used__))
 inline t_nvec	xft_vcompress(t_nvec vec, t_nmask mask)
@@ -28,7 +28,7 @@ inline t_nvec	xft_vcompress(t_nvec vec, t_nmask mask)
 	return (xft_vcompress256(vec, mask));
 }
 
-#elif defined(XFT_HAS_128_VEC)
+#elif XFT_HAS_128_VEC
 
 __attribute__((const, __always_inline__, __used__))
 inline t_nvec	xft_vcompress(t_nvec vec, t_nmask mask)

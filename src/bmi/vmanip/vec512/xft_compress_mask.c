@@ -12,7 +12,7 @@
 
 #include "xft_p_vmanip.h"
 
-#ifdef XFT_HAS_512_VEC
+#if XFT_HAS_512_VEC
 
 __attribute__((__always_inline__, __flatten__, const, __used__))
 inline t_vu512	xft_vcompress512(t_vu512a vec, t_u64a mask)

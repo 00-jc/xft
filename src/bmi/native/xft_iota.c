@@ -12,7 +12,7 @@
 
 #include "xft_p_vmanip.h"
 
-#ifdef XFT_HAS_512_VEC
+#if XFT_HAS_512_VEC
 
 __attribute__((__const__, __always_inline__, __used__))
 inline t_nvec	xft_viota(void)
@@ -20,7 +20,7 @@ inline t_nvec	xft_viota(void)
 	return (xft_viota512());
 }
 
-#elif defined(XFT_HAS_256_VEC)
+#elif XFT_HAS_256_VEC
 
 __attribute__((__const__, __always_inline__, __used__))
 inline t_nvec	xft_viota(void)
@@ -28,7 +28,7 @@ inline t_nvec	xft_viota(void)
 	return (xft_viota256());
 }
 
-#elif defined(XFT_HAS_128_VEC)
+#elif XFT_HAS_128_VEC
 
 __attribute__((__const__, __always_inline__, __used__))
 inline t_nvec	xft_viota(void)

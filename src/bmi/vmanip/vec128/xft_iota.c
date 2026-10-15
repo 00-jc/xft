@@ -12,7 +12,7 @@
 
 #include "xft_p_vmanip.h"
 
-#ifdef XFT_HAS_128_VEC
+#if XFT_HAS_128_VEC
 
 __attribute__((__const__, __always_inline__, __used__))
 inline t_vu128a	xft_viota128(void)

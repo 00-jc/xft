@@ -12,7 +12,7 @@
 
 #include "xft_p_vmanip.h"
 
-#ifdef XFT_HAS_512_VEC
+#if XFT_HAS_512_VEC
 
 __attribute__((__always_inline__, __flatten__, const, __used__))
 inline t_vu256	xft_vcompress256(t_vu256a vec, t_u32a mask)
@@ -21,7 +21,7 @@ inline t_vu256	xft_vcompress256(t_vu256a vec, t_u32a mask)
 			(t_vc256)xft_vsplat256(0), mask));
 }
 
-#elif defined(XFT_HAS_256_VEC)
+#elif XFT_HAS_256_VEC
 
 /*
  *	Recreating this with full simd-register stuff
