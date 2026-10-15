@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/11 14:03:23 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/10/11 20:50:18 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/10/16 00:09:27 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ t_result	xft_soa_reserve(t_allocator allocator,
 {
 	t_buffer	new_buffer;
 	t_size		new_size;
+	t_size		usable;
 
 	if (allocator.allocator == nullptr || allocator.vtable.realloc == nullptr)
 		__builtin_unreachable();
@@ -61,6 +62,9 @@ t_result	xft_soa_reserve(t_allocator allocator,
 	if (__builtin_expect(new_buffer.mem == nullptr, 0))
 		return (KO);
 	soa->ptr = new_buffer.mem;
+	usable = (new_buffer.size / ctx->total_struct_size)
+		& ~(ctx->max_alignment - 1);
+	new_size = xft_tern(usable > new_size, usable, new_size);
 	xft__soa_reposition(soa, ctx, new_size);
 	soa->capacity_elements = new_size;
 	soa->allocator_bytes_given = new_buffer.size;

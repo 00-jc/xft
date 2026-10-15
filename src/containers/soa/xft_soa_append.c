@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/11 00:20:02 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/10/11 16:03:28 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/10/16 00:19:32 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,14 +38,15 @@ inline void	xft_soa_append_from_struct_unchecked(
 	++soa->occupied_elements;
 }
 
-__attribute__((__nonnull__(2, 3, 4)))
-t_result	xft_soa_append_from_struct(
+__attribute__((__nonnull__(2, 3, 4), __always_inline__))
+inline t_result	xft_soa_append_from_struct(
 	t_allocator allocator,
 	t_soa *__restrict__ const soa,
 	t_any __restrict__ const _struct,
 	const t_soa_context *__restrict__ const ctx)
 {
-	if (__builtin_expect(!xft_soa_reserve(allocator, soa, ctx, 1), 0))
+	if (__builtin_expect(soa->occupied_elements == soa->capacity_elements
+			&& !xft_soa_reserve(allocator, soa, ctx, 1), 0))
 		return (KO);
 	xft_soa_append_from_struct_unchecked(soa, _struct, ctx);
 	return (OK);

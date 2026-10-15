@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/29 23:39:13 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/08/04 00:30:11 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/10/16 00:20:47 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,8 +71,8 @@ inline void	xft_memmove_naive(t_any dest, t_cany const src, t_size n)
 	((t_blk8w)dest)[i[6]] = s[6];
 }
 
-__attribute__((__nonnull__(1, 2), __hot__, __returns_nonnull__))
-void	*xft_memcpy(t_any restrict dest,
+__attribute__((__nonnull__(1, 2), __hot__, __returns_nonnull__, __noinline__))
+void	*xft__memcpy(t_any restrict dest,
 	t_cany restrict const src, t_size n)
 {
 	if (__builtin_expect(dest == src || n == 0, 0))
@@ -93,11 +93,3 @@ void	*xft_memcpy(t_any restrict dest,
 		xft_memcpy_512_streaming(dest, src, n);
 	return (dest);
 }
-
-#if !defined(XFT_REQUIRE_LIBC)
-
-t_any	memcpy(t_any restrict dest, t_cany restrict const src, t_size n)\
-			__attribute__((__nonnull__(1, 2), __hot__, __returns_nonnull__,\
-				__weak__, __alias__("xft_memcpy")));
-
-#endif
