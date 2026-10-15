@@ -6,13 +6,11 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/16 12:00:00 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/10/16 12:00:00 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/10/16 01:09:18 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "xft_p_mem.h"
-
-#if defined(__clang__)
 
 __attribute__((__nonnull__(1, 2), __always_inline__, __hot__,
 	__returns_nonnull__))
@@ -39,35 +37,3 @@ inline void	*xft_memcpy(t_any restrict dest,
 		return (__builtin_memcpy(dest, src, 256));
 	return (xft__memcpy(dest, src, n));
 }
-
-# if !defined(XFT_REQUIRE_LIBC)
-
-__attribute__((__nonnull__(1, 2), __hot__, __returns_nonnull__, __weak__))
-t_any	memcpy(t_any restrict dest, t_cany restrict const src, t_size n)
-{
-	return (xft__memcpy(dest, src, n));
-}
-
-# endif
-
-#else
-
-__attribute__((__nonnull__(1, 2), __always_inline__, __hot__,
-	__returns_nonnull__))
-inline void	*xft_memcpy(t_any restrict dest,
-	t_cany restrict const src, t_size n)
-{
-	if (__builtin_constant_p(n))
-		return (__builtin_memcpy(dest, src, n));
-	return (xft__memcpy(dest, src, n));
-}
-
-# if !defined(XFT_REQUIRE_LIBC)
-
-t_any	memcpy(t_any restrict dest, t_cany restrict const src, t_size n)\
-			__attribute__((__nonnull__(1, 2), __hot__, __returns_nonnull__,\
-				__weak__, __alias__("xft_memcpy")));
-
-# endif
-
-#endif
