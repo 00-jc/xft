@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/03 18:01:29 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/10/07 12:10:18 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/10/16 01:43:29 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,8 @@ typedef __attribute__((vector_size(32), aligned(1), __may_alias__)) t_u8\
 typedef __attribute__((vector_size(64), aligned(1), __may_alias__)) t_u8\
 																	t_vu512;
 
+typedef t_u16 *__restrict__ const									t_blk16w;
+typedef const t_u16 *__restrict__ const								t_blk16r;
 typedef t_u32 *__restrict__ const									t_blk32w;
 typedef const t_u32 *__restrict__ const								t_blk32r;
 typedef t_u64 *__restrict__ const									t_blk64w;
@@ -128,6 +130,8 @@ typedef __attribute__((vector_size(64), aligned(64), __may_alias__)) t_u16\
 typedef __attribute__((vector_size(64), aligned(64), __may_alias__)) t_u32\
 																	t_vu32_512a;
 
+typedef t_u16a *__restrict__ const									t_blk16wa;
+typedef const t_u16a *__restrict__ const							t_blk16ra;
 typedef t_u32a *__restrict__ const									t_blk32wa;
 typedef const t_u32a *__restrict__ const							t_blk32ra;
 typedef t_u64a *__restrict__ const									t_blk64wa;
