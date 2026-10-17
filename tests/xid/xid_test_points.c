@@ -6,13 +6,12 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/17 05:40:12 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/10/17 05:40:12 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/10/17 16:46:14 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "tests/xid/xid_test.h"
 
-// {cp, start, continue}, checked against DerivedCoreProperties.txt
 static const t_u32	g_points[][3] = {
 {0x00AA, 1, 1}, {0x00B7, 0, 1}, {0x00C0, 1, 1}, {0x00D7, 0, 0},
 {0x0300, 0, 1}, {0x0391, 1, 1}, {0x0660, 0, 1}, {0x200C, 0, 1},

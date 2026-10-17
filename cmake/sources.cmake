@@ -308,6 +308,7 @@ set(SRCS_MEM
   src/mem/xft_overlap.c
   src/mem/xft_prefetch_read.c
   src/mem/xft_prefetch_write.c
+  src/mem/xft_scalar_mask_load.c
   src/mem/xft_stfence.c
   src/mem/hugebranches/xft_memcpy_huge.c
   src/mem/hugebranches/xft_memmove_huge.c
@@ -357,6 +358,7 @@ set(SRCS_TIME
   src/time/xft_rdtsc.c)
 
 set(SRCS_XID
+  src/xid/xft_xid_decode.c
   src/xid/xft_xid_is_set.c
   src/xid/xft_xidtable.c)
 
@@ -585,6 +587,7 @@ set(SRCS_TEST
   tests/mem/memcpy/memcpy_test_basic.c
   tests/mem/memcpy/memcpy_test_large.c
   tests/mem/memcpy/memcpy_test_misaligned.c
+  tests/mem/mload/mload_test.c
   tests/mem/memmove/memmove_test.c
   tests/mem/memset/memset_test.c
   tests/mem/memset/memset_test_basic.c

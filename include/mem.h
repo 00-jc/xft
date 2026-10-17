@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/03 18:01:29 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/10/03 18:01:32 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/10/17 15:52:08 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,5 +91,16 @@ t_any			xft_align_bkw(t_any ptr, const t_size align)\
 
 void			xft_stfence(void);
 void			xft_ldfence(void);
+
+t_u8			xft_mload_rel_u8(t_buffer mem, t_size rel)\
+					__attribute__((__hot__, __pure__));
+t_u16			xft_mload_rel_u16(t_buffer mem, t_size rel)\
+					__attribute__((__hot__, __pure__));
+t_u32			xft_mload_rel_u24(t_buffer mem, t_size rel)\
+					__attribute__((__hot__, __pure__));
+t_u32			xft_mload_rel_u32(t_buffer mem, t_size rel)\
+					__attribute__((__hot__, __pure__));
+t_u64			xft_mload_rel_u64(t_buffer mem, t_size rel)\
+					__attribute__((__hot__, __pure__));
 
 #endif

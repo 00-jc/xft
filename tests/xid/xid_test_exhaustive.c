@@ -6,13 +6,12 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/17 05:40:12 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/10/17 05:40:12 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/10/17 16:46:08 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "tests/xid/xid_test.h"
 
-// walks the table alongside cp, so the reference is a plain range check
 static bool	xid_ref(const t_u32 (*set)[2], t_size len, t_size *at, t_u32 cp)
 {
 	while (*at < len && set[*at][1] < cp)

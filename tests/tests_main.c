@@ -22,6 +22,7 @@ inline void	run_all_tests(t_test *t)
 	test_memmove(t);
 	test_memset(t);
 	test_bzero(t);
+	test_mload(t);
 	test_streaming_mem(t);
 	test_strlen(t);
 	test_cstr(t);

@@ -21,6 +21,7 @@ void	test_memcpy(t_test *t);
 void	test_memmove(t_test *t);
 void	test_memset(t_test *t);
 void	test_bzero(t_test *t);
+void	test_mload(t_test *t);
 void	test_streaming_mem(t_test *t);
 void	test_strlen(t_test *t);
 void	test_cstr(t_test *t);
