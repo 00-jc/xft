@@ -57,8 +57,21 @@ cmake --install build --prefix /usr/local
 | `XFT_BUILD_TESTS` | `OFF` | Unit tests (always sanitized) |
 | `XFT_BUILD_FUZZ` | `OFF` | Fuzz targets (always sanitized) |
 | `XFT_BUILD_BENCH` | `OFF` | Benchmarks (never sanitized, Linux only) |
+| `XFT_BUILD_GENTABLE` | `OFF` | `gentable` table generator |
+| `XFT_BOOTSTRAP_XID` | `OFF` | Build without the xid module and regenerate its table (forces `XFT_BUILD_GENTABLE=ON`) |
 
 Warnings are always errors. `Release` builds use `-Wall -Wextra -Werror`; every other build type uses the strict set in `cmake/warnings_strict.cmake`.
+
+### Regenerating the XID table
+
+`src/xid/xft_xidtable.c` is generated from the Unicode [`DerivedCoreProperties.txt`](https://www.unicode.org/Public/UCD/latest/ucd/DerivedCoreProperties.txt) by `gentable`, which links `xft` itself. Put the file in the source root, then bootstrap:
+
+```sh
+cmake -S . -B build-xid -DXFT_BOOTSTRAP_XID=ON
+cmake --build build-xid
+```
+
+This builds `xft` without the xid module and rewrites the table; the next normal build compiles it back in. See [`xft_xid(3)`](doc/man3/xft_xid.3).
 
 ## Usage
 
@@ -111,6 +124,7 @@ On Windows, `xft` calls into the system DLLs even in the freestanding flavor, so
 | `xft_syscalls.h` | System call wrappers |
 | `xft_timing.h` | Clocks and cycle counters |
 | `xft_vec.h` | Untyped growable array |
+| `xft_xid.h` | Unicode XID_Start/XID_Continue lookup and tables |
 
 The full API is documented in section 3 man pages under `doc/man3`.
 

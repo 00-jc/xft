@@ -11,6 +11,8 @@ option(XFT_RT "xft runtime entry point; OFF uses the libc one (implies XFT_LIBC)
 option(XFT_BUILD_TESTS "build the unit test runner (always sanitized)" OFF)
 option(XFT_BUILD_FUZZ "build the fuzz targets (always sanitized)" OFF)
 option(XFT_BUILD_BENCH "build the benchmarks (never sanitized)" OFF)
+option(XFT_BUILD_GENTABLE "build the gentable table generator" OFF)
+option(XFT_BOOTSTRAP_XID "build xft without xid and regenerate its table" OFF)
 
 if(WIN32 AND NOT CMAKE_C_COMPILER_ID MATCHES "Clang")
   message(
@@ -57,7 +59,32 @@ if(CMAKE_CROSSCOMPILING AND XFT_NATIVE)
   set(XFT_NATIVE OFF)
 endif()
 
-if(NOT XFT_RT AND (XFT_BUILD_TESTS OR XFT_BUILD_FUZZ OR XFT_BUILD_BENCH))
+if(XFT_BOOTSTRAP_XID)
+  if(NOT XFT_BUILD_GENTABLE)
+    message(STATUS "xft: XFT_BOOTSTRAP_XID forces XFT_BUILD_GENTABLE=ON")
+    set(XFT_BUILD_GENTABLE ON)
+  endif()
+  if(NOT EXISTS ${PROJECT_SOURCE_DIR}/DerivedCoreProperties.txt)
+    message(
+      FATAL_ERROR
+      "xft: XFT_BOOTSTRAP_XID expects DerivedCoreProperties.txt in the source "
+      "root; grab it from "
+      "https://www.unicode.org/Public/UCD/latest/ucd/DerivedCoreProperties.txt"
+    )
+  endif()
+  if(XFT_BUILD_TESTS)
+    message(
+      FATAL_ERROR
+      "xft: XFT_BOOTSTRAP_XID leaves the xid module out, which the unit "
+      "tests need; bootstrap in its own build tree"
+    )
+  endif()
+endif()
+
+if(
+  NOT XFT_RT
+  AND (XFT_BUILD_TESTS OR XFT_BUILD_FUZZ OR XFT_BUILD_BENCH OR XFT_BUILD_GENTABLE)
+)
   message(
     FATAL_ERROR
     "xft: the test/fuzz/bench harnesses are xft_main programs and need the "

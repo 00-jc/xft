@@ -43,6 +43,7 @@ extern "C"
 # include "rt.h"
 # include "fmt.h"
 # include "atomics.h"
+# include "xid.h"
 
 #ifdef __cplusplus
 }

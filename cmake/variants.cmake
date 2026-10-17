@@ -238,11 +238,43 @@ function(xft_add_subproject name)
   install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 endfunction()
 
+# xft_add_harness(<name> LIB <lib> SOURCES <src>... [INCLUDES <dir>...])
+#   an xft_main executable over <lib>, with its flavor, flags and LTO
+function(xft_add_harness name)
+  cmake_parse_arguments(H "" "LIB" "SOURCES;INCLUDES" ${ARGN})
+  add_executable(${name} ${H_SOURCES})
+  target_link_libraries(${name} PRIVATE ${H_LIB})
+  target_include_directories(${name} PRIVATE ${H_INCLUDES} ${XFT_INTERNAL_DIR})
+  target_compile_definitions(${name} PRIVATE ${XFT_DEFINES_PRIVATE})
+  target_compile_options(
+    ${name}
+    PRIVATE
+      ${CFLAGS}
+      "$<$<COMPILE_LANGUAGE:C>:${XFT_WARNS}>"
+      "$<$<COMPILE_LANGUAGE:CXX>:${XFT_CXX_WARNS}>"
+      $<$<CONFIG:Release,RelWithDebInfo,>:-O3>
+  )
+  get_target_property(_libc ${H_LIB} XFT_IS_LIBC)
+  if(_libc)
+    target_compile_options(${name} PRIVATE ${CFLAGS_HOSTED})
+  endif()
+  xft_stack_clash_flags(_clash "${_libc}")
+  target_compile_options(${name} PRIVATE ${_clash})
+  get_target_property(_ipo ${H_LIB} INTERPROCEDURAL_OPTIMIZATION)
+  if(_ipo)
+    set_property(TARGET ${name} PROPERTY INTERPROCEDURAL_OPTIMIZATION ON)
+  endif()
+endfunction()
+
 # perf and tailor sit on perf_event_open: linux only, their headers #error
 # anywhere else
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
   add_subdirectory(subprojects/perf)
   add_subdirectory(subprojects/tailor)
+endif()
+
+if(XFT_BUILD_GENTABLE)
+  add_subdirectory(subprojects/gentable)
 endif()
 
 install(TARGETS xft ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})

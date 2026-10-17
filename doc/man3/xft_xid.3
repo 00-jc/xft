@@ -1,0 +1,178 @@
+.Dd October 17, 2026
+.Dt XFT_XID 3
+.Os xft
+.Sh NAME
+.Nm xft_xid_is_start ,
+.Nm xft_xid_is_continue ,
+.Nm g_xid_start ,
+.Nm g_xid_start_len ,
+.Nm g_xid_continue ,
+.Nm g_xid_continue_len
+.Nd Unicode XID_Start and XID_Continue lookup and codepoint tables
+.Sh SYNOPSIS
+.In xid.h
+.Ft bool
+.Fn xft_xid_is_start "t_u32 cp"
+.Ft bool
+.Fn xft_xid_is_continue "t_u32 cp"
+.Vt extern const t_u32 g_xid_start[][2];
+.Vt extern const t_size g_xid_start_len;
+.Vt extern const t_u32 g_xid_continue[][2];
+.Vt extern const t_size g_xid_continue_len;
+.Sh DESCRIPTION
+.Fn xft_xid_is_start
+tests whether
+.Fa cp
+may start an identifier: it has the
+.Ql XID_Start
+property, or is
+.Ql _
+.Pq U+005F ,
+which UAX #31 lets a profile add and which
+.Ql XID_Start
+itself leaves out.
+.Fn xft_xid_is_continue
+tests whether
+.Fa cp
+has the
+.Ql XID_Continue
+property, which already includes
+.Ql _ .
+Any start codepoint is also a continue codepoint.
+.Pp
+ASCII is answered inline through
+.Xr xft_isalpha 3
+and
+.Xr xft_isalnum 3 ;
+anything above U+007F takes a branchless binary search over the matching
+table.
+Values past U+10FFFF, surrogates and unassigned codepoints are never in
+either set.
+.Pp
+.Va g_xid_start
+holds the codepoints with the Unicode
+.Ql XID_Start
+property as
+.Va g_xid_start_len
+inclusive ranges, and
+.Va g_xid_continue
+holds the codepoints with
+.Ql XID_Continue
+as
+.Va g_xid_continue_len
+inclusive ranges.
+Each entry is
+.Ql {lo, hi} ;
+a single codepoint is stored as
+.Ql {cp, cp} .
+In each table the ranges are ascending and do not overlap.
+Adjacent ranges are kept as they appear in the source data and are not
+merged.
+.Pp
+Both tables live in
+.Pa src/xid/xft_xidtable.c ,
+which is generated; do not edit it by hand.
+.Ss Generating the tables
+The tables are built from
+.Pa DerivedCoreProperties.txt
+of the Unicode Character Database:
+.Pp
+.Lk https://www.unicode.org/Public/UCD/latest/ucd/DerivedCoreProperties.txt
+.Pp
+The generator,
+.Nm gentable ,
+lives in
+.Pa subprojects/gentable
+and links
+.Nm xft
+itself, so the table is bootstrapped: the library is first built without
+the xid module, then
+.Nm gentable
+regenerates
+.Pa src/xid/xft_xidtable.c .
+.Bl -enum
+.It
+Put
+.Pa DerivedCoreProperties.txt
+in the source root.
+Configuring fails if it is missing.
+.It
+Configure and build with
+.Dv XFT_BOOTSTRAP_XID
+on:
+.Bd -literal -offset indent
+cmake -S . -B build-xid -DXFT_BOOTSTRAP_XID=ON
+cmake --build build-xid
+.Ed
+.Pp
+This builds
+.Pa libxft.a
+without
+.Pa src/xid ,
+forces
+.Dv XFT_BUILD_GENTABLE
+on, and runs
+.Nm gentable
+from the source root through the
+.Ql xid-table
+target, which is part of the default build.
+.It
+Build normally; the xid module is compiled in again.
+.El
+.Pp
+.Nm gentable
+keeps only lines whose property field is
+.Ql XID_Start
+or
+.Ql XID_Continue ;
+comments and every other property are skipped.
+Both are collected into one array, each entry tagged with OR'd flags: the
+low bits give its shape
+.Pq Dv LITERAL No or Dv RANGE
+and the high bits its property
+.Pq Dv START No or Dv CONTINUE ,
+so an
+.Ql XID_Start
+range is
+.Li 0x8001 .
+The emitter then writes one table per property from that array.
+It writes the output through a 4 KiB buffer and opens it without
+.Dv O_CREAT ,
+so the
+.Ql xid-table
+target touches the file first.
+.Pp
+The source data should be refetched once a year, when a new Unicode
+version is published.
+.Sh RETURN VALUES
+.Fn xft_xid_is_start
+and
+.Fn xft_xid_is_continue
+return
+.Dv true
+if
+.Fa cp
+is in the set and
+.Dv false
+otherwise.
+.Sh EXAMPLES
+.Bd -literal -offset indent
+#include <xft.h>
+
+t_size	ident_len(const t_u32 *cps, t_size n)
+{
+	t_size	i;
+
+	if (n == 0 || !xft_xid_is_start(cps[0]))
+		return (0);
+	i = 1;
+	while (i < n && xft_xid_is_continue(cps[i]))
+		i++;
+	return (i);
+}
+.Ed
+.Sh SEE ALSO
+.Xr xft_ctype 3 ,
+.Xr xft 7
+.Sh STANDARDS
+Unicode Standard Annex #31, Unicode Identifiers and Syntax.

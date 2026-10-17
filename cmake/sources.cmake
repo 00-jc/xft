@@ -356,8 +356,18 @@ set(SRCS_TIME
   src/time/xft_get_nanos.c
   src/time/xft_rdtsc.c)
 
+set(SRCS_XID
+  src/xid/xft_xid_is_set.c
+  src/xid/xft_xidtable.c)
+
 set(MODULES ALLOC ATOMICS BMI CONTAINERS CSTR CTYPE FMT FUZZER HASH HINT IO
             MATH MEM RNG RT SIGNALS SORT SYSCALLS TIME)
+
+# gentable generates the xid table and links xft, so the bootstrap build
+# leaves the module out (see xft_xid(3))
+if(NOT XFT_BOOTSTRAP_XID)
+  list(APPEND MODULES XID)
+endif()
 
 set(SRCS_ARCH_x86_64
   src/atomics/mutex/xft_mutex_backoff_x86_64.c
@@ -589,7 +599,12 @@ set(SRCS_TEST
   tests/rng/xoshiro/xoshiro_test_not_constant.c
   tests/rng/xoshiro/xoshiro_test_state_changes.c
   tests/test_state.c
-  tests/tests_main.c)
+  tests/tests_main.c
+  tests/xid/xid_test.c
+  tests/xid/xid_test_ascii.c
+  tests/xid/xid_test_exhaustive.c
+  tests/xid/xid_test_points.c
+  tests/xid/xid_test_table.c)
 
 set(SRCS_BENCH_memcpy_bench
   bench/memcpy/memcpy_bench.c

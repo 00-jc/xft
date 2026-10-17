@@ -170,6 +170,8 @@ system call wrappers
 clocks and cycle counters
 .It Xr xft_vec 3
 growable arrays
+.It Xr xft_xid 3
+Unicode XID_Start and XID_Continue tables
 .El
 .Sh BUILD OPTIONS
 .Nm
@@ -181,7 +183,7 @@ The build produces
 consumers link the
 .Ql xft::xft
 target, which carries the freestanding flags.
-.Bl -tag -width "XFT_BUILD_BENCH"
+.Bl -tag -width "XFT_BUILD_GENTABLE"
 .It Dv XFT_LIBC
 Build against a libc instead of freestanding.
 Default off.
@@ -225,6 +227,21 @@ Build the fuzz targets, always sanitized.
 .It Dv XFT_BUILD_BENCH
 Build the benchmarks, never sanitized.
 Linux only.
+.It Dv XFT_BUILD_GENTABLE
+Build
+.Nm gentable ,
+the generator of the
+.Xr xft_xid 3
+tables.
+.It Dv XFT_BOOTSTRAP_XID
+Build the library without the xid module and regenerate its table from
+.Pa DerivedCoreProperties.txt
+in the source root.
+Forces
+.Dv XFT_BUILD_GENTABLE
+on.
+See
+.Xr xft_xid 3 .
 .El
 .Pp
 Warnings are always errors.
@@ -241,4 +258,5 @@ void	xft_main(const t_any *__restrict__ const sp)
 .Sh SEE ALSO
 .Xr xft_alloc 3 ,
 .Xr xft_io 3 ,
-.Xr xft_rt 3
+.Xr xft_rt 3 ,
+.Xr xft_xid 3

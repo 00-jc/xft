@@ -1,4 +1,5 @@
 # unit tests, fuzz targets and benchmarks. needs variants.cmake
+# (xft_add_harness)
 
 set(FUZZ_TARGETS
   fuzz_mem fuzz/mem_fuzz.c
@@ -18,25 +19,6 @@ set(BENCH_TARGETS
   soa_bench
   swissmap_bench
   indexmap_bench)
-
-function(xft_add_harness name)
-  cmake_parse_arguments(H "" "LIB" "SOURCES;INCLUDES" ${ARGN})
-  add_executable(${name} ${H_SOURCES})
-  target_link_libraries(${name} PRIVATE ${H_LIB})
-  target_include_directories(${name} PRIVATE ${H_INCLUDES} ${XFT_INTERNAL_DIR})
-  target_compile_definitions(${name} PRIVATE ${XFT_DEFINES_PRIVATE})
-  target_compile_options(
-    ${name}
-    PRIVATE
-      ${CFLAGS}
-      "$<$<COMPILE_LANGUAGE:C>:${XFT_WARNS}>"
-      "$<$<COMPILE_LANGUAGE:CXX>:${XFT_CXX_WARNS}>"
-      $<$<CONFIG:Release,RelWithDebInfo,>:-O3>
-  )
-  get_target_property(_libc ${H_LIB} XFT_IS_LIBC)
-  xft_stack_clash_flags(_clash "${_libc}")
-  target_compile_options(${name} PRIVATE ${_clash})
-endfunction()
 
 if(XFT_BUILD_TESTS OR XFT_BUILD_FUZZ)
   enable_testing()
@@ -115,7 +97,7 @@ if(XFT_BUILD_BENCH)
     SOURCES ${SRCS_BENCH_libc_bench}
     INCLUDES bench/include
   )
-  target_compile_options(libc_bench PRIVATE ${CFLAGS_HOSTED} -fno-builtin)
+  target_compile_options(libc_bench PRIVATE -fno-builtin)
   add_dependencies(bench libc_bench)
   list(APPEND _xft_bench_run COMMAND $<TARGET_FILE:libc_bench>)
   set(_xft_bench_deps ${BENCH_TARGETS} libc_bench)
@@ -128,7 +110,6 @@ if(XFT_BUILD_BENCH)
       SOURCES ${SRCS_BENCH_stl_bench}
       INCLUDES bench/include
     )
-    target_compile_options(stl_bench PRIVATE ${CFLAGS_HOSTED})
     add_dependencies(bench stl_bench)
     list(APPEND _xft_bench_run COMMAND $<TARGET_FILE:stl_bench>)
     list(APPEND _xft_bench_deps stl_bench)
