@@ -35,7 +35,7 @@ static void	check_compress_native_8(void)
 
 	io = xft_viota();
 	c = xft_vcompress(io,
-			vmanip_odd(XFT_NVEC_SIZE));
+			vmanip_odd(XFT_NVEC_SIZE) & (t_nmask)-1);
 	i = 0;
 	while (i < XFT_NVEC_SIZE)
 	{
@@ -60,7 +60,7 @@ static void	check_load_native_8(void)
 		i++;
 	}
 	l = xft_vmask_load(a,
-			vmanip_even(XFT_NVEC_SIZE));
+			vmanip_even(XFT_NVEC_SIZE) & (t_nmask)-1);
 	i = 0;
 	while (i < XFT_NVEC_SIZE)
 	{

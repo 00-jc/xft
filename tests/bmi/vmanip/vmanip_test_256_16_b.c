@@ -37,7 +37,7 @@ static void	check_compress_256_16(void)
 
 	io = xft_viota256_16();
 	c = xft_vcompress256_16(io,
-			vmanip_odd(16));
+			(t_u16a)vmanip_odd(16));
 	i = 0;
 	while (i < 16)
 	{
@@ -62,7 +62,7 @@ static void	check_load_256_16(void)
 		i++;
 	}
 	l = xft_vmask_load256_16(a,
-			vmanip_even(16));
+			(t_u16a)vmanip_even(16));
 	i = 0;
 	while (i < 16)
 	{

@@ -35,7 +35,7 @@ static void	check_compress_native_16(void)
 
 	io = xft_viota16();
 	c = xft_vcompress16(io,
-			vmanip_odd(vmanip_n(2)));
+			(t_nmask16)vmanip_odd(vmanip_n(2)));
 	i = 0;
 	while (i < vmanip_n(2))
 	{
@@ -60,7 +60,7 @@ static void	check_load_native_16(void)
 		i++;
 	}
 	l = xft_vmask_load16(a,
-			vmanip_even(vmanip_n(2)));
+			(t_nmask16)vmanip_even(vmanip_n(2)));
 	i = 0;
 	while (i < vmanip_n(2))
 	{

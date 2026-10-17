@@ -37,7 +37,7 @@ static void	check_compress_256_32(void)
 
 	io = xft_viota256_32();
 	c = xft_vcompress256_32(io,
-			vmanip_odd(8));
+			(t_u8)vmanip_odd(8));
 	i = 0;
 	while (i < 8)
 	{
@@ -62,7 +62,7 @@ static void	check_load_256_32(void)
 		i++;
 	}
 	l = xft_vmask_load256_32(a,
-			vmanip_even(8));
+			(t_u8)vmanip_even(8));
 	i = 0;
 	while (i < 8)
 	{

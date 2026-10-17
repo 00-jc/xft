@@ -37,7 +37,7 @@ static void	check_compress_512_32(void)
 
 	io = xft_viota512_32();
 	c = xft_vcompress512_32(io,
-			vmanip_odd(16));
+			(t_u16a)vmanip_odd(16));
 	i = 0;
 	while (i < 16)
 	{
@@ -62,7 +62,7 @@ static void	check_load_512_32(void)
 		i++;
 	}
 	l = xft_vmask_load512_32(a,
-			vmanip_even(16));
+			(t_u16a)vmanip_even(16));
 	i = 0;
 	while (i < 16)
 	{

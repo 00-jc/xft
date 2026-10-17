@@ -37,5 +37,6 @@ void	test_arena_extend(t_test *t);
 void	test_gpa_bulk(t_test *t);
 void	test_vtables(t_test *t);
 void	test_xoshiro(t_test *t);
+void	test_xid(t_test *t);
 
 #endif

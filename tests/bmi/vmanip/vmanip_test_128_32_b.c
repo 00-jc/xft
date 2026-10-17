@@ -37,7 +37,7 @@ static void	check_compress_128_32(void)
 
 	io = xft_viota128_32();
 	c = xft_vcompress128_32(io,
-			vmanip_odd(4));
+			(t_u8)vmanip_odd(4));
 	i = 0;
 	while (i < 4)
 	{
@@ -62,7 +62,7 @@ static void	check_load_128_32(void)
 		i++;
 	}
 	l = xft_vmask_load128_32(a,
-			vmanip_even(4));
+			(t_u8)vmanip_even(4));
 	i = 0;
 	while (i < 4)
 	{

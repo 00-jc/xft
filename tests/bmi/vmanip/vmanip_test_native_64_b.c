@@ -35,7 +35,7 @@ static void	check_compress_native_64(void)
 
 	io = xft_viota64();
 	c = xft_vcompress64(io,
-			vmanip_odd(vmanip_n(8)));
+			(t_nmask64)vmanip_odd(vmanip_n(8)));
 	i = 0;
 	while (i < vmanip_n(8))
 	{
@@ -60,7 +60,7 @@ static void	check_load_native_64(void)
 		i++;
 	}
 	l = xft_vmask_load64(a,
-			vmanip_even(vmanip_n(8)));
+			(t_nmask64)vmanip_even(vmanip_n(8)));
 	i = 0;
 	while (i < vmanip_n(8))
 	{
