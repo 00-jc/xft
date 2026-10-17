@@ -4,17 +4,26 @@
 .Sh NAME
 .Nm xft_xid_is_start ,
 .Nm xft_xid_is_continue ,
+.Nm xft_xid_load_point ,
+.Nm xft_xid_decode ,
+.Nm xft_xid_codepoint_len ,
 .Nm g_xid_start ,
 .Nm g_xid_start_len ,
 .Nm g_xid_continue ,
 .Nm g_xid_continue_len
-.Nd Unicode XID_Start and XID_Continue lookup and codepoint tables
+.Nd Unicode XID_Start and XID_Continue lookup, codepoint tables and UTF-8 decoding
 .Sh SYNOPSIS
 .In xid.h
 .Ft bool
 .Fn xft_xid_is_start "t_u32 cp"
 .Ft bool
 .Fn xft_xid_is_continue "t_u32 cp"
+.Ft t_u32a
+.Fn xft_xid_load_point "const t_u8 *restrict bytes" "t_size cap"
+.Ft t_u32
+.Fn xft_xid_decode "t_u32 w"
+.Ft t_u8
+.Fn xft_xid_codepoint_len "t_u32a codepoint"
 .Vt extern const t_u32 g_xid_start[][2];
 .Vt extern const t_size g_xid_start_len;
 .Vt extern const t_u32 g_xid_continue[][2];
@@ -72,6 +81,71 @@ merged.
 Both tables live in
 .Pa src/xid/xft_xidtable.c ,
 which is generated; do not edit it by hand.
+.Ss Decoding UTF-8
+The lookups take codepoints; these three turn UTF-8 bytes into them without
+branching.
+.Pp
+.Fn xft_xid_load_point
+loads up to four bytes from
+.Fa bytes
+into a little-endian word:
+.Li bytes[0]
+lands in bits 0\(en7,
+.Li bytes[1]
+in bits 8\(en15, and so on.
+Only bytes below
+.Fa cap
+are read, and the bytes past it read as 0, so it never reads at or past
+.Fa bytes No + Fa cap
+and a sequence that ends flush against an unmapped page is safe to load.
+.Fa bytes
+must not be
+.Dv NULL ,
+even when
+.Fa cap
+is 0.
+It takes a pointer and a length rather than a
+.Vt t_buffer
+on purpose, so a scanning loop can advance the pointer without building a
+fat pointer on every step.
+.Pp
+.Fn xft_xid_decode
+decodes the UTF-8 sequence starting at the low byte of
+.Fa w ,
+as loaded by
+.Fn xft_xid_load_point .
+The lead byte gives the sequence length and any bytes of
+.Fa w
+past it are ignored.
+The sequence is rejected if
+.Bl -bullet -compact
+.It
+the lead byte is a continuation byte
+.Pq 0x80\(en0xBF
+or 0xF8\(en0xFF;
+.It
+a following byte is not a continuation byte, which includes one cut off by
+.Fa cap ;
+.It
+the encoding is overlong;
+.It
+the result is a surrogate
+.Pq U+D800\(enU+DFFF
+or is past U+10FFFF.
+.El
+.Pp
+.Fn xft_xid_codepoint_len
+returns the sequence length that the lead byte in the low 8 bits of
+.Fa codepoint
+announces.
+The higher bits are ignored, so it takes a raw byte or a word from
+.Fn xft_xid_load_point
+alike.
+It looks at the lead byte only: 0xC0, 0xC1 and 0xF5\(en0xF7 get a length
+although no valid sequence starts with them, so validate with
+.Fn xft_xid_decode
+first.
+Once a decode succeeds, the length is the number of bytes to advance.
 .Ss Generating the tables
 The tables are built from
 .Pa DerivedCoreProperties.txt
@@ -155,6 +229,25 @@ if
 is in the set and
 .Dv false
 otherwise.
+.Pp
+.Fn xft_xid_load_point
+returns the first
+.Fa cap
+bytes of
+.Fa bytes ,
+at most four, zero-extended.
+.Pp
+.Fn xft_xid_decode
+returns the decoded codepoint, or 0 if the sequence is invalid.
+U+0000 also decodes to 0; a caller that must tell the two apart checks
+whether the low byte of
+.Fa w
+is 0.
+.Pp
+.Fn xft_xid_codepoint_len
+returns 1 for a lead byte in 0x00\(en0x7F, 2 for 0xC0\(en0xDF, 3 for
+0xE0\(en0xEF, 4 for 0xF0\(en0xF7, and 0 for a continuation byte or
+0xF8\(en0xFF.
 .Sh EXAMPLES
 .Bd -literal -offset indent
 #include <xft.h>
@@ -171,8 +264,34 @@ t_size	ident_len(const t_u32 *cps, t_size n)
 	return (i);
 }
 .Ed
+.Pp
+The same scan over UTF-8 bytes; an invalid or truncated sequence decodes to
+0, which is in neither set, so the scan stops there:
+.Bd -literal -offset indent
+#include <xft.h>
+
+t_size	ident_len_utf8(const t_u8 *s, t_size n)
+{
+	t_size	i;
+
+	if (!xft_xid_is_start(xft_xid_decode(xft_xid_load_point(s, n))))
+		return (0);
+	i = xft_xid_codepoint_len(s[0]);
+	while (i < n && xft_xid_is_continue(xft_xid_decode(
+				xft_xid_load_point(s + i, n - i))))
+		i += xft_xid_codepoint_len(s[i]);
+	return (i);
+}
+.Ed
+.Pp
+.Pa examples/xid/utf8_idents.c
+is a complete program built on the same scan: it maps a file, lists each
+identifier with its byte offset and length, and reports the bytes that do
+not decode.
 .Sh SEE ALSO
 .Xr xft_ctype 3 ,
 .Xr xft 7
 .Sh STANDARDS
 Unicode Standard Annex #31, Unicode Identifiers and Syntax.
+.Pp
+The UTF-8 decoder follows RFC 3629 and Unicode Standard, Section 3.9.
