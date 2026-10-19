@@ -21,7 +21,7 @@ inline t_buffer	xft_map_file(const t_u8 *__restrict__ const name, t_u32 flags)
 
 	if (__builtin_expect(xft_stat((t_any)name, &stat), 0))
 		return ((t_buffer){0});
-	fd = xft_open((t_any)name, flags);
+	fd = xft_open((t_any)name, flags, 0);
 	if (__builtin_expect(fd == -1, 0))
 		return ((t_buffer){0});
 	ptr = xft_fmap(stat.st_size, fd);

@@ -61,7 +61,8 @@ inline static t_u64	gt__hexlen(const t_u8 *__restrict__ const p, t_u64 max)
 	t_nvec	vec;
 	t_nmask	m;
 
-	vec = xft_vmask_load(p, (1ULL << xft_tern(max < 8, max, 8)) - 1);
+	vec = xft_vmask_load(p, (t_nmask)((1ULL << xft_tern(max < 8, max, 8))
+				- 1));
 	m = xft_vrangemask(vec, '0', '9') | xft_vrangemask(vec | 0x20, 'a', 'f');
 	return (xft_memctz_u64(~(0ULL | m)));
 }
@@ -130,7 +131,7 @@ __attribute__((__nonnull__(2, 3)))
 t_result	gt_emit(t_buffer src, const t_vec *__restrict__ const set,
 				const char *__restrict__ const path)
 {
-	const int	fd = xft_open(path, O_WRONLY | O_TRUNC);
+	const int	fd = xft_open(path, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	static t_u8	buf[BUFSIZE];
 	t_writer	w;
 	t_result	ret;

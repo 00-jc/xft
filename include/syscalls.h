@@ -210,7 +210,7 @@ t_i32a		xft_fcntl(t_u32a fd, t_u32a cmd,\
 			__attribute__((__nonnull__(3)));
 t_i32a		xft_lockf(int fd);
 t_i32a		xft_unlockf(int fd);
-int			xft_open(const char *__restrict__ path, int flags)\
+int			xft_open(const char *__restrict__ path, int flags, t_u32a mode)\
 			__attribute__((__nonnull__(1)));
 int			xft_close(int fd);
 int			xft_stat(const char *__restrict__ path, t_stat *statbuf)\

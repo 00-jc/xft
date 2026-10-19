@@ -13,11 +13,10 @@ xft_add_harness(
 )
 
 # regenerates src/xid/xft_xidtable.c from DerivedCoreProperties.txt in the
-# source root; gentable opens its output without O_CREAT, so touch it first
+# source root
 if(XFT_BOOTSTRAP_XID)
   add_custom_target(
     xid-table ALL
-    COMMAND ${CMAKE_COMMAND} -E touch ${PROJECT_SOURCE_DIR}/src/xid/xft_xidtable.c
     COMMAND gentable ${PROJECT_SOURCE_DIR}/DerivedCoreProperties.txt
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
     DEPENDS gentable

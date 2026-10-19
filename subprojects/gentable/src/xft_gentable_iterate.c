@@ -24,7 +24,7 @@ inline static t_nvec	gt__load(t_buffer src, t_size it, t_u64a full)
 	{
 		rem = (t_u8)(src.size - it);
 		wide = xft_vsplat(' ') & (xft_viota() >= xft_vsplat(rem));
-		wide |= xft_vmask_load(src.mem + it, (1ull << rem) - 1);
+		wide |= xft_vmask_load(src.mem + it, (t_nmask)((1ull << rem) - 1));
 		return (wide);
 	}
 	return (*(t_blknr)(src.mem + it));

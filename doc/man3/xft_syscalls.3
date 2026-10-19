@@ -52,7 +52,7 @@
 .Ft int
 .Fn xft_mprotect "t_any addr" "t_size size" "int prot"
 .Ft int
-.Fn xft_open "const char *path" "int flags"
+.Fn xft_open "const char *path" "int flags" "t_u32a mode"
 .Ft int
 .Fn xft_close "int fd"
 .Ft t_ssize
@@ -297,8 +297,13 @@ with
 a combination of the
 .Dv O_*
 constants.
-There is no mode argument; see
-.Sx CAVEATS .
+With
+.Dv O_CREAT ,
+a new file is created with permissions
+.Fa mode ,
+masked by the process umask; otherwise
+.Fa mode
+is ignored.
 On Windows the file is opened with
 .Ql CreateFileA ,
 sharing read, write and delete access, with
@@ -812,7 +817,7 @@ t_buffer	map_file(const char *name)
 
 	if (xft_stat(name, &st) != 0)
 		return ((t_buffer){0});
-	fd = xft_open(name, O_RDONLY);
+	fd = xft_open(name, O_RDONLY, 0);
 	if (fd == -1)
 		return ((t_buffer){0});
 	ptr = xft_fmap(st.st_size, fd);
@@ -850,13 +855,9 @@ t_any	get_pages(t_size size)
 .Xr xft 7
 .Sh CAVEATS
 .Fn xft_open
-takes no mode.
-With
-.Dv O_CREAT ,
-the aarch64 and
-.Dv XFT_LIBC
-backends create the file with mode 0, and the freestanding x86_64 backend does
-not set the mode register, so the mode is indeterminate.
+ignores
+.Fa mode
+on Windows.
 .Pp
 .Fn xft_lockf
 takes a shared lock on Linux and an exclusive lock on Windows.

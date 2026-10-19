@@ -19,7 +19,7 @@
 # if defined(__x86_64__) && !defined(XFT_REQUIRE_LIBC)
 
 __attribute__((__nonnull__(1), __always_inline__, __used__))
-inline int	xft_open(const char *restrict path, int flags)
+inline int	xft_open(const char *restrict path, int flags, t_u32a mode)
 {
 	int	ret;
 
@@ -28,7 +28,8 @@ inline int	xft_open(const char *restrict path, int flags)
 		: "=a"(ret)
 		: "0"(SYS_OPEN),
 		"D"(path),
-		"S"(flags)
+		"S"((long)flags),
+		"d"((long)mode)
 		: "rcx", "r11", "memory"
 	);
 	return ((int)xft_tern(ret < 0, (t_u64a)-1, (t_u64a)ret));

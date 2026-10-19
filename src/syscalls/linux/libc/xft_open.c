@@ -18,9 +18,9 @@
 # ifdef XFT_REQUIRE_LIBC
 
 __attribute__((__nonnull__(1), __always_inline__, __used__))
-inline int	xft_open(const char *restrict path, int flags)
+inline int	xft_open(const char *restrict path, int flags, t_u32a mode)
 {
-	return ((int)syscall(SYS_OPENAT, AT_FDCWD, path, flags, 0));
+	return ((int)syscall(SYS_OPENAT, AT_FDCWD, path, flags, mode));
 }
 
 # endif

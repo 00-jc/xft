@@ -49,10 +49,11 @@ inline DWORD	xft_p_open_disposition(int flags)
 }
 
 __attribute__((__nonnull__(1), __always_inline__, __used__))
-inline int	xft_open(const char *restrict path, int flags)
+inline int	xft_open(const char *restrict path, int flags, t_u32a mode)
 {
 	HANDLE	fd;
 
+	(void)mode;
 	fd = CreateFileA((t_any)path, xft_p_open_access(flags),
 			FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
 			(t_any)0, xft_p_open_disposition(flags),

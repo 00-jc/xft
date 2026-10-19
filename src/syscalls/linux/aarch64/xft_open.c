@@ -19,7 +19,7 @@
 # if defined(__aarch64__) && !defined(XFT_REQUIRE_LIBC)
 
 __attribute__((__nonnull__(1), __always_inline__, __used__))
-inline int	xft_open(const char *restrict path, int flags)
+inline int	xft_open(const char *restrict path, int flags, t_u32a mode)
 {
 	register long x8	__asm__("x8");
 	register long x0	__asm__("x0");
@@ -30,7 +30,7 @@ inline int	xft_open(const char *restrict path, int flags)
 	x8 = SYS_OPENAT;
 	x1 = (long)path;
 	x2 = flags;
-	x3 = 0;
+	x3 = (long)mode;
 	x0 = AT_FDCWD;
 	__asm__ volatile (
 		"svc #0"
