@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/30 17:17:52 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/06/30 17:37:10 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/10/19 23:24:17 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ inline t_result	xft_fmt_handle_hex(t_writer *__restrict__ const writer,
 	{
 		h = (char)(value & 0x0F);
 		inner_buffer[--i] = (char)((h + '0' + ((h + 6) >> 4) * 7)
-				| is_lowercase);
+				| is_lowercase << 5);
 		value >>= 4;
 	}
 	return (xft_writer_write(writer, xft_fatptr(inner_buffer + i, 20 - i)));
