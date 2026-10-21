@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/21 10:35:43 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/10/21 11:09:42 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/10/21 11:13:45 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void	xft_indexmap_iterate(t_indexmap *__restrict__ const map,
 	it = 0;
 	while (it < map->soa.capacity_elements)
 	{
-		rem = map->soa.occupied_elements - it;
+		rem = map->soa.capacity_elements - it;
 		f((t_nvec * __restrict__ const)(base + it), keys + it, rem);
 		it += sizeof(t_nvec);
 	}
