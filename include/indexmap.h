@@ -28,6 +28,10 @@ typedef struct s_indexmap
 	t_size		tombstones;
 }	t_indexmap;
 
+typedef void	(*t_imap_iter_callback)(t_nvec *__restrict__ const meta,\
+					t_buffer *__restrict__ const keys, t_size rem)\
+					__attribute__((__nonnull__(1, 2)));
+
 t_indexmap	xft_new_indexmap_with(t_allocator allocator, t_size capacity);
 t_indexmap	xft_new_indexmap(t_allocator allocator);
 t_size		xft_indexmap_lookup(const t_indexmap *__restrict__ const map,\
@@ -44,6 +48,9 @@ t_size		xft_indexmap_delete(t_indexmap *__restrict__ const map,\
 				t_buffer key)\
 				__attribute__((__nonnull__(1)));
 void		xft_indexmap_clear(t_indexmap *__restrict__ const map)\
+				__attribute__((__nonnull__(1)));
+void		xft_indexmap_iterate(t_indexmap *__restrict__ const map,
+				t_imap_iter_callback f)\
 				__attribute__((__nonnull__(1)));
 
 #endif

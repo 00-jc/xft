@@ -188,6 +188,7 @@ set(SRCS_CONTAINERS
   src/containers/indexmap/xft_indexmap_lookup.c
   src/containers/indexmap/xft_indexmap_probe.c
   src/containers/indexmap/xft_indexmap_slot.c
+  src/containers/indexmap/xft_indexmap_iterate.c
   src/containers/soa/xft_soa.c
   src/containers/soa/xft_soa_append.c
   src/containers/soa/xft_soa_field.c
