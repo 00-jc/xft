@@ -2,7 +2,13 @@
 # needs platform.cmake
 
 option(XFT_LIBC "build against a libc instead of freestanding" OFF)
-option(XFT_NATIVE "-march=native -mtune=native" ON)
+# -march value: native, x86-64-v3, armv8.2-a, ...; empty is the compiler
+# default. native is the host, so a cross build defaults to empty
+if(CMAKE_CROSSCOMPILING)
+  set(XFT_ARCH "" CACHE STRING "-march value, empty for the compiler default")
+else()
+  set(XFT_ARCH native CACHE STRING "-march value, empty for the compiler default")
+endif()
 option(XFT_LTO "link time optimization" ON)
 option(XFT_FAST_MATH "-ffast-math" ON)
 option(XFT_SANITIZE "asan + ubsan build (implies XFT_LIBC, no LTO)" OFF)
@@ -33,7 +39,7 @@ if(WIN32 AND CMAKE_C_COMPILER_FRONTEND_VARIANT STREQUAL "MSVC")
   )
 endif()
 
-if(XFT_ARCH STREQUAL "unknown" AND NOT XFT_LIBC)
+if(XFT_TARGET_ARCH STREQUAL "unknown" AND NOT XFT_LIBC)
   message(
     FATAL_ERROR
     "xft: no freestanding backend for ${CMAKE_SYSTEM_PROCESSOR}; "
@@ -54,9 +60,12 @@ if(NOT XFT_RT AND NOT XFT_LIBC)
   set(XFT_LIBC ON)
 endif()
 
-if(CMAKE_CROSSCOMPILING AND XFT_NATIVE)
-  message(STATUS "xft: cross compiling, forcing XFT_NATIVE=OFF")
-  set(XFT_NATIVE OFF)
+if(CMAKE_CROSSCOMPILING AND XFT_ARCH STREQUAL "native")
+  message(
+    FATAL_ERROR
+    "xft: XFT_ARCH=native targets the build host, which a cross build is not; "
+    "name the target, e.g. -DXFT_ARCH=x86-64-v3 or -DXFT_ARCH=armv8.2-a"
+  )
 endif()
 
 if(XFT_BOOTSTRAP_XID)
@@ -118,6 +127,7 @@ endif()
 
 message(
   STATUS
-  "xft: flavor=${XFT_FLAVOR} arch=${XFT_ARCH} rt=${XFT_RT} "
+  "xft: flavor=${XFT_FLAVOR} arch=${XFT_TARGET_ARCH} march=${XFT_ARCH} "
+  "rt=${XFT_RT} "
   "llc=${XFT_LLC} cc=${CMAKE_C_COMPILER_ID}"
 )

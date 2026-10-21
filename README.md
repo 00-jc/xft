@@ -48,7 +48,7 @@ cmake --install build --prefix /usr/local
 | Option | Default | Effect |
 | --- | --- | --- |
 | `XFT_LIBC` | `OFF` | Build against a libc instead of freestanding |
-| `XFT_NATIVE` | `ON` | `-march=native -mtune=native`; turn off when shipping binaries |
+| `XFT_ARCH` | `native` | `-march` value (`native`, `x86-64-v3`, `armv8.2-a`, ...); empty for the compiler default. `native` also adds `-mtune=native`; defaults to empty when cross compiling. Set it to a target when shipping binaries |
 | `XFT_LTO` | `ON` | Link-time optimization; Clang + LTO wants `lld` |
 | `XFT_FAST_MATH` | `ON` | `-ffast-math` |
 | `XFT_SANITIZE` | `OFF` | ASan + UBSan; forces `XFT_LIBC=ON`, disables LTO |

@@ -438,7 +438,7 @@ _xft_syscall_srcs(SRCS_LIBC linux/libc)
 _xft_syscall_srcs(SRCS_WIN64 win64 REMOVE ioctl perf_events)
 
 if(XFT_STRICT_ARCH)
-  set(XFT_BACKEND_ARCHS ${XFT_ARCH})
+  set(XFT_BACKEND_ARCHS ${XFT_TARGET_ARCH})
 else()
   set(XFT_BACKEND_ARCHS x86_64 aarch64)
 endif()

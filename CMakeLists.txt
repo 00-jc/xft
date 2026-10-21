@@ -7,7 +7,7 @@ set(CMAKE_C_EXTENSIONS ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_VERBOSE_MAKEFILE ON CACHE BOOL "" FORCE)
 
-include(cmake/platform.cmake)	# XFT_ARCH, XFT_WIN64, XFT_LLC
+include(cmake/platform.cmake)	# XFT_TARGET_ARCH, XFT_WIN64, XFT_LLC
 include(cmake/options.cmake)	# options, validation, XFT_FLAVOR
 include(cmake/sources.cmake)	# SRCS_* lists
 include(cmake/flags.cmake)		# CFLAGS*, XFT_WARNS, toolchain, LTO

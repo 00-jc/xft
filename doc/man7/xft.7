@@ -187,10 +187,23 @@ target, which carries the freestanding flags.
 .It Dv XFT_LIBC
 Build against a libc instead of freestanding.
 Default off.
-.It Dv XFT_NATIVE
-Compile with
-.Fl march=native Fl mtune=native .
-Default on; forced off when cross compiling.
+.It Dv XFT_ARCH
+The
+.Fl march
+value, such as
+.Ql native ,
+.Ql x86-64-v3
+or
+.Ql armv8.2-a ;
+empty uses the compiler default.
+.Ql native
+also adds
+.Fl mtune=native .
+Default
+.Ql native ,
+or empty when cross compiling, where
+.Ql native
+is an error.
 .It Dv XFT_LTO
 Link-time optimization.
 Default on.

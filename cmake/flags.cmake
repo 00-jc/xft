@@ -93,8 +93,10 @@ set(CFLAGS_RAW
   -fstrict-aliasing
   -g3)
 
-if(XFT_NATIVE)
+if(XFT_ARCH STREQUAL "native")
   list(APPEND CFLAGS_RAW -march=native -mtune=native)
+elseif(NOT XFT_ARCH STREQUAL "")
+  list(APPEND CFLAGS_RAW -march=${XFT_ARCH})
 endif()
 if(XFT_FAST_MATH)
   list(APPEND CFLAGS_RAW -ffast-math)
@@ -102,6 +104,16 @@ endif()
 
 set(CFLAGS "")
 xft_probe(CFLAGS XFT_PROBE_CTX ${CFLAGS_RAW})
+
+# the probe drops what the compiler rejects, but a dropped -march would
+# quietly build for the wrong cpu
+if(NOT XFT_ARCH STREQUAL "" AND NOT "-march=${XFT_ARCH}" IN_LIST CFLAGS)
+  message(
+    FATAL_ERROR
+    "xft: ${CMAKE_C_COMPILER_ID} rejects -march=${XFT_ARCH} for "
+    "${CMAKE_SYSTEM_PROCESSOR}; fix XFT_ARCH or set it empty"
+  )
+endif()
 
 set(CFLAGS_HOSTED_RAW -fstack-protector-strong)
 set(CFLAGS_FREESTANDING_RAW -ffreestanding -fno-builtin -fno-stack-protector)

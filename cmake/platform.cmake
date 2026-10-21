@@ -1,11 +1,11 @@
 # target arch / os and host cache geometry
 
 if(CMAKE_SYSTEM_PROCESSOR MATCHES "^(x86_64|amd64|AMD64)$")
-  set(XFT_ARCH x86_64)
+  set(XFT_TARGET_ARCH x86_64)
 elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "^(aarch64|arm64)$")
-  set(XFT_ARCH aarch64)
+  set(XFT_TARGET_ARCH aarch64)
 else()
-  set(XFT_ARCH unknown)
+  set(XFT_TARGET_ARCH unknown)
 endif()
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
