@@ -13,7 +13,7 @@
 #include "tailor.h"
 #include "libc_bench.h"
 
-__attribute__((__always_inline__))
+__attribute__((__always_inline__, __used__))
 inline void	xft_main(const t_any *__restrict__ const sp)
 {
 	t_tailor	t;

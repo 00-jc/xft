@@ -27,7 +27,7 @@ inline void	xft_fillb(t_u8 *__restrict__ const bytereprs, t_u8 const c)
 	bytereprs[7] = (t_u8)xft_tern((c & (1 << 0)) != 0, '1', '0');
 }
 
-__attribute__((__always_inline__))
+__attribute__((__always_inline__, __used__))
 inline void	xft_main(const t_any *__restrict__ const sp)
 {
 	t_kernel_ptrs	kp;

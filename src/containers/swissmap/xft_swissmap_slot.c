@@ -12,13 +12,14 @@
 
 #include "xft_p_swissmap.h"
 
-__attribute__((__always_inline__, pure, __nonnull__(1), __returns_nonnull__))
+__attribute__((__always_inline__, pure, __nonnull__(1), __returns_nonnull__,
+	__used__))
 inline t_u8	*xft__swiss_meta(const t_swissmap *__restrict__ const map)
 {
 	return (xft_soa_fields(&map->soa, xft__swiss_ctx(), SWISS_META));
 }
 
-__attribute__((__always_inline__, __nonnull__(1)))
+__attribute__((__always_inline__, __nonnull__(1), __used__))
 inline void	xft__swiss_set(t_swissmap *__restrict__ const map,
 	t_size idx, t_swiss_slot slot)
 {
@@ -29,7 +30,7 @@ inline void	xft__swiss_set(t_swissmap *__restrict__ const map,
 	((t_u8 **)xft_soa_fields(&map->soa, ctx, SWISS_VALUE))[idx] = slot.value;
 }
 
-__attribute__((__always_inline__, pure, __nonnull__(1)))
+__attribute__((__always_inline__, pure, __nonnull__(1), __used__))
 inline t_swiss_slot	xft__swiss_get(const t_swissmap *__restrict__ const map,
 	t_size idx)
 {

@@ -13,7 +13,7 @@
 #include "soa.h"
 
 __attribute__((pure, __always_inline__,
-	__nonnull__(1, 2), __returns_nonnull__))
+	__nonnull__(1, 2), __returns_nonnull__, __used__))
 inline void	*xft_soa_fields(const t_soa *__restrict__ const soa,
 	const t_soa_context *__restrict__ const ctx,
 	t_size field_idx)

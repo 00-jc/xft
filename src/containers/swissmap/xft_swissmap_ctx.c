@@ -12,7 +12,7 @@
 
 #include "xft_p_swissmap.h"
 
-__attribute__((const, __always_inline__, __returns_nonnull__))
+__attribute__((const, __always_inline__, __returns_nonnull__, __used__))
 inline const t_soa_context	*xft__swiss_ctx(void)
 {
 	__extension__ static const t_soa_context	ctx = {

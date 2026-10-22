@@ -17,7 +17,7 @@
 #define SIZE 0x1000ULL
 
 __attribute__((pure, __nonnull__(1), __no_sanitize_address__,
-	__always_inline__))
+	__always_inline__, __used__))
 inline t_size	xft_strlen(const char *__restrict__ const str)
 {
 	t_uptr						a;

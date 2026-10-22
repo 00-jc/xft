@@ -12,13 +12,14 @@
 
 #include "xft_p_indexmap.h"
 
-__attribute__((__always_inline__, pure, __nonnull__(1), __returns_nonnull__))
+__attribute__((__always_inline__, pure, __nonnull__(1), __returns_nonnull__,
+	__used__))
 inline t_u8	*xft__imap_meta(const t_indexmap *__restrict__ const map)
 {
 	return (xft_soa_fields(&map->soa, xft__imap_ctx(), IMAP_META));
 }
 
-__attribute__((__always_inline__, __nonnull__(1)))
+__attribute__((__always_inline__, __nonnull__(1), __used__))
 inline void	xft__imap_set(t_indexmap *__restrict__ const map,
 	t_size idx, t_imap_slot slot)
 {
@@ -30,7 +31,7 @@ inline void	xft__imap_set(t_indexmap *__restrict__ const map,
 	((t_u64a *)xft_soa_fields(&map->soa, ctx, IMAP_SEED))[idx] = slot.seed;
 }
 
-__attribute__((__always_inline__, pure, __nonnull__(1)))
+__attribute__((__always_inline__, pure, __nonnull__(1), __used__))
 inline t_imap_slot	xft__imap_get(const t_indexmap *__restrict__ const map,
 	t_size idx)
 {

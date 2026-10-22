@@ -15,7 +15,7 @@
 #if XFT_HAS_512_VEC
 
 __attribute__((__nonnull__(1), pure, __no_sanitize_address__,
-	__always_inline__, __flatten__))
+	__always_inline__, __flatten__, __used__))
 inline t_vu256a	xft_vmask_load256(t_cany ptr, t_u32a mask)
 {
 	return ((t_vu256a)__builtin_ia32_loaddquqi256_mask(ptr,
@@ -42,7 +42,7 @@ static inline t_vu256	xft__vmask_load256_split(t_cany ptr, t_u32a mask)
 }
 
 __attribute__((__nonnull__(1), pure, __no_sanitize_address__,
-	__always_inline__, __flatten__))
+	__always_inline__, __flatten__, __used__))
 inline t_vu256a	xft_vmask_load256(t_cany ptr, t_u32a mask)
 {
 	const t_vu256	bit = {1, 2, 4, 8, 16, 32, 64, -128,

@@ -15,7 +15,7 @@
 #if XFT_HAS_512_VEC
 
 __attribute__((__nonnull__(1), pure, __no_sanitize_address__,
-	__always_inline__, __flatten__))
+	__always_inline__, __flatten__, __used__))
 inline t_nvec16a	xft_vmask_load16(t_cany ptr, t_nmask16 mask)
 {
 	return (xft_vmask_load512_16(ptr, mask));
@@ -24,7 +24,7 @@ inline t_nvec16a	xft_vmask_load16(t_cany ptr, t_nmask16 mask)
 #elif XFT_HAS_256_VEC
 
 __attribute__((__nonnull__(1), pure, __no_sanitize_address__,
-	__always_inline__, __flatten__))
+	__always_inline__, __flatten__, __used__))
 inline t_nvec16a	xft_vmask_load16(t_cany ptr, t_nmask16 mask)
 {
 	return (xft_vmask_load256_16(ptr, mask));
@@ -33,7 +33,7 @@ inline t_nvec16a	xft_vmask_load16(t_cany ptr, t_nmask16 mask)
 #elif XFT_HAS_128_VEC
 
 __attribute__((__nonnull__(1), pure, __no_sanitize_address__,
-	__always_inline__, __flatten__))
+	__always_inline__, __flatten__, __used__))
 inline t_nvec16a	xft_vmask_load16(t_cany ptr, t_nmask16 mask)
 {
 	return (xft_vmask_load128_16(ptr, mask));
@@ -42,7 +42,7 @@ inline t_nvec16a	xft_vmask_load16(t_cany ptr, t_nmask16 mask)
 #else
 
 __attribute__((__nonnull__(1), pure, __no_sanitize_address__,
-	__always_inline__, __flatten__))
+	__always_inline__, __flatten__, __used__))
 inline t_nvec16a	xft_vmask_load16(t_cany ptr, t_nmask16 mask)
 {
 	t_nvec16a	out;

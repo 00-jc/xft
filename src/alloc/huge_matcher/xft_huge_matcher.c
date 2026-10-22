@@ -12,7 +12,7 @@
 
 #include "xft_p_hugepage.h"
 
-__attribute__((__always_inline__, const))
+__attribute__((__always_inline__, const, __used__))
 inline t_size	xft_match_hugepage(t_size requested_size)
 {
 	t_size	page_size;
@@ -38,7 +38,7 @@ inline t_size	xft_match_hugepage(t_size requested_size)
 	return (xft_tern(page_size < 8, 8, page_size));
 }
 
-__attribute__((__always_inline__, const))
+__attribute__((__always_inline__, const, __used__))
 inline int	xft_match_hugepage_flags(t_size page_size)
 {
 	t_u32	flags;

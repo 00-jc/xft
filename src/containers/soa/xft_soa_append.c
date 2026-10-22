@@ -12,7 +12,7 @@
 
 #include "soa.h"
 
-__attribute__((__always_inline__, __nonnull__(1, 2, 3)))
+__attribute__((__always_inline__, __nonnull__(1, 2, 3), __used__))
 inline void	xft_soa_append_from_struct_unchecked(
 	t_soa *__restrict__ const soa,
 	t_any __restrict__ const _struct,
@@ -38,7 +38,7 @@ inline void	xft_soa_append_from_struct_unchecked(
 	++soa->occupied_elements;
 }
 
-__attribute__((__nonnull__(2, 3, 4), __always_inline__))
+__attribute__((__nonnull__(2, 3, 4), __always_inline__, __used__))
 inline t_result	xft_soa_append_from_struct(
 	t_allocator allocator,
 	t_soa *__restrict__ const soa,

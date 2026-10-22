@@ -42,7 +42,7 @@ inline void	run_all_tests(t_test *t)
 	test_xid(t);
 }
 
-__attribute__((__always_inline__))
+__attribute__((__always_inline__, __used__))
 inline void	xft_main(const t_any *__restrict__ const sp)
 {
 	t_test	t;

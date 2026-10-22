@@ -12,7 +12,7 @@
 
 #include "xft_p_indexmap.h"
 
-__attribute__((__always_inline__, pure, __nonnull__(1)))
+__attribute__((__always_inline__, pure, __nonnull__(1), __used__))
 inline t_imap_probe	xft__imap_probe_seeded(
 	const t_indexmap *__restrict__ const map, t_buffer key, t_u64a seed)
 {

@@ -33,7 +33,7 @@ inline t_u8	xft_xid_codepoint_len(t_u32a codepoint)
 	return (n);
 }
 
-__attribute__((__hot__, pure, __always_inline__))
+__attribute__((__hot__, pure, __always_inline__, __used__))
 inline t_u32	xft_xid_decode(t_u32 w)
 {
 	const t_u32				min_cp[5] = {0, 0, 0x80, 0x800, 0x10000};

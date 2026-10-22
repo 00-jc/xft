@@ -12,7 +12,7 @@
 
 #include "xft_p_indexmap.h"
 
-__attribute__((__always_inline__, pure, __nonnull__(1)))
+__attribute__((__always_inline__, pure, __nonnull__(1), __used__))
 inline t_imap_probe	xft__imap_probe(
 	const t_indexmap *__restrict__ const map, t_buffer key)
 {
@@ -33,7 +33,7 @@ static inline t_result	xft__imap_key_eq(
 		&& !xft_memcmp(key.mem, keys[idx].mem, key.size));
 }
 
-__attribute__((__always_inline__, pure, __nonnull__(1)))
+__attribute__((__always_inline__, pure, __nonnull__(1), __used__))
 inline t_size	xft__imap_find(const t_indexmap *__restrict__ const map,
 	t_buffer key, t_imap_probe probe)
 {
@@ -59,7 +59,7 @@ inline t_size	xft__imap_find(const t_indexmap *__restrict__ const map,
 	}
 }
 
-__attribute__((__always_inline__, pure, __nonnull__(1)))
+__attribute__((__always_inline__, pure, __nonnull__(1), __used__))
 inline t_size	xft__imap_find_free(const t_indexmap *__restrict__ const map,
 	t_imap_probe probe)
 {

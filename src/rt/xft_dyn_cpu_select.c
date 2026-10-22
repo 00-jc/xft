@@ -62,7 +62,7 @@ static inline t_x86_ver	xft_x86_ver(void)
 	return (XFT_X86_V4);
 }
 
-__attribute__((const, __always_inline__, __flatten__))
+__attribute__((const, __always_inline__, __flatten__, __used__))
 inline t_xft_arch	xft_dyn_cpu_select(void)
 {
 	t_xft_arch	v;
@@ -76,7 +76,7 @@ inline t_xft_arch	xft_dyn_cpu_select(void)
 
 #elif defined(__aarch64__)
 
-__attribute__((const, __always_inline__))
+__attribute__((const, __always_inline__, __used__))
 inline t_xft_arch	xft_dyn_cpu_select(void)
 {
 	return ((t_xft_arch){.has_128_vec = true,
@@ -88,7 +88,7 @@ inline t_xft_arch	xft_dyn_cpu_select(void)
 
 #else
 
-__attribute__((const, __always_inline__))
+__attribute__((const, __always_inline__, __used__))
 inline t_xft_arch	xft_dyn_cpu_select(void)
 {
 	return ((t_xft_arch){0});

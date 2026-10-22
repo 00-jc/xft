@@ -15,7 +15,7 @@
 #if XFT_HAS_512_VEC
 
 __attribute__((__nonnull__(1), pure, __no_sanitize_address__,
-	__always_inline__, __flatten__))
+	__always_inline__, __flatten__, __used__))
 inline t_vu32_128a	xft_vmask_load128_32(t_cany ptr, t_u8 mask)
 {
 	return ((t_vu32_128a)__builtin_ia32_loaddqusi128_mask(ptr,
@@ -25,7 +25,7 @@ inline t_vu32_128a	xft_vmask_load128_32(t_cany ptr, t_u8 mask)
 #elif XFT_HAS_256_VEC
 
 __attribute__((__nonnull__(1), pure, __no_sanitize_address__,
-	__always_inline__, __flatten__))
+	__always_inline__, __flatten__, __used__))
 inline t_vu32_128a	xft_vmask_load128_32(t_cany ptr, t_u8 mask)
 {
 	t_vs32_128	lanes;
@@ -40,7 +40,7 @@ inline t_vu32_128a	xft_vmask_load128_32(t_cany ptr, t_u8 mask)
 #elif XFT_HAS_128_VEC
 
 __attribute__((__nonnull__(1), pure, __no_sanitize_address__,
-	__always_inline__, __flatten__))
+	__always_inline__, __flatten__, __used__))
 inline t_vu32_128a	xft_vmask_load128_32(t_cany ptr, t_u8 mask)
 {
 	t_vu32_128a	out;

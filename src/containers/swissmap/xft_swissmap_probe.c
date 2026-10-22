@@ -12,7 +12,7 @@
 
 #include "xft_p_swissmap.h"
 
-__attribute__((__always_inline__, pure, __nonnull__(1)))
+__attribute__((__always_inline__, pure, __nonnull__(1), __used__))
 inline t_swiss_probe	xft__swiss_probe(
 	const t_swissmap *__restrict__ const map, t_buffer key)
 {
@@ -34,11 +34,11 @@ static inline t_result	xft__swiss_key_eq(
 		&& !xft_memcmp(key.mem, keys[idx].mem, key.size));
 }
 
-__attribute__((__always_inline__, pure, __nonnull__(1)))
+__attribute__((__always_inline__, pure, __nonnull__(1), __used__))
 inline t_size	xft__swiss_find(const t_swissmap *__restrict__ const map,
 	t_buffer key, t_swiss_probe probe)
 {
-	t_blk8r				meta = xft__swiss_meta(map);
+	const t_blk8r		meta = xft__swiss_meta(map);
 	t_nvec				vec;
 	t_nmask				mask;
 	t_size				idx;
@@ -60,11 +60,11 @@ inline t_size	xft__swiss_find(const t_swissmap *__restrict__ const map,
 	}
 }
 
-__attribute__((__always_inline__, pure, __nonnull__(1)))
+__attribute__((__always_inline__, pure, __nonnull__(1), __used__))
 inline t_size	xft__swiss_find_free(const t_swissmap *__restrict__ const map,
 	t_swiss_probe probe)
 {
-	t_blk8r				meta = xft__swiss_meta(map);
+	const t_blk8r		meta = xft__swiss_meta(map);
 	t_nmask				mask;
 
 	while (1)

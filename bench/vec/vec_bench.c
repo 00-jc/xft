@@ -14,7 +14,7 @@
 #include "vec_bench.h"
 #include "rt.h"
 
-__attribute__((__always_inline__))
+__attribute__((__always_inline__, __used__))
 inline void	xft_main(const t_any *__restrict__ const sp)
 {
 	static t_tailor_bench	benches[] = {
