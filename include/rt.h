@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/03 18:01:29 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/10/03 18:01:32 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/10/22 01:53:06 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,13 @@ typedef struct s_xft_rt
 	t_kernel_ptrs										kp;
 }	t_xft_rt;
 
+typedef struct s_xft_arch
+{
+	bool												has_128_vec;
+	bool												has_256_vec;
+	bool												has_512_vec;
+}	t_xft_arch;
+
 # ifndef XFT_NO_RT
 
 #  if defined(__x86_64__) && !defined(XFT_REQUIRE_LIBC)
@@ -95,5 +102,8 @@ t_xft_rt		xft_get_rt(const t_any *sp)\
 
 void			xft_free_kernel_ptrs(t_kernel_ptrs *kp)\
 					__attribute__((__nonnull__(1)));
+
+t_xft_arch		xft_dyn_cpu_select(void)\
+					__attribute__((const));
 
 #endif

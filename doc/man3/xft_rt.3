@@ -1,10 +1,11 @@
-.Dd October 14, 2026
+.Dd October 22, 2026
 .Dt XFT_RT 3
 .Os xft
 .Sh NAME
 .Nm xft_get_kernel_ptrs ,
 .Nm xft_get_rt ,
 .Nm xft_free_kernel_ptrs ,
+.Nm xft_dyn_cpu_select ,
 .Nm xft_main
 .Nd program entry point and runtime helpers
 .Sh SYNOPSIS
@@ -15,16 +16,18 @@
 .Fn xft_get_rt "const t_any *sp"
 .Ft void
 .Fn xft_free_kernel_ptrs "t_kernel_ptrs *kp"
+.Ft t_xft_arch
+.Fn xft_dyn_cpu_select void
 .Ft void
 .Fn xft_main "const t_any *restrict sp"
 .Sh DESCRIPTION
 .In rt.h
 declares the types that carry the process arguments and the entry points
 that hand them to
-.Nm
+xft
 programs.
 On Linux and Windows a program written against
-.Nm
+xft
 defines
 .Fn xft_main
 instead of
@@ -51,6 +54,12 @@ typedef struct s_hwcaps {
 typedef struct s_xft_rt {
 	t_kernel_ptrs       kp;
 } t_xft_rt;
+
+typedef struct s_xft_arch {
+	bool                has_128_vec;
+	bool                has_256_vec;
+	bool                has_512_vec;
+} t_xft_arch;
 .Ed
 .Pp
 .Vt t_nat_str
@@ -71,6 +80,10 @@ wraps
 so that more runtime state can be added without changing the
 .Fn xft_main
 signature.
+.Vt t_xft_arch
+reports which vector widths the running CPU and operating system support;
+see
+.Sx CPU detection .
 .Ss Entry point
 .Fn xft_main
 is the function a program defines.
@@ -190,6 +203,44 @@ for
 .Fa envp ,
 then zeroes the structure.
 On Linux it does nothing, since the structure aliases the stack.
+.Ss CPU detection
+.Fn xft_dyn_cpu_select
+queries the running CPU and returns which vector widths are usable:
+.Bl -tag -width "aarch64"
+.It x86_64
+.Fa has_128_vec
+is set when the CPU has SSE2.
+.Fa has_256_vec
+additionally requires OSXSAVE, AVX, AVX2, and the SSE and AVX state
+enabled in XCR0.
+.Fa has_512_vec
+additionally requires AVX512F, AVX512DQ, AVX512BW, AVX512VL and
+AVX512VBMI2, and the opmask and ZMM state enabled in XCR0.
+.It aarch64
+.Fa has_128_vec
+is always set, since NEON is mandatory; the wider fields are never set.
+.El
+.Pp
+On any other architecture every field is false.
+.Pp
+The detection is meant for release builds, but it only reports; it does
+not switch anything inside the library.
+Every vector path in
+xft
+is selected by the preprocessor from the target ISA macros at compile time,
+following
+.Dv XFT_ARCH
+(see
+.Xr xft 7 ) ,
+so one build contains exactly one code path for each routine.
+A program that has to run on CPUs of different generations should instead
+ship one executable per target, each built with its own
+.Dv XFT_ARCH
+and fully specialized for it, plus a small launcher that calls
+.Fn xft_dyn_cpu_select
+and executes the matching one.
+xft
+executables are small enough that bundling several of them costs little.
 .Sh RETURN VALUES
 .Fn xft_get_kernel_ptrs
 and
@@ -197,6 +248,10 @@ and
 return the filled structure.
 .Fn xft_free_kernel_ptrs
 returns nothing.
+.Fn xft_dyn_cpu_select
+returns the detected
+.Vt t_xft_arch ,
+with every field false if CPUID is unavailable.
 .Fn xft_main
 does not return.
 .Sh EXAMPLES
@@ -239,7 +294,7 @@ members of
 .Vt t_kernel_ptrs
 follow the platform's own types.
 On Windows they are UTF-16 and cannot be passed to any
-.Nm
+xft
 function that expects a byte buffer without conversion.
 .Pp
 .Fn xft_get_kernel_ptrs

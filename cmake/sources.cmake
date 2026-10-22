@@ -330,12 +330,14 @@ set(SRCS_RNG src/rng/xft_xoshiro256ss.c)
 set(SRCS_RT_linux
   src/rt/linux/xft_free_kernel_ptrs.c
   src/rt/linux/xft_get_kernel_ptrs.c
-  src/rt/linux/xft_get_rt.c)
+  src/rt/linux/xft_get_rt.c
+  src/rt/xft_dyn_cpu_select.c)
 
 set(SRCS_RT_win64
   src/rt/win64/xft_free_kernel_ptrs.c
   src/rt/win64/xft_get_kernel_ptrs.c
-  src/rt/win64/xft_get_rt.c)
+  src/rt/win64/xft_get_rt.c
+  src/rt/xft_dyn_cpu_select.c)
 
 if(XFT_WIN64)
   set(SRCS_RT ${SRCS_RT_win64})
