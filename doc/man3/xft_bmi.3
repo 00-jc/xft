@@ -1,4 +1,4 @@
-.Dd October 14, 2026
+.Dd October 22, 2026
 .Dt XFT_BMI 3
 .Os xft
 .Sh NAME
@@ -158,18 +158,24 @@ and
 to 0 or 1, and
 .Dv XFT_NVEC_SIZE
 to the native vector width in bytes:
-.Bl -column "AVX512 BW + VL + DQ + VBMI2" "512" "256" "128" "NVEC"
+.Bl -column "AVX512 BW + VL + DQ" "512" "256" "128" "NVEC"
 .It Sy Target Ta Sy 512 Ta Sy 256 Ta Sy 128 Ta Sy NVEC
-.It AVX512 BW + VL + DQ + VBMI2 Ta 1 Ta 1 Ta 1 Ta 64
+.It AVX512 BW + VL + DQ Ta 1 Ta 1 Ta 1 Ta 64
 .It __AVX2__ Ta 0 Ta 1 Ta 1 Ta 32
 .It __SSE2__ or __ARM_NEON Ta 0 Ta 0 Ta 1 Ta 16
 .It none of the above Ta 0 Ta 0 Ta 0 Ta 8
 .El
 .Pp
 AVX-512F alone is not enough for the 512-bit path: byte- and word-granular
-masks need BW, the 128- and 256-bit masked forms need VL, dword and qword
-sign masks need DQ, and byte and word compaction need VBMI2.
-A CPU without all four uses the AVX2 path.
+masks need BW, the 128- and 256-bit masked forms need VL, and dword and
+qword sign masks need DQ.
+A CPU without all three uses the AVX2 path.
+All three are part of
+.Fl march Ns = Ns Cm x86-64-v4 .
+AVX512VBMI2, which byte and word compaction use, is not; only the 8- and
+16-bit
+.Fn xft_vcompress
+forms check it, and fall back to the scalar loop without it.
 .Pp
 The native types follow the selected width:
 .Bl -tag -width "t_nmask"
@@ -522,10 +528,11 @@ packed in order into the low lanes, with the remaining lanes zero.
 Only the sized forms exist.
 With
 .Dv XFT_HAS_512_VEC
+and
+.Dv __AVX512VBMI2__
 it uses
 .Ql vpcompressb ;
-otherwise the 128- and 256-bit forms use a scalar loop and the 512-bit
-form is not available.
+otherwise every form uses a scalar loop.
 .El
 .Ss Wider lanes
 Every primitive above has a 16-, 32- and 64-bit lane form, with
@@ -604,7 +611,12 @@ With
 .Dv XFT_HAS_512_VEC
 every width uses a single AVX-512 builtin per operation, including the
 masked loads and
-.Ql vpcompress{w,d,q} .
+.Ql vpcompress{d,q} ,
+and
+.Ql vpcompressw
+when
+.Dv __AVX512VBMI2__
+is also defined.
 Without it:
 .Bl -bullet
 .It
@@ -631,7 +643,11 @@ They return zero without reading memory if
 is 0, and never read outside the selected lanes' addresses;
 .It
 compaction is an iterative loop that moves the lowest set lane each
-iteration.
+iteration; the 8- and 16-bit forms also use it with
+.Dv XFT_HAS_512_VEC
+when
+.Dv __AVX512VBMI2__
+is not defined.
 .El
 .Pp
 When none of

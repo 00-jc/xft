@@ -15,6 +15,7 @@
 
 # include "syscalls.h"
 # include "elf.h"
+# include "x86_64.h"
 
 # ifdef _WIN64
 
@@ -73,6 +74,7 @@ typedef struct s_xft_arch
 	bool												has_128_vec;
 	bool												has_256_vec;
 	bool												has_512_vec;
+	t_x86_ver											x86_64_ver;
 }	t_xft_arch;
 
 # ifndef XFT_NO_RT

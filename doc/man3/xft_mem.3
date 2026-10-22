@@ -1,4 +1,4 @@
-.Dd October 14, 2026
+.Dd October 22, 2026
 .Dt XFT_MEM 3
 .Os xft
 .Sh NAME
@@ -329,7 +329,7 @@ is 16 MiB unless defined when the library is built.
 and
 .Fn xft_memcmp
 work in native vectors of 64, 32, 16 or 8 bytes, for AVX-512 (BW, VL and
-VBMI2), AVX2, SSE2 or NEON, and no SIMD respectively.
+DQ), AVX2, SSE2 or NEON, and no SIMD respectively.
 Buffers of at least one vector are processed with unaligned full-vector
 loads and an overlapping tail, and never read outside the
 .Fa n

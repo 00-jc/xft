@@ -18,8 +18,7 @@
 typedef t_u8 *__restrict__ const									t_blk8w;
 typedef const t_u8 *__restrict__ const								t_blk8r;
 
-# if defined(__AVX512BW__) && defined(__AVX512VL__) && defined(__AVX512DQ__)\
-	&& defined(__AVX512VBMI2__)
+# if defined(__AVX512BW__) && defined(__AVX512VL__) && defined(__AVX512DQ__)
 
 #  define XFT_HAS_512_VEC 1
 #  define XFT_HAS_256_VEC 1

@@ -10,6 +10,7 @@
 .Nd program entry point and runtime helpers
 .Sh SYNOPSIS
 .In rt.h
+.In x86_64.h
 .Ft t_kernel_ptrs
 .Fn xft_get_kernel_ptrs "const t_any *sp"
 .Ft t_xft_rt
@@ -59,7 +60,16 @@ typedef struct s_xft_arch {
 	bool                has_128_vec;
 	bool                has_256_vec;
 	bool                has_512_vec;
+	t_x86_ver           x86_64_ver;
 } t_xft_arch;
+
+typedef enum e_x86_ver {
+	XFT_X86_NONE,
+	XFT_X86_V1,
+	XFT_X86_V2,
+	XFT_X86_V3,
+	XFT_X86_V4,
+} t_x86_ver;
 .Ed
 .Pp
 .Vt t_nat_str
@@ -81,8 +91,14 @@ so that more runtime state can be added without changing the
 .Fn xft_main
 signature.
 .Vt t_xft_arch
-reports which vector widths the running CPU and operating system support;
-see
+reports which vector widths the running CPU and operating system support,
+and on x86_64 the psABI microarchitecture level they reach;
+.Vt t_x86_ver ,
+from
+.In x86_64.h ,
+names those levels in increasing order, so they compare with
+.Ql >= .
+See
 .Sx CPU detection .
 .Ss Entry point
 .Fn xft_main
@@ -208,17 +224,45 @@ On Linux it does nothing, since the structure aliases the stack.
 queries the running CPU and returns which vector widths are usable:
 .Bl -tag -width "aarch64"
 .It x86_64
+.Fa x86_64_ver
+is the highest x86-64 psABI level the CPU and operating system fully
+support, each level including the previous ones:
+.Bl -tag -width "XFT_X86_NONE"
+.It Dv XFT_X86_NONE
+CPUID is unavailable or the CPU lacks SSE2.
+.It Dv XFT_X86_V1
+SSE2.
+.It Dv XFT_X86_V2
+SSE3, SSSE3, SSE4.1, SSE4.2, POPCNT, CMPXCHG16B and LAHF/SAHF.
+.It Dv XFT_X86_V3
+AVX, AVX2, BMI1, BMI2, F16C, FMA, LZCNT, MOVBE and OSXSAVE, with the SSE
+and AVX state enabled in XCR0.
+.It Dv XFT_X86_V4
+AVX512F, AVX512BW, AVX512CD, AVX512DQ and AVX512VL, with the opmask and
+ZMM state enabled in XCR0.
+.El
+.Pp
+The widths follow the level, so that a build made with
+.Fl march Ns = Ns Cm x86-64-v Ns Ar N
+only runs where it is reported usable:
 .Fa has_128_vec
-is set when the CPU has SSE2.
+is set from
+.Dv XFT_X86_V1 ,
 .Fa has_256_vec
-additionally requires OSXSAVE, AVX, AVX2, and the SSE and AVX state
-enabled in XCR0.
+from
+.Dv XFT_X86_V3
+and
 .Fa has_512_vec
-additionally requires AVX512F, AVX512DQ, AVX512BW, AVX512VL and
-AVX512VBMI2, and the opmask and ZMM state enabled in XCR0.
+from
+.Dv XFT_X86_V4 .
+AVX512VBMI2 is not part of any level and is not reported; see
+.Xr xft_bmi 3 .
 .It aarch64
 .Fa has_128_vec
-is always set, since NEON is mandatory; the wider fields are never set.
+is always set, since NEON is mandatory; the wider fields are never set and
+.Fa x86_64_ver
+is
+.Dv XFT_X86_NONE .
 .El
 .Pp
 On any other architecture every field is false.
@@ -251,7 +295,10 @@ returns nothing.
 .Fn xft_dyn_cpu_select
 returns the detected
 .Vt t_xft_arch ,
-with every field false if CPUID is unavailable.
+with every field false, and
+.Fa x86_64_ver
+.Dv XFT_X86_NONE ,
+if CPUID is unavailable.
 .Fn xft_main
 does not return.
 .Sh EXAMPLES

@@ -33,7 +33,7 @@ inline t_vu32_128a	xft_vmask_load128_32(t_cany ptr, t_u8 mask)
 
 	lanes = (t_vs32_128)xft_vsplat128_32(mask);
 	sel = (t_vs32_128)(xft_vsplat128_32(1) << xft_viota128_32());
-	return ((t_vu32_128a)__builtin_ia32_maskloadd((const t_vs32_128 *)ptr,
+	return ((t_vu32_128a)__builtin_ia32_maskloadd(ptr,
 			(t_vs32_128)((lanes & sel) != 0)));
 }
 

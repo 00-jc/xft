@@ -12,7 +12,7 @@
 
 #include "xft_p_vmanip.h"
 
-#if XFT_HAS_512_VEC
+#if XFT_HAS_512_VEC && defined(__AVX512VBMI2__)
 
 __attribute__((__always_inline__, __flatten__, const, __used__))
 inline t_vu16_128	xft_vcompress128_16(t_vu16_128a vec, t_u8 mask)
