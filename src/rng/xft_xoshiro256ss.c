@@ -14,7 +14,7 @@
 #include "timing.h"
 
 __attribute__((__nonnull__(1), __always_inline__, __used__))
-inline t_u64a	xft_splitmix(t_u64a *restrict const x)
+static inline t_u64a	xft_splitmix(t_u64a *restrict const x)
 {
 	t_u64a	z;
 

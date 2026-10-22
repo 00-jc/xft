@@ -13,7 +13,7 @@
 #include "xft_p_mem.h"
 
 __attribute__((__nonnull__(1, 2), __always_inline__, __used__))
-inline void	xft_memmove_512_tail(t_any d, t_cany s, t_size n2)
+static inline void	xft_memmove_512_tail(t_any d, t_cany s, t_size n2)
 {
 	t_size		x[2];
 	t_vu512a	interleaved[3];
@@ -34,7 +34,7 @@ inline void	xft_memmove_512_tail(t_any d, t_cany s, t_size n2)
 }
 
 __attribute__((__nonnull__(1, 2, 3), __always_inline__, __used__))
-inline void	xft__hugekernel_move(t_any d, t_cany const s, t_vu512a x[4])
+static inline void	xft__hugekernel_move(t_any d, t_cany const s, t_vu512a x[4])
 {
 	x[0] = ((t_blk512r)s)[0];
 	x[1] = ((t_blk512r)s)[1];

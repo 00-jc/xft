@@ -38,13 +38,13 @@ inline t_u64a	xft_get_nanos(void)
 #else
 
 __attribute__((__nonnull__(1), __always_inline__, __used__))
-inline t_u64a	xft__ns_of(t_timespec *ts)
+static inline t_u64a	xft__ns_of(t_timespec *ts)
 {
 	return ((t_u64a)ts->tv_sec * 1000000000 + (t_u64a)ts->tv_nsec);
 }
 
 __attribute__((__always_inline__, __nonnull__(1), __used__))
-inline void	xft__clock_init(t_tsc *tsc)
+static inline void	xft__clock_init(t_tsc *tsc)
 {
 	t_timespec	a;
 	t_timespec	b;

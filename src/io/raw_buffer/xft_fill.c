@@ -13,7 +13,7 @@
 #include "xft_p_io.h"
 
 __attribute__((__always_inline__, __nonnull__(1, 2, 4), __used__))
-inline t_result	xft__stream_unbuffered(t_reader *__restrict__ const reader,
+static inline t_result	xft__stream_unbuffered(t_reader *__restrict__ const reader,
 		t_u8 *__restrict__ const dst, t_size len,
 		t_size *__restrict__ const total)
 {

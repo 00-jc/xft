@@ -16,7 +16,7 @@
 #include "math.h"
 
 __attribute__((__nonnull__(1), __always_inline__, __used__))
-inline t_size	xft_fmt_uint_back(t_u8 *buf, t_u64 n)
+static inline t_size	xft_fmt_uint_back(t_u8 *buf, t_u64 n)
 {
 	t_size	i;
 	t_u64	q;
@@ -34,7 +34,7 @@ inline t_size	xft_fmt_uint_back(t_u8 *buf, t_u64 n)
 }
 
 __attribute__((__nonnull__(1), __always_inline__, __used__))
-inline t_size	xft_fmt_double_int(t_u8 *out, t_f64 d, bool neg)
+static inline t_size	xft_fmt_double_int(t_u8 *out, t_f64 d, bool neg)
 {
 	t_u8	tmp[20];
 	t_size	j;
@@ -49,7 +49,7 @@ inline t_size	xft_fmt_double_int(t_u8 *out, t_f64 d, bool neg)
 }
 
 __attribute__((__nonnull__(1), __always_inline__, __used__))
-inline t_size	xft_fmt_double_frac(t_u8 *out, t_f64 frac)
+static inline t_size	xft_fmt_double_frac(t_u8 *out, t_f64 frac)
 {
 	t_size	i;
 	t_size	k;

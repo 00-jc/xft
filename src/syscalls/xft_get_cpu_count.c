@@ -14,7 +14,7 @@
 #include "syscalls.h"
 
 __attribute__((pure, __nonnull__(1), unused, __always_inline__, __used__))
-inline t_size	xft__cpu_count(t_size *__restrict__ const set)
+static inline t_size	xft__cpu_count(t_size *__restrict__ const set)
 {
 	const t_size	size = 128 / sizeof(t_size);
 	t_size			i;

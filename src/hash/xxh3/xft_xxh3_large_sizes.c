@@ -15,7 +15,7 @@
 #define MASK 0x00000000FFFFFFFF
 
 __attribute__((__nonnull__(1, 2, 3), __always_inline__, __used__))
-inline void	xft_xxh3_accumulate_512(t_blk8r acc, t_blk8r input, t_blk8r secret)
+static inline void	xft_xxh3_accumulate_512(t_blk8r acc, t_blk8r input, t_blk8r secret)
 {
 	t_vu64_512	*xacc;
 	t_vu64_512	rr[7];
@@ -41,7 +41,7 @@ inline void	xft_xxh3_accumulate_512(t_blk8r acc, t_blk8r input, t_blk8r secret)
 }
 
 __attribute__((__nonnull__(1, 2), __always_inline__, __used__))
-inline void	xft_xxh3_scramble_acc_512(t_blk8r acc, t_blk8r secret)
+static inline void	xft_xxh3_scramble_acc_512(t_blk8r acc, t_blk8r secret)
 {
 	const t_vu64_512		prime = (t_vu64_512){1, 1, 1, 1, 1, 1, 1, 1}
 		* XXH3_PRIME32_1;
@@ -64,7 +64,7 @@ inline void	xft_xxh3_scramble_acc_512(t_blk8r acc, t_blk8r secret)
 }
 
 __attribute__((__nonnull__(1, 2, 3), __always_inline__, __used__))
-inline void	xft_xxh3_accumulate(t_blk8r accs,
+static inline void	xft_xxh3_accumulate(t_blk8r accs,
 	t_blk8r input, t_blk8r secret, t_size nb_stripes)
 {
 	t_size	n;
@@ -82,7 +82,7 @@ inline void	xft_xxh3_accumulate(t_blk8r accs,
 }
 
 __attribute__((__nonnull__(1), __always_inline__, __used__))
-inline void	xft_xxh3_hashlong_internal_loop(t_blk8r acc, t_buffer input,
+static inline void	xft_xxh3_hashlong_internal_loop(t_blk8r acc, t_buffer input,
 		t_buffer secret)
 {
 	t_size	nb_str_blk;

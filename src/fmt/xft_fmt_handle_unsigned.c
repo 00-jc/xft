@@ -15,7 +15,7 @@
 #include "xft_p_fmt.h"
 
 __attribute__((const, __always_inline__, __used__))
-inline t_u64	xft_get_max(t_u8 c)
+static inline t_u64	xft_get_max(t_u8 c)
 {
 	if (c == 'q')
 		return (UINT64_MAX);

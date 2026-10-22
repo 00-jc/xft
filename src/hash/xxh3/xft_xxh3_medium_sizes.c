@@ -13,7 +13,7 @@
 #include "xft_p_xxh3.h"
 
 __attribute__((pure, __always_inline__, __nonnull__(1, 2), __used__))
-inline t_u64a	xft_xxh3_mix16b(const t_u8 *input, const t_u8 *secret,
+static inline t_u64a	xft_xxh3_mix16b(const t_u8 *input, const t_u8 *secret,
 		t_u64a seed)
 {
 	t_u64a	lhs;
@@ -53,7 +53,7 @@ inline t_u64a	xft_xxh3_len_17to128(t_buffer input,
 }
 
 __attribute__((pure, __always_inline__, __used__))
-inline t_u64a	xft_xxh3_len_129to240__first(t_buffer input, t_buffer secret,
+static inline t_u64a	xft_xxh3_len_129to240__first(t_buffer input, t_buffer secret,
 	t_u64a seed, t_u64a acc)
 {
 	if (input.size < 129 || input.size > 240

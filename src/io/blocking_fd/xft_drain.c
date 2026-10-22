@@ -14,7 +14,7 @@
 #include "types/io_types.h"
 
 __attribute__((__always_inline__, __nonnull__(1, 2), __used__))
-inline void	xft_sync_iovecs(t_iovec *__restrict__ *__restrict__ bufs,
+static inline void	xft_sync_iovecs(t_iovec *__restrict__ *__restrict__ bufs,
 	t_size *__restrict__ nbufs, t_size written)
 {
 	t_size	i;
