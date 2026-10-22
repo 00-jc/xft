@@ -26,7 +26,7 @@ void	xft_gpa_bench_8(t_any ptr)
 	while (n-- > 0)
 	{
 		b = xft_gpa_alloc(gpa, 8, 8);
-		__asm__("": "+r,m"(b.mem) ::"memory");
+		__asm__("": "+r"(b.mem) ::"memory");
 		bytes += b.size;
 		xft_gpa_free(gpa, b);
 	}
@@ -46,7 +46,7 @@ void	xft_gpa_bench_64(t_any ptr)
 	while (n-- > 0)
 	{
 		b = xft_gpa_alloc(gpa, 64, 8);
-		__asm__("": "+r,m"(b.mem) ::"memory");
+		__asm__("": "+r"(b.mem) ::"memory");
 		bytes += b.size;
 		xft_gpa_free(gpa, b);
 	}
@@ -66,7 +66,7 @@ void	xft_gpa_bench_512(t_any ptr)
 	while (n-- > 0)
 	{
 		b = xft_gpa_alloc(gpa, 512, 8);
-		__asm__("": "+r,m"(b.mem) ::"memory");
+		__asm__("": "+r"(b.mem) ::"memory");
 		bytes += b.size;
 		xft_gpa_free(gpa, b);
 	}
@@ -86,7 +86,7 @@ void	xft_gpa_bench_8k(t_any ptr)
 	while (n-- > 0)
 	{
 		b = xft_gpa_alloc(gpa, 8192, 8);
-		__asm__("": "+r,m"(b.mem) ::"memory");
+		__asm__("": "+r"(b.mem) ::"memory");
 		bytes += b.size;
 		xft_gpa_free(gpa, b);
 	}
@@ -107,7 +107,7 @@ void	xft_gpa_bench_varied(t_any ptr)
 	while (n-- > 0)
 	{
 		b = xft_gpa_alloc(gpa, sizes[n & 3], 8);
-		__asm__("": "+r,m"(b.mem) ::"memory");
+		__asm__("": "+r"(b.mem) ::"memory");
 		bytes += b.size;
 		xft_gpa_free(gpa, b);
 	}

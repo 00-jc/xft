@@ -38,7 +38,7 @@ __attribute__((__always_inline__, pure, __nonnull__(1)))
 inline t_size	xft__swiss_find(const t_swissmap *__restrict__ const map,
 	t_buffer key, t_swiss_probe probe)
 {
-	const t_u8 *const	meta = xft__swiss_meta(map);
+	t_blk8r				meta = xft__swiss_meta(map);
 	t_nvec				vec;
 	t_nmask				mask;
 	t_size				idx;
@@ -64,7 +64,7 @@ __attribute__((__always_inline__, pure, __nonnull__(1)))
 inline t_size	xft__swiss_find_free(const t_swissmap *__restrict__ const map,
 	t_swiss_probe probe)
 {
-	const t_u8 *const	meta = xft__swiss_meta(map);
+	t_blk8r				meta = xft__swiss_meta(map);
 	t_nmask				mask;
 
 	while (1)
