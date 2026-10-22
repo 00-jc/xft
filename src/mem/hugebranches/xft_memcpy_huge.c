@@ -13,7 +13,7 @@
 #include "xft_p_mem.h"
 
 __attribute__((__nonnull__(1, 2), __always_inline__, __used__))
-inline void	xft_memcpy_hugetail(t_any restrict dest,
+static inline void	xft_memcpy_hugetail(t_any restrict dest,
 	t_cany restrict const src, t_size n)
 {
 	t_size		i[3];
@@ -41,7 +41,7 @@ inline void	xft_memcpy_hugetail(t_any restrict dest,
 }
 
 __attribute__((__nonnull__(1, 2, 4), __always_inline__, __used__))
-inline void	xft__huge_kernel_cpy(t_any restrict dest,
+static inline void	xft__huge_kernel_cpy(t_any restrict dest,
 	t_cany restrict const src, const t_size i,
 	t_vu512a *restrict const x)
 {

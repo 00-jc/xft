@@ -15,7 +15,7 @@
 #if defined (__x86_64__) && XFT_HAS_512_VEC
 
 __attribute__((__nonnull__(1), __always_inline__, __hot__, __used__))
-inline void	xft__setkernel_stream(t_any restrict d,
+static inline void	xft__setkernel_stream(t_any restrict d,
 	const t_u8 c, t_size offset)
 {
 	__asm__ (
@@ -45,7 +45,7 @@ inline void	xft__setkernel_stream(t_any restrict d,
 #elif defined (__x86_64__) && XFT_HAS_256_VEC
 
 __attribute__((__nonnull__(1), __always_inline__, __hot__, __used__))
-inline void	xft__setkernel_stream(t_any restrict d,
+static inline void	xft__setkernel_stream(t_any restrict d,
 	const t_u8 c, t_size offset)
 {
 	t_vu256a	*restrict	p;
@@ -71,7 +71,7 @@ inline void	xft__setkernel_stream(t_any restrict d,
 #else
 
 __attribute__((__nonnull__(1), __always_inline__, __hot__, __used__))
-inline void	xft__setkernel_stream(t_any restrict d,
+static inline void	xft__setkernel_stream(t_any restrict d,
 	const t_u8 c, t_size offset)
 {
 	register t_vu512a	x;
@@ -93,7 +93,7 @@ inline void	xft__setkernel_stream(t_any restrict d,
 #endif
 
 __attribute__((__always_inline__, __nonnull__(1), __used__))
-inline void	xft_memset_stream_tail(t_any restrict dest,
+static inline void	xft_memset_stream_tail(t_any restrict dest,
 	const t_u8 c, t_size n)
 {
 	register t_vu512a	x;

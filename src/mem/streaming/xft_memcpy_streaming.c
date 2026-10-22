@@ -15,7 +15,7 @@
 #if defined (__x86_64__) && XFT_HAS_512_VEC
 
 __attribute__((__nonnull__(1, 2), __always_inline__, __hot__, __used__))
-inline void	xft__cpykernel_stream(t_any restrict d,
+static inline void	xft__cpykernel_stream(t_any restrict d,
 	t_cany restrict const s, t_size offset)
 {
 	t_vu512a	*restrict	pd;
@@ -46,7 +46,7 @@ inline void	xft__cpykernel_stream(t_any restrict d,
 #elif defined(__x86_64__) && XFT_HAS_256_VEC
 
 __attribute__((__nonnull__(1, 2), __always_inline__, __hot__, __used__))
-inline void	xft__cpykernel_stream(t_any restrict d,
+static inline void	xft__cpykernel_stream(t_any restrict d,
 	t_cany restrict const s, t_size offset)
 {
 	t_vu256a		*restrict	pd;
@@ -79,7 +79,7 @@ inline void	xft__cpykernel_stream(t_any restrict d,
 #else
 
 __attribute__((__nonnull__(1, 2), __always_inline__, __hot__, __used__))
-inline void	xft__cpykernel_stream(t_any restrict d,
+static inline void	xft__cpykernel_stream(t_any restrict d,
 	t_cany restrict const s, t_size offset)
 {
 	t_vu512a	x[8];
@@ -105,7 +105,7 @@ inline void	xft__cpykernel_stream(t_any restrict d,
 #endif
 
 __attribute__((__always_inline__, __nonnull__(1, 2), __used__))
-inline void	xft_memcpy_stream_tail(t_any restrict dest,
+static inline void	xft_memcpy_stream_tail(t_any restrict dest,
 	t_cany restrict const src, t_size n)
 {
 	t_vu512a	x[8];
