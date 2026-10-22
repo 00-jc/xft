@@ -21,6 +21,7 @@ void	test_imap_overwrite(t_allocator a);
 void	test_imap_many(t_allocator a);
 void	test_imap_churn(t_allocator a);
 void	test_imap_dense(t_allocator a);
+void	test_imap_seeded(t_allocator a);
 void	test_indexmap(t_test *t);
 
 #endif

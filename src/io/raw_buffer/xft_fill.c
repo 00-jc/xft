@@ -6,14 +6,15 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/30 13:45:26 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/07/01 13:17:11 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/10/22 13:21:33 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "xft_p_io.h"
 
 __attribute__((__always_inline__, __nonnull__(1, 2, 4), __used__))
-static inline t_result	xft__stream_unbuffered(t_reader *__restrict__ const reader,
+static inline t_result	xft__stream_unbuffered(
+		t_reader *__restrict__ const reader,
 		t_u8 *__restrict__ const dst, t_size len,
 		t_size *__restrict__ const total)
 {

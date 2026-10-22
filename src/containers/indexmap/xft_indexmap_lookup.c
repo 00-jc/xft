@@ -24,3 +24,16 @@ t_size	xft_indexmap_lookup(const t_indexmap *__restrict__ const map,
 	return (((t_size *)xft_soa_fields(&map->soa, xft__imap_ctx(),
 				IMAP_VALUE))[idx]);
 }
+
+__attribute__((__flatten__, pure, __nonnull__(1)))
+t_size	xft_indexmap_lookup_seeded(
+	const t_indexmap *__restrict__ const map, t_imap_key key)
+{
+	const t_size	idx = xft__imap_find(map, key.key,
+			xft__imap_probe_seeded(map, key.key, key.seed));
+
+	if (idx == INDEXMAP_NPOS)
+		return (INDEXMAP_NPOS);
+	return (((t_size *)xft_soa_fields(&map->soa, xft__imap_ctx(),
+				IMAP_VALUE))[idx]);
+}

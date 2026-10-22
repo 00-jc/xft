@@ -26,6 +26,7 @@ void	test_indexmap(t_test *t)
 	test_imap_many(a);
 	test_imap_churn(a);
 	test_imap_dense(a);
+	test_imap_seeded(a);
 	xft_gpa_destroy(&gpa);
 	xft_test_print(t, "  t_indexmap: OK\n");
 }

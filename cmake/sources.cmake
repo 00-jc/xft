@@ -187,6 +187,7 @@ set(SRCS_CONTAINERS
   src/containers/indexmap/xft_indexmap_insert.c
   src/containers/indexmap/xft_indexmap_lookup.c
   src/containers/indexmap/xft_indexmap_probe.c
+  src/containers/indexmap/xft_indexmap_probe_seeded.c
   src/containers/indexmap/xft_indexmap_slot.c
   src/containers/indexmap/xft_indexmap_iterate.c
   src/containers/soa/xft_soa.c
@@ -537,6 +538,7 @@ set(SRCS_TEST
   tests/containers/indexmap/imap_test_insert_lookup.c
   tests/containers/indexmap/imap_test_many.c
   tests/containers/indexmap/imap_test_overwrite.c
+  tests/containers/indexmap/imap_test_seeded.c
   tests/containers/soa/soa_test.c
   tests/containers/soa/soa_test_append.c
   tests/containers/soa/soa_test_ctx.c

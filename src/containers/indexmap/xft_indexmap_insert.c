@@ -15,12 +15,12 @@
 __attribute__((__always_inline__, __unused__, __nonnull__(1)))
 static inline void	xft__imap_insert_unchecked(
 	t_indexmap *__restrict__ const map,
-	t_buffer key, t_size value)
+	t_imap_slot slot)
 {
-	const t_imap_probe	probe = xft__imap_probe(map, key);
+	const t_imap_probe	probe = xft__imap_probe_seeded(map, slot.key,
+			slot.seed);
 
-	xft__imap_set(map, xft__imap_find_free(map, probe),
-		(t_imap_slot){.meta = probe.h2, .key = key, .value = value});
+	xft__imap_set(map, xft__imap_find_free(map, probe), slot);
 	++map->count;
 }
 
@@ -42,7 +42,7 @@ static t_result	xft__imap_rehash(t_allocator allocator,
 	{
 		slot = xft__imap_get(map, i++);
 		if (slot.meta <= IMAP_H2_MASK)
-			xft__imap_insert_unchecked(&new, slot.key, slot.value);
+			xft__imap_insert_unchecked(&new, slot);
 	}
 	xft_destroy_soa(allocator, &map->soa);
 	*map = new;
@@ -50,9 +50,9 @@ static t_result	xft__imap_rehash(t_allocator allocator,
 }
 
 __attribute__((__flatten__, __nonnull__(2)))
-t_result	xft_indexmap_insert(t_allocator allocator,
+t_result	xft_indexmap_insert_seeded(t_allocator allocator,
 	t_indexmap *__restrict__ const map,
-	t_buffer key, t_size value)
+	t_imap_key key, t_size value)
 {
 	t_imap_probe	probe;
 	t_size			idx;
@@ -61,8 +61,8 @@ t_result	xft_indexmap_insert(t_allocator allocator,
 			>= map->soa.capacity_elements * 17, 0)
 		&& !xft__imap_rehash(allocator, map))
 		return (KO);
-	probe = xft__imap_probe(map, key);
-	idx = xft__imap_find(map, key, probe);
+	probe = xft__imap_probe_seeded(map, key.key, key.seed);
+	idx = xft__imap_find(map, key.key, probe);
 	if (idx == INDEXMAP_NPOS)
 	{
 		idx = xft__imap_find_free(map, probe);
@@ -70,6 +70,15 @@ t_result	xft_indexmap_insert(t_allocator allocator,
 		++map->count;
 	}
 	xft__imap_set(map, idx, (t_imap_slot){.meta = probe.h2,
-		.key = key, .value = value});
+		.key = key.key, .value = value, .seed = key.seed});
 	return (OK);
+}
+
+__attribute__((__flatten__, __nonnull__(2)))
+t_result	xft_indexmap_insert(t_allocator allocator,
+	t_indexmap *__restrict__ const map,
+	t_buffer key, t_size value)
+{
+	return (xft_indexmap_insert_seeded(allocator, map,
+			(t_imap_key){.key = key, .seed = 0}, value));
 }

@@ -17,7 +17,7 @@ inline const t_soa_context	*xft__imap_ctx(void)
 {
 	__extension__ static const t_soa_context	ctx = {
 		.total_struct_size = sizeof(t_u8) + sizeof(t_buffer)
-		+ sizeof(t_size),
+		+ sizeof(t_size) + sizeof(t_u64a),
 		.max_alignment = IMAP_GROUP,
 		.fields_count = IMAP_FIELDS,
 		.entries = {
@@ -28,6 +28,9 @@ inline const t_soa_context	*xft__imap_ctx(void)
 	{.size = sizeof(t_size), .size_of_prev_fields = sizeof(t_u8)
 		+ sizeof(t_buffer),
 		.offset_from_struct_base = __builtin_offsetof(t_imap_slot, value)},
+	{.size = sizeof(t_u64a), .size_of_prev_fields = sizeof(t_u8)
+		+ sizeof(t_buffer) + sizeof(t_size),
+		.offset_from_struct_base = __builtin_offsetof(t_imap_slot, seed)},
 	}};
 
 	return (&ctx);

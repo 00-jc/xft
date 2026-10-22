@@ -27,6 +27,7 @@ inline void	xft__imap_set(t_indexmap *__restrict__ const map,
 	xft__imap_meta(map)[idx] = slot.meta;
 	((t_buffer *)xft_soa_fields(&map->soa, ctx, IMAP_KEY))[idx] = slot.key;
 	((t_size *)xft_soa_fields(&map->soa, ctx, IMAP_VALUE))[idx] = slot.value;
+	((t_u64a *)xft_soa_fields(&map->soa, ctx, IMAP_SEED))[idx] = slot.seed;
 }
 
 __attribute__((__always_inline__, pure, __nonnull__(1)))
@@ -39,5 +40,6 @@ inline t_imap_slot	xft__imap_get(const t_indexmap *__restrict__ const map,
 		.meta = xft__imap_meta(map)[idx],
 		.key = ((t_buffer *)xft_soa_fields(&map->soa, ctx, IMAP_KEY))[idx],
 		.value = ((t_size *)xft_soa_fields(&map->soa, ctx, IMAP_VALUE))[idx],
+		.seed = ((t_u64a *)xft_soa_fields(&map->soa, ctx, IMAP_SEED))[idx],
 	});
 }

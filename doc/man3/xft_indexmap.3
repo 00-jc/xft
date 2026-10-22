@@ -1,15 +1,18 @@
-.Dd October 14, 2026
+.Dd October 22, 2026
 .Dt XFT_INDEXMAP 3
 .Os xft
 .Sh NAME
 .Nm xft_new_indexmap ,
 .Nm xft_new_indexmap_with ,
 .Nm xft_indexmap_insert ,
+.Nm xft_indexmap_insert_seeded ,
 .Nm xft_indexmap_lookup ,
+.Nm xft_indexmap_lookup_seeded ,
 .Nm xft_indexmap_delete ,
+.Nm xft_indexmap_delete_seeded ,
 .Nm xft_indexmap_clear ,
 .Nm xft_indexmap_destroy
-.Nd open addressing hash map from byte keys to indices
+.Nd namespaced open addressing hash map from byte keys to indices
 .Sh SYNOPSIS
 .In indexmap.h
 .Fd #define INDEXMAP_INITIAL_SIZE 512
@@ -20,10 +23,16 @@
 .Fn xft_new_indexmap_with "t_allocator allocator" "t_size capacity"
 .Ft t_result
 .Fn xft_indexmap_insert "t_allocator allocator" "t_indexmap *restrict map" "t_buffer key" "t_size value"
+.Ft t_result
+.Fn xft_indexmap_insert_seeded "t_allocator allocator" "t_indexmap *restrict map" "t_imap_key key" "t_size value"
 .Ft t_size
 .Fn xft_indexmap_lookup "const t_indexmap *restrict map" "t_buffer key"
 .Ft t_size
+.Fn xft_indexmap_lookup_seeded "const t_indexmap *restrict map" "t_imap_key key"
+.Ft t_size
 .Fn xft_indexmap_delete "t_indexmap *restrict map" "t_buffer key"
+.Ft t_size
+.Fn xft_indexmap_delete_seeded "t_indexmap *restrict map" "t_imap_key key"
 .Ft void
 .Fn xft_indexmap_clear "t_indexmap *restrict map"
 .Ft void
@@ -38,29 +47,46 @@ but its values are
 integers stored inline, typically indices into a separate array, instead of
 pointers.
 It does not preserve insertion order and has no iteration interface.
+.Pp
+The map is namespaced: every entry is identified by its key bytes together
+with a 64 bit seed, and the same bytes under different seeds are distinct
+entries.
+It is meant for data-oriented symbol tables, such as a compiler's, where one
+flat map holds the names of every scope or namespace, the seed identifies
+the namespace, and the value is an index into separate symbol arrays.
 .Bd -literal -offset indent
 typedef struct s_indexmap {
 	t_soa	soa;
 	t_size	count;		/* live entries */
 	t_size	tombstones;	/* deleted slots not yet reclaimed */
 } t_indexmap;
+
+typedef struct s_imap_key {
+	t_buffer	key;	/* name bytes */
+	t_u64a		seed;	/* namespace */
+} t_imap_key;
 .Ed
 .Pp
 Slots are kept in a
 .Vt t_soa
-with three columns: a one byte control array, the keys and the values.
+with four columns: a one byte control array, the keys, the values and the
+seeds.
 Slots are grouped by the width of the host's preferred SIMD vector, 64, 32,
 16 or 8 bytes depending on the ISA the library was built for, and each probe
 compares a whole group of control bytes at once.
 .Pp
 Keys are hashed with
 .Fn xft_xxh3_64bits
-using seed 0.
+using the entry's seed, 0 for the functions that take a plain
+.Vt t_buffer .
 The hash modulo the number of groups picks the first group, and its top
 7 bits are stored in the control byte.
 Probing is linear, one group at a time, and a lookup stops at the first
 group that contains an empty slot.
-Two keys are equal when they have the same size and the same bytes.
+Two keys are equal when they have the same seed, the same size and the
+same bytes.
+The seed is stored with each entry, so rebuilds keep entries under their
+own seed.
 .Pp
 The map stores the key
 .Vt t_buffer
@@ -99,14 +125,39 @@ The new capacity is double the old one when live entries are at least
 discards tombstones.
 The old storage is then freed.
 .Pp
+.Fn xft_indexmap_insert_seeded
+is
+.Fn xft_indexmap_insert
+for the key bytes
+.Fa key Ns .key
+in namespace
+.Fa key Ns .seed .
+.Fn xft_indexmap_insert
+is
+.Fn xft_indexmap_insert_seeded
+with seed 0.
+.Pp
 .Fn xft_indexmap_lookup
 returns the value stored for
-.Fa key .
-.Pp
-.Fn xft_indexmap_delete
-removes
 .Fa key
-if present and returns the value it had.
+with seed 0, and
+.Fn xft_indexmap_lookup_seeded
+returns the value stored for
+.Fa key Ns .key
+in namespace
+.Fa key Ns .seed .
+.Pp
+.Fn xft_indexmap_delete_seeded
+removes
+.Fa key Ns .key
+in namespace
+.Fa key Ns .seed
+if present and returns the value it had, leaving the same bytes in other
+namespaces untouched.
+.Fn xft_indexmap_delete
+is
+.Fn xft_indexmap_delete_seeded
+with seed 0.
 If the slot's group still contains an empty slot the slot is marked empty;
 otherwise it becomes a tombstone, counted in
 .Fa tombstones ,
@@ -137,7 +188,9 @@ is
 .Dv nullptr .
 .Pp
 .Fn xft_indexmap_insert
-returns
+and
+.Fn xft_indexmap_insert_seeded
+return
 .Dv OK
 on success and
 .Dv KO
@@ -145,10 +198,14 @@ if a required rebuild could not allocate, in which case the map is
 unchanged.
 .Pp
 .Fn xft_indexmap_lookup
-returns the stored value, and
+and
+.Fn xft_indexmap_lookup_seeded
+return the stored value, and
 .Fn xft_indexmap_delete
-returns the removed value.
-Both return
+and
+.Fn xft_indexmap_delete_seeded
+return the removed value.
+All four return
 .Dv INDEXMAP_NPOS
 if
 .Fa key
@@ -201,13 +258,17 @@ A stored value equal to
 .Dv INDEXMAP_NPOS
 cannot be told apart from a missing key.
 .Pp
-.Fn xft_indexmap_lookup
-and
+.Fn xft_indexmap_lookup ,
+.Fn xft_indexmap_lookup_seeded ,
 .Fn xft_indexmap_delete
+and
+.Fn xft_indexmap_delete_seeded
 divide by the number of groups, so calling them on a map whose creation
 failed is undefined behavior.
 .Fn xft_indexmap_insert
-on such a map returns
+and
+.Fn xft_indexmap_insert_seeded
+on such a map return
 .Dv KO .
 .Pp
 .Fn xft_indexmap_destroy

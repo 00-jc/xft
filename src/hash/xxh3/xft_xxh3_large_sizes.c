@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/29 23:39:14 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/06/29 23:39:20 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/10/22 13:25:46 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,8 @@
 #define MASK 0x00000000FFFFFFFF
 
 __attribute__((__nonnull__(1, 2, 3), __always_inline__, __used__))
-static inline void	xft_xxh3_accumulate_512(t_blk8r acc, t_blk8r input, t_blk8r secret)
+static inline void	xft_xxh3_accumulate_512(t_blk8r acc,
+	t_blk8r input, t_blk8r secret)
 {
 	t_vu64_512	*xacc;
 	t_vu64_512	rr[7];

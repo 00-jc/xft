@@ -16,21 +16,20 @@ __attribute__((__always_inline__, pure, __nonnull__(1)))
 inline t_imap_probe	xft__imap_probe(
 	const t_indexmap *__restrict__ const map, t_buffer key)
 {
-	const t_u64a	hash = xft_xxh3_64bits(key, 0);
-	const t_size	nblks = map->soa.capacity_elements / IMAP_GROUP;
-
-	return ((t_imap_probe){.h2 = (hash >> 57) & IMAP_H2_MASK,
-		.nblks = nblks, .group = hash % nblks});
+	return (xft__imap_probe_seeded(map, key, 0));
 }
 
 __attribute__((__always_inline__, pure, __nonnull__(1)))
 static inline t_result	xft__imap_key_eq(
-	const t_soa *__restrict__ const soa, t_size idx, t_buffer key)
+	const t_soa *__restrict__ const soa, t_size idx, t_buffer key,
+	t_u64a seed)
 {
 	const t_buffer *const	keys = xft_soa_fields(soa, xft__imap_ctx(),
 			IMAP_KEY);
+	const t_u64a *const		seeds = xft_soa_fields(soa, xft__imap_ctx(),
+			IMAP_SEED);
 
-	return (keys[idx].size == key.size
+	return (seeds[idx] == seed && keys[idx].size == key.size
 		&& !xft_memcmp(key.mem, keys[idx].mem, key.size));
 }
 
@@ -50,7 +49,7 @@ inline t_size	xft__imap_find(const t_indexmap *__restrict__ const map,
 		while (mask)
 		{
 			idx = probe.group * IMAP_GROUP + xft_memctz_u64(mask);
-			if (xft__imap_key_eq(&map->soa, idx, key))
+			if (xft__imap_key_eq(&map->soa, idx, key, probe.seed))
 				return (idx);
 			mask &= mask - 1;
 		}
