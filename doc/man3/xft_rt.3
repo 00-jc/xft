@@ -4,7 +4,7 @@
 .Sh NAME
 .Nm xft_get_kernel_ptrs ,
 .Nm xft_get_rt ,
-.Nm xft_free_kernel_ptrs ,
+.Nm xft_kernel_ptrs_destroy ,
 .Nm xft_dyn_cpu_select ,
 .Nm xft_main
 .Nd program entry point and runtime helpers
@@ -16,7 +16,7 @@
 .Ft t_xft_rt
 .Fn xft_get_rt "const t_any *sp"
 .Ft void
-.Fn xft_free_kernel_ptrs "t_kernel_ptrs *kp"
+.Fn xft_kernel_ptrs_destroy "t_kernel_ptrs *kp"
 .Ft t_xft_arch
 .Fn xft_dyn_cpu_select void
 .Ft void
@@ -38,13 +38,13 @@ the library supplies the real entry point and calls
 with a pointer to the initial stack.
 .Ss Types
 .Bd -literal -offset indent
-typedef t_u8   t_nat_str;   /* t_u16 on Windows */
+typedef t_u8   t_nat_str;
 typedef const t_nat_str *__restrict__ *__restrict__ t_rt_arr;
 
 typedef struct s_kernel_ptrs {
 	t_size              argc;
 	t_rt_arr            argv;
-	t_rt_arr            envp;
+	t_rt_arr            envp;   /* const t_nat_str * on Windows */
 } t_kernel_ptrs;
 
 typedef struct s_hwcaps {
@@ -73,14 +73,9 @@ typedef enum e_x86_ver {
 .Ed
 .Pp
 .Vt t_nat_str
-is the native character type of the platform:
-.Vt t_u8
-on Linux,
-.Vt t_u16
-on Windows, where the kernel provides UTF-16 command lines and environment
-blocks.
+is the character type of the arguments and the environment.
 .Vt t_kernel_ptrs
-holds the argument count, the argument vector and the environment vector.
+holds the argument count, the argument vector and the environment.
 .Vt t_hwcaps
 is reserved for the auxiliary vector's hardware capability words; it is
 declared but not populated.
@@ -147,9 +142,7 @@ with the unmodified value.
 On Windows
 .Fn _start
 passes the frame address of the entry point to
-.Fn xft_main ;
-the kernel has already produced the command line through
-.Ql GetCommandLineW .
+.Fn xft_main .
 .Pp
 With
 .Dv XFT_REQUIRE_LIBC
@@ -165,9 +158,8 @@ minus one word, which is where
 lives; on Windows, from the frame address.
 .Ss Recovering arguments
 .Fn xft_get_kernel_ptrs
-decodes the initial stack into a
-.Vt t_kernel_ptrs .
-The layout is platform specific:
+fills a
+.Vt t_kernel_ptrs :
 .Bl -tag -width "Windows"
 .It Linux
 .Fa sp
@@ -188,16 +180,16 @@ stack.
 .It Windows
 .Fa sp
 is ignored.
-The command line is retrieved with
-.Ql GetCommandLineW
-and split with
+.Fa argv
+is the command line split by
 .Ql CommandLineToArgvW ,
-which allocates the argument vector through
-.Ql LocalFree .
-The environment block comes from
-.Ql GetEnvironmentStringsW .
-Both must be released with
-.Fn xft_free_kernel_ptrs .
+in UTF-8.
+.Fa envp
+is the block returned by
+.Ql GetEnvironmentStringsA .
+Both are allocated and must be released with
+.Fn xft_kernel_ptrs_destroy .
+The process exits with status 1 if either cannot be obtained.
 .El
 .Pp
 .Fn xft_get_rt
@@ -206,19 +198,11 @@ calls
 and wraps the result in a
 .Vt t_xft_rt .
 .Pp
-.Fn xft_free_kernel_ptrs
-releases the storage owned by a
-.Vt t_kernel_ptrs
-returned on Windows, via
-.Ql LocalFree
-for
-.Fa argv
-and
-.Ql FreeEnvironmentStringsW
-for
-.Fa envp ,
-then zeroes the structure.
-On Linux it does nothing, since the structure aliases the stack.
+.Fn xft_kernel_ptrs_destroy
+releases the storage owned by
+.Fa kp
+and zeroes it.
+On Linux it does nothing.
 .Ss CPU detection
 .Fn xft_dyn_cpu_select
 queries the running CPU and returns which vector widths are usable:
@@ -290,7 +274,7 @@ executables are small enough that bundling several of them costs little.
 and
 .Fn xft_get_rt
 return the filled structure.
-.Fn xft_free_kernel_ptrs
+.Fn xft_kernel_ptrs_destroy
 returns nothing.
 .Fn xft_dyn_cpu_select
 returns the detected
@@ -324,7 +308,7 @@ void	xft_main(const t_any *__restrict__ const sp)
 		++i;
 	}
 	xft_writer_flush(&w);
-	xft_free_kernel_ptrs(&kp);
+	xft_kernel_ptrs_destroy(&kp);
 	xft_exit(0);
 }
 .Ed
@@ -333,23 +317,6 @@ void	xft_main(const t_any *__restrict__ const sp)
 .Xr xft_syscalls 3 ,
 .Xr xft 7
 .Sh CAVEATS
-The
-.Fa argc
-and
-.Fa argv
-members of
-.Vt t_kernel_ptrs
-follow the platform's own types.
-On Windows they are UTF-16 and cannot be passed to any
-xft
-function that expects a byte buffer without conversion.
-.Pp
-.Fn xft_get_kernel_ptrs
-on Windows performs two allocations that the caller must release; there is
-no equivalent on Linux, and calling
-.Fn xft_free_kernel_ptrs
-on a structure produced on Linux is a no-op.
-.Pp
 .Fn xft_get_kernel_ptrs
 on Linux reads the stack blindly.
 The layout it assumes is the one the kernel passes to a static ELF

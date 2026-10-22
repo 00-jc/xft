@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/03 18:01:29 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/10/22 01:53:06 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/10/22 04:10:00 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,15 +17,7 @@
 # include "elf.h"
 # include "x86_64.h"
 
-# ifdef _WIN64
-
-typedef t_u16										t_nat_str;
-
-# else
-
 typedef t_u8										t_nat_str;
-
-# endif
 
 typedef const t_nat_str *__restrict__ *__restrict__	t_rt_arr;
 
@@ -34,7 +26,7 @@ typedef const t_nat_str *__restrict__ *__restrict__	t_rt_arr;
 typedef struct s_kernel_ptrs
 {
 	t_size											argc;
-	const t_nat_str *const *__restrict__			argv;
+	t_rt_arr										argv;
 	const t_nat_str *__restrict__					envp;
 }	t_kernel_ptrs;
 
@@ -102,7 +94,7 @@ t_kernel_ptrs	xft_get_kernel_ptrs(const t_any *sp)\
 t_xft_rt		xft_get_rt(const t_any *sp)\
 					__attribute__((__nonnull__(1)));
 
-void			xft_free_kernel_ptrs(t_kernel_ptrs *kp)\
+void			xft_kernel_ptrs_destroy(t_kernel_ptrs *kp)\
 					__attribute__((__nonnull__(1)));
 
 t_xft_arch		xft_dyn_cpu_select(void)\

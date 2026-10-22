@@ -51,6 +51,6 @@ inline void	xft_main(const t_any *__restrict__ const sp)
 	}
 	xft_writer_write(&w, xft_fatptr((t_u8 *)"\n", 1));
 	(void)xft_writer_flush(&w);
-	xft_free_kernel_ptrs(&kp);
+	xft_kernel_ptrs_destroy(&kp);
 	xft_exit(0);
 }

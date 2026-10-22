@@ -15,6 +15,10 @@
 __attribute__((__nonnull__(1)))
 void	xft_main(const t_any *__restrict__ const sp)
 {
-	__asm__("":: "m"(sp) :"memory");
+	t_kernel_ptrs	kp;
+
+	kp = xft_get_kernel_ptrs(sp);
+	__asm__("":: "m"(kp) :"memory");
+	xft_kernel_ptrs_destroy(&kp);
 	xft_exit(0);
 }

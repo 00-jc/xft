@@ -82,7 +82,7 @@ add_subdirectory(xft)
 target_link_libraries(myprog PRIVATE xft::xft)
 ```
 
-Include `<xft.h>` and define `xft_main` instead of `main`. It receives the initial stack pointer, from which the runtime recovers `argc`, `argv`, `envp`, and the auxiliary vector, and it must end with `xft_exit`:
+Include `<xft.h>` and define `xft_main` instead of `main`. It receives the initial stack pointer and must end with `xft_exit`:
 
 ```c
 #include <xft.h>
@@ -90,7 +90,10 @@ Include `<xft.h>` and define `xft_main` instead of `main`. It receives the initi
 void
 xft_main(const t_any *__restrict__ const sp)
 {
-	(void)sp;
+	t_kernel_ptrs	kp;
+
+	kp = xft_get_kernel_ptrs(sp);
+	xft_kernel_ptrs_destroy(&kp);
 	xft_exit(0);
 }
 ```

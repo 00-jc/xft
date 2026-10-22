@@ -98,7 +98,7 @@ void	xft_main(const t_any *__restrict__ const sp)
 	if ((t_any)kp.argv == nullptr || kp.argv[1] == nullptr)
 		__builtin_unreachable();
 	f = xft_map_file((const t_u8 *)kp.argv[1], O_RDONLY);
-	xft_free_kernel_ptrs(&kp);
+	xft_kernel_ptrs_destroy(&kp);
 	if (f.mem == nullptr)
 		xft_exit(1);
 	w = xft_get_fs_writer(xft_fatptr(x, BUFSIZE), xft_get_stdout());
