@@ -181,6 +181,7 @@ set(SRCS_BMI
   src/bmi/native_64/xft_testmask.c)
 
 set(SRCS_CONTAINERS
+  src/containers/indexmap/xft_indexmap_get_arrays.c
   src/containers/indexmap/xft_indexmap.c
   src/containers/indexmap/xft_indexmap_ctx.c
   src/containers/indexmap/xft_indexmap_delete.c
