@@ -13,7 +13,9 @@ endif()
 if(NOT XFT_RT)
   list(APPEND XFT_DEFINES_PUBLIC XFT_NO_RT)
 endif()
-set(XFT_DEFINES_PRIVATE XFT_LLC=${XFT_LLC})
+# XFT_LLC for the benches, XFT_LLC_SIZE for the streaming thresholds in
+# xft_p_mem.h (which only falls back to its own default without it)
+set(XFT_DEFINES_PRIVATE XFT_LLC=${XFT_LLC} XFT_LLC_SIZE=${XFT_LLC}ULL)
 
 set(XFT_PROBE_CTX "-Werror")
 foreach(_xft_d IN LISTS XFT_DEFINES_PUBLIC XFT_DEFINES_PRIVATE)

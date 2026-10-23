@@ -48,3 +48,9 @@ elseif(XFT_GETCONF)
     set(XFT_LLC ${_xft_llc})
   endif()
 endif()
+
+# cross builds (and hosts with no l3 to report) detect nothing; the streaming
+# paths still need a threshold, so fall back to the XFT_LLC_SIZE default
+if(XFT_LLC EQUAL 0)
+  set(XFT_LLC 16777216)
+endif()
