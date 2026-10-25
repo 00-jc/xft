@@ -31,24 +31,28 @@ __attribute__((pure, __always_inline__, __used__))
 inline t_u64a	xft_xxh3_len_17to128(t_buffer input,
 	t_buffer secret, t_u64a seed)
 {
-	t_u64a	acc;
-	t_size	i;
+	const t_size	n = input.size;
+	t_u64a			acc;
 
-	if (input.size < 17 || 128 < input.size || !input.mem
-		|| !secret.mem)
+	if (n < 17 || 128 < n || !input.mem || !secret.mem)
 		__builtin_unreachable();
-	acc = input.size * XXH3_PRIME64_1;
-	i = (input.size - 1) >> 5;
-	while (1)
+	acc = n * XXH3_PRIME64_1;
+	if (n > 32)
 	{
-		acc += xft_xxh3_mix16b(input.mem + (i << 4),
-				secret.mem + (i << 5), seed);
-		acc += xft_xxh3_mix16b(input.mem + input.size - ((i + 1) << 4),
-				secret.mem + (i << 5) + 16, seed);
-		if (i == 0)
-			break ;
-		--i;
+		if (n > 64)
+		{
+			if (n > 96)
+				acc += xft_xxh3_mix16b(input.mem + 48, secret.mem + 96, seed)
+					+ xft_xxh3_mix16b(input.mem + n - 64, secret.mem + 112,
+						seed);
+			acc += xft_xxh3_mix16b(input.mem + 32, secret.mem + 64, seed)
+				+ xft_xxh3_mix16b(input.mem + n - 48, secret.mem + 80, seed);
+		}
+		acc += xft_xxh3_mix16b(input.mem + 16, secret.mem + 32, seed)
+			+ xft_xxh3_mix16b(input.mem + n - 32, secret.mem + 48, seed);
 	}
+	acc += xft_xxh3_mix16b(input.mem, secret.mem, seed)
+		+ xft_xxh3_mix16b(input.mem + n - 16, secret.mem + 16, seed);
 	return (xft_xxh3_avalanche(acc));
 }
 
