@@ -25,6 +25,8 @@ void		xft_tailor_add_processed_bytes(void *ptr, const uint64_t bytes);
 uint64_t	xft_tailor_get_random_num(void *ptr);
 uint64_t	*xft_get_bench_swiss_keys(void);
 uint64_t	*xft_get_bench_swiss_large_keys(void);
+t_stl_str	*xft_get_bench_str_keys(void);
+t_stl_str	*xft_get_bench_str_large_keys(void);
 
 }
 

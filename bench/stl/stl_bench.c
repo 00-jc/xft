@@ -23,6 +23,8 @@ inline void	xft_main(const t_any *__restrict__ const sp)
 		xft_exit(1);
 	xft_stl_bench_vector(&t);
 	xft_stl_bench_map(&t);
+	xft_stl_bench_map_strings(&t);
+	xft_stl_bench_map_strings_1m(&t);
 	xft_gpa_destroy(xft_get_bench_vec_gpa());
 	xft_gpa_destroy(xft_get_bench_swiss_gpa());
 	(xft_tailor_destroy(&t), xft_exit(0));

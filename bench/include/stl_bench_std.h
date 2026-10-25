@@ -23,6 +23,13 @@
 # define STL_BENCH_READ_FILL	1024
 # define STL_BENCH_RMF_LEN		256
 
+/* a string both sides read: std::string_view, or t_buffer on the xft side */
+typedef struct s_stl_str
+{
+	uint64_t		size;
+	const uint8_t	*mem;
+}	t_stl_str;
+
 void	xft_std_vector_bench_push_back(void *ptr);
 void	xft_std_vector_bench_push_back_reserved(void *ptr);
 void	xft_std_vector_bench_push_pop(void *ptr);
@@ -38,5 +45,14 @@ void	xft_std_umap_bench_delete_insert(void *ptr);
 void	xft_std_umap_bench_large_lookup_hit(void *ptr);
 void	xft_std_umap_bench_large_lookup_miss(void *ptr);
 void	xft_std_umap_bench_large_delete_insert(void *ptr);
+
+void	xft_std_umap_str_bench_insert_grow(void *ptr);
+void	xft_std_umap_str_bench_insert_reserved(void *ptr);
+void	xft_std_umap_str_bench_lookup_hit(void *ptr);
+void	xft_std_umap_str_bench_lookup_miss(void *ptr);
+void	xft_std_umap_str_bench_delete_insert(void *ptr);
+void	xft_std_umap_str_bench_large_lookup_hit(void *ptr);
+void	xft_std_umap_str_bench_large_lookup_miss(void *ptr);
+void	xft_std_umap_str_bench_large_delete_insert(void *ptr);
 
 #endif

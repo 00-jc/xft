@@ -713,9 +713,16 @@ set(SRCS_BENCH_indexmap_bench
 set(SRCS_BENCH_stl_bench
   bench/stl/stl_bench.c
   bench/stl/stl_bench_run.c
+  bench/stl/stl_bench_str_state.c
+  bench/stl/stl_bench_swiss_str.c
+  bench/stl/stl_bench_swiss_str_large.c
+  bench/stl/stl_bench_swiss_str_state.c
   bench/stl/stl_bench_umap.cpp
   bench/stl/stl_bench_umap_large.cpp
   bench/stl/stl_bench_umap_state.cpp
+  bench/stl/stl_bench_umap_str.cpp
+  bench/stl/stl_bench_umap_str_large.cpp
+  bench/stl/stl_bench_umap_str_state.cpp
   bench/stl/stl_bench_vector.cpp
   bench/stl/stl_bench_vector_access.cpp
   bench/swissmap/swissmap_bench_insert.c
