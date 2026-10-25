@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/29 23:39:13 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/07/03 21:37:00 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/10/25 22:23:40 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,29 +37,16 @@ inline t_buffer	xft_palloc(t_size size)
 __attribute__((__always_inline__, __used__))
 inline t_buffer	xft_palloc_resize(t_buffer b, t_size new_size)
 {
-	t_size		snapped;
-	int			flags;
-	t_any		mem;
-	t_buffer	new_b;
+	t_any	ptr;
+	t_size	s;
 
-	snapped = xft_match_hugepage(new_size);
-	if (__builtin_expect(snapped == b.size, 1))
+	new_size = xft_match_hugepage(new_size);
+	if (__builtin_expect(new_size == b.size, 1))
 		return (b);
-	flags = xft_match_hugepage_flags(snapped);
-	mem = xft_mmap(snapped, PROT_READ | PROT_WRITE, flags);
-	if (!xft_map_failed(mem) && !xft_mmap_commit(mem, snapped,
-			PROT_READ | PROT_WRITE, flags))
-	{
-		xft_munmap(mem, snapped);
-		mem = (t_any)MAP_FAILED;
-	}
-	new_b = (t_buffer){
-		.size = snapped,
-		.mem = (t_any)xft_tern(!xft_map_failed(mem), (t_u64a)mem, 0),
-	};
-	xft_memcpy(new_b.mem, b.mem, b.size);
-	xft_munmap(b.mem, b.size);
-	return (new_b);
+	ptr = xft_mremap(b.size, new_size, b.mem, 0);
+	s = xft_tern(xft_map_failed(ptr), 0, new_size);
+	ptr = (t_any)xft_tern(xft_map_failed(ptr), 0, (t_uptr)ptr);
+	return (xft_fatptr(ptr, s));
 }
 
 __attribute__((__always_inline__, __used__))
