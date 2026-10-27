@@ -257,13 +257,13 @@ Every vector path in
 xft
 is selected by the preprocessor from the target ISA macros at compile time,
 following
-.Dv XFT_ARCH
+.Fl Dcpu
 (see
 .Xr xft 7 ) ,
 so one build contains exactly one code path for each routine.
 A program that has to run on CPUs of different generations should instead
 ship one executable per target, each built with its own
-.Dv XFT_ARCH
+.Fl Dcpu
 and fully specialized for it, plus a small launcher that calls
 .Fn xft_dyn_cpu_select
 and executes the matching one.

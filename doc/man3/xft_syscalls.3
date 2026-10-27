@@ -125,7 +125,7 @@ and
 .Fn xft_fork
 uses
 .Xr clone 2 .
-.It Linux, Dv XFT_LIBC
+.It Linux, Dv XFT_REQUIRE_LIBC
 Each wrapper calls
 .Xr syscall 2
 with the same arguments; the C library wrappers such as
@@ -145,7 +145,7 @@ Each wrapper is emulated with
 and
 .Pa ntdll
 calls, in both freestanding and
-.Dv XFT_LIBC
+.Dv XFT_REQUIRE_LIBC
 builds.
 A file descriptor is a
 .Vt HANDLE
@@ -368,7 +368,7 @@ with the status of
 .Fa path ,
 following symbolic links.
 With
-.Dv XFT_LIBC
+.Dv XFT_REQUIRE_LIBC
 on Linux,
 .Vt t_stat
 is
@@ -452,7 +452,7 @@ not
 .Xr exit_group 2 ,
 in both backends: in a multithreaded process only the calling thread ends,
 and with
-.Dv XFT_LIBC
+.Dv XFT_REQUIRE_LIBC
 no
 .Xr atexit 3
 handlers run and no stdio buffers are flushed.
@@ -472,7 +472,7 @@ with only
 .Dv XFT_SIGCHLD
 as flags.
 With
-.Dv XFT_LIBC
+.Dv XFT_REQUIRE_LIBC
 the C library is bypassed, so its fork handlers do not run.
 On Windows it fails.
 .Pp
@@ -637,7 +637,7 @@ for the calling thread on any CPU, in the group led by
 with
 .Dv PERF_FLAG_FD_CLOEXEC .
 With
-.Dv XFT_LIBC ,
+.Dv XFT_REQUIRE_LIBC ,
 .Vt t_perf_event_attr
 is
 .Vt struct perf_event_attr .
@@ -678,7 +678,7 @@ requests for
 .Fn xft_ioctl .
 .Ss Constants
 With
-.Dv XFT_LIBC
+.Dv XFT_REQUIRE_LIBC
 on Linux the standard constants come from
 .In sys/mman.h ,
 .In fcntl.h
@@ -739,7 +739,7 @@ or
 .Vt t_ssize
 return the non-negative result of the call on success and \-1 on failure.
 The error code is not returned: the freestanding backend discards it, the
-.Dv XFT_LIBC
+.Dv XFT_REQUIRE_LIBC
 backend leaves it in
 .Va errno ,
 and the Windows backend may leave it in
@@ -877,4 +877,4 @@ Code using
 union members must name the union, such as
 .Ql attr.period.sample_period ,
 in freestanding builds, and must not with
-.Dv XFT_LIBC .
+.Dv XFT_REQUIRE_LIBC .

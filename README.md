@@ -4,7 +4,7 @@ A freestanding C23 systems library for Linux and Windows.
 
 `xft` implements the subset of libc that a systems program typically depends on: memory primitives, containers, allocators, syscall wrappers, I/O, and formatting. It links with `-nostdlib`. Programs that target it define `xft_main` instead of `main` and never touch the C runtime.
 
-A hosted build (`-DXFT_LIBC=ON`) exposes the same API on a normal toolchain, so the library can be used incrementally and tested against the system libc.
+A hosted build (`-Duse-libc`) exposes the same API on a normal toolchain, so the library can be used incrementally and tested against the system libc.
 
 ## Design
 
@@ -12,17 +12,14 @@ A hosted build (`-DXFT_LIBC=ON`) exposes the same API on a normal toolchain, so 
 - **Explicit error handling.** Fallible functions return `t_result` (`OK` / `KO`). There is no `errno`, and no hidden global state.
 - **Fixed-width, aligned types.** Integer and floating-point typedefs are fixed-width and encode alignment in the name: the plain type has alignment 1 and is safe for unaligned access, the `a` suffix carries natural alignment. Every primitive is `may_alias`.
 - **Allocators are values.** Containers take a `t_allocator` by value and call through a vtable. The backend (arena, GPA, page allocator, reporting allocator) is chosen by the caller; nothing allocates behind your back.
-- **No runtime detection.** ISA-specific paths are selected at compile time from target macros. There is no CPUID dispatch and no lazy initialization or IFuncs.
 
 ## Requirements
 
-- CMake >= 3.21
-- GCC or Clang with C23 support
-- Ninja (the supported generator; on Windows it is required, since the Visual Studio generators ignore `CMAKE_C_COMPILER`)
+- Zig 0.17.0 or later (it ships the Clang used to compile the C sources; no separate toolchain is needed).
 
 ## Platform support
 
-| Platform | Freestanding | `XFT_LIBC` |
+| Platform | Freestanding | `-Duse-libc` |
 | --- | --- | --- |
 | Linux x86_64 | yes | yes |
 | Linux aarch64 | yes | yes |
@@ -33,54 +30,80 @@ A hosted build (`-DXFT_LIBC=ON`) exposes the same API on a normal toolchain, so 
 ## Building
 
 ```sh
-cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
-cmake --build build
+zig build -Doptimize=fast
 ```
 
-This produces `build/libxft.a`. To install:
+This installs into `zig-out/`:
+
+| Path | Contents |
+| --- | --- |
+| `zig-out/lib/libxft.a` | The library (`xft.lib` on Windows) |
+| `zig-out/lib/libxft-perf.a` | `perf`, Linux only |
+| `zig-out/lib/libxft-tailor.a` | `tailor`, Linux only |
+| `zig-out/include/xft/` | Public headers, including `perf.h` and `tailor.h` on Linux |
+
+Pass `--prefix /usr/local` (or `-p`) to install somewhere else.
+
+The target and CPU come from Zig's standard options. The default is the host with `-Dcpu=native`; set both when shipping binaries:
 
 ```sh
-cmake --install build --prefix /usr/local
+zig build -Doptimize=fast -Dtarget=x86_64-linux -Dcpu=x86_64_v3
+zig build -Doptimize=fast -Dtarget=x86_64-windows-gnu
 ```
 
 ### Options
 
 | Option | Default | Effect |
 | --- | --- | --- |
-| `XFT_LIBC` | `OFF` | Build against a libc instead of freestanding |
-| `XFT_ARCH` | `native` | `-march` value (`native`, `x86-64-v3`, `armv8.2-a`, ...); empty for the compiler default. `native` also adds `-mtune=native`; defaults to empty when cross compiling. Set it to a target when shipping binaries |
-| `XFT_LTO` | `ON` | Link-time optimization; Clang + LTO wants `lld` |
-| `XFT_FAST_MATH` | `ON` | `-ffast-math` |
-| `XFT_SANITIZE` | `OFF` | ASan + UBSan; forces `XFT_LIBC=ON`, disables LTO |
-| `XFT_STRICT_ARCH` | `OFF` | Compile only the host architecture's backends |
-| `XFT_RT` | `ON` | Use the `xft` entry point calling `xft_main`; `OFF` uses libc's entry point and your `main` (forces `XFT_LIBC=ON`) |
-| `XFT_BUILD_TESTS` | `OFF` | Unit tests (always sanitized) |
-| `XFT_BUILD_FUZZ` | `OFF` | Fuzz targets (always sanitized) |
-| `XFT_BUILD_BENCH` | `OFF` | Benchmarks (never sanitized, Linux only) |
-| `XFT_BUILD_GENTABLE` | `OFF` | `gentable` table generator |
-| `XFT_BOOTSTRAP_XID` | `OFF` | Build without the xid module and regenerate its table (forces `XFT_BUILD_GENTABLE=ON`) |
+| `-Doptimize` | `debug` | `debug`, `safe`, `fast`, `small`; `fast` and `safe` also add `-O3` |
+| `-Dtarget` | host | Target triple |
+| `-Dcpu` | `native` | CPU model and features (`native`, `baseline`, `x86_64_v3`, ...); the ISA paths in `xft` follow it |
+| `-Duse-libc` | `false` | Build against a libc instead of freestanding |
+| `-Dsanitize` | `false` | UBSan plus stack checks; requires `-Duse-libc`, disables LTO |
+| `-Dlto` | `false` | Full link-time optimization |
+| `-Dfast-math` | `false` | `-ffast-math` |
+| `-Dllc` | `16777216` | Last level cache size in bytes, used to pick the non-temporal thresholds |
+| `-Dtests` | `false` | Unit tests (always sanitized) |
+| `-Dfuzz` | `false` | Fuzz targets; requires `-Dsanitize -Duse-libc` |
+| `-Dbenches` | `false` | Benchmarks; requires `-Doptimize=fast`, Linux only, no `-Dsanitize` |
+| `-Dbootstrap` | `false` | Build without the xid module, build `gentable`, and regenerate the xid table; incompatible with `-Dtests` |
 
-Warnings are always errors. `Release` builds use `-Wall -Wextra -Werror`; every other build type uses the strict set in `cmake/warnings_strict.cmake`.
+Run `zig build -h` for the full list. Warnings are always errors.
+
+Zig ships no AddressSanitizer runtime, so `-Dsanitize` is UBSan only.
+
+### perf and tailor
+
+On Linux, `xft` builds two more libraries on top of `perf_event_open`, compiled with the same flavor (libc, sanitizers, LTO) as `xft` itself:
+
+- **`perf`** (`<xft/perf.h>`): hardware and software performance counter groups, sampling, and CPU pinning.
+- **`tailor`** (`<xft/tailor.h>`): the benchmark harness used by `bench/`, built on `perf`.
+
+Zig consumers that link the `xft` artifact get both automatically. When linking the archives by hand, link them before `xft`: `-lxft-tailor -lxft-perf -lxft`. They are not built for Windows.
 
 ### Regenerating the XID table
 
-`src/xid/xft_xidtable.c` is generated from the Unicode [`DerivedCoreProperties.txt`](https://www.unicode.org/Public/UCD/latest/ucd/DerivedCoreProperties.txt) by `gentable`, which links `xft` itself. Put the file in the source root, then bootstrap:
+`src/xid/xft_xidtable.c` is generated from the Unicode [`DerivedCoreProperties.txt`](https://www.unicode.org/Public/UCD/latest/ucd/DerivedCoreProperties.txt) by `gentable` in `subprojects/gentable`, which links `xft` itself. Put the file in the source root, then bootstrap:
 
 ```sh
-cmake -S . -B build-xid -DXFT_BOOTSTRAP_XID=ON
-cmake --build build-xid
+zig build -Dbootstrap
 ```
 
-This builds `xft` without the xid module and rewrites the table; the next normal build compiles it back in. See [`xft_xid(3)`](doc/man3/xft_xid.3).
+This builds `xft` without the xid module and rewrites the table through the `xid-table` step; the next normal build compiles it back in. See [`xft_xid(3)`](doc/man3/xft_xid.3).
 
 ## Usage
 
-Link the `xft::xft` target. It carries the freestanding flags for you:
+Add `xft` as a dependency in your `build.zig.zon` and link its artifact:
 
-```cmake
-add_subdirectory(xft)
-target_link_libraries(myprog PRIVATE xft::xft)
+```zig
+const xft = b.dependency("xft", .{
+    .target = target,
+    .optimize = optimize,
+});
+exe.root_module.linkLibrary(xft.artifact("xft"));
 ```
+
+Dependency options use the same names as above, e.g. `.@"use-libc" = true`. The headers come with the artifact. In the freestanding flavor, do not link libc, and compile your own sources with `-ffreestanding -fno-builtin -fno-stack-protector`.
 
 Include `<xft.h>` and define `xft_main` instead of `main`. It receives the initial stack pointer and must end with `xft_exit`:
 
@@ -98,55 +121,51 @@ xft_main(const t_any *__restrict__ const sp)
 }
 ```
 
-On Windows, `xft` calls into the system DLLs even in the freestanding flavor, so it depends on the `kernel32`, `ntdll`, and `shell32` import libraries. `xft::xft` links them for you; if you link `libxft.lib` by hand, add them yourself.
+On Windows, `xft` calls into the system DLLs even in the freestanding flavor, so it depends on the `kernel32`, `shell32`, and `api-ms-win-core-synch-l1-2-0` import libraries. The `xft` artifact links them for you; if you link `xft.lib` by hand, add them yourself. A freestanding Windows executable uses `_start` as its entry point.
 
 ## Subsystems
 
 | Header | Contents |
 | --- | --- |
-| `xft_alloc.h` | Allocator interface; arena, general-purpose, page, and reporting allocators |
-| `xft_atomics.h` | Mutexes and atomic types |
-| `xft_bmi.h` | Bit manipulation, byte order, SIMD mask primitives |
-| `xft_cstr.h` | NUL-terminated string helpers |
-| `xft_ctype.h` | ASCII character classification |
-| `xft_fmt.h` | Formatted output to a writer |
-| `xft_fuzzer.h` | Random input pool for fuzz targets |
-| `xft_hash.h` | XXH3 and Murmur3 |
-| `xft_hint.h` | Runtime invariants and optimizer hints |
-| `xft_indexmap.h` | Open-addressing hash map from byte keys to indices |
-| `xft_io.h` | Buffered readers and writers, standard handles, file mapping |
-| `xft_math.h` | Math functions |
-| `xft_mem.h` | `memcpy`, `memmove`, `memset`, `memchr`, `memcmp`, and friends |
-| `xft_rng.h` | xoshiro256\*\* |
-| `xft_rt.h` | Program entry point and runtime |
-| `xft_signals.h` | Signal masks |
-| `xft_soa.h` | Structure-of-arrays container |
-| `xft_sort.h` | `qsort` variants |
-| `xft_str.h` | Growable NUL-terminated byte string |
-| `xft_swissmap.h` | SIMD open-addressing hash map from byte keys to pointers |
-| `xft_syscalls.h` | System call wrappers |
-| `xft_timing.h` | Clocks and cycle counters |
-| `xft_vec.h` | Untyped growable array |
-| `xft_xid.h` | Unicode XID_Start/XID_Continue lookup and tables |
+| `xft/alloc.h` | Allocator interface; arena, general-purpose, page, and reporting allocators |
+| `xft/atomics.h` | Mutexes and atomic types |
+| `xft/bmi.h` | Bit manipulation, byte order, SIMD mask primitives |
+| `xft/cstr.h` | NUL-terminated string helpers |
+| `xft/ctype.h` | ASCII character classification |
+| `xft/fmt.h` | Formatted output to a writer |
+| `xft/fuzzer.h` | Random input pool for fuzz targets |
+| `xft/hash.h` | XXH3 and Murmur3 |
+| `xft/hint.h` | Runtime invariants and optimizer hints |
+| `xft/indexmap.h` | Open-addressing hash map from byte keys to indices |
+| `xft/io.h` | Buffered readers and writers, standard handles, file mapping |
+| `xft/math.h` | Math functions |
+| `xft/mem.h` | `memcpy`, `memmove`, `memset`, `memchr`, `memcmp`, and friends |
+| `xft/rng.h` | xoshiro256\*\* |
+| `xft/rt.h` | Program entry point and runtime |
+| `xft/signals.h` | Signal masks |
+| `xft/soa.h` | Structure-of-arrays container |
+| `xft/sort.h` | `qsort` variants |
+| `xft/str.h` | Growable NUL-terminated byte string |
+| `xft/swissmap.h` | SIMD open-addressing hash map from byte keys to pointers |
+| `xft/syscalls.h` | System call wrappers |
+| `xft/timing.h` | Clocks and cycle counters |
+| `xft/vec.h` | Untyped growable array |
+| `xft/xid.h` | Unicode XID_Start/XID_Continue lookup and tables |
 
 The full API is documented in section 3 man pages under `doc/man3`.
 
 ## Testing
 
-Unit tests and fuzz targets are built with sanitizers and run under CTest:
+Unit tests always link a sanitized hosted build of the library (`xft-san`), or the main library if `-Dsanitize` is already on:
 
 ```sh
-cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release \
-    -DXFT_BUILD_TESTS=ON -DXFT_BUILD_FUZZ=ON
-cmake --build build
-ctest --test-dir build --output-on-failure
+zig build -Dtests test
 ```
 
-On Windows, the sanitized binaries load `clang_rt.asan_dynamic-<arch>.dll`, which LLVM ships outside `bin`. Put its directory on `PATH`:
+Fuzz targets need the main build sanitized and hosted:
 
-```powershell
-$res = & clang -print-resource-dir
-$env:PATH = "$res\lib\windows;$env:PATH"
+```sh
+zig build -Duse-libc -Dsanitize -Dfuzz fuzz
 ```
 
 ## Benchmarks
@@ -154,9 +173,10 @@ $env:PATH = "$res\lib\windows;$env:PATH"
 Benchmarks use the `tailor` harness and are Linux only:
 
 ```sh
-cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DXFT_BUILD_BENCH=ON
-cmake --build build --target run-bench
+zig build -Doptimize=fast -Dbenches run-bench
 ```
+
+`libc_bench` and `stl_bench` link a hosted build (`xft-libc`) to compare against the system libc and the C++ standard library.
 
 ## Warning
 

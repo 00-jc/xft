@@ -10,6 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <xft/syscalls.h>
+
 #ifdef __linux__
 
 # include <xft/xft_p_syscalls.h>

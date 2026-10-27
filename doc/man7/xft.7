@@ -15,7 +15,7 @@ aarch64.
 It replaces the parts of libc a program normally relies on and links with
 .Fl nostdlib .
 A hosted flavor, selected with
-.Dv XFT_LIBC ,
+.Fl Duse-libc ,
 exposes the same API on a normal toolchain.
 .Pp
 Programs include
@@ -119,9 +119,9 @@ aarch64 without
 .Dv XFT_REQUIRE_LIBC ,
 on 32-bit Windows, and on any operating system other than Linux or Win64.
 .Dv XFT_REQUIRE_LIBC
-is defined publicly by the build when
-.Dv XFT_LIBC
-is on.
+is defined by the build when
+.Fl Duse-libc
+is set.
 .Ss Subsystems
 .Bl -tag -width "xft_swissmap(3)"
 .It Xr xft_alloc 3
@@ -175,89 +175,148 @@ Unicode XID_Start and XID_Continue lookup and UTF-8 decoding
 .El
 .Sh BUILD OPTIONS
 .Nm
-builds with CMake 3.21 or later and GCC or Clang with C23 support.
-Ninja is the supported generator; on Windows only Clang with the GNU-style
-driver is supported.
-The build produces
-.Pa libxft.a ;
-consumers link the
-.Ql xft::xft
-target, which carries the freestanding flags.
-.Bl -tag -width "XFT_BUILD_GENTABLE"
-.It Dv XFT_LIBC
+builds with Zig 0.17.0 or later, whose bundled Clang
+compiles the C sources:
+.Bd -literal -offset indent
+zig build -Doptimize=fast
+.Ed
+.Pp
+The build installs into
+.Pa zig-out/ :
+.Pa lib/libxft.a
+.Pq Pa lib/xft.lib No on Windows
+and the headers under
+.Pa include/xft/ .
+On Linux it also installs
+.Pa lib/libxft-perf.a
+and
+.Pa lib/libxft-tailor.a ,
+see
+.Sx PERF AND TAILOR .
+Zig consumers link the
+.Ql xft
+artifact of the dependency, which carries the headers, the Windows import
+libraries, and on Linux
+.Nm perf
+and
+.Nm tailor .
+.Bl -tag -width "-Dfast-math"
+.It Fl Doptimize
+.Ql debug ,
+.Ql safe ,
+.Ql fast
+or
+.Ql small .
+.Ql fast
+and
+.Ql safe
+also add
+.Fl O3 .
+Default
+.Ql debug .
+.It Fl Dtarget
+The target triple, such as
+.Ql x86_64-linux
+or
+.Ql x86_64-windows-gnu .
+Default the host.
+.It Fl Dcpu
+The CPU model and features, such as
+.Ql native ,
+.Ql baseline
+or
+.Ql x86_64_v3 .
+Every ISA path in
+.Nm
+follows it.
+Default
+.Ql native .
+.It Fl Duse-libc
 Build against a libc instead of freestanding.
 Default off.
-.It Dv XFT_ARCH
-The
-.Fl march
-value, such as
-.Ql native ,
-.Ql x86-64-v3
-or
-.Ql armv8.2-a ;
-empty uses the compiler default.
-.Ql native
-also adds
-.Fl mtune=native .
-Default
-.Ql native ,
-or empty when cross compiling, where
-.Ql native
-is an error.
-.It Dv XFT_LTO
-Link-time optimization.
-Default on.
-.It Dv XFT_FAST_MATH
+.It Fl Dsanitize
+UndefinedBehaviorSanitizer and stack checks; Zig ships no AddressSanitizer
+runtime.
+Requires
+.Fl Duse-libc
+and disables LTO.
+Default off.
+.It Fl Dlto
+Full link-time optimization.
+Default off.
+.It Fl Dfast-math
 Compile with
 .Fl ffast-math .
-Default on.
-.It Dv XFT_SANITIZE
-AddressSanitizer and UndefinedBehaviorSanitizer.
-Forces
-.Dv XFT_LIBC
-on and
-.Dv XFT_LTO
-off.
 Default off.
-.It Dv XFT_STRICT_ARCH
-Compile only the architecture backends of the host.
-Default off.
-.It Dv XFT_RT
-Use the
-.Nm
-entry point, which calls
-.Fn xft_main .
-When off, the libc entry point and the program's
-.Fn main
-are used and
-.Dv XFT_LIBC
-is forced on.
-Default on.
-.It Dv XFT_BUILD_TESTS
-Build the unit tests, always sanitized.
-.It Dv XFT_BUILD_FUZZ
-Build the fuzz targets, always sanitized.
-.It Dv XFT_BUILD_BENCH
-Build the benchmarks, never sanitized.
-Linux only.
-.It Dv XFT_BUILD_GENTABLE
-Build
+.It Fl Dllc
+Last level cache size in bytes, defining
+.Dv XFT_LLC_SIZE ,
+above which
+.Fn xft_memcpy
+and
+.Fn xft_memset
+switch to non-temporal stores.
+Default 16777216.
+.It Fl Dtests
+Build the unit tests, always sanitized, and the
+.Cm test
+step that runs them.
+.It Fl Dfuzz
+Build the fuzz targets and the
+.Cm fuzz
+step that runs them.
+Requires
+.Fl Dsanitize
+and
+.Fl Duse-libc .
+.It Fl Dbenches
+Build the benchmarks and the
+.Cm run-bench
+step that runs them.
+Requires
+.Fl Doptimize=fast ,
+no
+.Fl Dsanitize ,
+and Linux.
+.It Fl Dbootstrap
+Build the library without the xid module, build
 .Nm gentable ,
-the generator of the
-.Xr xft_xid 3
-tables.
-.It Dv XFT_BOOTSTRAP_XID
-Build the library without the xid module and regenerate its table from
+and regenerate its table from
 .Pa DerivedCoreProperties.txt
 in the source root.
-Forces
-.Dv XFT_BUILD_GENTABLE
-on.
+Cannot be combined with
+.Fl Dtests .
 See
 .Xr xft_xid 3 .
 .El
 .Pp
 Warnings are always errors.
+.Sh PERF AND TAILOR
+On Linux,
+.Nm
+builds two more libraries on top of
+.Xr perf_event_open 2 ,
+compiled with the same flavor as the library itself:
+.Bl -tag -width "tailor"
+.It Nm perf
+.In xft/perf.h :
+hardware and software performance counter groups, sampling, and CPU
+pinning.
+.It Nm tailor
+.In xft/tailor.h :
+the benchmark harness used by
+.Pa bench/ ,
+built on
+.Nm perf .
+.El
+.Pp
+Both link
+.Nm
+and are linked by it in the Zig build.
+Linking the archives by hand, they go before
+.Nm :
+.Fl lxft-tailor Fl lxft-perf Fl lxft .
+They are not built for Windows.
 .Sh EXAMPLES
 .Bd -literal -offset indent
 #include <xft.h>

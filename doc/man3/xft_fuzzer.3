@@ -109,13 +109,12 @@ destroys the arena, releasing the pool and every buffer.
 .Ss Fuzz targets
 The fuzz targets live in
 .Pa fuzz/
-and are built when CMake is configured with
-.Fl D Ns Dv XFT_BUILD_FUZZ Ns =ON ,
+and are built with
+.Fl Dfuzz ,
 which requires
-.Dv XFT_RT
-since the targets are
-.Fn xft_main
-programs.
+.Fl Dsanitize
+and
+.Fl Duse-libc .
 They are
 .Cm fuzz_mem
 .Pq Pa fuzz/mem_fuzz.c ,
@@ -124,15 +123,11 @@ They are
 and
 .Cm fuzz_map
 .Pq Pa fuzz/map_fuzz.c ,
-grouped under the
+run by the
 .Cm fuzz
-build target.
-They always link a sanitized hosted build of the library
-.Pq Cm xft-san ,
-or the main library if
-.Dv XFT_SANITIZE
-is already on, and are registered with CTest under the label
-.Cm fuzz .
+build step.
+They link the main library, which those options make sanitized and
+hosted.
 .Pp
 Each target creates a fuzzer over
 .Fn xft_new_arena ,
@@ -158,10 +153,7 @@ returns a pointer into the pool, valid until
 .Sh EXAMPLES
 Build and run the fuzz targets:
 .Bd -literal -offset indent
-cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release \e
-	-DXFT_BUILD_FUZZ=ON
-cmake --build build --target fuzz
-ctest --test-dir build -L fuzz --output-on-failure
+zig build -Duse-libc -Dsanitize -Dfuzz fuzz
 .Ed
 .Pp
 A target, after

@@ -169,27 +169,29 @@ regenerates
 Put
 .Pa DerivedCoreProperties.txt
 in the source root.
-Configuring fails if it is missing.
+The build fails with
+.Ql MissingDerivedCoreProperties
+if it is missing.
 .It
-Configure and build with
-.Dv XFT_BOOTSTRAP_XID
-on:
+Build with
+.Fl Dbootstrap :
 .Bd -literal -offset indent
-cmake -S . -B build-xid -DXFT_BOOTSTRAP_XID=ON
-cmake --build build-xid
+zig build -Dbootstrap
 .Ed
 .Pp
 This builds
 .Pa libxft.a
 without
 .Pa src/xid ,
-forces
-.Dv XFT_BUILD_GENTABLE
-on, and runs
-.Nm gentable
-from the source root through the
-.Ql xid-table
-target, which is part of the default build.
+builds
+.Nm gentable ,
+and runs it from the source root through the
+.Cm xid-table
+step, which is part of the default install step.
+.Fl Dbootstrap
+cannot be combined with
+.Fl Dtests ,
+since the unit tests need the xid module.
 .It
 Build normally; the xid module is compiled in again.
 .El
@@ -212,9 +214,7 @@ range is
 The emitter then writes one table per property from that array.
 It writes the output through a 4 KiB buffer and opens it without
 .Dv O_CREAT ,
-so the
-.Ql xid-table
-target touches the file first.
+so the table must already exist; it is checked in.
 .Pp
 The source data should be refetched once a year, when a new Unicode
 version is published.

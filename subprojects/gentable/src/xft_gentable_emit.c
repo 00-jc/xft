@@ -37,7 +37,7 @@ static const char		g_prologue[] = {
 	"/* *************************************"
 	"************************************* */\n"
 	"\n"
-	"#include \"xid.h\"\n"
+	"#include <xft/xid.h>\n"
 	"\n"
 	"/*\tGrabbed from:\n"
 	" *\n"
