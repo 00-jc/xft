@@ -11,9 +11,10 @@
 /* ************************************************************************** */
 
 #include "tests/xid/xid_test.h"
+#include <xft/xft_p_syscalls.h>
 
 // {bytes little endian, cap, codepoint, len}: the cap bytes end flush
-// against a PROT_NONE page, so any overread faults
+// against a xft_prot_none page, so any overread faults
 static const t_u32	g_utf8[][4] = {
 {0x00, 0, 0, 0}, {0x00, 1, 0, 1}, {0x41, 1, 0x41, 1},
 {0x7F, 1, 0x7F, 1}, {0x6241, 2, 0x41, 1}, {0x80C2, 2, 0x80, 2},
@@ -35,8 +36,9 @@ static void	test_xid_utf8(void)
 	t_u8	*at;
 	t_size	i;
 
-	base = xft_mmap(8192, PROT_READ | PROT_WRITE, 0);
-	xft_mprotect(base + 4096, 4096, PROT_NONE);
+	base = xft_mmap(8192, xft_prot_read | xft_prot_write,
+			xft_map_private | xft_map_anonymous);
+	xft_mprotect(base + 4096, 4096, xft_prot_none);
 	i = 0;
 	while (i < sizeof(g_utf8) / sizeof(g_utf8[0]))
 	{

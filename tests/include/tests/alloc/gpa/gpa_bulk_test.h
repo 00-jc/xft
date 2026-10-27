@@ -13,11 +13,13 @@
 #ifndef GPA_BULK_TEST_H
 # define GPA_BULK_TEST_H
 
-# include "test.h"
-# include "alloc.h"
+# include <xft/test.h>
 
-# define BULK_N		512
-# define BULK_SIZES	4
+typedef enum e_bulk_test : t_u16
+{
+	BULK_N = 512,
+	BULK_SIZES = 4,
+}	t_bulk_test;
 
 void	test_bulk_same_size(void);
 void	test_bulk_same_size_fill(t_gpa *gpa, t_buffer *bufs);

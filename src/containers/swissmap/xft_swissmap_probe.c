@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "xft_p_swissmap.h"
+#include <xft/xft_p_swissmap.h>
 
 __attribute__((__always_inline__, pure, __nonnull__(1), __used__))
 inline t_swiss_probe	xft__swiss_probe(

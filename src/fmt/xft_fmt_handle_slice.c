@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "xft_p_fmt.h"
+#include <xft/xft_p_fmt.h>
 
 __attribute__((__nonnull__(1), __always_inline__, __used__))
 inline t_result	xft_fmt_handle_slice(t_writer *__restrict__ const writer,

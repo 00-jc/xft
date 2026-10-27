@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "xft_p_indexmap.h"
+#include <xft/xft_p_indexmap.h>
 
 __attribute__((__flatten__, __nonnull__(1)))
 t_size	xft_indexmap_delete_seeded(t_indexmap *__restrict__ const map,

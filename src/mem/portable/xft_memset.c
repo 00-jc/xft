@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "xft_p_mem.h"
+#include <xft/xft_p_mem.h>
 
 __attribute__((__nonnull__(1), __always_inline__, __used__))
 inline void	xft_memset_64(t_any restrict dest,

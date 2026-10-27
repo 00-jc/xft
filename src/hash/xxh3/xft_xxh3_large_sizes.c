@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "xft_p_xxh3.h"
+#include <xft/xft_p_xxh3.h>
 
 #define MASK 0x00000000FFFFFFFF
 
@@ -45,7 +45,7 @@ __attribute__((__nonnull__(1, 2), __always_inline__, __used__))
 static inline void	xft_xxh3_scramble_acc_512(t_blk8r acc, t_blk8r secret)
 {
 	const t_vu64_512		prime = (t_vu64_512){1, 1, 1, 1, 1, 1, 1, 1}
-		* XXH3_PRIME32_1;
+		* (t_u64)XXH3_PRIME32_1;
 	t_vu64_512				*xacc;
 	t_vu64_512				rr[7];
 

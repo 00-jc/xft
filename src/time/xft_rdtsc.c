@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "mem.h"
-#include "xft_p_time.h"
+#include <xft/mem.h>
+#include <xft/xft_p_time.h>
 
 #ifdef __x86_64__
 

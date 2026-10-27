@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gentable.h"
+#include <xft/gentable.h>
 
 __attribute__((__nonnull__(1), __hot__))
 t_gt_step	gt__jmpline(t_gt_acc *__restrict__ const acc)

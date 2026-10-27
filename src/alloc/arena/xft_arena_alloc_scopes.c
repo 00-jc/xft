@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "xft_p_arena.h"
+#include <xft/xft_p_arena.h>
 
 __attribute__((__nonnull__(1), pure, __always_inline__, __used__))
 inline t_arena_checkpoint	xft_arena_checkpoint(

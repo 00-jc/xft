@@ -13,8 +13,7 @@
 #ifndef ARENA_EXTEND_TEST_H
 # define ARENA_EXTEND_TEST_H
 
-# include "test.h"
-# include "alloc.h"
+# include <xft/test.h>
 
 void	test_extend_trigger(void);
 void	test_extend_rewind_reuse(void);

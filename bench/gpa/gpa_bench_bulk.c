@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "tailor.h"
+#include <xft/tailor.h>
 #include "alloc_bench.h"
 
 #define BULK_BATCH	256

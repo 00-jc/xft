@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "io.h"
-#include "xft_p_fmt.h"
+#include <xft/io.h>
+#include <xft/xft_p_fmt.h>
 
 __attribute__((__nonnull__(1, 3)))
 static inline t_result	xft_fmt_manage(t_writer *__restrict__ const writer,

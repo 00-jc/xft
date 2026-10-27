@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "fuzz.h"
+#include <xft/rt.h>
 
 static t_size	fuzz_vec_len(t_buffer *b)
 {
@@ -62,5 +63,5 @@ void	xft_main(const t_any *__restrict__ const sp)
 	while (i++ < n)
 		fuzz_vec_case(&fz, alloc);
 	xft_fuzzer_destroy(&fz);
-	xft_exit(0);
+	xft_exit_process(0);
 }

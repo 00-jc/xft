@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "xft_p_xxh3.h"
+#include <xft/xft_p_xxh3.h>
 
 __attribute__((__always_inline__, const, __used__))
 inline t_u64a	xft_xxh3_rrmxmx(t_u64a a, t_u64a b)

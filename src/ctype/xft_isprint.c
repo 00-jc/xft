@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "xft.h"
+#include <xft/ctype.h>
 
 __attribute__((const, __always_inline__, hot, __used__))
 inline int	xft_isprint(int c)

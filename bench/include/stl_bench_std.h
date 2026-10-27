@@ -17,11 +17,15 @@
 # include <stdint.h>
 
 /* mirror the xft side's workloads; stl_bench_run.c asserts they match */
-# define STL_BENCH_FILL			4096
-# define STL_BENCH_KEYS			8192
-# define STL_BENCH_LARGE_FILL	1048576
-# define STL_BENCH_READ_FILL	1024
-# define STL_BENCH_RMF_LEN		256
+
+typedef enum e_stl_bench : uint32_t
+{
+	STL_BENCH_FILL = 4096,
+	STL_BENCH_KEYS = 8192,
+	STL_BENCH_LARGE_FILL = 1048576,
+	STL_BENCH_READ_FILL = 1024,
+	STL_BENCH_RMF_LEN = 256,
+}	t_stl_bench;
 
 /* a string both sides read: std::string_view, or t_buffer on the xft side */
 typedef struct s_stl_str

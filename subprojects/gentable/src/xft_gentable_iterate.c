@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gentable.h"
+#include <xft/gentable.h>
 
 __attribute__((__always_inline__, __flatten__, __hot__))
 inline static t_nvec	gt__load(t_buffer src, t_size it, t_u64a full)

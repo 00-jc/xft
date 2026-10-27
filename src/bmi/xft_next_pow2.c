@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "bmi.h"
+#include <xft/bmi.h>
 
 __attribute__((const, __always_inline__, __hot__, __used__))
 inline t_size	xft_next_pow2(t_size qword)

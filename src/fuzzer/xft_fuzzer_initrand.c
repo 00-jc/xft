@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "fuzzer.h"
+#include <xft/fuzzer.h>
 
 __attribute__((__nonnull__(1), __always_inline__))
 static inline t_result	xft_fuzzer_init__internal(t_fuzzer *fuzz, t_size i,

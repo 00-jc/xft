@@ -13,12 +13,13 @@
 #ifndef SOA_BENCH_H
 # define SOA_BENCH_H
 
-# include "soa.h"
-# include "alloc.h"
-# include "rt.h"
+# include <xft/soa.h>
 
-# define SOA_BENCH_FIELDS	5
-# define SOA_BENCH_FILL		4096
+typedef enum e_soa_bench : t_u16
+{
+	SOA_BENCH_FIELDS = 5,
+	SOA_BENCH_FILL = 4096,
+}	t_soa_bench;
 
 typedef struct s_soa_bench_particle
 {

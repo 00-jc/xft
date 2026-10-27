@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gentable.h"
+#include <xft/gentable.h>
 
 // head is bytes [0, 8) and tail [len - 8, len) of the tag; anything that is
 // not 9 or 12 bytes long reads the zero block instead and matches nothing

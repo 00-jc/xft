@@ -13,7 +13,7 @@
 #ifndef MAP_TEST_H
 # define MAP_TEST_H
 
-# include "test.h"
+# include <xft/test.h>
 
 void	test_map_insert_lookup(t_allocator a);
 void	test_map_delete(t_allocator a);

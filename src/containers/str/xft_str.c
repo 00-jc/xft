@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "str.h"
+#include <xft/str.h>
 
 t_str	xft_new_str(t_allocator allocator, t_size size)
 {

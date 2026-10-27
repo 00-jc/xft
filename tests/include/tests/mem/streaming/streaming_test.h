@@ -13,9 +13,7 @@
 #ifndef STREAMING_TEST_H
 # define STREAMING_TEST_H
 
-# include "test.h"
-# include "xft_p_mem.h"
-# include "alloc/page_alloc.h"
+# include <xft/test.h>
 
 void	test_streaming_xft_memcpy(t_buffer buf[3], t_size dst, t_size src,
 			t_size len);

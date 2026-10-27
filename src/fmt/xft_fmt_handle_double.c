@@ -10,10 +10,10 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "io.h"
-#include "mem.h"
-#include "xft_p_fmt.h"
-#include "math.h"
+#include <xft/io.h>
+#include <xft/mem.h>
+#include <xft/xft_p_fmt.h>
+#include <xft/math.h>
 
 __attribute__((__nonnull__(1), __always_inline__, __used__))
 static inline t_size	xft_fmt_uint_back(t_u8 *buf, t_u64 n)

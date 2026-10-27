@@ -10,7 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "xft_p_perf.h"
+#include <xft/xft_p_perf.h>
+#include <xft/xft_p_syscalls.h>
 
 __attribute__((__nonnull__(1, 2)))
 void	xft_perf_start_sample(t_perf_counters c, t_perf_sample *t)

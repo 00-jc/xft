@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "vec.h"
+#include <xft/vec.h>
 
 __attribute__((__nonnull__(1)))
 void	xft_memtake(t_any restrict dst,

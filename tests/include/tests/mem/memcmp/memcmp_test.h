@@ -13,7 +13,7 @@
 #ifndef MEMCMP_TEST_H
 # define MEMCMP_TEST_H
 
-# include "test.h"
+# include <xft/test.h>
 
 void	test_memcmp_basic(void);
 void	test_memcmp_binary(void);

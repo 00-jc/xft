@@ -10,7 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "tailor.h"
 #include "alloc_bench.h"
 
 t_gpa	*xft_get_bench_gpa(void)

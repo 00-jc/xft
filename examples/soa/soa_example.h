@@ -13,7 +13,7 @@
 #ifndef SOA_EXAMPLE_H
 # define SOA_EXAMPLE_H
 
-# include <xft.h>
+# include <xft/xft.h>
 
 # define PARTICLES		16
 # define FIELDS			5

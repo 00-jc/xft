@@ -10,19 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "rt.h"
+#include <xft/rt.h>
 
 #if defined(XFT_REQUIRE_LIBC) && !defined(XFT_NO_RT)
-
-# if defined(_WIN64)
-
-int	main(void)
-{
-	xft_main((const t_any *)__builtin_frame_address(0));
-	__builtin_unreachable();
-}
-
-# else
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -31,7 +21,5 @@ int	main(int argc, char **argv, char **envp)
 	xft_main((const t_any *)((t_u64 *)argv - 1));
 	__builtin_unreachable();
 }
-
-# endif
 
 #endif

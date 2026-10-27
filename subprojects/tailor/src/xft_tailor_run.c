@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "xft_p_tailor.h"
-#include "io.h"
+#include <xft/xft_p_tailor.h>
+#include <xft/io.h>
 
 __attribute__((__nonnull__(1, 2, 3), __always_inline__))
 static inline t_buffer	xft_tailor_runfn(t_tailor *t, t_tailor_fn fn,

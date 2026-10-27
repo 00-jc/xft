@@ -13,8 +13,8 @@
 #ifndef MEM_BENCH_H
 # define MEM_BENCH_H
 
-# include "xft_p_mem.h"
-# include "rt.h"
+# include <xft/xft_p_mem.h>
+# include <xft/rt.h>
 
 void	xft_memset_test_varied(t_any ptr);
 void	xft_memset_test_short_aligned(t_any ptr);

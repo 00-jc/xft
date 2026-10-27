@@ -14,7 +14,6 @@
 # define LIBC_BENCH_H
 
 # include "cstr_bench.h"
-# include "tailor.h"
 
 void	xft_libc_bench_memcpy(t_tailor *t);
 void	xft_libc_bench_strlen(t_tailor *t);

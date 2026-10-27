@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <xft.h>
+#include <xft/xft.h>
 
 __attribute__((__nonnull__(1), __noreturn__))
 void	xft_main(const t_any *const __restrict__ sp)
@@ -26,9 +26,9 @@ void	xft_main(const t_any *const __restrict__ sp)
 	if (__builtin_expect(memory.mem == nullptr, 0))
 	{
 		allocator.vtable.destroy(allocator.allocator);
-		xft_exit(1);
+		xft_exit_process(1);
 	}
 	xft_pin_invariant(memory.size >= 1000);
 	allocator.vtable.free(allocator.allocator, memory);
-	xft_exit(0);
+	xft_exit_process(0);
 }

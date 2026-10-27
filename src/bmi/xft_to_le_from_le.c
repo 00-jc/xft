@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "bmi.h"
+#include <xft/bmi.h>
 
 #if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
 

@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "sort.h"
+#include <xft/sort.h>
 
 __attribute__((__nonnull__(1, 2), pure))
 int	xft_cmp_u64(t_cany a, t_cany b)

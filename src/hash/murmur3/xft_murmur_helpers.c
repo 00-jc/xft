@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "xft_p_hash.h"
+#include <xft/xft_p_hash.h>
 
 __attribute__((const, __always_inline__, __used__))
 inline t_u64a	rotl(t_u64a x, t_size r)

@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "tailor.h"
+#include <xft/tailor.h>
 #include "swissmap_bench.h"
 
 static void	swiss_bench_insert(t_any ptr, t_allocator a, t_swissmap *map)

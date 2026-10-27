@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "tailor.h"
+#include <xft/tailor.h>
 #include "alloc_bench.h"
 
 void	xft_gpa_bench_8(t_any ptr)

@@ -13,7 +13,7 @@
 #ifndef BMI_TEST_H
 # define BMI_TEST_H
 
-# include "test.h"
+# include <xft/test.h>
 
 void	test_ctz(void);
 void	test_clz(void);

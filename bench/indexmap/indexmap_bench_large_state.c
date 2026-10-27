@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "tailor.h"
+#include <xft/tailor.h>
 #include "indexmap_bench.h"
 
 t_u64a	*xft_get_bench_imap_large_keys(void)

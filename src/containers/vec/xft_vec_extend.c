@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "vec.h"
+#include <xft/vec.h>
 
 __attribute__((__nonnull__(2), __always_inline__, __used__))
 inline t_result	xft_vec_reserve(t_allocator allocator,

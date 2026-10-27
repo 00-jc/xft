@@ -10,14 +10,12 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "primitives.h"
-#include "xft_p_tailor.h"
-#include "macros.h"
-#include "io.h"
-#include "fmt.h"
-#include "bmi.h"
-#include "tailor.h"
-#include "math.h"
+#include <xft/primitives.h>
+#include <xft/xft_p_tailor.h>
+#include <xft/macros.h>
+#include <xft/fmt.h>
+#include <xft/bmi.h>
+#include <xft/math.h>
 
 #define H0		" * %s\n"
 #define H1		" ├─ time         = %f ns per_call\n"

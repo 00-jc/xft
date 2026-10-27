@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "bmi.h"
+#include <xft/bmi.h>
 
 __attribute__((const, __always_inline__, __used__))
 inline t_u64a	xft_align_fwd_integer(t_u64a qw, const t_u64a align)

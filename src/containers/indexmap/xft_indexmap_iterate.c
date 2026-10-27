@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "xft_p_indexmap.h"
+#include <xft/xft_p_indexmap.h>
 
 __attribute__((__nonnull__(1), __flatten__))
 void	xft_indexmap_iterate(t_indexmap *__restrict__ const map,

@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "xft_p_indexmap.h"
+#include <xft/xft_p_indexmap.h>
 
 __attribute__((const, __always_inline__, __returns_nonnull__, __used__))
 inline const t_soa_context	*xft__imap_ctx(void)

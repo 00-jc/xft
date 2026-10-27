@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "tailor.h"
+#include <xft/tailor.h>
 #include "cstr_bench.h"
 
 void	xft_fill_strings(t_buffer *buffers, t_size n)

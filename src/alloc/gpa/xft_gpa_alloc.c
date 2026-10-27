@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "xft_p_gpa.h"
+#include <xft/xft_p_gpa.h>
 
 __attribute__((__nonnull__(1), __always_inline__))
 static inline t_result	xft_advance_slab(t_gpa *gpa)
@@ -18,13 +18,11 @@ static inline t_result	xft_advance_slab(t_gpa *gpa)
 	t_buffer	buf;
 	t_any		*prev;
 
-	buf = xft_fatptr(xft_mmap(GPA_SLABSIZE, PROT_READ | PROT_WRITE, 0),
-			GPA_SLABSIZE);
-	if (__builtin_expect(xft_map_failed(buf.mem), 0))
+	buf = xft_palloc_reserve(GPA_SLABSIZE);
+	if (__builtin_expect(!buf.mem, 0))
 		return (KO);
-	if (__builtin_expect(!xft_mmap_commit(buf.mem, sizeof(t_any *),
-				PROT_READ | PROT_WRITE, 0), 0))
-		return (xft_munmap(buf.mem, buf.size), KO);
+	if (__builtin_expect(!xft_palloc_commit(buf.mem, sizeof(t_any *)), 0))
+		return (xft_palloc_free(buf), KO);
 	prev = (t_any *)gpa->slab;
 	gpa->slab = buf.mem;
 	*(t_any *)gpa->slab = (t_any)prev;
@@ -44,8 +42,7 @@ static inline t_buffer	xft_return_ptr(t_gpa *gpa, t_size snapped, t_size align)
 			&& KO == xft_advance_slab(gpa), 0))
 		return (xft_fatptr(nullptr, 0));
 	new_ptr = xft_align_fwd(gpa->bmp, align);
-	if (__builtin_expect(!xft_mmap_commit(new_ptr, snapped,
-				PROT_READ | PROT_WRITE, 0), 0))
+	if (__builtin_expect(!xft_palloc_commit(new_ptr, snapped), 0))
 		return (xft_fatptr(nullptr, 0));
 	gpa->bmp = (t_any)((t_blk8w)new_ptr + snapped);
 	return (xft_fatptr(new_ptr, snapped));

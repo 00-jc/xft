@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "xft_p_vmanip.h"
+#include <xft/types/xft_p_vmanip_types.h>
 
 #if XFT_HAS_512_VEC && defined(__AVX512VBMI2__)
 

@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "xft.h"
+#include <xft/ctype.h>
 
 __attribute__((__used__))
 inline int	xft_isascii(int c)

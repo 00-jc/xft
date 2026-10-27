@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "rng.h"
-#include "timing.h"
+#include <xft/rng.h>
+#include <xft/timing.h>
 
 __attribute__((__nonnull__(1), __always_inline__, __used__))
 static inline t_u64a	xft_splitmix(t_u64a *restrict const x)

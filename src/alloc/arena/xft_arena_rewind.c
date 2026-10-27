@@ -10,7 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "xft_p_arena.h"
+#include <xft/xft_p_arena.h>
+#include <xft/alloc/page_alloc.h>
 
 __attribute__((__nonnull__(1), __always_inline__, __used__))
 inline void	xft_arena_clean_fwd(const t_arena *restrict const alloc)
@@ -25,7 +26,7 @@ inline void	xft_arena_clean_fwd(const t_arena *restrict const alloc)
 		while (next)
 		{
 			x = next->next;
-			xft_munmap(next, next->page_size);
+			xft_palloc_free(xft_fatptr((t_any)next, next->page_size));
 			next = x;
 		}
 	}

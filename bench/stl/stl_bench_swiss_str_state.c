@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "tailor.h"
+#include <xft/tailor.h>
 #include "stl_bench_str.h"
 
 static void	swiss_str_fill(t_swissmap *map, t_stl_str *keys, t_size n)

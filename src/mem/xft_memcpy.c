@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "xft_p_mem.h"
+#include <xft/xft_p_mem.h>
 
 __attribute__((__nonnull__(1, 2), __always_inline__, __hot__,
 	__returns_nonnull__, __used__))

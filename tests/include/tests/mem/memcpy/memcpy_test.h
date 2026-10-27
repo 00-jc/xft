@@ -13,7 +13,7 @@
 #ifndef MEMCPY_TEST_H
 # define MEMCPY_TEST_H
 
-# include "test.h"
+# include <xft/test.h>
 
 void	test_memcpy_basic(void);
 void	test_memcpy_misaligned(void);

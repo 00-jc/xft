@@ -13,7 +13,7 @@
 #ifndef CSTR_TO_STR_TEST_H
 # define CSTR_TO_STR_TEST_H
 
-# include "test.h"
+# include <xft/test.h>
 
 void	test_cstr_to_str(t_allocator a);
 void	test_cstr(t_test *t);

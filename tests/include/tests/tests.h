@@ -13,7 +13,7 @@
 #ifndef TESTS_H
 # define TESTS_H
 
-# include "test.h"
+# include <xft/test.h>
 
 void	test_memchr(t_test *t);
 void	test_memcmp(t_test *t);

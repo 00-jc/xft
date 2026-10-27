@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "math.h"
+#include <xft/math.h>
 
 __attribute__((__always_inline__, const, __used__))
 inline t_u8	xft_pow_u8(t_u8 x, t_u8 n)

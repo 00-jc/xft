@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "fmt.h"
-#include "xft.h"
+#include <xft/fmt.h>
+#include <xft/xft.h>
 
 // lists the UAX #31 identifiers of a UTF-8 file, one per line as
 // "offset<TAB>codepoints<TAB>bytes<TAB>text", and reports every byte that
@@ -94,16 +94,16 @@ void	xft_main(const t_any *__restrict__ const sp)
 
 	kp = xft_get_kernel_ptrs(sp);
 	if (__builtin_expect(kp.argc != 2, 0))
-		xft_exit(1);
+		xft_exit_process(1);
 	if ((t_any)kp.argv == nullptr || kp.argv[1] == nullptr)
 		__builtin_unreachable();
-	f = xft_map_file((const t_u8 *)kp.argv[1], O_RDONLY);
+	f = xft_map_file((const t_u8 *)kp.argv[1], xft_o_rdonly);
 	xft_kernel_ptrs_destroy(&kp);
 	if (f.mem == nullptr)
-		xft_exit(1);
+		xft_exit_process(1);
 	w = xft_get_fs_writer(xft_fatptr(x, BUFSIZE), xft_get_stdout());
 	scan(&w, f);
 	(void)xft_writer_flush(&w);
 	xft_unmap_file(f);
-	xft_exit(0);
+	xft_exit_process(0);
 }

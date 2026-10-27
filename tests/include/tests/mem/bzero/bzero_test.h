@@ -13,7 +13,7 @@
 #ifndef BZERO_TEST_H
 # define BZERO_TEST_H
 
-# include "test.h"
+# include <xft/test.h>
 
 void	test_bzero_large(void);
 void	test_bzero(t_test *t);

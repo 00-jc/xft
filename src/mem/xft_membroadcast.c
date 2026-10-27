@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "mem.h"
+#include <xft/mem.h>
 
 __attribute__((__nonnull__(1, 2)))
 void	xft_membroadcast(t_any dst, t_any src, t_size chunk_size, t_size n)

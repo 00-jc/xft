@@ -116,16 +116,16 @@ void	xft_main(const t_any *const __restrict__ sp)
 	a = xft_gpa_allocator(&gpa);
 	ctx_buf = particle_ctx_new(a);
 	if (__builtin_expect(ctx_buf.mem == nullptr, 0))
-		xft_exit(1);
+		xft_exit_process(1);
 	ctx = (t_soa_context *)ctx_buf.mem;
 	soa = xft_new_soa(a, 4, ctx);
 	if (__builtin_expect(soa.ptr == nullptr
 			|| !particles_fill(a, &soa, ctx), 0))
-		xft_exit(1);
+		xft_exit_process(1);
 	particles_step(&soa, ctx, STEPS);
 	particles_print(&soa, ctx);
 	xft_destroy_soa(a, &soa);
 	a.vtable.free(a.allocator, ctx_buf);
 	a.vtable.destroy(a.allocator);
-	xft_exit(0);
+	xft_exit_process(0);
 }

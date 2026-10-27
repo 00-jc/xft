@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "vec.h"
+#include <xft/vec.h>
 
 __attribute__((__nonnull__(1), __always_inline__, __used__))
 inline void	xft_vec_clear(t_vec *restrict const v)

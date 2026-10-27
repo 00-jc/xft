@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "mem.h"
-#include "signals.h"
+#include <xft/mem.h>
+#include <xft/signals.h>
 
 __attribute__((const, __always_inline__, __used__))
 inline t_sigset	xft_sigfillset(void)

@@ -4,12 +4,14 @@
 xft_srcs(_xft_analyze_srcs ${XFT_LIBC})
 list(TRANSFORM _xft_analyze_srcs PREPEND ${CMAKE_CURRENT_SOURCE_DIR}/)
 
+list(TRANSFORM XFT_INTERNAL_DIR PREPEND -I OUTPUT_VARIABLE _xft_internal_incs)
+
 set(_xft_analyze_flags
   ${CMAKE_C23_EXTENSION_COMPILE_OPTION}
   ${CFLAGS}
   ${XFT_WARNS}
   -I${CMAKE_CURRENT_SOURCE_DIR}/include
-  -I${XFT_INTERNAL_DIR})
+  ${_xft_internal_incs})
 foreach(_xft_d IN LISTS XFT_DEFINES_PUBLIC XFT_DEFINES_PRIVATE)
   list(APPEND _xft_analyze_flags "-D${_xft_d}")
 endforeach()

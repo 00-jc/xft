@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "str.h"
+#include <xft/str.h>
 
 __attribute__((__nonnull__(2)))
 t_result	xft_str_push_back(t_allocator allocator,

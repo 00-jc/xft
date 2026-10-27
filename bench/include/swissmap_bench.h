@@ -13,14 +13,15 @@
 #ifndef SWISSMAP_BENCH_H
 # define SWISSMAP_BENCH_H
 
-# include "swissmap.h"
-# include "alloc.h"
-# include "rng.h"
-# include "rt.h"
+# include <xft/swissmap.h>
+# include <xft/rng.h>
 
-# define SWISS_BENCH_FILL	4096
-# define SWISS_BENCH_KEYS	8192
-# define SWISS_BENCH_LARGE_FILL	1048576
+typedef enum e_swiss_bench : t_u32
+{
+	SWISS_BENCH_FILL = 4096,
+	SWISS_BENCH_KEYS = 8192,
+	SWISS_BENCH_LARGE_FILL = 1048576,
+}	t_swiss_bench;
 
 t_gpa		*xft_get_bench_swiss_gpa(void);
 t_u64a		*xft_get_bench_swiss_keys(void);

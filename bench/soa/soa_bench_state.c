@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "tailor.h"
+#include <xft/tailor.h>
 #include "soa_bench.h"
 
 t_gpa	*xft_get_bench_soa_gpa(void)

@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "tailor.h"
+#include <xft/tailor.h>
 
 __attribute__((__nonnull__(1), __always_inline__))
 inline void	xft_tailor_add_processed_bytes(t_any ptr, const t_size bytes)

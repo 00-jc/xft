@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "xft_p_tailor.h"
+#include <xft/xft_p_tailor.h>
 
 __attribute__((__nonnull__(1, 2)))
 t_result	xft_tailor_bench(t_tailor *t, t_tailor_bench benches[], t_size size)

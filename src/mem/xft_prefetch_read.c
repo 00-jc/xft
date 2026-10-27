@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "mem.h"
+#include <xft/mem.h>
 
 __attribute__((__nonnull__(1), __always_inline__, __used__))
 inline void	xft_prefetch_read0(t_cany restrict const ptr,

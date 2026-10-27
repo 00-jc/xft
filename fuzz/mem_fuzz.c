@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "fuzz.h"
+#include <xft/rt.h>
 
 static void	fuzz_mem_rw(t_fuzzer *fz)
 {
@@ -107,5 +108,5 @@ void	xft_main(const t_any *__restrict__ const sp)
 		fuzz_strlen_case(&fz);
 	}
 	xft_fuzzer_destroy(&fz);
-	xft_exit(0);
+	xft_exit_process(0);
 }

@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "xft_p_palloc.h"
+#include <xft/xft_p_palloc.h>
 
 __attribute__((__nonnull__(1)))
 static t_buffer	palloc_allocate(t_any alloc, t_size size, t_size align)

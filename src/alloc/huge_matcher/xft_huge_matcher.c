@@ -10,7 +10,11 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "xft_p_hugepage.h"
+#include <xft/xft_p_hugepage.h>
+
+#if defined(__linux__)
+# include <xft/xft_p_syscalls.h>
+#endif
 
 __attribute__((__always_inline__, const, __used__))
 inline t_size	xft_match_hugepage(t_size requested_size)
@@ -38,18 +42,22 @@ inline t_size	xft_match_hugepage(t_size requested_size)
 	return (xft_tern(page_size < 8, 8, page_size));
 }
 
+#if defined(__linux__)
+
 __attribute__((__always_inline__, const, __used__))
 inline int	xft_match_hugepage_flags(t_size page_size)
 {
 	t_u32	flags;
 
-	flags = -(page_size == HUGEPAGE_2MB) & MAP_HUGE_2MB;
-	flags |= -(page_size == HUGEPAGE_8MB) & MAP_HUGE_8MB;
-	flags |= -(page_size == HUGEPAGE_16MB) & MAP_HUGE_16MB;
-	flags |= -(page_size == HUGEPAGE_256MB) & MAP_HUGE_256MB;
-	flags |= -(page_size == HUGEPAGE_512MB) & MAP_HUGE_512MB;
-	flags |= -(page_size == HUGEPAGE_1GB) & MAP_HUGE_1GB;
-	flags |= -(page_size == HUGEPAGE_2GB) & MAP_HUGE_2GB;
-	flags |= -(page_size == HUGEPAGE_16GB) & MAP_HUGE_16GB;
+	flags = -(page_size == HUGEPAGE_2MB) & xft_map_huge_2mb;
+	flags |= -(page_size == HUGEPAGE_8MB) & xft_map_huge_8mb;
+	flags |= -(page_size == HUGEPAGE_16MB) & xft_map_huge_16mb;
+	flags |= -(page_size == HUGEPAGE_256MB) & xft_map_huge_256mb;
+	flags |= -(page_size == HUGEPAGE_512MB) & xft_map_huge_512mb;
+	flags |= -(page_size == HUGEPAGE_1GB) & xft_map_huge_1gb;
+	flags |= -(page_size == HUGEPAGE_2GB) & xft_map_huge_2gb;
+	flags |= -(page_size == HUGEPAGE_16GB) & xft_map_huge_16gb;
 	return ((int)flags);
 }
+
+#endif

@@ -10,10 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "xft_p_tailor.h"
-#include "io.h"
-#include "xft_p_math.h"
-#include "tailor.h"
+#include <xft/xft_p_tailor.h>
 
 __attribute__((__nonnull__(1, 2), __always_inline__))
 static inline void	xft_finalmix(t_u64a *medians, t_u64a hilo[2],

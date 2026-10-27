@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "xft_p_indexmap.h"
+#include <xft/xft_p_indexmap.h>
 
 __attribute__((__always_inline__, __unused__, __nonnull__(1)))
 static inline void	xft__imap_insert_unchecked(

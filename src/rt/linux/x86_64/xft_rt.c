@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "rt.h"
+#include <xft/rt.h>
 
 #if defined(__linux__) && !defined(XFT_REQUIRE_LIBC) \
 	&& defined(__x86_64__) && !defined(XFT_NO_RT)

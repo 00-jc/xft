@@ -10,11 +10,11 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "alloc.h"
-#include "primitives.h"
-#include "math.h"
-#include "io.h"
-#include "fmt.h"
+#include <xft/alloc.h>
+#include <xft/primitives.h>
+#include <xft/math.h>
+#include <xft/io.h>
+#include <xft/fmt.h>
 
 #define R1 "reporta (%x) report:\n  allocs:    %q\n  frees:     %q\n"
 #define R2 "reuses:    %q\n  misses:    %q\n  paged:     %q\n  slabs:"
@@ -26,13 +26,11 @@ t_reporta	xft_new_reporta(void)
 	t_reporta		gpa;
 	t_buffer		buf;
 
-	buf = xft_fatptr(xft_mmap(GPA_SLABSIZE, PROT_READ | PROT_WRITE, 0),
-			GPA_SLABSIZE);
-	if (__builtin_expect(xft_map_failed(buf.mem), 0))
+	buf = xft_palloc_reserve(GPA_SLABSIZE);
+	if (__builtin_expect(!buf.mem, 0))
 		return ((t_reporta){0});
-	if (__builtin_expect(!xft_mmap_commit(buf.mem, sizeof(t_any *),
-				PROT_READ | PROT_WRITE, 0), 0))
-		return (xft_munmap(buf.mem, buf.size), (t_reporta){0});
+	if (__builtin_expect(!xft_palloc_commit(buf.mem, sizeof(t_any *)), 0))
+		return (xft_palloc_free(buf), (t_reporta){0});
 	xft_memset((t_any)gpa.free, 0, sizeof(t_uptr) * GPA_CLASSES);
 	xft_memset((t_any)gpa.free_depth, 0, sizeof(t_size) * GPA_CLASSES);
 	gpa.slab = buf.mem;
@@ -82,7 +80,7 @@ void	xft_reporta_destroy(t_reporta *gpa)
 	while (ptr != nullptr)
 	{
 		next = (t_any *)*ptr;
-		xft_munmap((t_any)ptr, gpa->slabsize);
+		xft_palloc_free(xft_fatptr((t_any)ptr, gpa->slabsize));
 		ptr = next;
 	}
 }

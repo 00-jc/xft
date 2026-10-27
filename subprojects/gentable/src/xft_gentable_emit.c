@@ -10,7 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gentable.h"
+#include <xft/gentable.h>
+#include <xft/xft_p_syscalls.h>
 
 static const char		g_prologue[] = {
 	"/* *************************************"
@@ -131,7 +132,8 @@ __attribute__((__nonnull__(2, 3)))
 t_result	gt_emit(t_buffer src, const t_vec *__restrict__ const set,
 				const char *__restrict__ const path)
 {
-	const int	fd = xft_open(path, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	const int	fd = xft_open(path, xft_o_wronly | xft_o_creat
+			| xft_o_trunc, 0644);
 	static t_u8	buf[BUFSIZE];
 	t_writer	w;
 	t_result	ret;

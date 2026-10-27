@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "xft_p_swissmap.h"
+#include <xft/xft_p_swissmap.h>
 
 __attribute__((__flatten__, pure, __nonnull__(1)))
 t_any	xft_swissmap_lookup(const t_swissmap *__restrict__ const map,

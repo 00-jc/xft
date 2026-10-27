@@ -13,12 +13,14 @@
 #ifndef VEC_BENCH_H
 # define VEC_BENCH_H
 
-# include "vec.h"
-# include "alloc.h"
-# include "rt.h"
+# include <xft/vec.h>
+# include <xft/rt.h>
 
-# define VEC_BENCH_READ_FILL	1024
-# define VEC_BENCH_RMF_LEN	256
+typedef enum e_vec_bench : t_u16
+{
+	VEC_BENCH_READ_FILL = 1024,
+	VEC_BENCH_RMF_LEN = 256,
+}	t_vec_bench;
 
 t_gpa	*xft_get_bench_vec_gpa(void);
 

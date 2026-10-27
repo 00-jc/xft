@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "math.h"
+#include <xft/math.h>
 
 __attribute__((__always_inline__, const, __used__))
 inline int	xft_ipow(int x, t_u64 n)

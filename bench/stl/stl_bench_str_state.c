@@ -10,7 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "tailor.h"
 #include "stl_bench_str.h"
 
 /* base64url, so each char is 6 bits of a draw: 10 chars per xoshiro call */

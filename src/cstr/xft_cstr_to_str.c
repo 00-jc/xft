@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cstr.h"
+#include <xft/cstr.h>
 
 __attribute__((__nonnull__(2)))
 t_str	xft_cstr_to_str(t_allocator allocator, const char *cstr)

@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "vec.h"
+#include <xft/vec.h>
 
 __attribute__((__nonnull__(1), __always_inline__, pure, __used__))
 inline t_cany	xft_vec_get(const t_vec *restrict const vec,

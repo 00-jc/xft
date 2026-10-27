@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "mem.h"
+#include <xft/mem.h>
 
 __attribute__((const, __nonnull__(1), __returns_nonnull__))
 t_any	xft_align_fwd(t_any ptr, const t_size align)

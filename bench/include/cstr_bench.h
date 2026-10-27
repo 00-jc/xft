@@ -13,10 +13,10 @@
 #ifndef CSTR_BENCH_H
 # define CSTR_BENCH_H
 
-# include "cstr.h"
-# include "primitives.h"
-# include "rt.h"
-# include "tailor.h"
+# include <xft/cstr.h>
+# include <xft/primitives.h>
+# include <xft/rt.h>
+# include <xft/tailor.h>
 
 void		xft_fill_strings(t_buffer *buffers, t_size n);
 t_result	xft_strlen_bench_buffers(t_tailor *t);

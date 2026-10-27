@@ -10,8 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "xft_p_asm.h"
-#include "cstr.h"
+#include <xft/cstr.h>
 
 #define ALIGN 0xFFFULL
 #define SIZE 0x1000ULL

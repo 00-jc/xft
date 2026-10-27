@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include <string.h>
-#include "tailor.h"
+#include <xft/tailor.h>
 #include "libc_bench.h"
 
 void	xft_libc_memcpy_medium_aligned(t_any ptr)

@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "sort.h"
+#include <xft/sort.h>
 
 __attribute__((__nonnull__(1, 2, 3), __always_inline__))
 static inline void	xft__swap(t_u8 *a, t_u8 *b, t_u8 *buf, t_size size)

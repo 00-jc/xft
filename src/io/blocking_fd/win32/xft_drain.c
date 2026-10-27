@@ -1,0 +1,74 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   xft_drain.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/06/30 12:32:34 by jaicastr          #+#    #+#             */
+/*   Updated: 2026/06/30 13:24:30 by jaicastr         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include <xft/xft_p_io.h>
+#include <xft/types/io_types.h>
+
+#if defined(_WIN32)
+
+# define WIN32_LEAN_AND_MEAN
+# include <windows.h>
+
+__attribute__((__always_inline__, __nonnull__(2)))
+static inline t_ssize	xft__write(t_i32 fd, const t_u8 *__restrict__ buf,
+	t_size len)
+{
+	DWORD	n;
+
+	if (!WriteFile((HANDLE)(intptr_t)fd, buf,
+		(DWORD)xft_tern(len > 0xFFFFFFFF, 0xFFFFFFFF, len), &n, nullptr))
+		return (-1);
+	return ((t_ssize)n);
+}
+
+__attribute__((__always_inline__, __nonnull__(1, 2), __used__))
+static inline void	xft_sync_iovecs(t_iovec *__restrict__ *__restrict__ bufs,
+	t_size *__restrict__ nbufs, t_size written)
+{
+	t_size	i;
+
+	i = 0;
+	if (*bufs == nullptr)
+		__builtin_unreachable();
+	while (i < *nbufs && written >= (*bufs)[i].size)
+		written -= (*bufs)[i++].size;
+	*bufs += i;
+	*nbufs -= i;
+	if (*nbufs != 0)
+	{
+		if ((*bufs)[0].mem == nullptr)
+			__builtin_unreachable();
+		(*bufs)[0].mem += written;
+		(*bufs)[0].size -= written;
+	}
+}
+
+__attribute__((__always_inline__, __nonnull__(1, 2), __used__))
+inline t_result	xft_stream_drain(t_any __restrict const writer,
+	t_iovec *__restrict__ bufs, t_size nbufs)
+{
+	t_writer *__restrict__ const		w = writer;
+	t_ssize								ret;
+
+	xft_sync_iovecs(&bufs, &nbufs, 0);
+	while (nbufs != 0)
+	{
+		ret = xft__write(w->as.fs_writer.fd, bufs[0].mem, bufs[0].size);
+		if (__builtin_expect(ret <= 0, 0))
+			return (KO);
+		xft_sync_iovecs(&bufs, &nbufs, (t_size)ret);
+	}
+	w->end = 0;
+	return (OK);
+}
+
+#endif

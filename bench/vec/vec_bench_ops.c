@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "tailor.h"
+#include <xft/tailor.h>
 #include "vec_bench.h"
 
 void	xft_vec_bench_push_back(t_any ptr)

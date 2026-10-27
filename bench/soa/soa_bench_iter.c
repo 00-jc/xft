@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "tailor.h"
+#include <xft/tailor.h>
 #include "soa_bench.h"
 
 static void	soa_bench_step(t_i32a *__restrict__ x, t_i32a *__restrict__ y,

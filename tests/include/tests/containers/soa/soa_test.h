@@ -13,11 +13,13 @@
 #ifndef SOA_TEST_H
 # define SOA_TEST_H
 
-# include "test.h"
-# include "soa.h"
+# include <xft/test.h>
 
-# define SOA_TEST_FIELDS 4
-# define SOA_TEST_ALIGN 8
+typedef enum e_soa_test : t_u8
+{
+	SOA_TEST_FIELDS = 4,
+	SOA_TEST_ALIGN = 8,
+}	t_soa_test;
 
 typedef struct s_soa_test_elem
 {

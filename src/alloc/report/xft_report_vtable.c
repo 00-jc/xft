@@ -10,8 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "xft_p_gpa.h"
-#include "io.h"
+#include <xft/xft_p_gpa.h>
 
 __attribute__((__nonnull__(1)))
 static void	gpa_destroy(t_any alloc)

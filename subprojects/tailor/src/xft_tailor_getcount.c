@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "tailor.h"
+#include <xft/tailor.h>
 
 __attribute__((pure, __nonnull__(1)))
 t_size	xft_tailor_getcount(t_cany ptr)

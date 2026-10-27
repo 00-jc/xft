@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "xft_p_tailor.h"
-#include "math.h"
+#include <xft/xft_p_tailor.h>
+#include <xft/math.h>
 #include <float.h>
 
 __attribute__((__nonnull__(1, 2), __always_inline__))

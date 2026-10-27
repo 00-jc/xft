@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "tailor.h"
-#include "io.h"
+#include <xft/tailor.h>
+#include <xft/io.h>
 
 __attribute__((__nonnull__(1)))
 t_result	xft_new_tailor(t_tailor *t, t_f64 warmup_sec, t_u64a min_samples)

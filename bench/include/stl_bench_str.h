@@ -17,9 +17,13 @@
 # include "stl_bench_std.h"
 
 /* keys are 12..40 base64url bytes: long enough that a hash has to read them */
-# define STL_STR_MIN	12
-# define STL_STR_SPAN	29
-# define STL_STR_MAX	40
+
+typedef enum e_stl_str_len : t_u8
+{
+	STL_STR_MIN = 12,
+	STL_STR_SPAN = 29,
+	STL_STR_MAX = 40,
+}	t_stl_str_len;
 
 void		xft_bench_str_gen(t_stl_str *strs, t_u8 *pool, t_size n);
 t_stl_str	*xft_get_bench_str_keys(void);

@@ -10,8 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "tailor.h"
+#include <xft/tailor.h>
 #include "libc_bench.h"
+#include <xft/rt.h>
 
 __attribute__((__always_inline__, __used__))
 inline void	xft_main(const t_any *__restrict__ const sp)
@@ -20,8 +21,8 @@ inline void	xft_main(const t_any *__restrict__ const sp)
 
 	((void)sp, xft_bind_process_to_cpu(0));
 	if (!xft_new_tailor(&t, 2, 2000))
-		xft_exit(1);
+		xft_exit_process(1);
 	xft_libc_bench_memcpy(&t);
 	xft_libc_bench_strlen(&t);
-	(xft_tailor_destroy(&t), xft_exit(0));
+	(xft_tailor_destroy(&t), xft_exit_process(0));
 }

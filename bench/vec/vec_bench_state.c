@@ -10,7 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "tailor.h"
 #include "vec_bench.h"
 
 t_gpa	*xft_get_bench_vec_gpa(void)

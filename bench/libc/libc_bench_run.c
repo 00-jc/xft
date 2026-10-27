@@ -10,8 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "tailor.h"
+#include <xft/tailor.h>
 #include "libc_bench.h"
+#include <xft/rt.h>
 
 void	xft_libc_bench_memcpy(t_tailor *t)
 {
@@ -34,7 +35,7 @@ void	xft_libc_bench_memcpy(t_tailor *t)
 	};
 
 	if (!xft_tailor_buffers(t, bufsizes, bufalign, 28))
-		xft_exit(1);
+		xft_exit_process(1);
 	(void)xft_tailor_bench(t, benches, 7);
 }
 
@@ -51,6 +52,6 @@ void	xft_libc_bench_strlen(t_tailor *t)
 	};
 
 	if (!xft_strlen_bench_buffers(t))
-		xft_exit(1);
+		xft_exit_process(1);
 	(void)xft_tailor_bench(t, benches, 7);
 }

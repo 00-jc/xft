@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "fuzz.h"
+#include <xft/rt.h>
 
 static void	init_keys(t_u8 keys[FUZZ_KEY_SLOTS][2])
 {
@@ -64,5 +65,5 @@ void	xft_main(const t_any *__restrict__ const sp)
 		fuzz_map_case(&fz, a, &m, keys);
 	xft_swissmap_destroy(a, &m);
 	xft_fuzzer_destroy(&fz);
-	xft_exit(0);
+	xft_exit_process(0);
 }

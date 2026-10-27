@@ -10,7 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "tailor.h"
 #include "mem_bench.h"
 
 void	xft_memmove_overlap(t_buffer *buffer, t_size shift, t_size invert,

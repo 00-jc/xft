@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "str.h"
+#include <xft/str.h>
 
 __attribute__((__nonnull__(1)))
 t_result	xft_str_remove(t_str *restrict const v, t_size i)

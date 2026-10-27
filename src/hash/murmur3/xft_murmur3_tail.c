@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "xft_p_hash.h"
+#include <xft/xft_p_hash.h>
 
 __attribute__((__always_inline__, __nonnull__(1), __pure__, __used__))
 inline t_u64a	xft_murmur3_tail_word(const t_u8 *restrict const tail,

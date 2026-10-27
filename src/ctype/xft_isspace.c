@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ctype.h"
+#include <xft/ctype.h>
 
 __attribute__((const, __always_inline__, hot, __used__))
 inline int	xft_isspace(int c)

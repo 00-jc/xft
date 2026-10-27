@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "soa.h"
+#include <xft/soa.h>
 
 __attribute__((pure, __always_inline__,
 	__nonnull__(1, 2), __returns_nonnull__, __used__))

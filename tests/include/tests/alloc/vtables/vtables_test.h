@@ -13,8 +13,7 @@
 #ifndef VTABLES_TEST_H
 # define VTABLES_TEST_H
 
-# include "test.h"
-# include "alloc.h"
+# include <xft/test.h>
 
 void	test_palloc_vtable(void);
 void	test_palloc_vtable_realloc(t_allocator *alloc, t_buffer buf);

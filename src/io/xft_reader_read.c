@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "io.h"
+#include <xft/io.h>
 
 __attribute__((__always_inline__, __nonnull__(1, 2, 4), __used__))
 inline t_result	xft_read_from_reader(t_reader *__restrict__ const reader,

@@ -13,7 +13,7 @@
 #ifndef STRLEN_TEST_H
 # define STRLEN_TEST_H
 
-# include "test.h"
+# include <xft/test.h>
 
 void	test_strlen_basic(void);
 void	test_strlen_misaligned(void);

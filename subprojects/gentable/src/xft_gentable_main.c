@@ -10,7 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gentable.h"
+#include <xft/gentable.h>
+#include <xft/xft_p_syscalls.h>
 
 __attribute__((__nonnull__(1, 2), __always_inline__, __flatten__))
 inline static bool	gt__init_state(t_gentable_state *__restrict__ const state,
@@ -24,7 +25,7 @@ inline static bool	gt__init_state(t_gentable_state *__restrict__ const state,
 			sizeof(t_gentable_entry));
 	if (__builtin_expect(state->set.buf.mem == nullptr, 0))
 		return (xft_gpa_destroy(&state->gpa), false);
-	state->database = xft_map_file((t_any)path, O_RDONLY);
+	state->database = xft_map_file((t_any)path, xft_o_rdonly);
 	if (__builtin_expect(state->database.mem == nullptr, 0))
 		return (xft_vec_destroy(state->allocator, &state->set),
 			xft_gpa_destroy(&state->gpa), false);

@@ -13,8 +13,7 @@
 #ifndef ARENA_TEST_H
 # define ARENA_TEST_H
 
-# include "test.h"
-# include "alloc.h"
+# include <xft/test.h>
 
 void	test_arena_basic(void);
 void	test_arena_uniq(t_arena *a, t_any buf);

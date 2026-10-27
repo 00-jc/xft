@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "vec.h"
+#include <xft/vec.h>
 
 t_vec	xft_new_vec(t_allocator allocator, t_size size, t_size type_size)
 {

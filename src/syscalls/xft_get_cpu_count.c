@@ -10,8 +10,17 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "mem.h"
-#include "syscalls.h"
+#include <xft/mem.h>
+#include <xft/syscalls.h>
+
+#if defined(__linux__)
+# include <xft/xft_p_syscalls.h>
+#elif defined(_WIN32)
+# define WIN32_LEAN_AND_MEAN
+# include <windows.h>
+#endif
+
+#if defined(__linux__)
 
 __attribute__((pure, __nonnull__(1), unused, __always_inline__, __used__))
 static inline t_size	xft__cpu_count(t_size *__restrict__ const set)
@@ -40,3 +49,20 @@ inline t_result	xft_get_cpu_count(t_size *__restrict__ const count)
 	*count = xft__cpu_count(set);
 	return (OK);
 }
+
+#elif defined(_WIN32)
+
+__attribute__((__always_inline__, __nonnull__(1), __used__))
+inline t_result	xft_get_cpu_count(t_size *__restrict__ const count)
+{
+	DWORD_PTR	proc;
+	DWORD_PTR	sys;
+
+	if (__builtin_expect(!GetProcessAffinityMask(GetCurrentProcess(),
+				&proc, &sys), 0))
+		return (KO);
+	*count = xft_popcount_u64(proc);
+	return (OK);
+}
+
+#endif

@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "xft.h"
+#include <xft/xft.h>
 
 __attribute__((__nonnull__(1)))
 void	xft_main(const t_any *__restrict__ const sp)
@@ -20,5 +20,5 @@ void	xft_main(const t_any *__restrict__ const sp)
 	kp = xft_get_kernel_ptrs(sp);
 	__asm__("":: "m"(kp) :"memory");
 	xft_kernel_ptrs_destroy(&kp);
-	xft_exit(0);
+	xft_exit_process(0);
 }

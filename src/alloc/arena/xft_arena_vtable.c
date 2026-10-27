@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "alloc.h"
-#include "mem.h"
+#include <xft/alloc.h>
+#include <xft/mem.h>
 
 __attribute__((__nonnull__(1)))
 static t_buffer	arena_allocate(t_any alloc, t_size size, t_size align)

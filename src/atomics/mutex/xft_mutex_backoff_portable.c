@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "xft_p_atomics.h"
+#include <xft/xft_p_atomics.h>
 
 #if !defined(__x86_64__) && !defined(__aarch64__)
 

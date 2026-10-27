@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "xft_p_gpa.h"
+#include <xft/xft_p_gpa.h>
 
 __attribute__((__nonnull__(1)))
 void	xft_gpa_free(t_any allocator, t_buffer buf)
@@ -24,7 +24,7 @@ void	xft_gpa_free(t_any allocator, t_buffer buf)
 	freelist = 60 - xft_memclz_u64(buf.size);
 	if (GPA_CLASSES <= freelist)
 	{
-		xft_munmap(buf.mem, buf.size);
+		xft_palloc_free(buf);
 		return ;
 	}
 	*(t_any *)buf.mem = gpa->free[freelist];

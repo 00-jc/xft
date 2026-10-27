@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "tailor.h"
+#include <xft/tailor.h>
 #include "mem_bench.h"
 
 void	xft_memset_test_varied(t_any ptr)

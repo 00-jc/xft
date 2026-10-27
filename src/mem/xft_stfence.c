@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "mem.h"
+#include <xft/mem.h>
 #include <stdatomic.h>
 
 #if defined(__x86_64__) || defined(_M_X64)

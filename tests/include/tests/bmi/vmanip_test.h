@@ -12,9 +12,8 @@
 #ifndef VMANIP_TEST_H
 # define VMANIP_TEST_H
 
-# include "test.h"
-# include "xft_p_vmanip.h"
-# include "syscalls.h"
+# include <xft/test.h>
+# include <xft/types/xft_p_vmanip_types.h>
 
 t_u8	*vmanip_guard(void);
 t_size	vmanip_n(t_size bytes)\

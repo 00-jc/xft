@@ -1,4 +1,4 @@
-# every source list. needs options.cmake (XFT_WIN64, XFT_RT, XFT_STRICT_ARCH)
+# every source list. needs options.cmake (XFT_WIN32, XFT_RT, XFT_STRICT_ARCH)
 
 set(SRCS_ALLOC
   src/alloc/arena/xft_arena.c
@@ -15,6 +15,8 @@ set(SRCS_ALLOC
   src/alloc/gpa/xft_gpa_vtable.c
   src/alloc/huge_matcher/xft_huge_matcher.c
   src/alloc/page_allocator/xft_palloc.c
+  src/alloc/page_allocator/linux/xft_palloc.c
+  src/alloc/page_allocator/win32/xft_palloc.c
   src/alloc/page_allocator/xft_palloc_vtable.c
   src/alloc/report/xft_report.c
   src/alloc/report/xft_report_alloc.c
@@ -25,11 +27,14 @@ set(SRCS_ALLOC
 set(SRCS_ATOMICS
   src/atomics/mutex/xft_mutex_backoff_portable.c
   src/atomics/mutex/xft_mutex_busy.c
-  src/atomics/mutex/xft_mutex_fast.c
   src/atomics/mutex/xft_mutex_init.c
   src/atomics/mutex/xft_mutex_lock.c
-  src/atomics/mutex/xft_mutex_slow.c
-  src/atomics/mutex/xft_mutex_unlock.c)
+  src/atomics/mutex/linux/xft_mutex_fast.c
+  src/atomics/mutex/linux/xft_mutex_slow.c
+  src/atomics/mutex/linux/xft_mutex_unlock.c
+  src/atomics/mutex/win32/xft_mutex_fast.c
+  src/atomics/mutex/win32/xft_mutex_slow.c
+  src/atomics/mutex/win32/xft_mutex_unlock.c)
 
 set(SRCS_BMI
   src/bmi/xft_align.c
@@ -262,12 +267,15 @@ set(SRCS_HINT
   src/hint/xft_pin_invariant.c)
 
 set(SRCS_IO
-  src/io/blocking_fd/xft_drain.c
-  src/io/blocking_fd/xft_fill.c
-  src/io/blocking_fd/xft_flush.c
+  src/io/blocking_fd/linux/xft_drain.c
+  src/io/blocking_fd/linux/xft_fill.c
+  src/io/blocking_fd/linux/xft_flush.c
+  src/io/blocking_fd/win32/xft_drain.c
+  src/io/blocking_fd/win32/xft_fill.c
+  src/io/blocking_fd/win32/xft_flush.c
   src/io/blocking_fd/xft_vtable.c
   src/io/xft_get_fixed_fd.c
-  src/io/xft_get_fixed_fd_win64.c
+  src/io/win32/xft_get_fixed_fd.c
   src/io/xft_map_file.c
   src/io/xft_reader_read.c
   src/io/xft_writer_write.c
@@ -332,19 +340,21 @@ set(SRCS_RNG src/rng/xft_xoshiro256ss.c)
 set(SRCS_RT_linux
   src/rt/linux/xft_kernel_ptrs_destroy.c
   src/rt/linux/xft_get_kernel_ptrs.c
-  src/rt/linux/xft_get_rt.c
-  src/rt/xft_dyn_cpu_select.c)
+  src/rt/linux/xft_get_rt.c)
 
-set(SRCS_RT_win64
-  src/rt/win64/xft_kernel_ptrs_destroy.c
-  src/rt/win64/xft_get_kernel_ptrs.c
-  src/rt/win64/xft_get_rt.c
-  src/rt/xft_dyn_cpu_select.c)
+set(SRCS_RT_win32
+  src/rt/win32/xft_kernel_ptrs_destroy.c
+  src/rt/win32/xft_get_kernel_ptrs.c
+  src/rt/win32/xft_get_rt.c)
 
-if(XFT_WIN64)
-  set(SRCS_RT ${SRCS_RT_win64})
+set(SRCS_RT
+  src/rt/xft_dyn_cpu_select.c
+  src/rt/xft_exit_process.c)
+
+if(XFT_WIN32)
+  list(APPEND SRCS_RT ${SRCS_RT_win32})
 else()
-  set(SRCS_RT ${SRCS_RT_linux})
+  list(APPEND SRCS_RT ${SRCS_RT_linux})
 endif()
 
 set(SRCS_SIGNALS src/signals/xft_sigfillset.c)
@@ -354,12 +364,13 @@ set(SRCS_SORT
   src/sort/xft_qsort_u64s.c)
 
 set(SRCS_SYSCALLS
-  src/syscalls/linux/xft_mmap_commit.c
+  src/os/linux/xft_mmap_commit.c
   src/syscalls/xft_get_cpu_count.c
   src/syscalls/xft_map_failed.c)
 
 set(SRCS_TIME
-  src/time/xft_get_nanos.c
+  src/time/linux/xft_get_nanos.c
+  src/time/win32/xft_get_nanos.c
   src/time/xft_rdtsc.c)
 
 set(SRCS_XID
@@ -393,7 +404,7 @@ set(SRCS_ARCH_aarch64
 set(SRCS_RT_ENTRY_x86_64  src/rt/linux/x86_64/xft_rt.c)
 set(SRCS_RT_ENTRY_aarch64 src/rt/linux/aarch64/xft_rt.c)
 set(SRCS_RT_ENTRY_libc    src/rt/libc/xft_rt.c)
-set(SRCS_RT_ENTRY_win64   src/rt/win64/xft_rt.c)
+set(SRCS_RT_ENTRY_win32   src/rt/win32/xft_rt.c)
 
 # the syscall backends implement the same set; only the deltas are listed
 set(_xft_syscalls
@@ -401,6 +412,7 @@ set(_xft_syscalls
   clone
   close
   exit
+  exit_group
   fmap
   fork
   futex
@@ -431,15 +443,14 @@ function(_xft_syscall_srcs out dir)
     list(REMOVE_ITEM _names ${A_REMOVE})
   endif()
   list(SORT _names)
-  list(TRANSFORM _names PREPEND src/syscalls/${dir}/xft_)
+  list(TRANSFORM _names PREPEND ${dir}/xft_)
   list(TRANSFORM _names APPEND .c)
   set(${out} ${_names} PARENT_SCOPE)
 endfunction()
 
-_xft_syscall_srcs(SRCS_FREESTANDING_x86_64 linux/x86_64)
-_xft_syscall_srcs(SRCS_FREESTANDING_aarch64 linux/aarch64 ADD syscall6)
-_xft_syscall_srcs(SRCS_LIBC linux/libc)
-_xft_syscall_srcs(SRCS_WIN64 win64 REMOVE ioctl perf_events)
+_xft_syscall_srcs(SRCS_FREESTANDING_x86_64 src/os/linux/x86_64)
+_xft_syscall_srcs(SRCS_FREESTANDING_aarch64 src/os/linux/aarch64 ADD syscall6)
+_xft_syscall_srcs(SRCS_LIBC src/os/linux/libc)
 
 if(XFT_STRICT_ARCH)
   set(XFT_BACKEND_ARCHS ${XFT_TARGET_ARCH})

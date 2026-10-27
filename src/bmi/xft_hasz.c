@@ -10,8 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "mem.h"
-#include "xft_p_asm.h"
+#include <xft/mem.h>
 
 __attribute__((__always_inline__, __used__))
 inline t_u64	xft_hasz64(t_u64 x)

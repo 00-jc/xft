@@ -10,9 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "io.h"
-#include "mem.h"
-#include "types/io_types.h"
+#include <xft/io.h>
+#include <xft/mem.h>
+#include <xft/types/io_types.h>
 
 __attribute__((__always_inline__, __nonnull__(1), __used__))
 inline t_result	xft_writer_flush(t_writer *__restrict__ const writer)

@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "xft_p_tailor.h"
+#include <xft/xft_p_tailor.h>
 
 __attribute__((__nonnull__(1), __always_inline__))
 static inline t_any	xft__handle_alignment_alloc(t_tailor *t, t_size size,

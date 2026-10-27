@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "xft_p_io.h"
+#include <xft/xft_p_io.h>
 
 __attribute__((__always_inline__, __nonnull__(1, 2, 4), __used__))
 static inline t_result	xft__stream_unbuffered(

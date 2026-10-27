@@ -9,13 +9,11 @@ else()
 endif()
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
-  # the libc syscall backend is linux only, so 32-bit windows has no backend
-  if(NOT CMAKE_SIZEOF_VOID_P EQUAL 8)
-    message(FATAL_ERROR "xft: 32-bit windows is not supported, only win64")
-  endif()
-  set(XFT_WIN64 ON)
+  set(XFT_WIN32 ON)
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+  set(XFT_WIN32 OFF)
 else()
-  set(XFT_WIN64 OFF)
+  message(FATAL_ERROR "xft: only linux and windows are supported")
 endif()
 
 set(XFT_LLC 0)

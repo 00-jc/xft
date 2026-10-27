@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "xft_p_xxh3.h"
+#include <xft/xft_p_xxh3.h>
 
 __attribute__((pure, __always_inline__, __nonnull__(1, 2), __used__))
 static inline t_u64a	xft_xxh3_mix16b(const t_u8 *input, const t_u8 *secret,

@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "mem.h"
+#include <xft/mem.h>
 
 __attribute__((__always_inline__, __nonnull__(1), __const__, __used__))
 inline t_any	xft_overlap(t_cany restrict ptr,

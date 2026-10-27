@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "xft_p_indexmap.h"
+#include <xft/xft_p_indexmap.h>
 
 __attribute__((pure, __returns_nonnull__, __always_inline__,
 	used, __nonnull__(1)))

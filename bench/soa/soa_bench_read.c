@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "tailor.h"
+#include <xft/tailor.h>
 #include "soa_bench.h"
 
 static t_u64	soa_bench_sum(const t_u64a *__restrict__ col)

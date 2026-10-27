@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "vec.h"
+#include <xft/vec.h>
 
 __attribute__((__nonnull__(1)))
 t_result	xft_vec_remove(t_vec *restrict const v, t_size i, t_size type_size)

@@ -13,8 +13,7 @@
 #ifndef ALLOC_BENCH_H
 # define ALLOC_BENCH_H
 
-# include "alloc.h"
-# include "rt.h"
+# include <xft/alloc.h>
 
 t_gpa	*xft_get_bench_gpa(void);
 t_arena	*xft_get_bench_arena(void);

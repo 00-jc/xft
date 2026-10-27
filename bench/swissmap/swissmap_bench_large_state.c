@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "tailor.h"
+#include <xft/tailor.h>
 #include "swissmap_bench.h"
 
 t_u64a	*xft_get_bench_swiss_large_keys(void)

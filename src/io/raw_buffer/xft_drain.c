@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "xft_p_io.h"
-#include "types/io_types.h"
+#include <xft/xft_p_io.h>
+#include <xft/types/io_types.h>
 
 __attribute__((__always_inline__, pure, __nonnull__(1, 2), __used__))
 static inline t_result	xft_raw_drain_check_size(t_any __restrict const writer,

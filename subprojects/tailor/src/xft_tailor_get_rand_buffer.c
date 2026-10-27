@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "xft_p_tailor.h"
+#include <xft/xft_p_tailor.h>
 
 __attribute__((__nonnull__(1)))
 t_buffer	xft_get_random_buffer(t_cany ptr)

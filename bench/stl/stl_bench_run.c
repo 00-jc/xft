@@ -10,14 +10,14 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "tailor.h"
+#include <xft/tailor.h>
 #include "stl_bench.h"
 
-static_assert(STL_BENCH_FILL == SWISS_BENCH_FILL);
-static_assert(STL_BENCH_KEYS == SWISS_BENCH_KEYS);
-static_assert(STL_BENCH_LARGE_FILL == SWISS_BENCH_LARGE_FILL);
-static_assert(STL_BENCH_READ_FILL == VEC_BENCH_READ_FILL);
-static_assert(STL_BENCH_RMF_LEN == VEC_BENCH_RMF_LEN);
+static_assert((t_size)STL_BENCH_FILL == (t_size)SWISS_BENCH_FILL);
+static_assert((t_size)STL_BENCH_KEYS == (t_size)SWISS_BENCH_KEYS);
+static_assert((t_size)STL_BENCH_LARGE_FILL == (t_size)SWISS_BENCH_LARGE_FILL);
+static_assert((t_size)STL_BENCH_READ_FILL == (t_size)VEC_BENCH_READ_FILL);
+static_assert((t_size)STL_BENCH_RMF_LEN == (t_size)VEC_BENCH_RMF_LEN);
 static_assert(sizeof(t_stl_str) == sizeof(t_buffer));
 static_assert(STL_STR_MAX == STL_STR_MIN + STL_STR_SPAN - 1);
 

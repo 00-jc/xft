@@ -13,7 +13,7 @@
 #ifndef MEMCHR_TEST_H
 # define MEMCHR_TEST_H
 
-# include "test.h"
+# include <xft/test.h>
 
 void	test_memchr_basic(void);
 void	test_memchr_edge(void);

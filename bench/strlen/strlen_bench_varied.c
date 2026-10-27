@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "tailor.h"
+#include <xft/tailor.h>
 #include "cstr_bench.h"
 
 void	xft_strlen_test_varied(t_any ptr)

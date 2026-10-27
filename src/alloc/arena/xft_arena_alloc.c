@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "xft_p_arena.h"
-#include "xft_p_hugepage.h"
+#include <xft/xft_p_arena.h>
+#include <xft/xft_p_hugepage.h>
 
 __attribute__((__const__, __always_inline__))
 static inline t_u32a	xft_arena_invalid_request(t_size size, t_size align)
@@ -26,27 +26,23 @@ static inline t_any	xft_arena_reserve(t_arena *restrict const allocator,
 	t_size size, t_size align, t_size pagesize)
 {
 	t_any	next_ptr;
-	int		pageflag;
 
 	next_ptr = get_next_ptr(allocator->current, align);
 	if ((t_u8 *)next_ptr + size <= allocator->current->data
 		+ allocator->current->total)
 		return (next_ptr);
-	pageflag = xft_match_hugepage_flags(pagesize);
-	if (__builtin_expect(!xft_arena_move_fwd(allocator, pagesize, pageflag),
-			0))
+	if (__builtin_expect(!xft_arena_move_fwd(allocator, pagesize), 0))
 		return (nullptr);
 	return (get_next_ptr(allocator->current, align));
 }
 
 __attribute__((__nonnull__(1, 2), __always_inline__))
 static inline t_any	xft_arena_commit(t_arena *restrict const allocator,
-	t_any next_ptr, t_size size, int pageflag)
+	t_any next_ptr, t_size size)
 {
 	t_size	waste;
 
-	if (__builtin_expect(!xft_mmap_commit(next_ptr, size,
-				PROT_READ | PROT_WRITE, pageflag), 0))
+	if (__builtin_expect(!xft_palloc_commit(next_ptr, size), 0))
 		return (nullptr);
 	waste = (t_size)((t_u8 *)next_ptr - (allocator->current->data
 				+ allocator->current->used));
@@ -67,6 +63,5 @@ t_any	xft_arena_alloc(t_arena *restrict const allocator,
 	next_ptr = xft_arena_reserve(allocator, size, align, pagesize);
 	if (__builtin_expect(!next_ptr, 0))
 		return (nullptr);
-	return (xft_arena_commit(allocator, next_ptr, size,
-			xft_match_hugepage_flags(pagesize)));
+	return (xft_arena_commit(allocator, next_ptr, size));
 }

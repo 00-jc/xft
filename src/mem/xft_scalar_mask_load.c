@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "mem.h"
+#include <xft/mem.h>
 
 __attribute__((__always_inline__, __hot__, __used__, __pure__))
 inline t_u8	xft_mload_rel_u8(t_buffer mem, t_size rel)

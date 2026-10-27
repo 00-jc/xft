@@ -6,7 +6,7 @@ include(CheckCCompilerFlag)
 set(XFT_DEFINES_PUBLIC "")
 if(XFT_LIBC)
   list(APPEND XFT_DEFINES_PUBLIC XFT_REQUIRE_LIBC)
-  if(NOT XFT_WIN64)
+  if(NOT XFT_WIN32)
     list(APPEND XFT_DEFINES_PUBLIC _GNU_SOURCE)
   endif()
 endif()
@@ -123,13 +123,13 @@ set(CFLAGS_FREESTANDING_RAW -ffreestanding -fno-builtin -fno-stack-protector)
 # windows commits the stack behind a guard page, so big frames normally call
 # __chkstk / ___chkstk_ms; xft does not provide it, and neither does it
 # provide __stack_chk_fail: stack checks only exist in the libc flavor
-if(XFT_WIN64)
+if(XFT_WIN32)
   list(APPEND CFLAGS_FREESTANDING_RAW -mno-stack-arg-probe)
 endif()
 
 set(CFLAGS_STACK_CHECK_RAW -fstack-protector-all -fstack-check)
-# per variant: freestanding win64 has no __chkstk to probe with, see
-# xft_wants_stack_clash in variants.cmake
+# per variant: freestanding win32 has no __chkstk to probe with, see
+# xft_stack_clash_flags in variants.cmake
 set(CFLAGS_STACK_CLASH_RAW -fstack-clash-protection)
 # no fake stack frames: they are only 32 byte aligned and the code gen stores
 # 64 byte vector locals with aligned zmm moves

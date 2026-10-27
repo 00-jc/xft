@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "soa.h"
+#include <xft/soa.h>
 
 __attribute__((__always_inline__, __unused__))
 static inline void	xft__soa_reposition(

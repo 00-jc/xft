@@ -11,9 +11,10 @@
 /* ************************************************************************** */
 
 #include "tests/tests.h"
+#include <xft/xft_p_syscalls.h>
 
 // {size, rel, u8, u16, u24, u32, u64}: the size bytes end flush against
-// a PROT_NONE page and read ... 0x07 0x08, so any overread faults
+// a xft_prot_none page and read ... 0x07 0x08, so any overread faults
 static const t_u64	g_mload[][7] = {
 {0, 0, 0, 0, 0, 0, 0},
 {1, 0, 0x08, 0, 0, 0, 0},
@@ -52,8 +53,9 @@ void	test_mload(t_test *t)
 	t_size	i;
 
 	xft_test_print(t, "Testing xft_mload_rel...\n");
-	base = xft_mmap(8192, PROT_READ | PROT_WRITE, 0);
-	xft_mprotect(base + 4096, 4096, PROT_NONE);
+	base = xft_mmap(8192, xft_prot_read | xft_prot_write,
+			xft_map_private | xft_map_anonymous);
+	xft_mprotect(base + 4096, 4096, xft_prot_none);
 	xft_memcpy(base + 4088, "\x01\x02\x03\x04\x05\x06\x07\x08", 8);
 	i = 0;
 	while (i < sizeof(g_mload) / sizeof(g_mload[0]))

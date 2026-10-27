@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "mem.h"
+#include <xft/mem.h>
 
 __attribute__((hot, const, __always_inline__, __used__))
 inline t_u64	xft_populate(t_u8 y)

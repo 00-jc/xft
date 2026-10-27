@@ -5,8 +5,10 @@
 include(GNUInstallDirs)
 
 # headers only xft and its in-tree users (subprojects, harnesses) may see;
-# never installed
-set(XFT_INTERNAL_DIR ${PROJECT_SOURCE_DIR}/src/internal)
+# never installed. linux/ holds the private syscall header
+set(XFT_INTERNAL_DIR
+  ${PROJECT_SOURCE_DIR}/src/internal
+  ${PROJECT_SOURCE_DIR}/src/internal/linux)
 
 function(xft_srcs out libc)
   set(_s "")
@@ -16,13 +18,13 @@ function(xft_srcs out libc)
   foreach(a IN LISTS XFT_BACKEND_ARCHS)
     list(APPEND _s ${SRCS_ARCH_${a}})
   endforeach()
-  if(XFT_WIN64)
-    list(APPEND _s ${SRCS_WIN64})
+  # windows calls its api directly, there is no syscall backend to add
+  if(XFT_WIN32)
     if(XFT_RT)
       if(libc)
         list(APPEND _s ${SRCS_RT_ENTRY_libc})
       else()
-        list(APPEND _s ${SRCS_RT_ENTRY_win64})
+        list(APPEND _s ${SRCS_RT_ENTRY_win32})
       endif()
     endif()
   elseif(libc)
@@ -41,11 +43,11 @@ function(xft_srcs out libc)
   set(${out} "${_s}" PARENT_SCOPE)
 endfunction()
 
-# stack clash protection probes the stack in page steps; freestanding win64
+# stack clash protection probes the stack in page steps; freestanding win32
 # builds drop the probes (-mno-stack-arg-probe, no __chkstk), every other
 # flavor keeps them
 function(xft_stack_clash_flags out libc)
-  if(libc OR NOT XFT_WIN64)
+  if(libc OR NOT XFT_WIN32)
     set(${out} "${CFLAGS_STACK_CLASH}" PARENT_SCOPE)
   else()
     set(${out} "" PARENT_SCOPE)
@@ -90,9 +92,9 @@ function(xft_add_lib name)
     target_compile_definitions(${name} PUBLIC XFT_NO_RT)
   endif()
 
-  # the win64 syscall backend calls into these with or without a libc
-  if(XFT_WIN64)
-    target_link_libraries(${name} INTERFACE kernel32 ntdll shell32)
+  # the windows paths call into these with or without a libc
+  if(XFT_WIN32)
+    target_link_libraries(${name} INTERFACE kernel32 shell32 synchronization)
   endif()
 
   xft_stack_clash_flags(_clash "${L_LIBC}")
@@ -100,7 +102,7 @@ function(xft_add_lib name)
 
   if(L_LIBC)
     target_compile_definitions(${name} PUBLIC XFT_REQUIRE_LIBC)
-    if(NOT XFT_WIN64)
+    if(NOT XFT_WIN32)
       target_compile_definitions(${name} PUBLIC _GNU_SOURCE)
     endif()
     target_compile_options(${name} PRIVATE ${CFLAGS_HOSTED})
@@ -110,7 +112,7 @@ function(xft_add_lib name)
     target_link_options(${name} INTERFACE -nostdlib -static)
     # clang targeting the msvc abi links with lld-link, which takes /entry
     # and not -e; the mingw target links with ld.lld
-    if(XFT_WIN64 AND XFT_RT)
+    if(XFT_WIN32 AND XFT_RT)
       if(CMAKE_C_SIMULATE_ID STREQUAL "MSVC")
         target_link_options(${name} INTERFACE "LINKER:/entry:_start")
       else()

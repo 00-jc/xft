@@ -10,18 +10,14 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "xft_p_arena.h"
-#include "xft_p_hugepage.h"
+#include <xft/xft_p_arena.h>
+#include <xft/xft_p_hugepage.h>
 
 t_arena	xft_new_arena(void)
 {
 	t_hugepage		*initial_page;
-	t_size			pagesize;
-	int				pageflag;
 
-	pagesize = xft_match_paging(1ULL << 25);
-	pageflag = xft_match_hugepage_flags(pagesize);
-	initial_page = new_hugepage(nullptr, pagesize, pageflag);
+	initial_page = new_hugepage(nullptr, xft_match_paging(1ULL << 25));
 	if (!initial_page)
 		return ((t_arena){0});
 	return ((t_arena){.current = initial_page});
@@ -38,7 +34,7 @@ void	xft_destroy_arena(t_arena *alloc)
 	while (x)
 	{
 		next = x->prev;
-		xft_munmap(x, x->page_size);
+		xft_palloc_free(xft_fatptr((t_any)x, x->page_size));
 		x = next;
 	}
 	alloc->current = nullptr;

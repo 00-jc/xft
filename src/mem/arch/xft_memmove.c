@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "xft_p_mem.h"
+#include <xft/xft_p_mem.h>
 
 __attribute__((__nonnull__(1, 2), __hot__))
 void	xft_memmove(t_any dest, t_cany src, t_size n)

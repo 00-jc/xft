@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "atomics.h"
+#include <xft/atomics.h>
 
 __attribute__((__nonnull__(1), __always_inline__, __used__))
 inline void	xft_mutex_init(t_mutex *__restrict__ const mutex)

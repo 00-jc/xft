@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "xft_p_hash.h"
+#include <xft/xft_p_hash.h>
 
 #define DEFAULT_SEED	0x9e3779b185ebca87ULL
 

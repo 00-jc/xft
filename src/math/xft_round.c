@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "math.h"
+#include <xft/math.h>
 
 __attribute__((__always_inline__, const, __used__))
 inline t_f32	xft_floorf(t_f32 x)

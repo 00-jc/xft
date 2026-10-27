@@ -13,7 +13,7 @@
 #ifndef VEC_TEST_H
 # define VEC_TEST_H
 
-# include "test.h"
+# include <xft/test.h>
 
 void	test_vec_push_get(t_allocator a);
 void	test_vec_pop(t_allocator a);

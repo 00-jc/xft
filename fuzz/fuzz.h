@@ -13,13 +13,15 @@
 #ifndef FUZZ_H
 # define FUZZ_H
 
-# include "test.h"
-# include "fuzzer.h"
-# include "rt.h"
+# include <xft/test.h>
+# include <xft/fuzzer.h>
 
-# define FUZZ_KEY_SLOTS 64
-# define FUZZ_MEM_CAP 1024
-# define FUZZ_STR_CAP 128
-# define FUZZ_VEC_CAP 128
+typedef enum e_fuzz_cap : t_u16
+{
+	FUZZ_KEY_SLOTS = 64,
+	FUZZ_MEM_CAP = 1024,
+	FUZZ_STR_CAP = 128,
+	FUZZ_VEC_CAP = 128,
+}	t_fuzz_cap;
 
 #endif

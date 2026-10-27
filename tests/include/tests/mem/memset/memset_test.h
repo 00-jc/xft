@@ -13,7 +13,7 @@
 #ifndef MEMSET_TEST_H
 # define MEMSET_TEST_H
 
-# include "test.h"
+# include <xft/test.h>
 
 void	test_memset_basic(void);
 void	test_memset_large(void);

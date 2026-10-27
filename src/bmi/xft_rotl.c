@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "bmi.h"
+#include <xft/bmi.h>
 
 #if __has_builtin(__builtin_rotateleft64)
 

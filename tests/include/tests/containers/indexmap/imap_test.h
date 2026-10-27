@@ -13,7 +13,7 @@
 #ifndef IMAP_TEST_H
 # define IMAP_TEST_H
 
-# include "test.h"
+# include <xft/test.h>
 
 void	test_imap_insert_lookup(t_allocator a);
 void	test_imap_delete(t_allocator a);

@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "tailor.h"
+#include <xft/tailor.h>
 #include "alloc_bench.h"
 
 void	xft_arena_bench_random(t_any ptr)

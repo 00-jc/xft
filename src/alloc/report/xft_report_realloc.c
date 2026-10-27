@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "xft_p_gpa.h"
+#include <xft/xft_p_gpa.h>
 
 __attribute__((__nonnull__(1)))
 t_buffer	xft_reporta_realloc(t_any alloc, t_buffer buf,

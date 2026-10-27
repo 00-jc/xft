@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "bmi.h"
+#include <xft/bmi.h>
 
 __attribute__((__always_inline__, __used__))
 inline t_u16a	xft_from_le16(t_u16a x)

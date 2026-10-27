@@ -13,8 +13,7 @@
 #ifndef XOSHIRO_TEST_H
 # define XOSHIRO_TEST_H
 
-# include "test.h"
-# include "rng.h"
+# include <xft/test.h>
 
 void	test_xoshiro_basic(void);
 void	test_xoshiro_not_constant(void);

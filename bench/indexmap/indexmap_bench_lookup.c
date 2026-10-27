@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "tailor.h"
+#include <xft/tailor.h>
 #include "indexmap_bench.h"
 
 __attribute__((__nonnull__(1)))

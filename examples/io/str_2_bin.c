@@ -10,9 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "fmt.h"
-#include "xft.h"
-#include "xft_p_rt.h"
+#include <xft/fmt.h>
+#include <xft/xft.h>
+#include <xft/xft_p_rt.h>
 
 __attribute__((hot, __nonnull__(1), __always_inline__))
 inline void	xft_fillb(t_u8 *__restrict__ const bytereprs, t_u8 const c)
@@ -38,7 +38,7 @@ inline void	xft_main(const t_any *__restrict__ const sp)
 
 	kp = xft_get_kernel_ptrs(sp);
 	if (__builtin_expect(kp.argc != 2, 0))
-		xft_exit(1);
+		xft_exit_process(1);
 	if ((t_any)kp.argv == nullptr || kp.argv[1] == nullptr)
 		__builtin_unreachable();
 	s = kp.argv[1];
@@ -52,5 +52,5 @@ inline void	xft_main(const t_any *__restrict__ const sp)
 	xft_writer_write(&w, xft_fatptr((t_u8 *)"\n", 1));
 	(void)xft_writer_flush(&w);
 	xft_kernel_ptrs_destroy(&kp);
-	xft_exit(0);
+	xft_exit_process(0);
 }

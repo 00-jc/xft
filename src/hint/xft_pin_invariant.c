@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "xft_p_hint.h"
+#include <xft/xft_p_hint.h>
 
 __attribute__((__always_inline__, __used__))
 inline void	xft_pin_invariant(int res)

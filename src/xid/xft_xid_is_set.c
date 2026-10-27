@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "xid.h"
-#include "ctype.h"
+#include <xft/xid.h>
+#include <xft/ctype.h>
 
 // last range whose lo is <= cp, branchless; set must not be empty
 __attribute__((__pure__, __always_inline__, __hot__, __nonnull__(1)))

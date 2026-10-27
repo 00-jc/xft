@@ -10,9 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "alloc.h"
-#include "bmi.h"
-#include "mem.h"
+#include <xft/alloc.h>
+#include <xft/bmi.h>
+#include <xft/mem.h>
 
 __attribute__((__nonnull__(1)))
 t_buffer	xft_alloc_clone(t_any self, t_buffer buffer)

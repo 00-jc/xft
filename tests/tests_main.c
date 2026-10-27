@@ -10,8 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "io.h"
+#include <xft/io.h>
 #include "tests/tests.h"
+#include <xft/rt.h>
 
 __attribute__((__nonnull__(1), used, __always_inline__))
 inline void	run_all_tests(t_test *t)
@@ -51,5 +52,5 @@ inline void	xft_main(const t_any *__restrict__ const sp)
 	run_all_tests(&t);
 	(void)sp;
 	xft_writer_flush(&t.writer);
-	xft_exit(0);
+	xft_exit_process(0);
 }

@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "soa.h"
+#include <xft/soa.h>
 
 __attribute__((__nonnull__(3)))
 t_soa	xft_new_soa(t_allocator allocator, t_size element_size_capacity,

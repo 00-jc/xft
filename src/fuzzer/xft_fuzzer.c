@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "fuzzer.h"
+#include <xft/fuzzer.h>
 
 t_fuzzer	xft_new_fuzzer(t_arena arena)
 {

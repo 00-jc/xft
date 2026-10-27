@@ -10,9 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "io.h"
-#include "mem.h"
-#include "xft_p_fmt.h"
+#include <xft/io.h>
+#include <xft/mem.h>
+#include <xft/xft_p_fmt.h>
 
 __attribute__((const, __always_inline__, __used__))
 static inline t_i64	xft_sign_extend(t_u64 value, t_u8 c)

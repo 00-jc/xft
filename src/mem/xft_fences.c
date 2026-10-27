@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "atomics.h"
+#include <xft/atomics.h>
 
 __attribute__((__always_inline__, __used__))
 inline void	xft_thread_fence(t_i32a memorder)

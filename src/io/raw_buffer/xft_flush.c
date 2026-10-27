@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "xft_p_io.h"
-#include "types/io_types.h"
+#include <xft/xft_p_io.h>
+#include <xft/types/io_types.h>
 
 __attribute__((__nonnull__(1), __always_inline__, __used__))
 inline t_result	xft_raw_flush(t_any __restrict__ const writer)

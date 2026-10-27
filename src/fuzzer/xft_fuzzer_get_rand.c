@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "fuzzer.h"
-#include "math.h"
+#include <xft/fuzzer.h>
+#include <xft/math.h>
 
 __attribute__((__nonnull__(1)))
 t_buffer	*xft_fuzz_get_rand(t_fuzzer *fuzz)

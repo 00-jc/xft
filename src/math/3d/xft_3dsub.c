@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "xft_p_math.h"
-#include "math.h"
+#include <xft/types/xft_p_math_types.h>
+#include <xft/math.h>
 
 __attribute__((__always_inline__, pure, __used__))
 inline t_3dcoords	xft_3dsub(const t_3dcoords *__restrict__ const a,

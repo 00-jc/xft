@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "xft_p_xxh3.h"
+#include <xft/xft_p_xxh3.h>
 
 __attribute__((__always_inline__, const, __used__))
 inline t_buffer	xft_xxh3_get_secret(void)

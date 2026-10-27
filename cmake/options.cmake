@@ -111,16 +111,16 @@ endif()
 # asan on windows refuses the debug crt (/MDd), which cmake picks for Debug;
 # the sanitized builds (XFT_SANITIZE, or the xft-san test/fuzz variant) take
 # the release dll crt instead
-if(XFT_WIN64 AND (XFT_SANITIZE OR XFT_BUILD_TESTS OR XFT_BUILD_FUZZ))
+if(XFT_WIN32 AND (XFT_SANITIZE OR XFT_BUILD_TESTS OR XFT_BUILD_FUZZ))
   set(CMAKE_MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
 endif()
 
-if(XFT_LIBC AND XFT_WIN64)
-  set(XFT_FLAVOR "win64-libc")
+if(XFT_LIBC AND XFT_WIN32)
+  set(XFT_FLAVOR "win32-libc")
 elseif(XFT_LIBC)
   set(XFT_FLAVOR "libc")
-elseif(XFT_WIN64)
-  set(XFT_FLAVOR "win64")
+elseif(XFT_WIN32)
+  set(XFT_FLAVOR "win32")
 else()
   set(XFT_FLAVOR "freestanding")
 endif()

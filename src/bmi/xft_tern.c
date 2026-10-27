@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "bmi.h"
-#include "math.h"
+#include <xft/bmi.h>
+#include <xft/math.h>
 
 __attribute__((const, __always_inline__, __used__))
 inline t_u64a	xft_tern(t_u64a cond, t_u64a value1, t_u64a value2)

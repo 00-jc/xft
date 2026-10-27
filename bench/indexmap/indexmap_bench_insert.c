@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "tailor.h"
+#include <xft/tailor.h>
 #include "indexmap_bench.h"
 
 static void	imap_bench_insert(t_any ptr, t_allocator a, t_indexmap *map)

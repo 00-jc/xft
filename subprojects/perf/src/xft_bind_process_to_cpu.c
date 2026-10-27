@@ -10,7 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "perf.h"
+#include <xft/perf.h>
+#include <xft/xft_p_syscalls.h>
 
 t_result	xft_bind_process_to_cpu(t_u32 cpu)
 {

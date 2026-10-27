@@ -13,7 +13,7 @@
 #ifndef MURMUR_TEST_H
 # define MURMUR_TEST_H
 
-# include "test.h"
+# include <xft/test.h>
 
 void	test_murmur_deterministic(void);
 void	test_murmur_diff_input(void);

@@ -10,7 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "xft_p_perf.h"
+#include <xft/xft_p_perf.h>
+#include <xft/xft_p_syscalls.h>
 
 __attribute__((__nonnull__(1)))
 void	xft_perf_destroy_counters(t_perf_counters c)

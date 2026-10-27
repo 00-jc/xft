@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "mem.h"
+#include <xft/mem.h>
 
 __attribute__((__always_inline__, const, __used__))
 inline t_buffer	xft_fatptr(t_blk8r mem, t_size size)

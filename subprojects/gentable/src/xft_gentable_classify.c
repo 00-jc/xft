@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gentable.h"
+#include <xft/gentable.h>
 
 __attribute__((__nonnull__(2), __always_inline__, __used__, __hot__))
 inline t_gt_classes	gt_classify(t_nvec wide,

@@ -10,9 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "io.h"
-#include "xft_p_io.h"
-#include "types/io_types.h"
+#include <xft/io.h>
+#include <xft/xft_p_io.h>
+#include <xft/types/io_types.h>
 
 __attribute__((const, __always_inline__, __used__))
 inline t_writer	xft_get_fs_writer(t_buffer buffer, t_i32 fd)

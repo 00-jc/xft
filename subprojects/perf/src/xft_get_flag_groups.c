@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "xft_p_perf.h"
+#include <xft/xft_p_perf.h>
 
 __attribute__((__always_inline__, const))
 inline const t_hw_counters	*get_hw_counters(void)

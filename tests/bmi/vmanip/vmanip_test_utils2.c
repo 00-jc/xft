@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 #include "tests/bmi/vmanip_test.h"
+#include <xft/xft_p_syscalls.h>
 
 t_size	vmanip_n(t_size bytes)
 {
@@ -22,8 +23,9 @@ t_u8	*vmanip_guard(void)
 
 	if (base == NULL)
 	{
-		base = xft_mmap(8192, PROT_READ | PROT_WRITE, 0);
-		xft_mprotect(base + 4096, 4096, PROT_NONE);
+		base = xft_mmap(8192, xft_prot_read | xft_prot_write,
+				xft_map_private | xft_map_anonymous);
+		xft_mprotect(base + 4096, 4096, xft_prot_none);
 	}
 	return (base + 4096);
 }

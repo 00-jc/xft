@@ -10,9 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "atomics.h"
-#include "types/atomic_types.h"
-#include "xft_p_atomics.h"
+#include <xft/atomics.h>
+#include <xft/types/atomic_types.h>
+#include <xft/xft_p_atomics.h>
 
 __attribute__((__nonnull__(1), __used__))
 inline void	xft_mutex_lock(t_mutex *__restrict__ const mutex,

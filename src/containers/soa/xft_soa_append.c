@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "soa.h"
+#include <xft/soa.h>
 
 __attribute__((__always_inline__, __nonnull__(1, 2, 3), __used__))
 inline void	xft_soa_append_from_struct_unchecked(

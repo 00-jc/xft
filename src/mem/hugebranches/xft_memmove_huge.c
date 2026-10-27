@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "xft_p_mem.h"
+#include <xft/xft_p_mem.h>
 
 __attribute__((__nonnull__(1, 2), __always_inline__, __used__))
 static inline void	xft_memmove_512_tail(t_any d, t_cany s, t_size n2)

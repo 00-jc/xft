@@ -13,7 +13,7 @@
 #ifndef XID_TEST_H
 # define XID_TEST_H
 
-# include "test.h"
+# include <xft/test.h>
 
 void	test_xid_ascii(void);
 void	test_xid_points(void);

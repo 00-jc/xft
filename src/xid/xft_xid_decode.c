@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "xid.h"
-#include "mem.h"
+#include <xft/xid.h>
+#include <xft/mem.h>
 
 // branch? i hardly know her.
 

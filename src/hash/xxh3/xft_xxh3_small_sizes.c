@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "xft_p_xxh3.h"
+#include <xft/xft_p_xxh3.h>
 
 __attribute__((pure, __always_inline__, __used__))
 inline t_u64a	xft_xxh3_len0(t_buffer secret, t_u64 seed)

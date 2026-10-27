@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "xft_p_xxh3.h"
+#include <xft/xft_p_xxh3.h>
 
 t_u64a	xft_xxh3_64bits(t_buffer input, t_u64a seed)
 {

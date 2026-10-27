@@ -13,7 +13,7 @@
 #ifndef MEMMOVE_TEST_H
 # define MEMMOVE_TEST_H
 
-# include "test.h"
+# include <xft/test.h>
 
 void	test_memmove_backward(void);
 void	test_memmove(t_test *t);

@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "hint.h"
+#include <xft/hint.h>
 
 __attribute__((__always_inline__, __used__))
 inline void	xft_assume(bool expr)

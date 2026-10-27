@@ -13,11 +13,9 @@
 #ifndef STL_BENCH_H
 # define STL_BENCH_H
 
-# include "tailor.h"
 # include "vec_bench.h"
-# include "swissmap_bench.h"
 # include "stl_bench_str.h"
-# include "stl_bench_std.h"
+# include <xft/tailor.h>
 
 void	xft_stl_bench_vector(t_tailor *t);
 void	xft_stl_bench_map(t_tailor *t);

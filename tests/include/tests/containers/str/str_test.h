@@ -13,7 +13,7 @@
 #ifndef STR_TEST_H
 # define STR_TEST_H
 
-# include "test.h"
+# include <xft/test.h>
 
 void	test_str_new(t_allocator a);
 void	test_str_push_back(t_allocator a);

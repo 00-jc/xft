@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "xft_p_mem.h"
+#include <xft/xft_p_mem.h>
 
 __attribute__((__nonnull__(1, 2), __always_inline__, __used__))
 inline t_ssize	xft_memcmp_short(t_cany restrict const ptr1,

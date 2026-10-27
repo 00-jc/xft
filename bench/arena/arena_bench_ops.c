@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "tailor.h"
+#include <xft/tailor.h>
 #include "alloc_bench.h"
 
 t_arena	*xft_get_bench_arena(void)

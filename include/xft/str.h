@@ -1,0 +1,35 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   str.h                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/10/03 18:01:29 by jaicastr          #+#    #+#             */
+/*   Updated: 2026/10/03 18:01:32 by jaicastr         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#ifndef STR_H
+# define STR_H
+
+# include <xft/primitives.h>
+# include <xft/types/str_types.h>
+
+t_str		xft_new_str(t_allocator allocator, t_size size);
+void		xft_str_destroy(t_allocator allocator, t_str *str)\
+				__attribute__((__nonnull__(2)));
+t_result	xft_str_extend(t_allocator allocator,\
+				t_str *restrict const str,\
+				const t_u8 *restrict const mem, t_size n)\
+				__attribute__((__nonnull__(2, 3)));
+t_result	xft_str_reserve(t_allocator allocator,\
+				t_str *restrict const str, t_size n)\
+				__attribute__((__nonnull__(2)));
+t_result	xft_str_push_back(t_allocator allocator,\
+				t_str *restrict const str, const t_u8 byte)\
+				__attribute__((__nonnull__(2)));
+t_result	xft_str_remove(t_str *restrict const v, t_size i)\
+				__attribute__((__nonnull__(1)));
+
+#endif

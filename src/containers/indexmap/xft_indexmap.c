@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "xft_p_indexmap.h"
+#include <xft/xft_p_indexmap.h>
 
 t_indexmap	xft_new_indexmap_with(t_allocator allocator, t_size capacity)
 {

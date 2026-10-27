@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "vec.h"
+#include <xft/vec.h>
 
 __attribute__((__always_inline__, __nonnull__(1), __used__))
 inline void	xft_vec_pop(t_vec *restrict const v, t_size type_size)

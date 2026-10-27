@@ -10,26 +10,28 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "io.h"
+#include <xft/io.h>
 
-#ifndef _WIN64
+#if defined(__linux__)
+
+# include <xft/xft_p_syscalls.h>
 
 __attribute__((const, __always_inline__, __used__))
 inline t_i32	xft_get_stdin(void)
 {
-	return (STDIN_FILENO);
+	return (xft_stdin_fileno);
 }
 
 __attribute__((const, __always_inline__, __used__))
 inline t_i32	xft_get_stdout(void)
 {
-	return (STDOUT_FILENO);
+	return (xft_stdout_fileno);
 }
 
 __attribute__((const, __always_inline__, __used__))
 inline t_i32	xft_get_stderr(void)
 {
-	return (STDERR_FILENO);
+	return (xft_stderr_fileno);
 }
 
 #endif

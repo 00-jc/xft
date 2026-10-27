@@ -10,47 +10,18 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "xft_p_palloc.h"
+#include <xft/xft_p_palloc.h>
 
 __attribute__((__always_inline__, __used__))
 inline t_buffer	xft_palloc(t_size size)
 {
-	t_size	snapped;
-	t_any	mem;
-	int		flags;
+	t_buffer	b;
 
-	snapped = xft_match_hugepage(size);
-	flags = xft_match_hugepage_flags(snapped);
-	mem = xft_mmap(snapped, PROT_READ | PROT_WRITE, flags);
-	if (!xft_map_failed(mem) && !xft_mmap_commit(mem, snapped,
-			PROT_READ | PROT_WRITE, flags))
+	b = xft_palloc_reserve(size);
+	if (b.mem && !xft_palloc_commit(b.mem, b.size))
 	{
-		xft_munmap(mem, snapped);
-		mem = (t_any)MAP_FAILED;
+		xft_palloc_free(b);
+		b.mem = nullptr;
 	}
-	return ((t_buffer){
-		.size = snapped,
-		.mem = (t_any)xft_tern(!xft_map_failed(mem), (t_u64a)mem, 0),
-	});
-}
-
-__attribute__((__always_inline__, __used__))
-inline t_buffer	xft_palloc_resize(t_buffer b, t_size new_size)
-{
-	t_any	ptr;
-	t_size	s;
-
-	new_size = xft_match_hugepage(new_size);
-	if (__builtin_expect(new_size == b.size, 1))
-		return (b);
-	ptr = xft_mremap(b.size, new_size, b.mem, 0);
-	s = xft_tern(xft_map_failed(ptr), 0, new_size);
-	ptr = (t_any)xft_tern(xft_map_failed(ptr), 0, (t_uptr)ptr);
-	return (xft_fatptr(ptr, s));
-}
-
-__attribute__((__always_inline__, __used__))
-inline void	xft_palloc_free(t_buffer b)
-{
-	xft_munmap(b.mem, b.size);
+	return (b);
 }

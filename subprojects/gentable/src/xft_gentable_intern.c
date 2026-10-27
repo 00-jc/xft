@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gentable.h"
+#include <xft/gentable.h>
 
 __attribute__((__nonnull__(1, 2), __always_inline__, __hot__))
 inline static bool	gt__token(const t_gt_classes *__restrict__ const classes,

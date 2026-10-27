@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "tailor.h"
+#include <xft/tailor.h>
 #include "mem_bench.h"
 
 void	xft_memcpy_test_stream_1x_unaligned(t_any ptr)
