@@ -1161,10 +1161,12 @@ pub fn build(b: *std.Build) !void {
     b.installArtifact(xft.lib);
     if (xft.perf) |perf| {
         perf.installHeadersDirectory(b.path("subprojects/perf/include"), "", .{});
+        xft.lib.installLibraryHeaders(perf);
         b.installArtifact(perf);
     }
     if (xft.tailor) |tailor| {
         tailor.installHeadersDirectory(b.path("subprojects/tailor/include"), "", .{});
+        xft.lib.installLibraryHeaders(tailor);
         b.installArtifact(tailor);
     }
     if (cfg.bootstrap) {
