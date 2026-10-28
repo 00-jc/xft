@@ -15,6 +15,4 @@
 
 # include <xft/types/signal_types.h>
 
-t_sigset	xft_sigfillset(void);
-
 #endif

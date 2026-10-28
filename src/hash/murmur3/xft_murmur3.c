@@ -12,7 +12,9 @@
 
 #include <xft/xft_p_hash.h>
 
-#define DEFAULT_SEED	0x9e3779b185ebca87ULL
+#ifdef __SIZEOF_INT128__
+
+# define DEFAULT_SEED	0x9e3779b185ebca87ULL
 
 __attribute__((__always_inline__, __nonnull__(1, 2)))
 static inline void	runblock0(t_u64a *s, t_u64a *restrict k)
@@ -66,3 +68,5 @@ inline t_u128a	xft_murmur3(const t_u8 *restrict mem, t_size size)
 {
 	return (xft_murmur3_with_seed(mem, DEFAULT_SEED, size));
 }
+
+#endif

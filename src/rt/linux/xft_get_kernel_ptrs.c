@@ -19,7 +19,7 @@ inline t_kernel_ptrs	xft_get_kernel_ptrs(const t_any *__restrict__ const sp)
 {
 	t_kernel_ptrs	kp;
 
-	kp.argc = ((const t_u64 *)sp)[0];
+	kp.argc = ((const t_size *)sp)[0];
 	kp.argv = (t_rt_arr)(sp + 1);
 	kp.envp = kp.argv + kp.argc + 1;
 	return (kp);

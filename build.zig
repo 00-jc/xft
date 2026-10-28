@@ -254,6 +254,10 @@ const SRCS = [_][]const u8{
     "src/io/blocking_fd/win32/xft_fill.c",
     "src/io/blocking_fd/win32/xft_flush.c",
     "src/io/blocking_fd/xft_vtable.c",
+    "src/io/file/linux/xft_file_info.c",
+    "src/io/file/linux/xft_open_file.c",
+    "src/io/file/win32/xft_file_info.c",
+    "src/io/file/win32/xft_open_file.c",
     "src/io/xft_get_fixed_fd.c",
     "src/io/win32/xft_get_fixed_fd.c",
     "src/io/xft_map_file.c",
@@ -312,7 +316,6 @@ const SRCS = [_][]const u8{
     "src/rng/xft_xoshiro256ss.c",
     "src/rt/xft_dyn_cpu_select.c",
     "src/rt/xft_exit_process.c",
-    "src/signals/xft_sigfillset.c",
     "src/sort/xft_qsort.c",
     "src/sort/xft_qsort_u64s.c",
     "src/os/linux/xft_mmap_commit.c",
@@ -404,8 +407,7 @@ const XFT_SYSCALLS = [_][]const u8{
     "sched_getaffinity",
     "sched_setaffinity",
     "set_tid_address",
-    "sigprocmask",
-    "stat",
+    "statx",
     "wait4",
     "write",
     "writev",
@@ -794,7 +796,6 @@ const CFLAGS = [_][]const u8{
 // elf only; clang ignores them for coff
 const CFLAGS_linux = [_][]const u8{
     "-fno-semantic-interposition",
-    "-fstack-clash-protection",
 };
 
 const CFLAGS_x86_64 = [_][]const u8{
@@ -946,6 +947,15 @@ fn isWin32(x: xft_ctx) bool {
     return x.target.result.os.tag == .windows;
 }
 
+// clang only probes the stack on these; arm and mips reject the flag
+fn hasStackClash(x: xft_ctx) bool {
+    return switch (x.target.result.cpu.arch) {
+        .x86, .x86_64, .aarch64, .aarch64_be, .riscv32, .riscv64,
+        .powerpc, .powerpc64, .powerpc64le, .s390x, .loongarch64 => true,
+        else => false,
+    };
+}
+
 fn cflags(x: xft_ctx, v: xft_variant, cxx: bool) ![]const []const u8 {
     const a = x.b.allocator;
     var flags: std.ArrayList([]const u8) = .empty;
@@ -953,6 +963,8 @@ fn cflags(x: xft_ctx, v: xft_variant, cxx: bool) ![]const []const u8 {
     try flags.appendSlice(a, &CFLAGS);
     if (!isWin32(x))
         try flags.appendSlice(a, &CFLAGS_linux);
+    if (!isWin32(x) and hasStackClash(x))
+        try flags.append(a, "-fstack-clash-protection");
     if (x.target.result.cpu.arch == .x86_64)
         try flags.appendSlice(a, &CFLAGS_x86_64);
     if (x.cfg.fast_math)

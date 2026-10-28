@@ -15,11 +15,11 @@
 __attribute__((const, __always_inline__, __hot__, __used__))
 inline t_size	xft_next_pow2(t_size qword)
 {
-	return (1ULL << (64ULL - xft_memclz_u64(qword - 1)));
+	return ((t_size)(1ULL << (64ULL - xft_memclz_u64(qword - 1))));
 }
 
 __attribute__((const, __always_inline__, __hot__, __used__))
 inline t_size	xft_last_pow2(t_size qword)
 {
-	return (1ULL << (63ULL - xft_memclz_u64(qword)));
+	return ((t_size)(1ULL << (63ULL - xft_memclz_u64(qword))));
 }

@@ -33,6 +33,7 @@
 .Nm xft_maxu64 ,
 .Nm xft_maxu128 ,
 .Nm xft_tern ,
+.Nm xft_tern_s ,
 .Nm xft_dtern ,
 .Nm xft_next_pow2 ,
 .Nm xft_last_pow2 ,
@@ -111,6 +112,8 @@
 .Fn xft_maxu128 "t_u128 x" "t_u128 y"
 .Ft t_u64a
 .Fn xft_tern "t_u64a cond" "t_u64a value1" "t_u64a value2"
+.Ft t_size
+.Fn xft_tern_s "t_size cond" "t_size value1" "t_size value2"
 .Ft t_f64
 .Fn xft_dtern "t_u64a cond" "t_f64 value1" "t_f64 value2"
 .Ft t_size
@@ -121,7 +124,7 @@
 .Fn xft_align_fwd_integer "t_u64a n" "t_u64 align"
 .Ft t_u64
 .Fn xft_align_bwd_integer "t_u64a n" "t_u64 align"
-.Ft t_size
+.Ft t_u64a
 .Fn xft_roll_mask "t_size chunk_size" "t_size n"
 .Ft t_u64a
 .Fn xft_rotl64 "t_u64a hash" "t_size n"
@@ -359,6 +362,10 @@ if it is 0, using masks rather than a branch.
 .Fn xft_dtern
 does the same on the bit patterns of two
 .Vt t_f64
+values, and
+.Fn xft_tern_s
+on
+.Vt t_size
 values.
 .Fa cond
 must be exactly 0 or 1.
@@ -488,12 +495,9 @@ a mask with bit
 .Va i
 set to the high bit of byte
 .Va i .
-Compiles to
-.Ql pmovmskb
-(128 and 256 bits),
-.Ql vpmovb2m
-(512 bits),
-or a NEON sequence on aarch64.
+See
+.Sx Mask extraction
+below for how it compiles.
 .It Fn xft_veqmask vec b
 bit
 .Va i
@@ -609,8 +613,8 @@ packs the selected lanes into the low lanes.
 .Pp
 With
 .Dv XFT_HAS_512_VEC
-every width uses a single AVX-512 builtin per operation, including the
-masked loads and
+every width uses a single AVX-512 builtin per remaining operation, including
+the masked loads and
 .Ql vpcompress{d,q} ,
 and
 .Ql vpcompressw
@@ -620,11 +624,6 @@ is also defined.
 Without it:
 .Bl -bullet
 .It
-masks come from
-.Ql movmskps ,
-.Ql movmskpd
-or a signed pack followed by
-.Ql pmovmskb ;
 comparisons and splats use vector operators;
 .It
 the 32- and 64-bit masked loads use
@@ -656,6 +655,34 @@ When none of
 and
 .Dv XFT_HAS_512_VEC
 is set, the native-width forms are a plain lane loop.
+.Ss Mask extraction
+Mask extraction is the same code everywhere.
+Every
+.Fn xft_vmask*
+shifts each lane's sign bit down to bit 0, turns the result into a
+.Vt bool
+ext-vector with one bit per lane
+.Pq Vt t_vb2 No to Vt t_vb64
+using
+.Fn __builtin_convertvector ,
+and reinterprets that with
+.Fn __builtin_bit_cast
+as the mask integer.
+The compiler picks the instruction:
+.Ql pmovmskb ,
+.Ql movmskps
+or
+.Ql movmskpd
+with SSE2 and AVX2, including 32-bit x86,
+.Ql vpmov{b,w,d,q}2m
+with AVX-512, and
+.Ql cmlt ,
+.Ql and
+and
+.Ql addv
+on aarch64.
+Each width is only guarded by its
+.Dv XFT_HAS_*_VEC .
 .Sh RETURN VALUES
 Every function returns the value described above.
 None of them fail or set an error.
@@ -714,6 +741,18 @@ with
 \-
 .Fa n
 outside 0 to 63 are undefined behavior, as they shift by 64 or more.
+.Pp
+Mask extraction relies on Clang's
+.Vt bool
+ext-vectors; GCC cannot compile it.
+.Pp
+.Fn xft_memctz_u128 ,
+.Fn xft_memclz_u128
+and
+.Fn xft_maxu128
+only exist when the compiler defines
+.Dv __SIZEOF_INT128__ ;
+32-bit targets have none of them.
 .Pp
 On x86_64,
 .Fn xft_popcount_*

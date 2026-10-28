@@ -32,7 +32,7 @@ static inline t_phase1	xft_tailor_calibrate_mu(t_tailor *t, t_tailor_fn fn)
 	t_u64a			sum;
 	t_u64a			total;
 	t_u64			deadline;
-	t_u64			cap;
+	t_size			cap;
 	t_tailor_arg	arg;
 
 	arg.iters = 1;
@@ -42,7 +42,7 @@ static inline t_phase1	xft_tailor_calibrate_mu(t_tailor *t, t_tailor_fn fn)
 	arg.iters = 2;
 	sum = xft_tailor_run1(fn, &arg);
 	arg.iters = 1;
-	cap = xft_tern(sum > 200, (1 << 20), TAILOR_MAX);
+	cap = xft_tern_s(sum > 200, (1 << 20), TAILOR_MAX);
 	deadline = xft_get_nanos() + t->phase1_ns;
 	sum = 0;
 	total = 0;
@@ -50,7 +50,7 @@ static inline t_phase1	xft_tailor_calibrate_mu(t_tailor *t, t_tailor_fn fn)
 	{
 		sum += xft_tailor_run1(fn, &arg);
 		total += arg.iters;
-		arg.iters = xft_tern(arg.iters < cap, arg.iters << 1, cap);
+		arg.iters = xft_tern_s(arg.iters < cap, arg.iters << 1, cap);
 	}
 	return ((t_phase1){.sum = sum, .n = total, .iters = arg.iters, .cap = cap});
 }
@@ -100,8 +100,8 @@ static inline t_datapoint	xft_tailor_calibrate_welford(t_tailor *t,
 	fpv[2] = 50000.0 / fpv[0];
 	fpv[0] = fpv[1] / fpv[0];
 	arg.iters = (t_size)xft_dtern(fpv[0] < fpv[2], fpv[0], fpv[2]);
-	arg.iters = xft_tern(arg.iters == 0, 1, arg.iters);
-	arg.iters = xft_tern(arg.iters > TAILOR_MAX, TAILOR_MAX, arg.iters);
+	arg.iters = xft_tern_s(arg.iters == 0, 1, arg.iters);
+	arg.iters = xft_tern_s(arg.iters > TAILOR_MAX, TAILOR_MAX, arg.iters);
 	xft_tailor_run1(fn, &arg);
 	fpv[0] = 100.0;
 	deadline = xft_get_nanos() + t->phase2_ns;
@@ -133,7 +133,7 @@ t_plankb	xft_get_kb(t_tailor *t, t_tailor_fn fn)
 	kb[1] = xft_tern(10000 < kb[1], 10000, kb[1]);
 	kb[1] = xft_tern(kb[0] < kb[1], kb[0], kb[1]);
 	kb[0] = xft_tern(cv < 0.1, 2000, 10000);
-	return ((t_plankb){.b = kb[0],
-		.k_runs = (kb[1] + K_WARMUP + (kb[1] / 10)), .k = kb[1],
+	return ((t_plankb){.b = (t_size)kb[0],
+		.k_runs = (t_size)(kb[1] + K_WARMUP + (kb[1] / 10)), .k = kb[1],
 		.dp = dp});
 }

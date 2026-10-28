@@ -33,8 +33,14 @@ t_f32			xft_floorf(t_f32 x)\
 					__attribute__((const));
 t_f32			xft_ceilf(t_f32 x)\
 					__attribute__((const));
+
+# ifdef __SIZEOF_INT128__
+
 t_u128			xft_pow_u128(t_u128 x, t_u128 n)\
 					__attribute__((const));
+
+# endif
+
 t_u64			xft_pow_u64(t_u64 x, t_u64 n)\
 					__attribute__((const));
 t_u32			xft_pow_u32(t_u32 x, t_u32 n)\

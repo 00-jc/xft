@@ -6,6 +6,7 @@
 .Nm xft_get_rt ,
 .Nm xft_kernel_ptrs_destroy ,
 .Nm xft_dyn_cpu_select ,
+.Nm xft_exit_process ,
 .Nm xft_main
 .Nd program entry point and runtime helpers
 .Sh SYNOPSIS
@@ -19,6 +20,8 @@
 .Fn xft_kernel_ptrs_destroy "t_kernel_ptrs *kp"
 .Ft t_xft_arch
 .Fn xft_dyn_cpu_select void
+.Ft void
+.Fn xft_exit_process "t_i32a code"
 .Ft void
 .Fn xft_main "const t_any *restrict sp"
 .Sh DESCRIPTION
@@ -103,7 +106,20 @@ It is declared
 and
 .Ql noreturn
 and must end with
-.Xr xft_exit 3 .
+.Fn xft_exit_process .
+.Pp
+.Fn xft_exit_process
+ends the whole process with exit status
+.Fa code :
+.Xr exit_group 2
+on Linux and
+.Ql ExitProcess
+on Windows.
+With
+.Dv XFT_REQUIRE_LIBC
+no
+.Xr atexit 3
+handlers run and no stdio buffers are flushed.
 .Fa sp
 points to the initial stack as it was on entry to the process; it is not a
 .Vt t_kernel_ptrs .
@@ -163,9 +179,8 @@ fills a
 .Bl -tag -width "Windows"
 .It Linux
 .Fa sp
-is treated as a pointer to a
-.Vt t_u64
-array.
+is treated as a pointer to an array of machine words
+.Pq Vt t_size .
 .Fa argc
 is at index 0,
 .Fa argv
@@ -284,7 +299,9 @@ with every field false, and
 .Dv XFT_X86_NONE ,
 if CPUID is unavailable.
 .Fn xft_main
-does not return.
+and
+.Fn xft_exit_process
+do not return.
 .Sh EXAMPLES
 Print the arguments, one per line, then exit successfully.
 .Bd -literal -offset indent
@@ -309,7 +326,7 @@ void	xft_main(const t_any *__restrict__ const sp)
 	}
 	xft_writer_flush(&w);
 	xft_kernel_ptrs_destroy(&kp);
-	xft_exit(0);
+	xft_exit_process(0);
 }
 .Ed
 .Sh SEE ALSO

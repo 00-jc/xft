@@ -44,6 +44,7 @@ inline t_nvec64a	xft_viota64(void)
 	t_nvec64a	out;
 	t_size		i;
 
+	out = (t_nvec64a){0};
 	i = 0;
 	while (i < (XFT_NVEC_SIZE / 8))
 	{

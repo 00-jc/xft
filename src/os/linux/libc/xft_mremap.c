@@ -22,7 +22,7 @@ inline t_any	xft_mremap(t_size size, t_size new_size,
 	t_any addr, t_u64a flags_extra)
 {
 	return ((t_any)syscall(SYS_mremap, addr, size,
-			new_size, xft_mremap_maymove | flags_extra));
+			new_size, (long)(xft_mremap_maymove | flags_extra)));
 }
 
 # endif

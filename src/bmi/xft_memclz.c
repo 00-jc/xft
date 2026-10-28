@@ -61,7 +61,7 @@ inline t_size	xft_memclz_u64(t_u64 x)
 
 	t = (t_u64)((x & 0xFFFFFFFF00000000) == 0) << 5;
 	x >>= 32 - t;
-	r = t;
+	r = (t_size)t;
 	t = (t_u64)((x & 0xFFFF0000) == 0) << 4;
 	x >>= 16 - t;
 	r += t;
@@ -76,6 +76,8 @@ inline t_size	xft_memclz_u64(t_u64 x)
 	r += t;
 	return (r + ((2 - x) & -((x & 2) == 0)));
 }
+
+# ifdef __SIZEOF_INT128__
 
 __attribute__((hot, const, __always_inline__, __used__))
 inline t_size	xft_memclz_u128(t_u128 x)
@@ -103,5 +105,7 @@ inline t_size	xft_memclz_u128(t_u128 x)
 	r += t;
 	return (r + ((2 - x) & -((x & 2) == 0)));
 }
+
+# endif
 
 #endif

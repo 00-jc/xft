@@ -15,11 +15,15 @@
 
 # include <xft/primitives.h>
 
+# ifdef __SIZEOF_INT128__
+
 t_u128a		xft_murmur3(const t_u8 *__restrict__ mem, t_size size)\
 				__attribute__((__nonnull__(1), pure));
 
 t_u128a		xft_murmur3_with_seed(const t_u8 *__restrict__ mem, t_size seed,
 				t_size size) __attribute__((__nonnull__(1), pure));
+
+# endif
 
 t_u64a		xft_xxh3_64bits(t_buffer input, t_u64a seed);
 

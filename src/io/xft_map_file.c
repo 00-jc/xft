@@ -25,19 +25,20 @@ __attribute__((__always_inline__, __nonnull__(1), __used__))
 inline t_buffer	xft_map_file(const t_u8 *__restrict__ const name, t_u32 flags)
 {
 	t_i32	fd;
-	t_stat	stat;
+	t_statx	stat;
 	t_any	ptr;
 
-	if (__builtin_expect(xft_stat((t_any)name, &stat), 0))
+	if (__builtin_expect(xft_statx((t_any)name, 0, xft_statx_size, &stat), 0))
 		return ((t_buffer){0});
 	fd = xft_open((t_any)name, flags, 0);
 	if (__builtin_expect(fd == -1, 0))
 		return ((t_buffer){0});
-	ptr = xft_fmap(stat.st_size, xft_prot_read, xft_map_private, fd);
+	ptr = xft_fmap((t_size)stat.stx_size, xft_prot_read, xft_map_private,
+			fd);
 	if (__builtin_expect(xft_map_failed(ptr), 0))
 		return ((void)xft_close(fd), (t_buffer){0});
 	xft_close(fd);
-	return ((t_buffer){.size = stat.st_size, .mem = ptr});
+	return ((t_buffer){.size = (t_size)stat.stx_size, .mem = ptr});
 }
 
 __attribute__((__always_inline__, __used__))

@@ -22,7 +22,7 @@
 void			_start(void)\
 					__attribute__((noreturn, force_align_arg_pointer));
 
-#  elif defined(__aarch64__) && !defined(XFT_REQUIRE_LIBC)
+#  elif !defined(XFT_REQUIRE_LIBC)
 
 void			_start(void)\
 					__attribute__((noreturn));

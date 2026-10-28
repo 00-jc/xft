@@ -1,0 +1,206 @@
+.Dd October 27, 2026
+.Dt XFT_FILES 3
+.Os xft
+.Sh NAME
+.Nm xft_open_file ,
+.Nm xft_close_file ,
+.Nm xft_file_info
+.Nd open, close and describe files
+.Sh SYNOPSIS
+.In files.h
+.Ft t_fd
+.Fn xft_open_file "t_blk8r path" "t_fileopen_mode mode"
+.Ft t_fd
+.Fn xft_close_file "t_fd fd"
+.Ft t_file_info
+.Fn xft_file_info "t_blk8r path"
+.Sh DESCRIPTION
+The functions work the same way on Linux and Windows: Linux uses
+.Xr open 2 ,
+.Xr close 2
+and
+.Xr statx 2 ,
+and Windows calls
+.Ql CreateFileA ,
+.Ql CloseHandle
+and
+.Ql GetFileInformationByHandleEx
+directly.
+Paths are bytes passed through unchanged; on Windows they go to the ANSI API.
+.Ss Types
+.Vt t_fd
+is a
+.Vt t_u32a
+descriptor on Linux and on 32-bit Windows, and a
+.Vt t_uptr
+holding a
+.Vt HANDLE
+on 64-bit Windows.
+.Pp
+.Vt t_fileopen_mode
+is a bit-field of
+.Fa read ,
+.Fa write ,
+.Fa truncate ,
+.Fa append ,
+.Fa create
+and
+.Fa exclusive .
+.Pp
+.Vt t_file_info
+has the members
+.Fa size ,
+.Fa blk_size ,
+.Fa n_blks ,
+.Fa acc_time ,
+.Fa mod_time ,
+.Fa chg_time ,
+.Fa bth_time ,
+.Fa inode ,
+.Fa dev_id ,
+.Fa lnk_cnt ,
+.Fa perms
+and
+.Fa type .
+The four times are nanoseconds since the Unix epoch.
+.Fa perms
+is a
+.Vt t_file_perms
+bit-field laid out like the low 12 bits of
+.Fa st_mode .
+.Fa type
+is one of
+.Dv F_T_SYML ,
+.Dv F_T_DISK ,
+.Dv F_T_SOCK ,
+.Dv F_T_BLK ,
+.Dv F_T_DEV ,
+.Dv F_T_PIPE ,
+.Dv F_T_DIR
+or
+.Dv F_T_UNKNOWN .
+.Ss Opening
+.Fn xft_open_file
+opens
+.Fa path .
+.Fa append
+implies
+.Fa write ,
+and
+.Fa exclusive
+implies
+.Fa create
+and fails if the file exists.
+New files get mode 0666, reduced by the umask on Linux.
+On Windows the file is shared for reading, writing and deletion, and
+.Fa append
+opens it without
+.Dv FILE_WRITE_DATA ,
+so every write lands at the end of the file as with
+.Dv O_APPEND .
+.Pp
+.Fn xft_close_file
+closes
+.Fa fd .
+.Ss Describing
+.Fn xft_file_info
+describes
+.Fa path
+without following a final symbolic link, like
+.Xr lstat 2 .
+On Linux it asks
+.Xr statx 2
+for the basic fields and the birth time;
+.Fa bth_time
+is 0 on file systems that do not record it, and
+.Fa dev_id
+is
+.Ql major << 32 | minor .
+.Pp
+On Windows:
+.Bl -bullet
+.It
+.Fa type
+is
+.Dv F_T_SYML
+for name-surrogate reparse points (symbolic links and junctions),
+.Dv F_T_SOCK
+for AF_UNIX sockets,
+.Dv F_T_DIR
+for directories, and otherwise follows
+.Ql GetFileType .
+.It
+there are no mode bits, so
+.Fa perms
+grants read to everyone, write unless the file is read-only, and execute on
+directories.
+.It
+.Fa n_blks
+counts 512-byte blocks of the allocation size, like
+.Fa st_blocks ,
+and
+.Fa blk_size
+is the volume's preferred I/O size.
+.It
+.Fa inode
+is the file index and
+.Fa dev_id
+the volume serial number.
+.El
+.Sh RETURN VALUES
+.Fn xft_open_file
+returns the new descriptor, and
+.Fn xft_close_file
+returns 0.
+Both return
+.Ql (t_fd)-1
+on failure, which on Windows is
+.Dv INVALID_HANDLE_VALUE .
+.Pp
+.Fn xft_file_info
+returns the description, or a zeroed one whose
+.Fa type
+is
+.Dv F_T_UNKNOWN
+on failure.
+.Sh EXAMPLES
+Create a file only if it does not exist:
+.Bd -literal -offset indent
+#include <xft.h>
+
+t_result	create_new(const char *path)
+{
+	t_fd	fd;
+
+	fd = xft_open_file((t_blk8r)path,
+			(t_fileopen_mode){.write = 1, .exclusive = 1});
+	if (fd == (t_fd)-1)
+		return (KO);
+	return (xft_close_file(fd) == 0);
+}
+.Ed
+.Sh SEE ALSO
+.Xr xft_io 3 ,
+.Xr xft_syscalls 3 ,
+.Xr xft 7
+.Sh CAVEATS
+.In files.h
+also declares
+.Vt t_fs_opts ,
+.Vt t_file_lock
+and
+.Vt t_seek ,
+which no function takes.
+.Pp
+.Fn xft_file_info
+cannot tell a failure apart from a real file of type
+.Dv F_T_UNKNOWN .
+.Pp
+On Windows,
+.Fa append
+together with
+.Fa truncate
+may fail, because truncation needs
+.Dv FILE_WRITE_DATA .
+.Pp
+On Windows a non-ASCII path only opens when the ANSI code page is UTF-8.

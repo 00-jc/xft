@@ -13,7 +13,7 @@
 #include <xft/bmi.h>
 
 __attribute__((const, __always_inline__, __used__))
-inline t_size	xft_roll_mask(t_size chunk_size, t_size n)
+inline t_u64a	xft_roll_mask(t_size chunk_size, t_size n)
 {
 	return (-1ULL << (chunk_size - n));
 }

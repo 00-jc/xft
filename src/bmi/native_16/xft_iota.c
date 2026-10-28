@@ -44,6 +44,7 @@ inline t_nvec16a	xft_viota16(void)
 	t_nvec16a	out;
 	t_size		i;
 
+	out = (t_nvec16a){0};
 	i = 0;
 	while (i < (XFT_NVEC_SIZE / 2))
 	{

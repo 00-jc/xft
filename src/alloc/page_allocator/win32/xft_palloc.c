@@ -43,7 +43,7 @@ inline t_buffer	xft_palloc_resize(t_buffer b, t_size new_size)
 	n = xft_palloc(new_size);
 	if (__builtin_expect(n.mem == nullptr, 0))
 		return (xft_fatptr(nullptr, 0));
-	xft_memcpy(n.mem, b.mem, xft_tern(b.size < n.size, b.size, n.size));
+	xft_memcpy(n.mem, b.mem, xft_tern_s(b.size < n.size, b.size, n.size));
 	xft_palloc_free(b);
 	return (n);
 }

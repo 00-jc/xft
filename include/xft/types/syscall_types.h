@@ -25,18 +25,10 @@
 #  include <fcntl.h>
 #  include <unistd.h>
 
-typedef struct stat		t_stat;
+typedef struct statx	t_statx;
 typedef struct flock	t_flock;
 
-# else
-
-typedef t_u64			t_dev;
-typedef t_u64			t_ino;
-typedef t_u32			t_mode;
-typedef t_u32			t_uid;
-typedef t_u32			t_gid;
-typedef t_i64			t_off;
-typedef t_i64			t_blkcnt;
+# elif defined(__linux__)
 
 typedef struct s_flock
 {
@@ -47,60 +39,37 @@ typedef struct s_flock
 	t_i32	l_pid;
 }	t_flock;
 
-#  if defined(__x86_64__)
-
-typedef t_u64			t_nlink;
-typedef t_i64			t_blksize;
-
-typedef struct s_stat
+typedef struct s_statx_ts
 {
-	t_dev				st_dev;
-	t_ino				st_ino;
-	t_nlink				st_nlink;
-	t_mode				st_mode;
-	t_uid				st_uid;
-	t_gid				st_gid;
+	t_i64				tv_sec;
+	t_u32				tv_nsec;
 	t_i32				_1;
-	t_dev				st_rdev;
-	t_off				st_size;
-	t_blksize			st_blksize;
-	t_blkcnt			st_blocks;
-	t_timespec			st_atim;
-	t_timespec			st_mtim;
-	t_timespec			st_ctim;
-	t_i64				_2[3];
-}	t_stat;
+}	t_statx_ts;
 
-#  elif defined(__aarch64__)
-
-typedef t_u32			t_nlink;
-typedef t_i32			t_blksize;
-
-typedef struct s_stat
+typedef struct s_statx
 {
-	t_dev				st_dev;
-	t_ino				st_ino;
-	t_mode				st_mode;
-	t_nlink				st_nlink;
-	t_uid				st_uid;
-	t_gid				st_gid;
-	t_dev				st_rdev;
-	t_u64				_1;
-	t_off				st_size;
-	t_blksize			st_blksize;
-	t_i32				_2;
-	t_blkcnt			st_blocks;
-	t_timespec			st_atim;
-	t_timespec			st_mtim;
-	t_timespec			st_ctim;
-	t_i64				_3[3];
-}	t_stat;
-
-#  else
-
-#   error "Cannot find arch-specific structs without libc"
-
-#  endif
+	t_u32				stx_mask;
+	t_u32				stx_blksize;
+	t_u64				stx_attributes;
+	t_u32				stx_nlink;
+	t_u32				stx_uid;
+	t_u32				stx_gid;
+	t_u16				stx_mode;
+	t_u16				_1;
+	t_u64				stx_ino;
+	t_u64				stx_size;
+	t_u64				stx_blocks;
+	t_u64				stx_attributes_mask;
+	t_statx_ts			stx_atime;
+	t_statx_ts			stx_btime;
+	t_statx_ts			stx_ctime;
+	t_statx_ts			stx_mtime;
+	t_u32				stx_rdev_major;
+	t_u32				stx_rdev_minor;
+	t_u32				stx_dev_major;
+	t_u32				stx_dev_minor;
+	t_u64				_2[14];
+}	t_statx;
 
 # endif
 

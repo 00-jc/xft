@@ -19,7 +19,7 @@ inline t_size	xft_match_paging(t_size requested_size)
 	t_size	page_size;
 
 	page_size = xft_match_hugepage(requested_size + sizeof(t_hugepage));
-	return (xft_tern(page_size < HUGEPAGE_256MB, HUGEPAGE_256MB, page_size));
+	return (xft_tern_s(page_size < HUGEPAGE_256MB, HUGEPAGE_256MB, page_size));
 }
 
 __attribute__((__nonnull__(1), __returns_nonnull__, __always_inline__))

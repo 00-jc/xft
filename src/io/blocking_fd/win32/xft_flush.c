@@ -25,7 +25,7 @@ static inline t_ssize	xft__write(t_i32 fd, const t_u8 *__restrict__ buf,
 	DWORD	n;
 
 	if (!WriteFile((HANDLE)(intptr_t)fd, buf,
-		(DWORD)xft_tern(len > 0xFFFFFFFF, 0xFFFFFFFF, len), &n, nullptr))
+		(DWORD)xft_tern(len < 0xFFFFFFFF, len, 0xFFFFFFFF), &n, nullptr))
 		return (-1);
 	return ((t_ssize)n);
 }

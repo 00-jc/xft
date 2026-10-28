@@ -19,11 +19,11 @@
 __attribute__((__always_inline__, __used__))
 inline t_any	xft_mmap(t_size size, t_u64a prot, t_u64a flags)
 {
-	return ((t_any)syscall(SYS_mmap,
+	return ((t_any)syscall(xft_libc_sys_mmap,
 			(t_any)0,
 			size,
-			prot,
-			flags,
+			(long)prot,
+			(long)flags,
 			-1,
 			0
 		));

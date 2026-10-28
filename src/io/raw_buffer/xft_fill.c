@@ -22,7 +22,7 @@ static inline t_result	xft__stream_unbuffered(
 
 	available = reader->as.mem_reader.external.size
 		- reader->as.mem_reader.drained;
-	available = xft_tern(available < len, available, len);
+	available = xft_tern_s(available < len, available, len);
 	xft_memcpy(dst, reader->as.mem_reader.external.mem
 		+ reader->as.mem_reader.drained, available);
 	reader->as.mem_reader.drained += available;
@@ -44,10 +44,10 @@ inline t_result	xft_raw_unbuffered_fill(t_any __restrict__ const ptr,
 		|| reader->as.mem_reader.external.mem == nullptr)
 		__builtin_unreachable();
 	remain = reader->valid - reader->end;
-	to_copy = xft_tern(remain < len, remain, len);
+	to_copy = xft_tern_s(remain < len, remain, len);
 	xft_memcpy(dst, reader->buffer.mem + reader->end, to_copy);
-	reader->end = xft_tern(to_copy == remain, 0, reader->end + to_copy);
-	reader->valid = xft_tern(to_copy == remain, 0, reader->valid);
+	reader->end = xft_tern_s(to_copy == remain, 0, reader->end + to_copy);
+	reader->valid = xft_tern_s(to_copy == remain, 0, reader->valid);
 	bytes_read = to_copy;
 	if (bytes_read < len)
 	{
@@ -70,7 +70,8 @@ inline t_result	xft_raw_fill(t_any __restrict__ const reader)
 
 	external = rd->as.mem_reader.external;
 	max_read = external.size - rd->as.mem_reader.drained;
-	max_read = xft_tern(rd->buffer.size < max_read, rd->buffer.size, max_read);
+	max_read = xft_tern_s(rd->buffer.size < max_read, rd->buffer.size,
+			max_read);
 	xft_memcpy(rd->buffer.mem, external.mem + rd->as.mem_reader.drained,
 		max_read);
 	rd->as.mem_reader.drained += max_read;

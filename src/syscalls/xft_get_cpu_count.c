@@ -23,23 +23,23 @@
 #if defined(__linux__)
 
 __attribute__((pure, __nonnull__(1), unused, __always_inline__, __used__))
-static inline t_size	xft__cpu_count(t_size *__restrict__ const set)
+static inline t_size	xft__cpu_count(t_u64a *__restrict__ const set)
 {
-	const t_size	size = 128 / sizeof(t_size);
+	const t_size	size = 128 / sizeof(t_u64a);
 	t_size			i;
 	t_size			sum;
 
 	i = 0;
 	sum = 0;
 	while (i < size)
-		sum += xft_popcount_u64(set[i++]);
+		sum += (t_size)xft_popcount_u64(set[i++]);
 	return (sum);
 }
 
 __attribute__((__always_inline__, __nonnull__(1), __used__))
 inline t_result	xft_get_cpu_count(t_size *__restrict__ const count)
 {
-	t_size		set[128 / sizeof(t_size)];
+	t_u64a		set[128 / sizeof(t_u64a)];
 	int			res;
 
 	xft_bzero(set, sizeof(set));
@@ -61,7 +61,7 @@ inline t_result	xft_get_cpu_count(t_size *__restrict__ const count)
 	if (__builtin_expect(!GetProcessAffinityMask(GetCurrentProcess(),
 				&proc, &sys), 0))
 		return (KO);
-	*count = xft_popcount_u64(proc);
+	*count = (t_size)xft_popcount_u64(proc);
 	return (OK);
 }
 

@@ -12,6 +12,8 @@
 
 #include <xft/mem.h>
 
+#ifdef __SIZEOF_INT128__
+
 t_u128	xft_maxu128(t_u128 x, t_u128 y)
 {
 	t_u128	cnd;
@@ -19,6 +21,8 @@ t_u128	xft_maxu128(t_u128 x, t_u128 y)
 	cnd = -(x < y);
 	return ((cnd & y) | (~cnd & x));
 }
+
+#endif
 
 t_u64	xft_maxu64(t_u64 x, t_u64 y)
 {

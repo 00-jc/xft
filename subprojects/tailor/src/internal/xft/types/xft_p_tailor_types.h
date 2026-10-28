@@ -43,9 +43,9 @@ typedef struct s_phase1
 
 typedef struct s_plankb
 {
-	t_u64a		b;
+	t_size		b;
 	t_u64a		k;
-	t_u64a		k_runs;
+	t_size		k_runs;
 	t_datapoint	dp;
 }	t_plankb;
 

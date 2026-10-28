@@ -16,5 +16,6 @@ __attribute__((__nonnull__(1), __always_inline__, __used__))
 inline t_result	xft_fmt_handle_slice(t_writer *__restrict__ const writer,
 	t_u64 ptr, t_u64 len)
 {
-	return (xft_writer_write(writer, xft_fatptr((const t_u8 *)ptr, len)));
+	return (xft_writer_write(writer,
+			xft_fatptr((const t_u8 *)ptr, (t_size)len)));
 }

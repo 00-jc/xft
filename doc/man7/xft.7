@@ -10,8 +10,10 @@
 .Fn xft_main "const t_any *__restrict__ const sp"
 .Sh DESCRIPTION
 .Nm
-is a freestanding C23 library for Linux and 64-bit Windows on x86_64 and
-aarch64.
+is a freestanding C23 library for Linux and Windows.
+The freestanding flavor runs on x86_64 and aarch64 Linux and on x86, x86_64
+and aarch64 Windows; the hosted flavor also covers other Linux architectures,
+including 32-bit x86 and ARM.
 It replaces the parts of libc a program normally relies on and links with
 .Fl nostdlib .
 A hosted flavor, selected with
@@ -20,14 +22,16 @@ exposes the same API on a normal toolchain.
 .Pp
 Programs include
 .In xft.h ,
-which pulls in every public header, and define
+which pulls in every public header except
+.In signals.h ,
+and define
 .Fn xft_main
 instead of
 .Fn main .
 .Fn xft_main
 receives the initial stack pointer, from which the runtime helpers recover
 the arguments, environment and auxiliary vector, and must end with
-.Fn xft_exit ;
+.Fn xft_exit_process ;
 see
 .Xr xft_rt 3 .
 .Ss Conventions
@@ -71,15 +75,15 @@ Declared in
 .It Vt t_i32 , t_i32a Ta 32-bit signed
 .It Vt t_u64 , t_u64a Ta 64-bit unsigned
 .It Vt t_i64 , t_i64a Ta 64-bit signed
-.It Vt t_u128 , t_u128a Ta unsigned 128-bit (__uint128_t)
-.It Vt t_i128 , t_i128a Ta signed 128-bit (__int128_t)
+.It Vt t_u128 , t_u128a Ta unsigned 128-bit (__uint128_t), only with __SIZEOF_INT128__
+.It Vt t_i128 , t_i128a Ta signed 128-bit (__int128_t), only with __SIZEOF_INT128__
 .It Vt t_f32 , t_f32a Ta float
 .It Vt t_f64 , t_f64a Ta double
 .It Vt t_f80 , t_f80a Ta long double
 .It Vt t_uptr Ta pointer-sized unsigned integer
 .It Vt t_any , t_cany Ta void pointer, const void pointer
-.It Vt t_size Ta alias of t_u64
-.It Vt t_ssize Ta alias of t_i64
+.It Vt t_size Ta alias of t_uptr, pointer width
+.It Vt t_ssize Ta signed pointer-width integer
 .El
 .Pp
 Compound types:
@@ -114,10 +118,18 @@ through
 .In primitives.h
 rejects the build with
 .Ic #error
-when compiling freestanding on an architecture other than x86_64 or
+when compiling freestanding Linux on an architecture other than x86_64 or
 aarch64 without
 .Dv XFT_REQUIRE_LIBC ,
-on 32-bit Windows, and on any operating system other than Linux or Win64.
+and on any operating system other than Linux or Windows.
+On targets without
+.Dv __SIZEOF_INT128__ ,
+such as 32-bit ones, the 128-bit integer types and the functions that take
+them are left out; see
+.Xr xft_bmi 3 ,
+.Xr xft_hash 3
+and
+.Xr xft_math 3 .
 .Dv XFT_REQUIRE_LIBC
 is defined by the build when
 .Fl Duse-libc
@@ -134,6 +146,8 @@ bit manipulation and SIMD mask primitives
 NUL-terminated string functions
 .It Xr xft_ctype 3
 character classification
+.It Xr xft_files 3
+opening, closing and describing files
 .It Xr xft_fmt 3
 formatted output
 .It Xr xft_fuzzer 3
@@ -155,7 +169,7 @@ pseudo-random number generation
 .It Xr xft_rt 3
 program entry point and runtime
 .It Xr xft_signals 3
-signal handling
+signal number constants
 .It Xr xft_soa 3
 structure-of-arrays container
 .It Xr xft_sort 3
@@ -176,7 +190,7 @@ Unicode XID_Start and XID_Continue lookup and UTF-8 decoding
 .Sh BUILD OPTIONS
 .Nm
 builds with Zig 0.17.0 or later, whose bundled Clang
-compiles the C sources:
+compiles the C sources; GCC is not supported:
 .Bd -literal -offset indent
 zig build -Doptimize=fast
 .Ed
@@ -200,6 +214,9 @@ libraries, and on Linux
 .Nm perf
 and
 .Nm tailor .
+On Linux every build adds
+.Fl fstack-clash-protection
+where Clang supports it, which excludes arm and mips.
 .Bl -tag -width "-Dfast-math"
 .It Fl Doptimize
 .Ql debug ,
@@ -219,6 +236,14 @@ The target triple, such as
 .Ql x86_64-linux
 or
 .Ql x86_64-windows-gnu .
+Linux targets other than x86_64 and aarch64, such as
+.Ql x86-linux-gnu
+or
+.Ql arm-linux-gnueabihf ,
+need
+.Fl Duse-libc .
+On 32-bit targets the library calls compiler-rt for 64-bit division;
+executables built by Zig link it automatically.
 Default the host.
 .It Fl Dcpu
 The CPU model and features, such as
@@ -240,6 +265,9 @@ runtime.
 Requires
 .Fl Duse-libc
 and disables LTO.
+Zig rejects the stack checks on 32-bit x86, so a sanitized build, and with it
+.Fl Dtests ,
+does not build there.
 Default off.
 .It Fl Dlto
 Full link-time optimization.
@@ -324,7 +352,7 @@ They are not built for Windows.
 void	xft_main(const t_any *__restrict__ const sp)
 {
 	(void)sp;
-	xft_exit(0);
+	xft_exit_process(0);
 }
 .Ed
 .Sh SEE ALSO

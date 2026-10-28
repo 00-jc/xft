@@ -49,7 +49,7 @@ __attribute__((__nonnull__(1), __always_inline__))
 static inline void	xft_reporta_report(t_reporta *gpa)
 {
 	const t_size	size = sizeof(R1 R2 R3 R4);
-	t_size			args[10];
+	t_u64			args[10];
 	t_writer		writer;
 
 	writer = xft_get_fs_writer(xft_fatptr(gpa->buffer, REPORTA_BUFFER),

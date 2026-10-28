@@ -17,7 +17,7 @@
 
 t_size	xft_match_hugepage(t_size size)\
 			__attribute__((const));
-int		xft_match_hugepage_flags(t_size page_size)\
+int		xft_match_hugepage_flags(t_u64 page_size)\
 			__attribute__((const));
 
 #endif

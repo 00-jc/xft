@@ -17,6 +17,14 @@
 
 typedef long long													t_llong;
 
+// one bit per lane, bit-castable to the matching mask integer
+typedef bool __attribute__((ext_vector_type(2)))					t_vb2;
+typedef bool __attribute__((ext_vector_type(4)))					t_vb4;
+typedef bool __attribute__((ext_vector_type(8)))					t_vb8;
+typedef bool __attribute__((ext_vector_type(16)))					t_vb16;
+typedef bool __attribute__((ext_vector_type(32)))					t_vb32;
+typedef bool __attribute__((ext_vector_type(64)))					t_vb64;
+
 # if defined(__GNUC__) && !defined(__clang__)
 
 typedef __attribute__((vector_size(16), aligned(1), __may_alias__)) char\

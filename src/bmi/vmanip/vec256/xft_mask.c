@@ -17,7 +17,8 @@
 __attribute__((__always_inline__, __flatten__, const, __used__))
 inline t_u32a	xft_vmask256(t_vu256 vec)
 {
-	return ((t_u32a)__builtin_ia32_pmovmskb256((t_vc256)vec));
+	return (__builtin_bit_cast(t_u32a,
+			__builtin_convertvector(vec >> 7, t_vb32)));
 }
 
 #endif

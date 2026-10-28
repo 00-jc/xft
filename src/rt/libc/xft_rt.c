@@ -18,7 +18,7 @@ int	main(int argc, char **argv, char **envp)
 {
 	(void)argc;
 	(void)envp;
-	xft_main((const t_any *)((t_u64 *)argv - 1));
+	xft_main((const t_any *)((t_size *)argv - 1));
 	__builtin_unreachable();
 }
 

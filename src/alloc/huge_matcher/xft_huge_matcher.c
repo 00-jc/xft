@@ -21,8 +21,8 @@ inline t_size	xft_match_hugepage(t_size requested_size)
 {
 	t_size	page_size;
 
-	page_size = (-(requested_size <= HUGEPAGE_16GB) & HUGEPAGE_16GB)
-		| (-(requested_size > HUGEPAGE_16GB) & requested_size);
+	page_size = (-(requested_size <= HUGEPAGE_MAX) & HUGEPAGE_MAX)
+		| (-(requested_size > HUGEPAGE_MAX) & requested_size);
 	page_size = (-(requested_size <= HUGEPAGE_2GB) & HUGEPAGE_2GB)
 		| (-(requested_size > HUGEPAGE_2GB) & page_size);
 	page_size = (-(requested_size <= HUGEPAGE_1GB) & HUGEPAGE_1GB)
@@ -37,15 +37,15 @@ inline t_size	xft_match_hugepage(t_size requested_size)
 		| (-(requested_size > HUGEPAGE_8MB) & page_size);
 	page_size = (-(requested_size <= HUGEPAGE_2MB) & HUGEPAGE_2MB)
 		| (-(requested_size > HUGEPAGE_2MB) & page_size);
-	page_size = xft_tern(requested_size <= 1048576,
+	page_size = xft_tern_s(requested_size <= 1048576,
 			xft_next_pow2(requested_size), page_size);
-	return (xft_tern(page_size < 8, 8, page_size));
+	return (xft_tern_s(page_size < 8, 8, page_size));
 }
 
 #if defined(__linux__)
 
 __attribute__((__always_inline__, const, __used__))
-inline int	xft_match_hugepage_flags(t_size page_size)
+inline int	xft_match_hugepage_flags(t_u64 page_size)
 {
 	t_u32	flags;
 

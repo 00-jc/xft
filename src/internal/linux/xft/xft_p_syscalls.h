@@ -32,8 +32,9 @@ t_i32a		xft_unlockf(int fd);
 int			xft_open(const char *__restrict__ path, int flags, t_u32a mode)\
 			__attribute__((__nonnull__(1)));
 int			xft_close(int fd);
-int			xft_stat(const char *__restrict__ path, t_stat *statbuf)\
-			__attribute__((__nonnull__(1, 2)));
+int			xft_statx(const char *__restrict__ path, t_u32a flags,\
+			t_u32a mask, t_statx *statxbuf)\
+			__attribute__((__nonnull__(1, 4)));
 int			xft_mkdir(const char *__restrict__ path, t_u32a mode)\
 			__attribute__((__nonnull__(1)));
 
@@ -79,9 +80,6 @@ int			xft_mprotect(t_any addr, t_size size, int prot)\
 			__attribute__((__nonnull__(1)));
 
 int			xft_set_tid_address(t_any address);
-
-int			xft_sigprocmask(t_u32a flags, t_sigset *__restrict__ const set,\
-			t_sigset *__restrict__ const oldest);
 
 t_i32		xft_clone(const t_clone_arg *__restrict__ const args)\
 			__attribute__((__nonnull__(1)));

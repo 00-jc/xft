@@ -45,7 +45,7 @@ inline t_result	xft_fmt_handle_signed(t_writer *__restrict__ const writer,
 		inner_buffer[--i] = '0';
 	while (mag)
 	{
-		tmp = (t_u128a)mag * 0xCCCCCCCCCCCCCCCDULL >> 67;
+		tmp = mag / 10;
 		inner_buffer[--i] = (char)((mag - ((tmp << 3) + (tmp << 1))) + '0');
 		mag = tmp;
 	}

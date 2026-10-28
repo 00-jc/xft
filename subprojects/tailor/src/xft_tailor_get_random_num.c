@@ -13,7 +13,7 @@
 #include <xft/tailor.h>
 
 __attribute__((__nonnull__(1), __always_inline__))
-inline t_size	xft_tailor_get_random_num(t_any ptr)
+inline t_u64a	xft_tailor_get_random_num(t_any ptr)
 {
 	t_tailor_arg	*arg;
 

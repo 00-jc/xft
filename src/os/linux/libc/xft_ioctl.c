@@ -19,7 +19,7 @@
 __attribute__((__always_inline__, __used__))
 inline int	xft_ioctl(int fd, t_u64a request, t_u64a arg)
 {
-	return ((int)syscall(SYS_ioctl, fd, request, arg));
+	return ((int)syscall(SYS_ioctl, fd, (long)request, (long)arg));
 }
 
 # endif

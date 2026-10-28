@@ -233,13 +233,13 @@ void	xft_main(const t_any *const __restrict__ sp)
 	(void)sp;
 	gpa = xft_new_gpa();
 	if (gpa.slab == nullptr)
-		xft_exit(1);
+		xft_exit_process(1);
 	allocator = xft_gpa_allocator(&gpa);
 	memory = allocator.vtable.allocate(allocator.allocator, 1000, 64);
 	if (memory.mem == nullptr)
 	{
 		allocator.vtable.destroy(allocator.allocator);
-		xft_exit(1);
+		xft_exit_process(1);
 	}
 	xft_pin_invariant(memory.size >= 1000);
 	copy = allocator.vtable.clone(&allocator, memory);
@@ -247,7 +247,7 @@ void	xft_main(const t_any *const __restrict__ sp)
 		allocator.vtable.free(allocator.allocator, copy);
 	allocator.vtable.free(allocator.allocator, memory);
 	allocator.vtable.destroy(allocator.allocator);
-	xft_exit(0);
+	xft_exit_process(0);
 }
 .Ed
 .Sh SEE ALSO

@@ -50,7 +50,7 @@ inline t_buffer	xft_palloc_resize(t_buffer b, t_size new_size)
 	if (__builtin_expect(new_size == b.size, 1))
 		return (b);
 	ptr = xft_mremap(b.size, new_size, b.mem, 0);
-	s = xft_tern(xft_map_failed(ptr), 0, new_size);
+	s = xft_tern_s(xft_map_failed(ptr), 0, new_size);
 	ptr = (t_any)xft_tern(xft_map_failed(ptr), 0, (t_uptr)ptr);
 	return (xft_fatptr(ptr, s));
 }

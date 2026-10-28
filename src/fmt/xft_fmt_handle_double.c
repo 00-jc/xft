@@ -26,7 +26,7 @@ static inline t_size	xft_fmt_uint_back(t_u8 *buf, t_u64 n)
 		buf[--i] = '0';
 	while (n)
 	{
-		q = (t_u128a)n * 0xCCCCCCCCCCCCCCCDULL >> 67;
+		q = n / 10;
 		buf[--i] = (char)((n - ((q << 3) + (q << 1))) + '0');
 		n = q;
 	}

@@ -12,6 +12,8 @@
 
 #include "tests/hash/murmur3/murmur_test.h"
 
+#ifdef __SIZEOF_INT128__
+
 void	test_murmur(t_test *t)
 {
 	xft_test_print(t, "Testing xft_murmur3...\n");
@@ -21,3 +23,12 @@ void	test_murmur(t_test *t)
 	test_murmur_lengths();
 	xft_test_print(t, "  xft_murmur3: OK\n");
 }
+
+#else
+
+void	test_murmur(t_test *t)
+{
+	xft_test_print(t, "  xft_murmur3: skipped, no __int128\n");
+}
+
+#endif

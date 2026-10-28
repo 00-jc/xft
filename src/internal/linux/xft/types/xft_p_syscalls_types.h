@@ -25,6 +25,23 @@
 #  include <syscall.h>
 # endif
 
+# if defined(XFT_REQUIRE_LIBC) && defined(SYS_mmap2)
+
+// 32-bit: mmap2 takes the offset in pages, every caller passes 0
+typedef enum e_xft_libc_sys : t_u16
+{
+	xft_libc_sys_mmap = SYS_mmap2,
+}	t_xft_libc_sys;
+
+# elif defined(XFT_REQUIRE_LIBC)
+
+typedef enum e_xft_libc_sys : t_u16
+{
+	xft_libc_sys_mmap = SYS_mmap,
+}	t_xft_libc_sys;
+
+# endif
+
 typedef enum e_xft_errno : t_u16
 {
 	xft_max_errno = 4095,
@@ -94,7 +111,9 @@ typedef enum e_xft_open_flag : t_u16
 
 typedef enum e_xft_mode : t_u16
 {
+	xft_open_0666 = 0666,
 	xft_mkdir_0755 = 0755,
+	xft_mode_perms = 07777,
 }	t_xft_mode;
 
 typedef enum e_xft_std_fd : t_u8
@@ -108,6 +127,18 @@ typedef enum e_xft_at : t_i8
 {
 	xft_at_fdcwd = -100,
 }	t_xft_at;
+
+typedef enum e_xft_at_flag : t_u16
+{
+	xft_at_symlink_nofollow = 0x100,
+}	t_xft_at_flag;
+
+typedef enum e_xft_statx_mask : t_u16
+{
+	xft_statx_size = 0x200,
+	xft_statx_basic_stats = 0x7ff,
+	xft_statx_btime = 0x800,
+}	t_xft_statx_mask;
 
 typedef enum e_xft_wait_opt : t_u8
 {

@@ -12,44 +12,13 @@
 
 #include <xft/types/xft_p_vmanip_types.h>
 
-#if XFT_HAS_512_VEC
+#if XFT_HAS_128_VEC
 
 __attribute__((__always_inline__, __flatten__, const, __used__))
 inline t_u8	xft_vmask128_64(t_vu64_128 vec)
 {
-	return (__builtin_ia32_cvtq2mask128((t_vs64_128)vec));
+	return (__builtin_bit_cast(t_u8,
+			__builtin_convertvector(vec >> 63, t_vb2)));
 }
-
-#elif XFT_HAS_128_VEC
-
-# if defined(__x86_64__)
-
-__attribute__((__always_inline__, __flatten__, const, __used__))
-inline t_u8	xft_vmask128_64(t_vu64_128 vec)
-{
-	return ((t_u8)__builtin_ia32_movmskpd((t_vf64_128)vec));
-}
-
-# endif
-
-# if !defined(__x86_64__)
-
-__attribute__((__always_inline__, __flatten__, const, __used__))
-inline t_u8	xft_vmask128_64(t_vu64_128 vec)
-{
-	t_u8	out;
-	t_size	i;
-
-	out = 0;
-	i = 0;
-	while (i < 2)
-	{
-		out |= (t_u8)((vec[i] >> 63) & 1) << i;
-		i++;
-	}
-	return (out);
-}
-
-# endif
 
 #endif

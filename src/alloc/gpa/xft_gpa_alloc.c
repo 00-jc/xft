@@ -57,12 +57,12 @@ t_buffer	xft_gpa_alloc(t_any alloc, t_size size, t_size align)
 	t_gpa	*gpa;
 
 	gpa = (t_gpa *)alloc;
-	size = xft_tern(size < 8, 8, size);
+	size = xft_tern_s(size < 8, 8, size);
 	snapped = xft_next_pow2(size);
-	snapped = xft_tern(snapped < align, xft_next_pow2(align), snapped);
+	snapped = xft_tern_s(snapped < align, xft_next_pow2(align), snapped);
 	freelist = 60 - xft_memclz_u64(snapped);
 	if (GPA_CLASSES <= freelist)
-		return (xft_palloc(xft_tern(size < align, align, size)));
+		return (xft_palloc(xft_tern_s(size < align, align, size)));
 	new_ptr = gpa->free[freelist];
 	if (new_ptr && (align <= 16 || !((t_uptr)new_ptr & (align - 1))))
 	{
@@ -70,5 +70,6 @@ t_buffer	xft_gpa_alloc(t_any alloc, t_size size, t_size align)
 		return (xft_fatptr(new_ptr, snapped));
 	}
 	return (xft_return_ptr(gpa, snapped,
-			xft_tern(align < 16, xft_tern(snapped < 16, snapped, 16), align)));
+			xft_tern_s(align < 16, xft_tern_s(snapped < 16, snapped, 16),
+				align)));
 }

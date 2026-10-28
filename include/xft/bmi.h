@@ -32,8 +32,13 @@ t_size			xft_memctz_u32(t_u32 x)\
 					__attribute__((const));
 t_size			xft_memctz_u64(t_u64 x)\
 					__attribute__((const));
+
+# ifdef __SIZEOF_INT128__
+
 t_size			xft_memctz_u128(t_u128 x)\
 					__attribute__((const));
+
+# endif
 
 t_size			xft_memclz_u16(t_u16 x)\
 					__attribute__((const));
@@ -41,8 +46,13 @@ t_size			xft_memclz_u32(t_u32 x)\
 					__attribute__((const));
 t_size			xft_memclz_u64(t_u64 x)\
 					__attribute__((const));
+
+# ifdef __SIZEOF_INT128__
+
 t_size			xft_memclz_u128(t_u128 x)\
 					__attribute__((const));
+
+# endif
 
 t_size			xft_max_s(t_size x, t_size y)\
 					__attribute__((const));
@@ -52,8 +62,13 @@ t_u32			xft_maxu32(t_u32 x, t_u32 y)\
 					__attribute__((const));
 t_u64			xft_maxu64(t_u64 x, t_u64 y)\
 					__attribute__((const));
+
+# ifdef __SIZEOF_INT128__
+
 t_u128			xft_maxu128(t_u128 x, t_u128 y)\
 					__attribute__((const));
+
+# endif
 
 t_u16a			xft_bswap16(t_u16a x)\
 					__attribute__((const));
@@ -89,13 +104,16 @@ t_u32a			xft_from_le32(t_u32a x)\
 					__attribute__((const));
 t_u64a			xft_from_le64(t_u64a x)\
 					__attribute__((const));
-t_size			xft_roll_mask(t_size chunk_size, t_size n)\
+t_u64a			xft_roll_mask(t_size chunk_size, t_size n)\
 					__attribute__((const));
 t_u64a			xft_rotl64(t_u64a hash, t_size n)\
 					__attribute__((const));
 
 t_u64a			xft_tern(t_u64a cond, t_u64a value1,\
 					t_u64a value2)\
+					__attribute__((const));
+t_size			xft_tern_s(t_size cond, t_size value1,\
+					t_size value2)\
 					__attribute__((const));
 
 t_f64			xft_dtern(t_u64a cond, t_f64 value1,\

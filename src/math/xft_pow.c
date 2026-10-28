@@ -60,6 +60,8 @@ inline t_u64	xft_pow_u64(t_u64 x, t_u64 n)
 	return (res);
 }
 
+#ifdef __SIZEOF_INT128__
+
 __attribute__((__always_inline__, const, __used__))
 inline t_u128	xft_pow_u128(t_u128 x, t_u128 n)
 {
@@ -75,3 +77,5 @@ inline t_u128	xft_pow_u128(t_u128 x, t_u128 n)
 	}
 	return (res);
 }
+
+#endif

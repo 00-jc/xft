@@ -43,7 +43,7 @@ t_buffer	*xft_get_all_buffers(t_cany ptr, t_size *n)\
 void		xft_tailor_add_processed_bytes(t_any ptr, const t_size bytes)\
 				__attribute__((__nonnull__(1)));
 
-t_size		xft_tailor_get_random_num(t_any ptr)\
+t_u64a		xft_tailor_get_random_num(t_any ptr)\
 				__attribute__((__nonnull__(1)));
 
 # else

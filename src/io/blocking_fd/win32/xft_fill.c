@@ -23,7 +23,7 @@ static inline t_ssize	xft__read(t_i32 fd, t_u8 *__restrict__ buf, t_size len)
 	DWORD	n;
 
 	if (!ReadFile((HANDLE)(intptr_t)fd, buf,
-		(DWORD)xft_tern(len > 0xFFFFFFFF, 0xFFFFFFFF, len), &n, nullptr))
+		(DWORD)xft_tern(len < 0xFFFFFFFF, len, 0xFFFFFFFF), &n, nullptr))
 		return (-(t_ssize)(GetLastError() != ERROR_BROKEN_PIPE));
 	return ((t_ssize)n);
 }

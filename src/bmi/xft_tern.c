@@ -20,6 +20,12 @@ inline t_u64a	xft_tern(t_u64a cond, t_u64a value1, t_u64a value2)
 }
 
 __attribute__((const, __always_inline__, __used__))
+inline t_size	xft_tern_s(t_size cond, t_size value1, t_size value2)
+{
+	return ((-(cond) & value1) | (~(-cond) & value2));
+}
+
+__attribute__((const, __always_inline__, __used__))
 inline t_f64	xft_dtern(t_u64a cond, t_f64 value1, t_f64 value2)
 {
 	t_dp	a;

@@ -123,6 +123,15 @@ t_u128a	hash_key_128(const t_u8 *key, t_size len)
 .Xr xft_swissmap 3 ,
 .Xr xft 7
 .Sh CAVEATS
+.Fn xft_murmur3
+and
+.Fn xft_murmur3_with_seed
+return a
+.Vt t_u128a
+and only exist when the compiler defines
+.Dv __SIZEOF_INT128__ ;
+32-bit targets do not have them.
+.Pp
 Neither function is suitable for adversarial input; an attacker who controls
 the keys can force collisions in a table built on them.
 Use a keyed cryptographic hash for anything exposed to untrusted data.

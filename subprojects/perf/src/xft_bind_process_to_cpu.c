@@ -16,7 +16,7 @@
 t_result	xft_bind_process_to_cpu(t_u32 cpu)
 {
 	int			pid;
-	t_size		mask[128 / sizeof(t_size)];
+	t_u64a		mask[128 / sizeof(t_u64a)];
 
 	pid = xft_getpid();
 	xft_memset(mask, 0, sizeof(mask));

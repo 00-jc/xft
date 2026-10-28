@@ -52,9 +52,8 @@ t_result	xft_soa_reserve(t_allocator allocator,
 		__builtin_unreachable();
 	if (soa->capacity_elements - soa->occupied_elements >= elements_to_reserve)
 		return (OK);
-	new_size = soa->capacity_elements << 1;
-	new_size = xft_tern(new_size < soa->occupied_elements + elements_to_reserve,
-			soa->occupied_elements + elements_to_reserve, new_size);
+	new_size = xft_max_s(soa->capacity_elements << 1,
+			soa->occupied_elements + elements_to_reserve);
 	new_size = (new_size + ctx->max_alignment - 1) & ~(ctx->max_alignment - 1);
 	new_buffer = allocator.vtable.realloc(allocator.allocator,
 			xft_fatptr(soa->ptr, soa->allocator_bytes_given),
@@ -64,7 +63,7 @@ t_result	xft_soa_reserve(t_allocator allocator,
 	soa->ptr = new_buffer.mem;
 	usable = (new_buffer.size / ctx->total_struct_size)
 		& ~(ctx->max_alignment - 1);
-	new_size = xft_tern(usable > new_size, usable, new_size);
+	new_size = xft_tern_s(usable > new_size, usable, new_size);
 	xft__soa_reposition(soa, ctx, new_size);
 	soa->capacity_elements = new_size;
 	soa->allocator_bytes_given = new_buffer.size;

@@ -22,7 +22,7 @@ inline t_result	xft_vec_push_back(t_allocator allocator,
 	{
 		if (__builtin_expect(vec->size + type_size > vec->buf.size
 				&& !xft_vec_reserve(allocator, vec,
-					xft_tern(vec->buf.size, vec->buf.size << 1, 4)), 0))
+					xft_tern_s(vec->buf.size, vec->buf.size << 1, 4)), 0))
 			return (KO);
 		xft_memcpy(vec->buf.mem + vec->size, data, type_size);
 		vec->size += type_size;

@@ -34,7 +34,7 @@ inline t_result	xft_read_from_reader(t_reader *__restrict__ const reader,
 		if (__builtin_expect(reader->valid == 0, 0))
 			break ;
 		step = reader->valid - reader->end;
-		n = xft_tern(len - read < step, len - read, step);
+		n = xft_tern_s(len - read < step, len - read, step);
 		xft_memcpy(dst + read, reader->buffer.mem + reader->end, n);
 		read += n;
 		reader->end += n;

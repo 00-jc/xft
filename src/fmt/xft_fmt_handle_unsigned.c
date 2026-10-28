@@ -43,7 +43,7 @@ inline t_result	xft_fmt_handle_unsigned(t_writer *__restrict__ const writer,
 		inner_buffer[--i] = '0';
 	while (value)
 	{
-		tmp = (t_u128a)value * 0xCCCCCCCCCCCCCCCDULL >> 67;
+		tmp = value / 10;
 		inner_buffer[--i] = (char)((value - ((tmp << 3) + (tmp << 1))) + '0');
 		value = tmp;
 	}

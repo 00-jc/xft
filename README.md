@@ -15,17 +15,24 @@ A hosted build (`-Duse-libc`) exposes the same API on a normal toolchain, so the
 
 ## Requirements
 
-- Zig 0.17.0 or later (it ships the Clang used to compile the C sources; no separate toolchain is needed).
+- Zig 0.17.0 or later (it ships the Clang used to compile the C sources; no separate toolchain is needed). GCC is not supported: the SIMD mask code uses Clang's `bool` ext-vectors.
 
 ## Platform support
 
-| Platform | Freestanding | `-Duse-libc` |
-| --- | --- | --- |
-| Linux x86_64 | yes | yes |
-| Linux aarch64 | yes | yes |
-| Linux, other arches | no | yes |
-| Windows x86_64 | yes* | yes |
-| Other OSes | no | no |
+| OS | Arch | Freestanding | `-Duse-libc` |
+| --- | --- | --- | --- |
+| Linux | x86_64 | yes | yes |
+| Linux | aarch64 | yes | yes |
+| Linux | others, including x86 and ARM | no<sup>1</sup> | yes<sup>2, 4</sup> |
+| Windows | x86_64 | yes<sup>3</sup> | yes |
+| Windows | aarch64 | yes<sup>3</sup> | yes |
+| Windows | x86 | yes<sup>3, 4</sup> | yes<sup>4</sup> |
+| Others | any | no | no |
+
+1. Freestanding Linux issues system calls with inline `syscall`/`svc` assembly, which exists for x86_64 and aarch64 only; other architectures go through libc's `syscall(2)`.
+2. 32-bit musl does not build: it has no `SYS_clock_gettime`.
+3. Freestanding Windows calls the win32 API in the system DLLs; see [Usage](#usage).
+4. 32-bit targets have no `__int128`, so `t_u128`/`t_i128` and the functions that take them (`xft_murmur3`, `xft_pow_u128`, `xft_maxu128`, `xft_memclz_u128`, `xft_memctz_u128`) are left out. 64-bit division calls compiler-rt (`__udivdi3`, `__umoddi3`), which Zig links into executables; add it when linking the archive by hand.
 
 ## Building
 
@@ -49,7 +56,10 @@ The target and CPU come from Zig's standard options. The default is the host wit
 ```sh
 zig build -Doptimize=fast -Dtarget=x86_64-linux -Dcpu=x86_64_v3
 zig build -Doptimize=fast -Dtarget=x86_64-windows-gnu
+zig build -Doptimize=fast -Dtarget=x86-windows-gnu
 ```
+
+On Linux every build adds `-fstack-clash-protection` where Clang supports it (not on arm or mips).
 
 ### Options
 
@@ -59,7 +69,7 @@ zig build -Doptimize=fast -Dtarget=x86_64-windows-gnu
 | `-Dtarget` | host | Target triple |
 | `-Dcpu` | `native` | CPU model and features (`native`, `baseline`, `x86_64_v3`, ...); the ISA paths in `xft` follow it |
 | `-Duse-libc` | `false` | Build against a libc instead of freestanding |
-| `-Dsanitize` | `false` | UBSan plus stack checks; requires `-Duse-libc`, disables LTO |
+| `-Dsanitize` | `false` | UBSan plus stack checks; requires `-Duse-libc`, disables LTO; not available on 32-bit x86 |
 | `-Dlto` | `false` | Full link-time optimization |
 | `-Dfast-math` | `false` | `-ffast-math` |
 | `-Dllc` | `16777216` | Last level cache size in bytes, used to pick the non-temporal thresholds |
@@ -105,7 +115,7 @@ exe.root_module.linkLibrary(xft.artifact("xft"));
 
 Dependency options use the same names as above, e.g. `.@"use-libc" = true`. The headers come with the artifact. In the freestanding flavor, do not link libc, and compile your own sources with `-ffreestanding -fno-builtin -fno-stack-protector`.
 
-Include `<xft.h>` and define `xft_main` instead of `main`. It receives the initial stack pointer and must end with `xft_exit`:
+Include `<xft.h>` and define `xft_main` instead of `main`. It receives the initial stack pointer and must end with `xft_exit_process`:
 
 ```c
 #include <xft.h>
@@ -117,7 +127,7 @@ xft_main(const t_any *__restrict__ const sp)
 
 	kp = xft_get_kernel_ptrs(sp);
 	xft_kernel_ptrs_destroy(&kp);
-	xft_exit(0);
+	xft_exit_process(0);
 }
 ```
 
@@ -132,6 +142,7 @@ On Windows, `xft` calls into the system DLLs even in the freestanding flavor, so
 | `xft/bmi.h` | Bit manipulation, byte order, SIMD mask primitives |
 | `xft/cstr.h` | NUL-terminated string helpers |
 | `xft/ctype.h` | ASCII character classification |
+| `xft/files.h` | Opening, closing, and describing files |
 | `xft/fmt.h` | Formatted output to a writer |
 | `xft/fuzzer.h` | Random input pool for fuzz targets |
 | `xft/hash.h` | XXH3 and Murmur3 |
@@ -142,7 +153,7 @@ On Windows, `xft` calls into the system DLLs even in the freestanding flavor, so
 | `xft/mem.h` | `memcpy`, `memmove`, `memset`, `memchr`, `memcmp`, and friends |
 | `xft/rng.h` | xoshiro256\*\* |
 | `xft/rt.h` | Program entry point and runtime |
-| `xft/signals.h` | Signal masks |
+| `xft/signals.h` | Signal number constants |
 | `xft/soa.h` | Structure-of-arrays container |
 | `xft/sort.h` | `qsort` variants |
 | `xft/str.h` | Growable NUL-terminated byte string |
@@ -152,7 +163,7 @@ On Windows, `xft` calls into the system DLLs even in the freestanding flavor, so
 | `xft/vec.h` | Untyped growable array |
 | `xft/xid.h` | Unicode XID_Start/XID_Continue lookup and tables |
 
-The full API is documented in section 3 man pages under `doc/man3`.
+`<xft.h>` includes every header above except `signals.h`. The full API is documented in section 3 man pages under `doc/man3`.
 
 ## Testing
 
@@ -161,6 +172,8 @@ Unit tests always link a sanitized hosted build of the library (`xft-san`), or t
 ```sh
 zig build -Dtests test
 ```
+
+Tests always build sanitized, so they cannot be built for 32-bit x86, where Zig rejects the stack checks.
 
 Fuzz targets need the main build sanitized and hosted:
 

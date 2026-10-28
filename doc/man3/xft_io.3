@@ -216,11 +216,17 @@ truncated to
 maps the file
 .Fa name
 read-only and private.
+On Linux
 .Fa flags
 is passed to
-.Fn xft_open
-and should be
-.Dv O_RDONLY .
+.Xr open 2
+and should be 0, the value of
+.Dv O_RDONLY ;
+the size comes from
+.Xr statx 2 .
+On Windows
+.Fa flags
+is ignored.
 The descriptor is closed before returning; the mapping stays valid.
 .Pp
 .Fn xft_unmap_file
@@ -254,7 +260,7 @@ The constructors return the handle by value and cannot fail.
 returns the mapped bytes and the file size, or a zeroed
 .Vt t_buffer
 if
-.Fn xft_stat ,
+.Fn xft_statx ,
 .Fn xft_open
 or the mapping fails.
 An empty file cannot be mapped and also yields a zeroed buffer.
@@ -277,8 +283,8 @@ void	xft_main(const t_any *__restrict__ const sp)
 	w = xft_get_fs_writer(xft_fatptr(outbuf, BUFSIZE), xft_get_stdout());
 	while (xft_read_from_reader(&r, chunk, sizeof(chunk), &n) && n != 0)
 		if (!xft_writer_write(&w, xft_fatptr(chunk, n)))
-			xft_exit(1);
-	xft_exit(!xft_writer_flush(&w));
+			xft_exit_process(1);
+	xft_exit_process(!xft_writer_flush(&w));
 }
 .Ed
 .Sh SEE ALSO

@@ -83,12 +83,20 @@ must be a nonzero power of two,
 must be nonzero, and
 .Fa size
 must not exceed
-.Dv HUGEPAGE_16GB
+.Dv HUGEPAGE_MAX
 minus
 .Ql sizeof(t_hugepage)
 minus
 .Fa align
 \- 1.
+.Dv HUGEPAGE_MAX
+is the largest hugepage tier a
+.Vt t_size
+can hold:
+.Dv HUGEPAGE_16GB
+on 64-bit targets and
+.Dv HUGEPAGE_2GB
+on 32-bit ones.
 If the current page has no room, the arena moves to the next page.
 A page already following
 .Fa current

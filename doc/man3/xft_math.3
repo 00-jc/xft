@@ -334,6 +334,11 @@ t_f64	dot(t_f64 ax, t_f64 ay, t_f64 az,
 .Xr xft_fmt 3 ,
 .Xr xft 7
 .Sh CAVEATS
+.Fn xft_pow_u128
+only exists when the compiler defines
+.Dv __SIZEOF_INT128__ ;
+32-bit targets do not have it.
+.Pp
 .Fn xft_sqrt
 and
 .Fn xft_dsqrt

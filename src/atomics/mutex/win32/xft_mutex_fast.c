@@ -49,7 +49,7 @@ static inline bool	xft__try_lock_spin(t_mutex *__restrict__ const mutex)
 __attribute__((__nonnull__(1), __always_inline__, __used__))
 inline void	xft_mutex_spin(t_mutex *__restrict__ const mutex)
 {
-	t_u64				iters;
+	t_size				iters;
 	t_i32				val;
 
 	((xft_prefetch_write0((t_any)mutex, sizeof(*mutex))), val = XFT_UNLOCKED);

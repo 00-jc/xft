@@ -39,7 +39,7 @@ static t_buffer	arena_reallocate(t_any alloc, t_buffer old, t_size new_size,
 	ptr = xft_arena_alloc((t_arena *)alloc, new_size, align);
 	if (!ptr)
 		return ((t_buffer){0});
-	copy_size = xft_tern(old.size < new_size, old.size, new_size);
+	copy_size = xft_tern_s(old.size < new_size, old.size, new_size);
 	xft_memcpy(ptr, old.mem, copy_size);
 	return (xft_fatptr(ptr, new_size));
 }

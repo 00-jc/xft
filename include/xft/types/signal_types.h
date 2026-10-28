@@ -15,17 +15,8 @@
 
 # include <xft/primitives.h>
 
-# if (defined(XFT_REQUIRE_LIBC) && !defined(_WIN32)) \
-	|| (!defined(__x86_64__) && !defined(__aarch64__))
-
+# if defined(__linux__) && !defined(__x86_64__) && !defined(__aarch64__)
 #  include <signal.h>
-
-typedef sigset_t	t_sigset;
-
-# else
-
-typedef t_u64a		t_sigset;
-
 # endif
 
 typedef enum e_xft_sigset_size : t_u8
@@ -80,7 +71,7 @@ typedef enum e_xft_signal : t_u8
 	XFT_SIGUNUSED = XFT_SIGSYS,
 }	t_xft_signal;
 
-# else
+# elif defined(__linux__)
 
 typedef enum e_xft_sighow : t_u8
 {

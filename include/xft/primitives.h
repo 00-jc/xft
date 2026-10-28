@@ -13,8 +13,9 @@
 #ifndef PRIMITIVES_H
 # define PRIMITIVES_H
 
-# if !defined(__x86_64__) && !defined(__aarch64__) && !defined(XFT_REQUIRE_LIBC)
-#  error "Cannot compile freestanding on this arch without XFT_REQUIRE_LIBC"
+# if defined(__linux__) && !defined(__x86_64__) && !defined(__aarch64__) \
+	&& !defined(XFT_REQUIRE_LIBC)
+#  error "freestanding linux needs x86_64 or aarch64, or XFT_REQUIRE_LIBC"
 # endif
 
 # if !defined(__linux__) && !defined(_WIN32)
@@ -43,10 +44,14 @@ typedef uint64_t __attribute__((__may_alias__, __aligned__(8)))		t_u64a;
 typedef int64_t __attribute__((__may_alias__, __aligned__(1)))		t_i64;
 typedef int64_t __attribute__((__may_alias__, __aligned__(8)))		t_i64a;
 
+# ifdef __SIZEOF_INT128__
+
 typedef __uint128_t __attribute__((__may_alias__, __aligned__(1)))	t_u128;
 typedef __uint128_t __attribute__((__may_alias__, __aligned__(16)))	t_u128a;
 typedef __int128_t __attribute__((__may_alias__, __aligned__(1)))	t_i128;
 typedef __int128_t __attribute__((__may_alias__, __aligned__(16)))	t_i128a;
+
+# endif
 
 typedef float __attribute__((__may_alias__, __aligned__(1)))		t_f32;
 typedef float __attribute__((__may_alias__, __aligned__(4)))		t_f32a;
@@ -61,8 +66,8 @@ typedef __UINTPTR_TYPE__ __attribute__((__may_alias__))				t_uptr;
 typedef void * __attribute__((__may_alias__))						t_any;
 typedef const void * __attribute__((__may_alias__))					t_cany;
 
-typedef t_u64														t_size;
-typedef t_i64														t_ssize;
+typedef t_uptr														t_size;
+typedef __INTPTR_TYPE__ __attribute__((__may_alias__))				t_ssize;
 
 # ifdef __clang__
 

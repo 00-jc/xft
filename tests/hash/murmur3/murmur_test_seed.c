@@ -12,6 +12,8 @@
 
 #include "tests/hash/murmur3/murmur_test.h"
 
+#ifdef __SIZEOF_INT128__
+
 void	test_murmur_seed(void)
 {
 	t_u128a	h1;
@@ -24,3 +26,5 @@ void	test_murmur_seed(void)
 	h2 = xft_murmur3_with_seed((t_u8 *)"test", 42, 4);
 	xft_pin_invariant(h1 == h2);
 }
+
+#endif

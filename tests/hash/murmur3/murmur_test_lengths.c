@@ -12,6 +12,8 @@
 
 #include "tests/hash/murmur3/murmur_test.h"
 
+#ifdef __SIZEOF_INT128__
+
 void	test_murmur_lengths(void)
 {
 	char	buf[512];
@@ -30,3 +32,5 @@ void	test_murmur_lengths(void)
 		i += (i < 32) + 1;
 	}
 }
+
+#endif

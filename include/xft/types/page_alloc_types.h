@@ -28,6 +28,23 @@ typedef enum e_hugepage_size : t_u64
 	HUGEPAGE_16GB = 17179869184,
 }	t_hugepage_size;
 
+// largest tier a t_size can hold
+# if UINTPTR_MAX > 0xFFFFFFFF
+
+typedef enum e_hugepage_max : t_u64
+{
+	HUGEPAGE_MAX = HUGEPAGE_16GB,
+}	t_hugepage_max;
+
+# else
+
+typedef enum e_hugepage_max : t_u64
+{
+	HUGEPAGE_MAX = HUGEPAGE_2GB,
+}	t_hugepage_max;
+
+# endif
+
 typedef struct s_page_alloc
 {
 	t_u8	_pad;

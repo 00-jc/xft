@@ -20,7 +20,7 @@ t_result	xft_str_push_back(t_allocator allocator,
 		__builtin_unreachable();
 	if (__builtin_expect(str->size + 1 >= str->capacity
 			&& !xft_str_reserve(allocator, str,
-				xft_tern(str->capacity, str->capacity << 1, 4)), 0))
+				xft_tern_s(str->capacity, str->capacity << 1, 4)), 0))
 		return (KO);
 	str->mem[str->size++] = byte;
 	str->mem[str->size] = 0;

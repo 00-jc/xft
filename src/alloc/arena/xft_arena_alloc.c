@@ -18,7 +18,7 @@ static inline t_u32a	xft_arena_invalid_request(t_size size, t_size align)
 {
 	return (align == 0 || size == 0
 		|| (align & (align - 1)) != 0
-		|| size > HUGEPAGE_16GB - sizeof(t_hugepage) - (align - 1));
+		|| size > HUGEPAGE_MAX - sizeof(t_hugepage) - (align - 1));
 }
 
 __attribute__((__nonnull__(1), __always_inline__))
