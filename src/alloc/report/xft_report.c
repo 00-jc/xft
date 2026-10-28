@@ -17,9 +17,9 @@
 #include <xft/fmt.h>
 
 #define R1 "reporta (%x) report:\n  allocs:    %q\n  frees:     %q\n"
-#define R2 "reuses:    %q\n  misses:    %q\n  paged:     %q\n  slabs:"
-#define R3 "     %q\n  avg frag:  %f bytes\n  leaks:     %q\n  owned:"
-#define R4 " %q bytes\n"
+#define R2 "  reuses:    %q\n  misses:    %q\n  paged:     %q\n"
+#define R3 "  slabs:     %q\n  avg frag:  %f bytes\n  leaks:     %q\n"
+#define R4 "  owned:     %q bytes\n"
 
 t_reporta	xft_new_reporta(void)
 {
@@ -41,6 +41,8 @@ t_reporta	xft_new_reporta(void)
 	gpa.n_allocs = 0;
 	gpa.n_frees = 0;
 	gpa.reuses = 0;
+	gpa.misses = 0;
+	gpa.paged = 0;
 	gpa.slabs = 1;
 	return (gpa);
 }
@@ -48,7 +50,7 @@ t_reporta	xft_new_reporta(void)
 __attribute__((__nonnull__(1), __always_inline__))
 static inline void	xft_reporta_report(t_reporta *gpa)
 {
-	const t_size	size = sizeof(R1 R2 R3 R4);
+	const t_size	size = sizeof(R1 R2 R3 R4) - 1;
 	t_u64			args[10];
 	t_writer		writer;
 
@@ -60,7 +62,6 @@ static inline void	xft_reporta_report(t_reporta *gpa)
 	args[3] = gpa->reuses;
 	args[4] = gpa->misses;
 	args[5] = gpa->paged;
-	args[6] = gpa->slabs;
 	args[6] = gpa->slabs;
 	args[7] = (t_dp){.f = gpa->avg_frag}.i;
 	args[8] = gpa->n_allocs - gpa->n_frees;

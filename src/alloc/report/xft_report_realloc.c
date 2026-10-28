@@ -29,7 +29,8 @@ t_buffer	xft_reporta_realloc(t_any alloc, t_buffer buf,
 	buf2 = xft_reporta_alloc(gpa, newsize, align);
 	if (!buf2.mem)
 		return (xft_fatptr(nullptr, 0));
-	xft_memcpy(buf2.mem, buf.mem, buf.size);
+	xft_memcpy(buf2.mem, buf.mem,
+		xft_tern_s(buf.size < buf2.size, buf.size, buf2.size));
 	xft_reporta_free(gpa, buf);
 	return (buf2);
 }

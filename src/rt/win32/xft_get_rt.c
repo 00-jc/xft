@@ -20,6 +20,7 @@ inline t_xft_rt	xft_get_rt(const t_any *sp)
 	t_xft_rt	rt;
 
 	rt.kp = xft_get_kernel_ptrs(sp);
+	rt.sys = xft_get_sysinfo(sp);
 	return (rt);
 }
 

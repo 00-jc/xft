@@ -1,0 +1,215 @@
+.Dd October 28, 2026
+.Dt XFT_PALLOC 3
+.Os xft
+.Sh NAME
+.Nm xft_palloc ,
+.Nm xft_palloc_reserve ,
+.Nm xft_palloc_commit ,
+.Nm xft_palloc_guard ,
+.Nm xft_palloc_resize ,
+.Nm xft_palloc_free
+.Nd page allocator
+.Sh SYNOPSIS
+.In alloc.h
+.Ft t_buffer
+.Fn xft_palloc "t_size size"
+.Ft t_buffer
+.Fn xft_palloc_reserve "t_size size"
+.Ft t_result
+.Fn xft_palloc_commit "t_any ptr" "t_size size"
+.Ft t_result
+.Fn xft_palloc_guard "t_any ptr" "t_size size"
+.Ft t_buffer
+.Fn xft_palloc_resize "t_buffer b" "t_size new_size"
+.Ft void
+.Fn xft_palloc_free "t_buffer b"
+.Sh DESCRIPTION
+These functions take memory directly from the operating system: Linux uses
+.Xr mmap 2 ,
+.Xr mremap 2 ,
+.Xr mprotect 2
+and
+.Xr munmap 2 ,
+and Windows calls
+.Ql VirtualAlloc ,
+.Ql VirtualProtect
+and
+.Ql VirtualFree .
+The arena, general-purpose and reporting allocators get their memory here, and
+.Fn xft_page_allocator
+wraps these functions in a
+.Vt t_allocator ;
+see
+.Xr xft_alloc 3 .
+The memory is private, anonymous and zero-filled.
+.Pp
+.Fn xft_palloc_reserve
+reserves address space for
+.Fa size
+bytes, and
+.Fn xft_palloc_commit
+backs the
+.Fa size
+bytes at
+.Fa ptr
+with readable and writable memory.
+.Fn xft_palloc
+does both and releases the reservation if the commit fails.
+.Fn xft_palloc_guard
+makes the pages of a range inaccessible, so that any access to them faults.
+.Fn xft_palloc_resize
+grows or shrinks
+.Fa b
+to
+.Fa new_size ,
+moving it when needed, and
+.Fn xft_palloc_free
+releases
+.Fa b .
+.Ss Sizes
+The
+.Fa .size
+of a returned buffer is the rounded size, and
+.Fn xft_palloc_resize
+and
+.Fn xft_palloc_free
+expect the buffer back exactly as returned.
+.Pp
+On Linux, a size of at most 1 MiB rounds up to the next power of two, and
+to at least 8.
+A larger size rounds up to the next hugepage tier: 2 MiB, 8 MiB, 16 MiB,
+256 MiB, 512 MiB, 1 GiB, 2 GiB and, on 64-bit targets, 16 GiB.
+A size beyond the largest tier is kept as is.
+.Pp
+On Windows, sizes round up to a multiple of 4096, and hugepages are not used.
+.Ss Linux
+.Fn xft_palloc_reserve
+maps the memory readable and writable, so a reservation is usable at once and
+.Fn xft_palloc_commit
+does nothing.
+A mapping whose rounded size is a hugepage tier is first requested with
+.Dv MAP_HUGETLB
+and the matching
+.Dv MAP_HUGE_*
+size bits.
+When that fails, because no huge pages of that size are reserved or the CPU
+has no huge pages of that size, the memory is mapped again with ordinary pages,
+which transparent huge pages may promote.
+x86-64 has 2 MiB and 1 GiB huge pages, so its other tiers always get ordinary
+pages.
+.Fn xft_palloc_resize
+calls
+.Xr mremap 2
+with
+.Dv MREMAP_MAYMOVE ;
+a mapping keeps the page size it was created with.
+.Fn xft_palloc_guard
+calls
+.Xr mprotect 2
+with
+.Dv PROT_NONE ,
+so
+.Fa ptr
+must be aligned to the mapping's page size.
+.Ss Windows
+.Fn xft_palloc_reserve
+reserves with
+.Dv MEM_RESERVE ,
+and nothing in the reservation is accessible until
+.Fn xft_palloc_commit
+commits it with
+.Dv MEM_COMMIT
+and
+.Dv PAGE_READWRITE .
+Both act on every page the range touches.
+.Fn xft_palloc_guard
+sets
+.Dv PAGE_NOACCESS
+with
+.Ql VirtualProtect ,
+which works on committed pages only; reserved pages that were never committed
+fault on access anyway.
+.Fn xft_palloc_resize
+allocates a new buffer, copies the smaller of the two sizes and frees the old
+buffer.
+.Fn xft_palloc_free
+releases the whole reservation with
+.Dv MEM_RELEASE ,
+whatever
+.Fa b Ns .size
+holds.
+.Sh RETURN VALUES
+.Fn xft_palloc
+and
+.Fn xft_palloc_reserve
+return a buffer whose
+.Fa .mem
+is
+.Dv nullptr
+on failure.
+.Pp
+.Fn xft_palloc_resize
+returns
+.Fa b
+unchanged when the rounded
+.Fa new_size
+equals
+.Fa b Ns .size ,
+and a buffer with
+.Fa .mem
+set to
+.Dv nullptr
+and
+.Fa .size
+set to 0 on failure, in which case
+.Fa b
+remains valid.
+.Pp
+.Fn xft_palloc_commit
+and
+.Fn xft_palloc_guard
+return
+.Dv OK ,
+or
+.Dv KO
+on failure.
+.Sh EXAMPLES
+Place input flush against a guard page, so that reading one byte past it
+faults:
+.Bd -literal -offset indent
+t_buffer	page;
+t_u8		*end;
+
+page = xft_palloc(8192);
+if (page.mem == nullptr
+	|| !xft_palloc_guard((t_u8 *)page.mem + 4096, 4096))
+	xft_exit_process(1);
+end = (t_u8 *)page.mem + 4096;
+xft_memcpy(end - 3, "abc", 3);
+/* end[-3] to end[-1] are readable; end[0] faults */
+xft_palloc_free(page);
+.Ed
+.Sh SEE ALSO
+.Xr xft_alloc 3 ,
+.Xr xft_arena 3 ,
+.Xr xft_os 3 ,
+.Xr xft 7
+.Sh CAVEATS
+On Linux, the tiers make a request just past one tier reserve the next: 17 MiB
+reserves 256 MiB of address space.
+With ordinary pages only the pages that are touched take memory; a mapping
+backed by huge pages takes them from the reserved pool when it is created.
+.Pp
+On Linux,
+.Fn xft_palloc_resize
+fails on a mapping backed by huge pages when the new size is not a multiple of
+its huge page size, for example when shrinking a 2 MiB mapping to 1 MiB or
+less.
+.Pp
+On Linux,
+.Fn xft_palloc_free
+and
+.Fn xft_palloc_resize
+act on
+.Fa b Ns .size
+bytes, so a buffer with a different size unmaps or moves a different range.

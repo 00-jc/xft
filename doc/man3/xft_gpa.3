@@ -1,0 +1,231 @@
+.Dd October 28, 2026
+.Dt XFT_GPA 3
+.Os xft
+.Sh NAME
+.Nm xft_new_gpa ,
+.Nm xft_gpa_destroy ,
+.Nm xft_gpa_alloc ,
+.Nm xft_gpa_realloc ,
+.Nm xft_gpa_free ,
+.Nm xft_new_reporta ,
+.Nm xft_reporta_destroy ,
+.Nm xft_reporta_alloc ,
+.Nm xft_reporta_realloc ,
+.Nm xft_reporta_free
+.Nd general-purpose and reporting allocators
+.Sh SYNOPSIS
+.In alloc.h
+.Ft t_gpa
+.Fn xft_new_gpa void
+.Ft void
+.Fn xft_gpa_destroy "t_gpa *gpa"
+.Ft t_buffer
+.Fn xft_gpa_alloc "t_any alloc" "t_size size" "t_size align"
+.Ft t_buffer
+.Fn xft_gpa_realloc "t_any alloc" "t_buffer buf" "t_size newsize" "t_size align"
+.Ft void
+.Fn xft_gpa_free "t_any allocator" "t_buffer buf"
+.Ft t_reporta
+.Fn xft_new_reporta void
+.Ft void
+.Fn xft_reporta_destroy "t_reporta *gpa"
+.Ft t_buffer
+.Fn xft_reporta_alloc "t_any alloc" "t_size size" "t_size align"
+.Ft t_buffer
+.Fn xft_reporta_realloc "t_any alloc" "t_buffer buf" "t_size newsize" "t_size align"
+.Ft void
+.Fn xft_reporta_free "t_any allocator" "t_buffer buf"
+.Sh DESCRIPTION
+The general-purpose allocator serves small blocks from 128 KiB slabs with
+per-size free lists, and passes large blocks to the page allocator.
+The reporting allocator is the same allocator with counters, and prints them
+when it is destroyed.
+The
+.Fa alloc
+and
+.Fa allocator
+arguments are a
+.Vt t_gpa *
+or a
+.Vt t_reporta * ;
+.Xr xft_alloc 3
+describes the
+.Fn xft_gpa_allocator
+and
+.Fn xft_reporta_allocator
+vtables that wrap these functions.
+.Ss Creating and destroying
+.Fn xft_new_gpa
+reserves the first slab of
+.Dv GPA_SLABSIZE
+(131072) bytes with
+.Xr xft_palloc 3 .
+Every slab starts with a pointer to the previous one.
+.Fn xft_gpa_destroy
+releases every slab.
+Large blocks that were never freed are not released.
+.Ss Size classes
+A request is raised to at least 8 bytes and rounded up to a power of two, and
+to the next power of two of
+.Fa align
+if that is larger.
+The
+.Dv GPA_CLASSES
+(14) classes cover 8 bytes to 64 KiB.
+.Pp
+A larger request goes to
+.Fn xft_palloc
+with the larger of
+.Fa size
+and
+.Fa align ,
+and the returned
+.Fa .size
+is the page allocator's rounded size.
+.Pp
+A small request takes the head of its class's free list when
+.Fa align
+is at most 16 or the head is aligned to
+.Fa align .
+Otherwise it is carved from the current slab at the next multiple of 16, of
+.Fa align
+when that is larger, or of the block size for blocks under 16 bytes.
+When the slab has no room, a new slab is reserved and the rest of the old one
+is left unused.
+The carved range is committed with
+.Fn xft_palloc_commit .
+.Pp
+The returned
+.Fa .size
+is the rounded size, and
+.Fn xft_gpa_free
+and
+.Fn xft_gpa_realloc
+pick the class from it, so the buffer must be passed back as returned.
+.Ss Freeing
+.Fn xft_gpa_free
+pushes a small block onto its class's free list, storing the link in its first
+word, and returns a large block with
+.Fn xft_palloc_free .
+Slabs are not returned to the operating system before
+.Fn xft_gpa_destroy ,
+and freed blocks are not merged or split.
+.Ss Reallocating
+.Fn xft_gpa_realloc
+returns
+.Fa buf
+unchanged when
+.Fa newsize
+fits in
+.Fa buf Ns .size
+and
+.Fa buf Ns .mem
+is aligned to
+.Fa align .
+A large block is resized with
+.Fn xft_palloc_resize ,
+which ignores
+.Fa align .
+A small block is moved: a new block is allocated, the smaller of the two sizes
+is copied and
+.Fa buf
+is freed.
+.Ss Reporting
+The
+.Fn xft_reporta_*
+functions behave like their
+.Fn xft_gpa_*
+counterparts on a
+.Vt t_reporta .
+.Fn xft_reporta_destroy
+writes a report to standard error before it releases the slabs:
+.Bl -tag -width "avg frag"
+.It allocs
+calls to
+.Fn xft_reporta_alloc ,
+including the ones made by
+.Fn xft_reporta_realloc
+.It frees
+calls to
+.Fn xft_reporta_free
+.It reuses
+small blocks taken from a free list
+.It misses
+small blocks carved from a slab
+.It paged
+large blocks passed to the page allocator
+.It slabs
+slabs reserved
+.It avg frag
+mean bytes wasted per allocation, counting the rounding and, for carved
+blocks, the alignment padding
+.It leaks
+allocs minus frees
+.It owned
+bytes in slabs, which leaves out large blocks
+.El
+.Pp
+The report is formatted into the
+.Dv REPORTA_BUFFER
+(1024) byte
+.Fa buffer
+member, so it needs no allocation.
+.Sh RETURN VALUES
+.Fn xft_new_gpa
+and
+.Fn xft_new_reporta
+return an allocator whose
+.Fa slab
+is
+.Dv nullptr
+if the first slab cannot be reserved.
+.Pp
+.Fn xft_gpa_alloc ,
+.Fn xft_gpa_realloc
+and their reporting counterparts return a buffer with
+.Fa .mem
+set to
+.Dv nullptr
+on failure; a failed reallocation leaves
+.Fa buf
+valid.
+.Sh EXAMPLES
+.Bd -literal -offset indent
+t_gpa		gpa;
+t_buffer	b;
+
+gpa = xft_new_gpa();
+if (gpa.slab == nullptr)
+	xft_exit_process(1);
+b = xft_gpa_alloc(&gpa, 100, 8);
+if (b.mem != nullptr)
+{
+	b = xft_gpa_realloc(&gpa, b, 300, 8);
+	if (b.mem != nullptr)
+		xft_gpa_free(&gpa, b);
+}
+xft_gpa_destroy(&gpa);
+.Ed
+.Pp
+Here the 100-byte request is served as a 128-byte block, and the reallocation
+moves it to a 512-byte block.
+If the reallocation fails, the 128-byte block stays allocated until
+.Fn xft_gpa_destroy
+releases its slab.
+.Sh SEE ALSO
+.Xr xft_alloc 3 ,
+.Xr xft_arena 3 ,
+.Xr xft_palloc 3 ,
+.Xr xft 7
+.Sh CAVEATS
+Passing a buffer whose
+.Fa .mem
+is
+.Dv nullptr
+to the free or reallocation functions is undefined behavior.
+.Pp
+None of the functions lock; an allocator must not be shared between threads
+without external locking.
+.Pp
+Freed blocks keep their contents except for the first word, and reused blocks
+are not zeroed.

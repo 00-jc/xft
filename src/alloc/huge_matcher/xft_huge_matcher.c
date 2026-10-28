@@ -57,6 +57,7 @@ inline int	xft_match_hugepage_flags(t_u64 page_size)
 	flags |= -(page_size == HUGEPAGE_1GB) & xft_map_huge_1gb;
 	flags |= -(page_size == HUGEPAGE_2GB) & xft_map_huge_2gb;
 	flags |= -(page_size == HUGEPAGE_16GB) & xft_map_huge_16gb;
+	flags |= -(flags != 0) & xft_map_hugetlb;
 	return ((int)flags);
 }
 

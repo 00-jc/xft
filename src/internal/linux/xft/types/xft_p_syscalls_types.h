@@ -125,6 +125,7 @@ typedef enum e_xft_map : t_u32
 {
 	xft_map_private = 0x02,
 	xft_map_anonymous = 0x20,
+	xft_map_hugetlb = 0x40000,
 	xft_map_huge_2mb = 21 << 26,
 	xft_map_huge_8mb = 23 << 26,
 	xft_map_huge_16mb = 24 << 26,
