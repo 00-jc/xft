@@ -1,21 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   syscalls.h                                         :+:      :+:    :+:   */
+/*   xft_cache_line_size.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/10/03 18:01:29 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/10/03 18:01:32 by jaicastr         ###   ########.fr       */
+/*   Created: 2026/10/28 22:30:00 by jaicastr          #+#    #+#             */
+/*   Updated: 2026/10/28 22:30:00 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef SYSCALLS_H
-# define SYSCALLS_H
+#include <xft/xft_p_rt.h>
 
-# include <xft/types/syscall_types.h>
+#if !defined(__x86_64__) && !defined(__i386__) && !defined(__aarch64__)
 
-t_result	xft_get_cpu_count(t_size *count)\
-				__attribute__((__nonnull__(1)));
+__attribute__((const, __always_inline__, __used__))
+inline t_u32a	xft_cache_line_size(void)
+{
+	return (__GCC_CONSTRUCTIVE_SIZE);
+}
 
 #endif

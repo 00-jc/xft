@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include <xft/mem.h>
-#include <xft/syscalls.h>
+#include <xft/os.h>
 
 #if defined(__linux__)
 # include <xft/xft_p_syscalls.h>

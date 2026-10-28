@@ -1,25 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   xft_map_failed.c                                   :+:      :+:    :+:   */
+/*   os.h                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/08/03 02:41:00 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/08/03 02:41:00 by jaicastr         ###   ########.fr       */
+/*   Created: 2026/10/03 18:01:29 by jaicastr          #+#    #+#             */
+/*   Updated: 2026/10/28 22:10:00 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <xft/syscalls.h>
+#ifndef OS_H
+# define OS_H
 
-#if defined(__linux__)
+# include <xft/primitives.h>
 
-# include <xft/xft_p_syscalls.h>
-
-__attribute__((const, __hot__, __always_inline__, __used__))
-inline t_result	xft_map_failed(t_cany ptr)
-{
-	return ((t_uptr)ptr >= (t_uptr)-xft_max_errno);
-}
+t_result	xft_get_cpu_count(t_size *count)\
+				__attribute__((__nonnull__(1)));
 
 #endif

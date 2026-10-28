@@ -67,6 +67,10 @@ int			xft_sched_getaffinity(t_i32a pid, t_size cpusetsize,\
 				const t_u64a *__restrict__ mask)\
 				__attribute__((__nonnull__(3)));
 
+int			xft_prlimit64(t_i32a pid, t_xft_rlimit resource,\
+				const t_rlimit *new_limit, t_rlimit *__restrict__ old_limit)\
+				__attribute__((__nonnull__(4)));
+
 t_ssize		xft_writev(int fd, t_iovec *buffers, t_size len)\
 			__attribute__((__nonnull__(2)));
 

@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/03 18:01:29 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/10/03 18:01:32 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/10/28 21:08:01 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,15 @@ typedef enum e_xft_auxv : t_u8
 	XFT_AT_EXECFN = 31,
 	XFT_AT_SYSINFO = 32,
 	XFT_AT_SYSINFO_EHDR = 33,
+	XFT_AT_L1D_CACHEGEOMETRY = 43,
+	XFT_AT_MINSIGSTKSZ = 51,
 }	t_xft_auxv;
+
+typedef struct s_auxval_linux
+{
+	t_size	a_type;
+	t_size	a_val;
+}	t_auxval_linux;
 
 typedef enum e_xft_ptype : t_u8
 {

@@ -1,11 +1,11 @@
-.Dd October 27, 2026
-.Dt XFT_SYSCALLS 3
+.Dd October 28, 2026
+.Dt XFT_OS 3
 .Os xft
 .Sh NAME
 .Nm xft_get_cpu_count
 .Nd CPU count, and the private Linux system call layer
 .Sh SYNOPSIS
-.In syscalls.h
+.In os.h
 .Ft t_result
 .Fn xft_get_cpu_count "t_size *count"
 .Sh DESCRIPTION
@@ -19,20 +19,9 @@ mask, so at most 1024; on Windows it is the population count of
 .Ql GetProcessAffinityMask ,
 so at most the 64 CPUs of the current processor group.
 .Pp
-.In syscalls.h
-also pulls in
-.In types/syscall_types.h ,
-which includes
-.In types/timing_types.h ,
-.In types/signal_types.h
-and
-.In types/io_types.h
-and defines
-.Vt t_clone_arg ,
-and on Linux
-.Vt t_flock
-and
-.Vt t_statx .
+.In os.h
+declares only functions that have both a Linux and a Windows
+implementation.
 .Ss Private Linux layer
 The rest of the system call wrappers are private to the library.
 They are declared in
@@ -143,6 +132,10 @@ ends the process;
 is the public, portable form of the latter.
 .Fn xft_getpid ,
 .Fn xft_wait4 ,
+.Fn xft_prlimit64 ,
+which reads or sets a resource limit through a
+.Vt t_rlimit
+of two 64-bit words on every architecture,
 .Fn xft_set_tid_address
 and
 .Fn xft_clone ,
@@ -197,7 +190,12 @@ and
 .Dv xft_statx_btime ,
 declared in
 .Pa src/internal/linux/xft/types/xft_p_syscalls_types.h
-together with the system call numbers for x86_64 and aarch64.
+together with the system call numbers for x86_64 and aarch64 and the
+.Vt t_clone_arg ,
+.Vt t_flock
+and
+.Vt t_statx
+structures.
 The prefix keeps them from colliding with the C library's macros of the
 same names.
 .Sh RETURN VALUES

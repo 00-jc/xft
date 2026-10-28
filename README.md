@@ -151,6 +151,7 @@ On Windows, `xft` calls into the system DLLs even in the freestanding flavor, so
 | `xft/io.h` | Buffered readers and writers, standard handles, file mapping |
 | `xft/math.h` | Math functions |
 | `xft/mem.h` | `memcpy`, `memmove`, `memset`, `memchr`, `memcmp`, and friends |
+| `xft/os.h` | CPU count and other operating system queries |
 | `xft/rng.h` | xoshiro256\*\* |
 | `xft/rt.h` | Program entry point and runtime |
 | `xft/signals.h` | Signal number constants |
@@ -158,7 +159,6 @@ On Windows, `xft` calls into the system DLLs even in the freestanding flavor, so
 | `xft/sort.h` | `qsort` variants |
 | `xft/str.h` | Growable NUL-terminated byte string |
 | `xft/swissmap.h` | SIMD open-addressing hash map from byte keys to pointers |
-| `xft/syscalls.h` | System call wrappers |
 | `xft/timing.h` | Clocks and cycle counters |
 | `xft/vec.h` | Untyped growable array |
 | `xft/xid.h` | Unicode XID_Start/XID_Continue lookup and tables |

@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/03 18:01:29 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/10/22 04:10:00 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/10/28 21:18:12 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,9 @@ t_kernel_ptrs	xft_get_kernel_ptrs(const t_any *sp)\
 t_xft_rt		xft_get_rt(const t_any *sp)\
 					__attribute__((__nonnull__(1)));
 
+t_sysinfo		xft_get_sysinfo(const t_any *sp)\
+					__attribute__((__nonnull__(1)));
+
 void			xft_kernel_ptrs_destroy(t_kernel_ptrs *kp)\
 					__attribute__((__nonnull__(1)));
 
@@ -48,5 +51,7 @@ t_xft_arch		xft_dyn_cpu_select(void)\
 
 void			xft_exit_process(t_i32a code)\
 					__attribute__((__cold__, __noreturn__));
+
+const t_xft_rt	*xft_set_static_rt(const t_xft_rt *__restrict__ const rt);
 
 #endif

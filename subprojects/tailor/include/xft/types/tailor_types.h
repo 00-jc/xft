@@ -17,6 +17,7 @@
 # include <xft/alloc.h>
 # include <xft/rng.h>
 # include <xft/primitives.h>
+# include <xft/types/io_types.h>
 
 typedef void	(*t_tailor_fn)(t_any);
 

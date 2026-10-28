@@ -18,7 +18,6 @@
 # include <xft/mem.h>
 # include <xft/timing.h>
 # include <xft/hint.h>
-# include <xft/syscalls.h>
 
 # ifndef XFT_CPU_SETSIZE
 #  define XFT_CPU_SETSIZE	1024

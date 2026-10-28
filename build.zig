@@ -27,6 +27,7 @@ const SRCS = [_][]const u8{
     "src/atomics/mutex/xft_mutex_busy.c",
     "src/atomics/mutex/xft_mutex_init.c",
     "src/atomics/mutex/xft_mutex_lock.c",
+    "src/arch/xft_cache_line_size.c",
     "src/atomics/mutex/linux/xft_mutex_fast.c",
     "src/atomics/mutex/linux/xft_mutex_slow.c",
     "src/atomics/mutex/linux/xft_mutex_unlock.c",
@@ -316,11 +317,12 @@ const SRCS = [_][]const u8{
     "src/rng/xft_xoshiro256ss.c",
     "src/rt/xft_dyn_cpu_select.c",
     "src/rt/xft_exit_process.c",
+    "src/rt/xft_set_static_rt.c",
     "src/sort/xft_qsort.c",
     "src/sort/xft_qsort_u64s.c",
     "src/os/linux/xft_mmap_commit.c",
-    "src/syscalls/xft_get_cpu_count.c",
-    "src/syscalls/xft_map_failed.c",
+    "src/os/linux/xft_map_failed.c",
+    "src/os/xft_get_cpu_count.c",
     "src/time/linux/xft_get_nanos.c",
     "src/time/win32/xft_get_nanos.c",
     "src/time/xft_rdtsc.c",
@@ -330,6 +332,7 @@ const SRCS_RT_linux = [_][]const u8{
     "src/rt/linux/xft_kernel_ptrs_destroy.c",
     "src/rt/linux/xft_get_kernel_ptrs.c",
     "src/rt/linux/xft_get_rt.c",
+    "src/rt/linux/xft_get_sysinfo.c",
 };
 
 const SRCS_PERF = [_][]const u8{
@@ -345,6 +348,7 @@ const SRCS_RT_win32 = [_][]const u8{
     "src/rt/win32/xft_kernel_ptrs_destroy.c",
     "src/rt/win32/xft_get_kernel_ptrs.c",
     "src/rt/win32/xft_get_rt.c",
+    "src/rt/win32/xft_get_sysinfo.c",
 };
 
 const SRCS_XID = [_][]const u8{
@@ -359,6 +363,7 @@ const SRCS_ARCH_x86_64 = [_][]const u8{
     "src/bmi/x86_64/xft_memclz.c",
     "src/bmi/x86_64/xft_memctz.c",
     "src/bmi/x86_64/xft_popcount.c",
+    "src/arch/x86_64/xft_cache_line_size.c",
 };
 
 const SRCS_ARCH_aarch64 = [_][]const u8{
@@ -367,6 +372,7 @@ const SRCS_ARCH_aarch64 = [_][]const u8{
     "src/bmi/aarch64/xft_memclz.c",
     "src/bmi/aarch64/xft_memctz.c",
     "src/bmi/aarch64/xft_popcount_neon.c",
+    "src/arch/aarch64/xft_cache_line_size.c",
 };
 
 const SRCS_RT_ENTRY_x86_64 = [_][]const u8{
@@ -403,6 +409,7 @@ const XFT_SYSCALLS = [_][]const u8{
     "mremap",
     "open",
     "perf_events",
+    "prlimit64",
     "read",
     "sched_getaffinity",
     "sched_setaffinity",
@@ -932,7 +939,6 @@ const xft_ctx = struct {
     cfg:    xft_config,
 };
 
-// one build of xft; subprojects and harnesses take its flavor
 const xft_variant = struct {
     name:       []const u8,
     lib:        *std.Build.Step.Compile,
@@ -947,7 +953,6 @@ fn isWin32(x: xft_ctx) bool {
     return x.target.result.os.tag == .windows;
 }
 
-// clang only probes the stack on these; arm and mips reject the flag
 fn hasStackClash(x: xft_ctx) bool {
     return switch (x.target.result.cpu.arch) {
         .x86, .x86_64, .aarch64, .aarch64_be, .riscv32, .riscv64,
@@ -1014,6 +1019,7 @@ fn xftModule(x: xft_ctx, v: xft_variant) *std.Build.Module {
             mod.addSystemIncludePath(std.Build.LazyPath.zig_lib.path(b, "libc/include/any-windows-any"));
         mod.linkSystemLibrary("kernel32", .{});
         mod.linkSystemLibrary("shell32", .{});
+        mod.linkSystemLibrary("bcrypt", .{});
         mod.linkSystemLibrary("api-ms-win-core-synch-l1-2-0", .{});
     }
     return mod;
@@ -1037,8 +1043,6 @@ fn addXft(x: xft_ctx, name: []const u8, libc: bool, sanitize: bool) !xft_variant
     };
     const mod = xftModule(x, v);
     try addSrcs(x, mod, v, &SRCS);
-    // gentable generates the xid table and links xft, so the bootstrap
-    // build leaves the module out (see xft_xid(3))
     if (!x.cfg.bootstrap)
         try addSrcs(x, mod, v, &SRCS_XID);
     try addSrcs(x, mod, v, &SRCS_ARCH_x86_64);
@@ -1065,7 +1069,6 @@ fn addXft(x: xft_ctx, name: []const u8, libc: bool, sanitize: bool) !xft_variant
         .root_module = mod,
     });
     if (v.lto) v.lib.lto = .full;
-    // whatever links xft gets perf and tailor with it
     if (!isWin32(x)) {
         v.perf = try addSubproject(x, v, "perf", &SRCS_PERF);
         v.tailor = try addSubproject(x, v, "tailor", &SRCS_TAILOR);

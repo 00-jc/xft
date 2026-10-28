@@ -33,7 +33,7 @@
 # include <xft/types/asm_types.h>
 # include <xft/alloc.h>
 # include <xft/rng.h>
-# include <xft/syscalls.h>
+# include <xft/os.h>
 # include <xft/rt.h>
 # include <xft/fmt.h>
 # include <xft/atomics.h>

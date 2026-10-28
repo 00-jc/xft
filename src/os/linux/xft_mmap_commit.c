@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <xft/syscalls.h>
+#include <xft/primitives.h>
 
 #ifdef __linux__
 

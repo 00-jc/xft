@@ -6,14 +6,16 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/22 03:10:00 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/10/22 03:10:00 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/10/28 21:06:39 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef X86_64_TYPES_H
 # define X86_64_TYPES_H
 
-typedef enum e_x86_ver
+# include <xft/primitives.h>
+
+typedef enum e_x86_ver : t_u8
 {
 	XFT_X86_NONE,
 	XFT_X86_V1,
