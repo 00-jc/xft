@@ -12,7 +12,7 @@
 
 #include <xft/bmi.h>
 
-#if !defined(__x86_64__) && !(defined(__aarch64__) && XFT_HAS_128_VEC)
+#if !__has_builtin(__builtin_popcountg)
 
 __attribute__((__const__, __always_inline__, __used__))
 inline t_u64a	xft_popcount_u64(t_u64a x)

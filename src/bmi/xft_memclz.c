@@ -12,7 +12,7 @@
 
 #include <xft/bmi.h>
 
-#if !defined(__aarch64__) && (!defined(__BMI__) || !defined(__x86_64__))
+#if !__has_builtin(__builtin_clzg)
 
 __attribute__((hot, const, __always_inline__, __used__))
 inline t_size	xft_memclz_u16(t_u16 x)

@@ -1,56 +1,41 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   xft_bswap.c                                        :+:      :+:    :+:   */
+/*   xft_memctz_builtin.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/29 23:39:14 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/06/29 23:39:20 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/10/29 02:49:56 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <xft/bmi.h>
 
-#ifdef __x86_64__
+#if __has_builtin(__builtin_ctzg)
 
-__attribute__((__always_inline__, const, __used__))
-inline t_u16a	xft_bswap16(t_u16a x)
+__attribute__((hot, const, __always_inline__, __used__))
+inline t_size	xft_memctz_u16(t_u16 x)
 {
-	t_u16a	new;
-
-	__asm__ volatile (
-		"xchg %b0, %h0"
-		: "=Q"(new)
-		: "0"(x)
-	);
-	return (new);
+	return ((t_size)__builtin_ctzg(x, 16));
 }
 
-__attribute__((__always_inline__, const, __used__))
-inline t_u32a	xft_bswap32(t_u32a x)
+__attribute__((hot, const, __always_inline__, __used__))
+inline t_size	xft_memctz_u32(t_u32 x)
 {
-	t_u32a	new;
-
-	__asm__ volatile (
-		"bswap %k0"
-		: "=r"(new)
-		: "0"(x)
-	);
-	return (new);
+	return ((t_size)__builtin_ctzg(x, 32));
 }
 
-__attribute__((__always_inline__, const, __used__))
-inline t_u64a	xft_bswap64(t_u64a x)
+__attribute__((hot, const, __always_inline__, __used__))
+inline t_size	xft_memctz_u64(t_u64 x)
 {
-	t_u64a	new;
+	return ((t_size)__builtin_ctzg(x, 64));
+}
 
-	__asm__ volatile (
-		"bswap %q0"
-		: "=r"(new)
-		: "0"(x)
-	);
-	return (new);
+__attribute__((hot, const, __always_inline__, __used__))
+inline t_size	xft_memctz_u128(t_u128 x)
+{
+	return ((t_size)__builtin_ctzg(x, 128));
 }
 
 #endif

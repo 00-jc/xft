@@ -6,13 +6,13 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/29 23:39:14 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/06/29 23:39:20 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/10/29 02:48:13 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <xft/bmi.h>
 
-#if !defined(__aarch64__) && (!defined(__BMI__) || !defined(__x86_64__))
+#if !__has_builtin(__builtin_ctzg)
 
 __attribute__((hot, const, __always_inline__, __used__))
 inline t_size	xft_memctz_u16(t_u16 x)

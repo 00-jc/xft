@@ -36,15 +36,19 @@ const SRCS = [_][]const u8{
     "src/atomics/mutex/win32/xft_mutex_unlock.c",
     "src/bmi/xft_align.c",
     "src/bmi/xft_bswap.c",
+    "src/bmi/xft_bswap_builtin.c",
     "src/bmi/xft_from_be.c",
     "src/bmi/xft_from_le.c",
     "src/bmi/xft_hasz.c",
     "src/bmi/xft_max.c",
     "src/bmi/xft_maxs.c",
     "src/bmi/xft_memclz.c",
+    "src/bmi/xft_memclz_builtin.c",
     "src/bmi/xft_memctz.c",
+    "src/bmi/xft_memctz_builtin.c",
     "src/bmi/xft_next_pow2.c",
     "src/bmi/xft_popcount.c",
+    "src/bmi/xft_popcount_builtin.c",
     "src/bmi/xft_populate.c",
     "src/bmi/xft_rollmask.c",
     "src/bmi/xft_rotl.c",
@@ -358,19 +362,11 @@ const SRCS_XID = [_][]const u8{
 
 const SRCS_ARCH_x86_64 = [_][]const u8{
     "src/atomics/mutex/xft_mutex_backoff_x86_64.c",
-    "src/bmi/x86_64/xft_bswap.c",
-    "src/bmi/x86_64/xft_memclz.c",
-    "src/bmi/x86_64/xft_memctz.c",
-    "src/bmi/x86_64/xft_popcount.c",
     "src/arch/x86_64/xft_cache_line_size.c",
 };
 
 const SRCS_ARCH_aarch64 = [_][]const u8{
     "src/atomics/mutex/xft_mutex_backoff_aarch64.c",
-    "src/bmi/aarch64/xft_bswap.c",
-    "src/bmi/aarch64/xft_memclz.c",
-    "src/bmi/aarch64/xft_memctz.c",
-    "src/bmi/aarch64/xft_popcount_neon.c",
     "src/arch/aarch64/xft_cache_line_size.c",
 };
 

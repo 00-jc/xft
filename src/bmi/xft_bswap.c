@@ -12,7 +12,7 @@
 
 #include <xft/bmi.h>
 
-#if !defined(__x86_64__) && !defined(__aarch64__)
+#if !__has_builtin(__builtin_bswap16)
 
 __attribute__((__always_inline__, const, __used__))
 inline t_u16a	xft_bswap16(t_u16a x)

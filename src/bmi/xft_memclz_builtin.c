@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   xft_memctz.c                                       :+:      :+:    :+:   */
+/*   xft_memclz_builtin.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,42 +12,30 @@
 
 #include <xft/bmi.h>
 
-#if defined(__BMI__) && defined(__x86_64__)
+#if __has_builtin(__builtin_clzg)
 
 __attribute__((hot, const, __always_inline__, __used__))
-inline t_size	xft_memctz_u16(t_u16 x)
+inline t_size	xft_memclz_u16(t_u16 x)
 {
-	t_u16	result;
-
-	__asm__("tzcnt %w1, %w0" : "=r"(result) : "r"(x));
-	return (result);
+	return ((t_size)__builtin_clzg(x, 16));
 }
 
 __attribute__((hot, const, __always_inline__, __used__))
-inline t_size	xft_memctz_u32(t_u32 x)
+inline t_size	xft_memclz_u32(t_u32 x)
 {
-	__asm__("tzcnt %1, %0" : "=r"(x) : "r"(x));
-	return (x);
+	return ((t_size)__builtin_clzg(x, 32));
 }
 
 __attribute__((hot, const, __always_inline__, __used__))
-inline t_size	xft_memctz_u64(t_u64 x)
+inline t_size	xft_memclz_u64(t_u64 x)
 {
-	__asm__("tzcnt %1, %0" : "=r"(x) : "r"(x));
-	return (x);
+	return ((t_size)__builtin_clzg(x, 64));
 }
 
 __attribute__((hot, const, __always_inline__, __used__))
-inline t_size	xft_memctz_u128(t_u128 x)
+inline t_size	xft_memclz_u128(t_u128 x)
 {
-	t_u64	low;
-	t_u64	high;
-
-	low = (t_u64)x;
-	high = (t_u64)(x >> 64);
-	__asm__("tzcnt %1, %0" : "=r"(low) : "r"(low));
-	__asm__("tzcnt %1, %0" : "=r"(high) : "r"(high));
-	return ((low + (-(low >> 6) & high)));
+	return ((t_size)__builtin_clzg(x, 128));
 }
 
 #endif

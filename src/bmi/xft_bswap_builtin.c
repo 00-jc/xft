@@ -1,56 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   xft_bswap.c                                        :+:      :+:    :+:   */
+/*   xft_bswap_builtin.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/07/09 00:00:00 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/07/09 22:08:48 by jaicastr         ###   ########.fr       */
+/*   Created: 2026/06/29 23:39:14 by jaicastr          #+#    #+#             */
+/*   Updated: 2026/06/29 23:39:20 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <xft/bmi.h>
 
-#ifdef __aarch64__
+#if __has_builtin(__builtin_bswap16)
 
 __attribute__((__always_inline__, const, __used__))
 inline t_u16a	xft_bswap16(t_u16a x)
 {
-	t_u32a	new;
-
-	__asm__ (
-		"rev16 %w0, %w1"
-		: "=r"(new)
-		: "r"((t_u32a)x)
-		);
-	return ((t_u16a)new);
+	return (__builtin_bswap16(x));
 }
 
 __attribute__((__always_inline__, const, __used__))
 inline t_u32a	xft_bswap32(t_u32a x)
 {
-	t_u32a	new;
-
-	__asm__ volatile (
-		"rev %w0, %w1"
-		: "=r"(new)
-		: "r"(x)
-	);
-	return (new);
+	return (__builtin_bswap32(x));
 }
 
 __attribute__((__always_inline__, const, __used__))
 inline t_u64a	xft_bswap64(t_u64a x)
 {
-	t_u64a	new;
-
-	__asm__ volatile (
-		"rev %0, %1"
-		: "=r"(new)
-		: "r"(x)
-	);
-	return (new);
+	return (__builtin_bswap64(x));
 }
 
 #endif
