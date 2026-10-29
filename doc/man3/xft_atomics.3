@@ -11,9 +11,9 @@
 .Sh SYNOPSIS
 .In atomics.h
 .Ft void
-.Fn xft_thread_fence "t_i32a memorder"
+.Fn xft_thread_fence "t_xft_atomic_ordering memorder"
 .Ft void
-.Fn xft_signal_fence "t_i32a memorder"
+.Fn xft_signal_fence "t_xft_atomic_ordering memorder"
 .Ft void
 .Fn xft_mutex_init "t_mutex *restrict mutex"
 .Ft void
@@ -31,9 +31,7 @@ system call; it does not depend on
 The types and state constants are declared in
 .In types/atomic_types.h :
 .Bd -literal -offset indent
-typedef volatile  int32_t __attribute__((__aligned__(64))) t_c_i32;
-typedef volatile t_c_i32  t_mutex_nonsh;
-typedef volatile t_i32a   t_mutex;
+typedef volatile _Atomic(t_i32) t_mutex;
 
 typedef enum e_mutex_type : t_u8
 {
@@ -42,23 +40,38 @@ typedef enum e_mutex_type : t_u8
 	xft_lock_busy,
 }	t_mutex_type;
 
-#define XFT_UNLOCKED  0
-#define XFT_LOCKED    1
-#define XFT_CONTESTED 2
+typedef enum e_xft_lock_state : t_u8
+{
+	xft_unlocked = 0,
+	xft_locked = 1,
+	xft_contested = 2,
+}	t_xft_lock_state;
+
+typedef enum e_xft_atomic_ordering : t_i32
+{
+	xft_relaxed = __ATOMIC_RELAXED,
+	xft_consume = __ATOMIC_CONSUME,
+	xft_acquire = __ATOMIC_ACQUIRE,
+	xft_release = __ATOMIC_RELEASE,
+	xft_acq_rel = __ATOMIC_ACQ_REL,
+	xft_seq_cst = __ATOMIC_SEQ_CST,
+}	t_xft_atomic_ordering;
 .Ed
 .Pp
 .Vt t_mutex
-is a 32-bit signed integer.
+is an atomic 32-bit signed integer, accessed through the
+.In stdatomic.h
+operations.
 Its value is one of
-.Dv XFT_UNLOCKED ,
-.Dv XFT_LOCKED
+.Dv xft_unlocked ,
+.Dv xft_locked
 or
-.Dv XFT_CONTESTED :
-.Dv XFT_UNLOCKED
+.Dv xft_contested :
+.Dv xft_unlocked
 means the mutex is free,
-.Dv XFT_LOCKED
+.Dv xft_locked
 means it is held and no waiter has been recorded by the unlock path, and
-.Dv XFT_CONTESTED
+.Dv xft_contested
 means it is held and at least one waiter is asleep on it through
 .Xr futex 2 .
 .Pp
@@ -74,7 +87,7 @@ is included.
 .Ss Mutex functions
 .Fn xft_mutex_init
 stores
-.Dv XFT_UNLOCKED
+.Dv xft_unlocked
 into
 .Fa mutex .
 Nothing is allocated and no system call is made; a mutex in static storage
@@ -85,9 +98,9 @@ acquires
 .Fa mutex ,
 blocking until it is available.
 Every call first attempts a single acquire compare-and-exchange from
-.Dv XFT_UNLOCKED
+.Dv xft_unlocked
 to
-.Dv XFT_LOCKED .
+.Dv xft_locked .
 If it succeeds the function returns without touching the slow path.
 If it fails, execution continues according to
 .Fa type :
@@ -97,35 +110,35 @@ Spin up to
 .Dv XFT_MUTEX_SPIN
 times.
 Each iteration performs a relaxed load; if the mutex reads as
-.Dv XFT_UNLOCKED
+.Dv xft_unlocked
 the thread attempts a compare-and-exchange from
-.Dv XFT_UNLOCKED
+.Dv xft_unlocked
 to
-.Dv XFT_CONTESTED .
+.Dv xft_contested .
 Between attempts the thread calls
 .Fn xft_mutex_backoff
 with the largest power of two not greater than the current iteration
 count.
 If the spin fails, the thread exchanges the mutex into
-.Dv XFT_CONTESTED
+.Dv xft_contested
 and, on failure, sleeps in
 .Fn xft_futex_wait
 with the expected value
-.Dv XFT_CONTESTED .
+.Dv xft_contested .
 It retries the exchange after each wake-up.
 This is the general purpose choice.
 .It Dv xft_lock_busy
 Spin forever, attempting the same
-.Dv XFT_CONTESTED
+.Dv xft_contested
 exchange and backing off between attempts.
 No system call is made.
 Suitable when the critical section is short and contention is expected to
 be rare.
 .It Dv xft_lock_slow
 Exchange the mutex into
-.Dv XFT_CONTESTED
+.Dv xft_contested
 and, if the previous value was not
-.Dv XFT_UNLOCKED ,
+.Dv xft_unlocked ,
 sleep in
 .Fn xft_futex_wait .
 There is no spin phase.
@@ -136,9 +149,9 @@ The
 .Fa type
 argument selects the failure path only; the initial compare-and-exchange
 from
-.Dv XFT_UNLOCKED
+.Dv xft_unlocked
 to
-.Dv XFT_LOCKED
+.Dv xft_locked
 is shared by all three.
 Passing a value that is not one of the three enumerators reaches
 .Ql __builtin_unreachable .
@@ -148,15 +161,15 @@ releases
 .Fa mutex .
 It performs a release fetch-and-subtract of one.
 If the previous value was
-.Dv XFT_CONTESTED ,
+.Dv xft_contested ,
 the mutex is stored back to
-.Dv XFT_UNLOCKED
+.Dv xft_unlocked
 and one thread is woken via
 .Fn xft_futex_wake .
 If the previous value was
-.Dv XFT_LOCKED ,
+.Dv xft_locked ,
 the fetch-and-subtract leaves the mutex at
-.Dv XFT_UNLOCKED
+.Dv xft_unlocked
 and no wake-up is issued.
 .Ss Memory fences
 .Fn xft_thread_fence
@@ -164,6 +177,17 @@ issues a hardware memory fence with the memory order given by
 .Fa memorder .
 .Fn xft_signal_fence
 issues a compiler fence with the same argument.
+.Pp
+Each
+.Vt t_xft_atomic_ordering
+constant has the value of the matching
+.Dv __ATOMIC_*
+macro, so it can be passed as the order argument of the
+.In stdatomic.h
+explicit operations and of the
+.Fn __atomic_*
+builtins.
+The mutex functions use these constants for every atomic access.
 .Ss Backoff
 The internal
 .Fn xft_mutex_backoff
@@ -224,7 +248,7 @@ and compiles to undefined behaviour at the call site.
 .Fn xft_mutex_unlock
 does not check that the mutex is held.
 Calling it on an unlocked mutex performs a release fetch-and-subtract on
-.Dv XFT_UNLOCKED ,
+.Dv xft_unlocked ,
 leaving the mutex underflowed.
 .Pp
 The mutex does not track its owner and is not recursive; locking it twice

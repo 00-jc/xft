@@ -15,7 +15,7 @@
 
 t_ts_reporta	xft_new_ts_reporta(void)
 {
-	return ((t_ts_reporta){.mutex = XFT_UNLOCKED,
+	return ((t_ts_reporta){.mutex = xft_unlocked,
 		.reporta = xft_new_reporta()});
 }
 

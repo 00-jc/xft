@@ -17,7 +17,7 @@
 
 t_ts_arena	xft_new_ts_arena(void)
 {
-	return ((t_ts_arena){.mutex = XFT_UNLOCKED, .arena = xft_new_arena()});
+	return ((t_ts_arena){.mutex = xft_unlocked, .arena = xft_new_arena()});
 }
 
 __attribute__((__nonnull__(1)))

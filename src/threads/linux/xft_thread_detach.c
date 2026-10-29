@@ -18,7 +18,7 @@ __attribute__((__nonnull__(1), __flatten__))
 void	xft_thread_detach(t_thread *__restrict__ const thread)
 {
 	if (__atomic_exchange_n(&thread->instance->status, THREAD_DETACHED,
-			__ATOMIC_ACQ_REL) == THREAD_COMPLETED)
+			xft_acq_rel) == THREAD_COMPLETED)
 		xft_thread_join(thread);
 }
 

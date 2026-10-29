@@ -18,17 +18,17 @@ static void	thread_detach_fn(t_any arg)
 {
 	t_u32a *__restrict__ const	flags = arg;
 
-	while (__atomic_load_n(&flags[0], __ATOMIC_ACQUIRE) == 0)
+	while (__atomic_load_n(&flags[0], xft_acquire) == 0)
 		xft_futex_wait(&flags[0], 0);
-	__atomic_store_n(&flags[1], 1, __ATOMIC_RELEASE);
+	__atomic_store_n(&flags[1], 1, xft_release);
 	xft_futex_wake(&flags[1], 1);
 }
 
 void	thread_detach_run(t_u32a *__restrict__ const flags)
 {
-	__atomic_store_n(&flags[0], 1, __ATOMIC_RELEASE);
+	__atomic_store_n(&flags[0], 1, xft_release);
 	xft_futex_wake(&flags[0], 1);
-	while (__atomic_load_n(&flags[1], __ATOMIC_ACQUIRE) == 0)
+	while (__atomic_load_n(&flags[1], xft_acquire) == 0)
 		xft_futex_wait(&flags[1], 0);
 }
 

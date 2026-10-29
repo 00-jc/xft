@@ -20,8 +20,8 @@
 #  define XFT_MUTEX_SPIN 32
 # endif
 
-void			xft_thread_fence(t_i32a memorder);
-void			xft_signal_fence(t_i32a memorder);
+void			xft_thread_fence(t_xft_atomic_ordering memorder);
+void			xft_signal_fence(t_xft_atomic_ordering memorder);
 
 void			xft_mutex_lock(t_mutex *__restrict__ const mutex,\
 					const t_mutex_type type)\

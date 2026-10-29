@@ -11,15 +11,16 @@
 /* ************************************************************************** */
 
 #include <xft/atomics.h>
+#include <stdatomic.h>
 
 __attribute__((__always_inline__, __used__))
-inline void	xft_thread_fence(t_i32a memorder)
+inline void	xft_thread_fence(t_xft_atomic_ordering memorder)
 {
-	__atomic_thread_fence(memorder);
+	atomic_thread_fence(memorder);
 }
 
 __attribute__((__always_inline__, __used__))
-inline void	xft_signal_fence(t_i32a memorder)
+inline void	xft_signal_fence(t_xft_atomic_ordering memorder)
 {
-	__atomic_signal_fence(memorder);
+	atomic_signal_fence(memorder);
 }

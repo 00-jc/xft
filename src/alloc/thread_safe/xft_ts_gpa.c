@@ -15,7 +15,7 @@
 
 t_ts_gpa	xft_new_ts_gpa(void)
 {
-	return ((t_ts_gpa){.mutex = XFT_UNLOCKED, .gpa = xft_new_gpa()});
+	return ((t_ts_gpa){.mutex = xft_unlocked, .gpa = xft_new_gpa()});
 }
 
 __attribute__((__nonnull__(1)))

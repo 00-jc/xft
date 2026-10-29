@@ -12,6 +12,7 @@
 
 #include <xft/mem.h>
 #include <xft/atomics.h>
+#include <stdatomic.h>
 
 #if defined(_WIN32)
 
@@ -24,10 +25,10 @@ inline void	xft_mutex_unlock(t_mutex *__restrict__ const mutex)
 	t_i32				val;
 
 	xft_prefetch_write0((t_any)mutex, sizeof(*mutex));
-	val = __atomic_fetch_sub(mutex, 1, __ATOMIC_RELEASE);
-	if (__builtin_expect(val == XFT_CONTESTED, 1))
+	val = atomic_fetch_sub_explicit(mutex, 1, xft_release);
+	if (__builtin_expect(val == xft_contested, 1))
 	{
-		__atomic_store_n(mutex, XFT_UNLOCKED, __ATOMIC_RELEASE);
+		atomic_store_explicit(mutex, xft_unlocked, xft_release);
 		WakeByAddressSingle((t_any)mutex);
 	}
 }

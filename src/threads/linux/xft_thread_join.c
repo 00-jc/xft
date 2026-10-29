@@ -21,11 +21,11 @@ void	xft_thread_join(t_thread *__restrict__ const thread)
 	t_thread_instance *__restrict__ const	instance = thread->instance;
 	t_u32a									tid;
 
-	tid = __atomic_load_n(&instance->tid, __ATOMIC_ACQUIRE);
+	tid = __atomic_load_n(&instance->tid, xft_acquire);
 	while (tid != 0)
 	{
 		xft_futex_wait(&instance->tid, tid);
-		tid = __atomic_load_n(&instance->tid, __ATOMIC_ACQUIRE);
+		tid = __atomic_load_n(&instance->tid, xft_acquire);
 	}
 	xft_munmap(instance->base, instance->size);
 }
@@ -33,7 +33,7 @@ void	xft_thread_join(t_thread *__restrict__ const thread)
 __attribute__((__nonnull__(1)))
 t_thread_id	xft_thread_id(const t_thread *__restrict__ const thread)
 {
-	return (__atomic_load_n(&thread->instance->tid, __ATOMIC_ACQUIRE));
+	return (__atomic_load_n(&thread->instance->tid, xft_acquire));
 }
 
 #endif

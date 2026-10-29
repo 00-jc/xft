@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include <xft/mem.h>
+#include <xft/types/atomic_types.h>
 #include <stdatomic.h>
 
 #if defined(__x86_64__) || defined(_M_X64)
@@ -27,7 +28,7 @@ inline void	xft_stfence(void)
 __attribute__((__always_inline__, __used__))
 inline void	xft_stfence(void)
 {
-	atomic_thread_fence(memory_order_seq_cst);
+	atomic_thread_fence(xft_seq_cst);
 }
 
 #else

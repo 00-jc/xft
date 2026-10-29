@@ -26,7 +26,7 @@ static void	thread_detach_wait_exit(const t_thread *__restrict__ const thread)
 static void	thread_detach_wait_exit(const t_thread *__restrict__ const thread)
 {
 	while (xft_thread_id(thread) != 0)
-		__atomic_thread_fence(__ATOMIC_SEQ_CST);
+		__atomic_thread_fence(xft_seq_cst);
 }
 
 # endif

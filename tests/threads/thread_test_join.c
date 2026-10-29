@@ -16,7 +16,7 @@
 
 static void	thread_join_fn(t_any arg)
 {
-	__atomic_store_n((t_u32a *)arg, 42, __ATOMIC_RELEASE);
+	__atomic_store_n((t_u32a *)arg, 42, xft_release);
 }
 
 void	test_thread_join(t_sysinfo sysinfo)

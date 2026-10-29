@@ -13,18 +13,18 @@
 #include <xft/atomics.h>
 #include <xft/types/atomic_types.h>
 #include <xft/xft_p_atomics.h>
+#include <stdatomic.h>
 
 __attribute__((__nonnull__(1), __used__))
 inline void	xft_mutex_lock(t_mutex *__restrict__ const mutex,
 	const t_mutex_type type)
 {
-	bool				ret;
-	t_i32				val;
-	static t_i32 const	lock = XFT_LOCKED;
+	bool	ret;
+	t_i32	val;
 
-	val = XFT_UNLOCKED;
-	ret = __atomic_compare_exchange(mutex, &val, (t_i32 *) & lock,
-			false, __ATOMIC_ACQUIRE, __ATOMIC_RELAXED);
+	val = xft_unlocked;
+	ret = atomic_compare_exchange_strong_explicit(mutex, &val, xft_locked,
+			xft_acquire, xft_relaxed);
 	if (__builtin_expect(ret, 1))
 		return ;
 	if (type == xft_lock_fast)

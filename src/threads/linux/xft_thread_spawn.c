@@ -50,7 +50,7 @@ static t_i32	xft__thread_entry(t_any arg)
 
 	instance->fn(instance->argument);
 	if (__atomic_exchange_n(&instance->status, THREAD_COMPLETED,
-			__ATOMIC_ACQ_REL) == THREAD_DETACHED)
+			xft_acq_rel) == THREAD_DETACHED)
 		xft_thread_destroy(instance);
 	return (0);
 }

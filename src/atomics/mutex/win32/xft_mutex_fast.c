@@ -14,6 +14,7 @@
 #include <xft/mem.h>
 #include <xft/types/atomic_types.h>
 #include <xft/xft_p_atomics.h>
+#include <stdatomic.h>
 
 #if defined(_WIN32)
 
@@ -23,11 +24,8 @@
 __attribute__((__nonnull__(1), __always_inline__, __used__))
 static inline bool	xft__try_lock(t_mutex *__restrict__ const mutex)
 {
-	t_i32				val;
-	static t_i32 const	contest = XFT_CONTESTED;
-
-	__atomic_exchange(mutex, (t_i32 *) & contest, &val, __ATOMIC_ACQ_REL);
-	if (__builtin_expect(val == XFT_UNLOCKED, 1))
+	if (__builtin_expect(atomic_exchange_explicit(mutex, xft_contested,
+				xft_acq_rel) == xft_unlocked, 1))
 		return (true);
 	return (false);
 }
@@ -35,13 +33,12 @@ static inline bool	xft__try_lock(t_mutex *__restrict__ const mutex)
 __attribute__((__nonnull__(1), __always_inline__, __used__))
 static inline bool	xft__try_lock_spin(t_mutex *__restrict__ const mutex)
 {
-	t_i32				val;
-	static t_i32 const	contest = XFT_CONTESTED;
+	t_i32	val;
 
-	val = XFT_UNLOCKED;
-	if (__builtin_expect(__atomic_compare_exchange(mutex,
-				&val, (t_i32 *) & contest, true, __ATOMIC_ACQUIRE,
-				__ATOMIC_RELAXED), 1))
+	val = xft_unlocked;
+	if (__builtin_expect(atomic_compare_exchange_weak_explicit(mutex,
+				&val, xft_contested, xft_acquire,
+				xft_relaxed), 1))
 		return (true);
 	return (false);
 }
@@ -52,14 +49,14 @@ inline void	xft_mutex_spin(t_mutex *__restrict__ const mutex)
 	t_size				iters;
 	t_i32				val;
 
-	((xft_prefetch_write0((t_any)mutex, sizeof(*mutex))), val = XFT_UNLOCKED);
+	((xft_prefetch_write0((t_any)mutex, sizeof(*mutex))), val = xft_unlocked);
 	while (true)
 	{
 		iters = 0;
 		while (iters < XFT_MUTEX_SPIN)
 		{
-			__atomic_load(mutex, &val, __ATOMIC_RELAXED);
-			if (__builtin_expect(val == XFT_UNLOCKED, 1))
+			val = atomic_load_explicit(mutex, xft_relaxed);
+			if (__builtin_expect(val == xft_unlocked, 1))
 			{
 				if (__builtin_expect(xft__try_lock_spin(mutex), 1))
 					return ;
@@ -68,7 +65,7 @@ inline void	xft_mutex_spin(t_mutex *__restrict__ const mutex)
 		}
 		if (__builtin_expect(xft__try_lock(mutex), 0))
 			return ;
-		WaitOnAddress(mutex, &(t_i32){XFT_CONTESTED}, sizeof(*mutex), INFINITE);
+		WaitOnAddress(mutex, &(t_i32){xft_contested}, sizeof(*mutex), INFINITE);
 		if (__builtin_expect(xft__try_lock(mutex), 1))
 			return ;
 	}
