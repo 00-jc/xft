@@ -1,4 +1,4 @@
-.Dd October 22, 2026
+.Dd October 29, 2026
 .Dt XFT_BMI 3
 .Os xft
 .Sh NAME
@@ -264,7 +264,7 @@ pointers named
 .Vt t_blk Ns Ar W Ns Ar M ,
 where
 .Ar W
-is 8, 32, 64, 128, 256, 512 or
+is 8, 16, 32, 64, 128, 256, 512 or
 .Sq n
 (native vector) and
 .Ar M
@@ -283,7 +283,21 @@ points to the aligned variant of the element type.
 .Vt t_blk8w
 and
 .Vt t_blk8r
-have no aligned form.
+have no aligned form; their cache line forms
+.Vt t_blk8wcl
+and
+.Vt t_blk8rcl
+promise only that the pointer itself, not every byte, is aligned to
+.Dv __GCC_CONSTRUCTIVE_SIZE ,
+through clang's
+.Ql align_value .
+.Vt t_blk8rcl
+is
+.Ql restrict
+like
+.Vt t_blk8r ;
+.Vt t_blk8wcl
+is not.
 .Ss Bit counting
 .Fn xft_popcount_u32
 and

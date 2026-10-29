@@ -1,4 +1,4 @@
-.Dd October 28, 2026
+.Dd October 29, 2026
 .Dt XFT_OS 3
 .Os xft
 .Sh NAME
@@ -86,9 +86,10 @@ maps a file at offset 0,
 always sets
 .Dv MREMAP_MAYMOVE ,
 and
-.Fn xft_munmap
-and
+.Fn xft_munmap ,
 .Fn xft_mprotect
+and
+.Fn xft_madvise "addr" "size" "advice"
 pass through.
 .Fn xft_mmap_commit
 does nothing on Linux.

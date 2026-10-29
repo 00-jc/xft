@@ -16,7 +16,7 @@ __attribute__((__flatten__, __nonnull__(1)))
 void	xft_swissmap_delete(t_swissmap *__restrict__ const map,
 	t_buffer key)
 {
-	t_u8 *const		meta = xft__swiss_meta(map);
+	const t_blk8wcl	meta = xft__swiss_meta(map);
 	const t_size	idx = xft__swiss_find(map, key,
 			xft__swiss_probe(map, key));
 

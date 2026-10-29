@@ -1,4 +1,4 @@
-.Dd October 14, 2026
+.Dd October 29, 2026
 .Dt XFT 7
 .Os xft
 .Sh NAME
@@ -82,6 +82,7 @@ Declared in
 .It Vt t_f80 , t_f80a Ta long double
 .It Vt t_uptr Ta pointer-sized unsigned integer
 .It Vt t_any , t_cany Ta void pointer, const void pointer
+.It Vt t_anycl Ta void pointer to __GCC_CONSTRUCTIVE_SIZE-aligned memory
 .It Vt t_size Ta alias of t_uptr, pointer width
 .It Vt t_ssize Ta signed pointer-width integer
 .El

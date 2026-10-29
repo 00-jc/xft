@@ -18,11 +18,11 @@ void	test_streaming_mem(t_test *t)
 	t_buffer	set[2];
 
 	xft_test_print(t, "Testing streaming xft_memcpy/xft_memset...\n");
-	copy[0] = xft_palloc(XFT_LLC_SIZE + 128ULL);
-	copy[1] = xft_palloc(XFT_LLC_SIZE + 128ULL);
-	copy[2] = xft_palloc(XFT_LLC_SIZE + 128ULL);
-	set[0] = xft_palloc(XFT_LLC_SIZE + 128ULL);
-	set[1] = xft_palloc(XFT_LLC_SIZE + 128ULL);
+	copy[0] = xft_palloc(XFT_LLC_SIZE + 8192ULL);
+	copy[1] = xft_palloc(XFT_LLC_SIZE + 8192ULL);
+	copy[2] = xft_palloc(XFT_LLC_SIZE + 8192ULL);
+	set[0] = xft_palloc(XFT_LLC_SIZE + 8192ULL);
+	set[1] = xft_palloc(XFT_LLC_SIZE + 8192ULL);
 	xft_pin_invariant(copy[0].mem && copy[1].mem && copy[2].mem);
 	xft_pin_invariant(set[0].mem && set[1].mem);
 	test_streaming_xft_memcpy(copy, 0, 0, XFT_LLC_SIZE + 4096ULL);

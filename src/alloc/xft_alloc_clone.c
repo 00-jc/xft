@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include <xft/alloc.h>
-#include <xft/bmi.h>
 #include <xft/mem.h>
 
 __attribute__((__nonnull__(1)))
@@ -21,7 +20,7 @@ t_buffer	xft_alloc_clone(t_any self, t_buffer buffer)
 
 	mem = ((t_allocator *)self)->vtable.allocate(
 			((t_allocator *)self)->allocator, buffer.size,
-			xft_next_pow2(buffer.size));
+			__GCC_CONSTRUCTIVE_SIZE);
 	if (__builtin_expect(mem.mem == nullptr, 0))
 		return (xft_fatptr(nullptr, 0));
 	xft_memcpy(mem.mem, buffer.mem, buffer.size);

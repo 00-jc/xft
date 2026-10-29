@@ -66,7 +66,8 @@ t_result	xft_indexmap_insert_seeded(t_allocator allocator,
 	if (idx == INDEXMAP_NPOS)
 	{
 		idx = xft__imap_find_free(map, probe);
-		map->tombstones -= (xft__imap_meta(map)[idx] == IMAP_DELETED);
+		map->tombstones -= (((t_blk8rcl)xft__imap_meta(map))[idx]
+				== IMAP_DELETED);
 		++map->count;
 	}
 	xft__imap_set(map, idx, (t_imap_slot){.meta = probe.h2,

@@ -16,4 +16,7 @@
 # include <xft/alloc.h>
 # include <xft/xft_p_hugepage.h>
 
+void	xft_reporta_carve_tail(t_reporta *gpa)\
+		__attribute__((__nonnull__(1)));
+
 #endif

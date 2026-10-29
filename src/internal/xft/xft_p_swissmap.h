@@ -19,7 +19,7 @@
 
 const t_soa_context	*xft__swiss_ctx(void)\
 						__attribute__((const, __returns_nonnull__));
-t_u8				*xft__swiss_meta(const t_swissmap *__restrict__ const map)\
+t_anycl				xft__swiss_meta(const t_swissmap *__restrict__ const map)\
 						__attribute__((pure, __nonnull__(1),\
 							__returns_nonnull__));
 void				xft__swiss_set(t_swissmap *__restrict__ const map,\

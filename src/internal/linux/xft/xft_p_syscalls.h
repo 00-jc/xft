@@ -83,6 +83,9 @@ t_i64a		xft_futex_wake(t_u32a *__restrict__ const uaddr, t_u32a val)\
 int			xft_mprotect(t_any addr, t_size size, int prot)\
 			__attribute__((__nonnull__(1)));
 
+int			xft_madvise(t_any addr, t_size size, int advice)\
+			__attribute__((__nonnull__(1)));
+
 int			xft_set_tid_address(t_any address);
 
 t_i32		xft_clone(const t_clone_arg *__restrict__ const args)\

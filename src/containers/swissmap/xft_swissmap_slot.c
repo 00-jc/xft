@@ -14,9 +14,10 @@
 
 __attribute__((__always_inline__, pure, __nonnull__(1), __returns_nonnull__,
 	__used__))
-inline t_u8	*xft__swiss_meta(const t_swissmap *__restrict__ const map)
+inline t_anycl	xft__swiss_meta(const t_swissmap *__restrict__ const map)
 {
-	return (xft_soa_fields(&map->soa, xft__swiss_ctx(), SWISS_META));
+	return (__builtin_assume_aligned(xft_soa_fields(&map->soa,
+				xft__swiss_ctx(), SWISS_META), __GCC_CONSTRUCTIVE_SIZE));
 }
 
 __attribute__((__always_inline__, __nonnull__(1), __used__))
@@ -25,7 +26,7 @@ inline void	xft__swiss_set(t_swissmap *__restrict__ const map,
 {
 	const t_soa_context *const	ctx = xft__swiss_ctx();
 
-	xft__swiss_meta(map)[idx] = slot.meta;
+	((t_blk8wcl)xft__swiss_meta(map))[idx] = slot.meta;
 	((t_buffer *)xft_soa_fields(&map->soa, ctx, SWISS_KEY))[idx] = slot.key;
 	((t_u8 **)xft_soa_fields(&map->soa, ctx, SWISS_VALUE))[idx] = slot.value;
 }
@@ -37,7 +38,7 @@ inline t_swiss_slot	xft__swiss_get(const t_swissmap *__restrict__ const map,
 	const t_soa_context *const	ctx = xft__swiss_ctx();
 
 	return ((t_swiss_slot){
-		.meta = xft__swiss_meta(map)[idx],
+		.meta = ((t_blk8rcl)xft__swiss_meta(map))[idx],
 		.key = ((t_buffer *)xft_soa_fields(&map->soa, ctx, SWISS_KEY))[idx],
 		.value = ((t_u8 **)xft_soa_fields(&map->soa, ctx, SWISS_VALUE))[idx],
 	});

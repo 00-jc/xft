@@ -1,4 +1,4 @@
-.Dd October 14, 2026
+.Dd October 29, 2026
 .Dt XFT_ALLOC 3
 .Os xft
 .Sh NAME
@@ -198,8 +198,8 @@ allocates
 bytes through its
 .Fa allocate
 entry with an alignment of
-.Fa buffer Ns .size
-rounded up to a power of two, and copies
+.Dv __GCC_CONSTRUCTIVE_SIZE ,
+and copies
 .Fa buffer Ns .size
 bytes from
 .Fa buffer Ns .mem
@@ -273,5 +273,3 @@ not with its
 member.
 .Fa buffer Ns .size
 must be nonzero.
-Through an arena the requested alignment equals the rounded size, so cloning
-large buffers wastes up to that many bytes of padding.

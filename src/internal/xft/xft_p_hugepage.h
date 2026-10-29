@@ -15,9 +15,13 @@
 
 # include <xft/alloc/page_alloc.h>
 
-t_size	xft_match_hugepage(t_size size)\
+# if defined(__linux__)
+
+t_size		xft_match_hugepage(t_size size)\
 			__attribute__((const));
-int		xft_match_hugepage_flags(t_u64 page_size)\
+t_result	xft_is_hugepage(t_u64 page_size)\
 			__attribute__((const));
+
+# endif
 
 #endif

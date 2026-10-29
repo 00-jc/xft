@@ -21,7 +21,7 @@ inline t_result	xft_vec_reserve(t_allocator allocator,
 
 	new_cap = n + vec->buf.size;
 	new_buf = allocator.vtable.realloc(allocator.allocator,
-			vec->buf, new_cap, xft_next_pow2(new_cap));
+			vec->buf, new_cap, __GCC_CONSTRUCTIVE_SIZE);
 	if (__builtin_expect(new_buf.mem != nullptr, 1))
 	{
 		vec->buf = new_buf;

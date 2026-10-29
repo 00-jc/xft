@@ -31,7 +31,7 @@ t_soa	xft_new_soa(t_allocator allocator, t_size element_size_capacity,
 		& ~(context->max_alignment - 1);
 	buf = allocator.vtable.allocate(allocator.allocator,
 			element_size_capacity * context->total_struct_size,
-			context->max_alignment);
+			xft_max_s(context->max_alignment, __GCC_CONSTRUCTIVE_SIZE));
 	if (__builtin_expect(buf.mem == nullptr, 0))
 		return ((t_soa){0});
 	return ((t_soa){.ptr = buf.mem,

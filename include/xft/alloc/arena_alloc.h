@@ -20,7 +20,7 @@
 t_arena				xft_new_arena(void);
 t_any				xft_arena_alloc(t_arena *__restrict__ const allocator,
 						t_size size, t_size align)\
-						__attribute__((__nonnull__(1)));
+						__attribute__((__nonnull__(1), __alloc_align__(3)));
 void				xft_destroy_arena(t_arena *alloc)\
 						__attribute__((__nonnull__(1)));
 t_arena_checkpoint	xft_arena_checkpoint(const t_arena *__restrict__ const arena)\

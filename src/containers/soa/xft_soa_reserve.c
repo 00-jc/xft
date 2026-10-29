@@ -57,7 +57,8 @@ t_result	xft_soa_reserve(t_allocator allocator,
 	new_size = (new_size + ctx->max_alignment - 1) & ~(ctx->max_alignment - 1);
 	new_buffer = allocator.vtable.realloc(allocator.allocator,
 			xft_fatptr(soa->ptr, soa->allocator_bytes_given),
-			new_size * ctx->total_struct_size, ctx->max_alignment);
+			new_size * ctx->total_struct_size,
+			xft_max_s(ctx->max_alignment, __GCC_CONSTRUCTIVE_SIZE));
 	if (__builtin_expect(new_buffer.mem == nullptr, 0))
 		return (KO);
 	soa->ptr = new_buffer.mem;

@@ -23,6 +23,7 @@ static inline int	xft_advance_slab(t_reporta *gpa)
 		return (0);
 	if (__builtin_expect(!xft_palloc_commit(buf.mem, sizeof(t_any *)), 0))
 		return (xft_palloc_free(buf), 0);
+	xft_reporta_carve_tail(gpa);
 	prev = gpa->slab;
 	++gpa->slabs;
 	gpa->slab = buf.mem;
@@ -41,7 +42,7 @@ static inline t_buffer	xft_return_ptr(t_reporta *gpa,
 	new_ptr = xft_align_fwd(gpa->bmp, align);
 	if (__builtin_expect(
 			(t_uptr)new_ptr + sizes[1]
-			>= (t_uptr)gpa->slab + gpa->slabsize
+			> (t_uptr)gpa->slab + gpa->slabsize
 			&& !xft_advance_slab(gpa), 0))
 		return (xft_fatptr(nullptr, 0));
 	new_ptr = xft_align_fwd(gpa->bmp, align);
@@ -75,7 +76,7 @@ static inline t_buffer	xft_paged_ptr(t_reporta *gpa, t_size sizes[2])
 	b = xft_palloc(sizes[1]);
 	if (__builtin_expect(!b.mem, 0))
 		return (xft_fatptr(nullptr, 0));
-	gpa->avg_frag += (t_f64)((t_f64)(sizes[1] - sizes[0]) - gpa->avg_frag)
+	gpa->avg_frag += (t_f64)((t_f64)(b.size - sizes[0]) - gpa->avg_frag)
 		/ (t_f64)gpa->n_allocs;
 	return (b);
 }
@@ -88,6 +89,8 @@ t_buffer	xft_reporta_alloc(t_any alloc, t_size size, t_size align)
 	t_size		snapped;
 	t_reporta	*gpa;
 
+	if (__builtin_expect(align == 0 || (align & (align - 1)) != 0, 0))
+		return (xft_fatptr(nullptr, 0));
 	gpa = (t_reporta *)alloc;
 	size = xft_tern_s(size < 8, 8, size);
 	snapped = xft_next_pow2(size);
@@ -96,7 +99,7 @@ t_buffer	xft_reporta_alloc(t_any alloc, t_size size, t_size align)
 	++gpa->n_allocs;
 	if (GPA_CLASSES <= freelist)
 		return (xft_paged_ptr(gpa, (t_size[2]){size,
-				xft_match_hugepage(xft_tern_s(size < align, align, size))}));
+				xft_tern_s(size < align, align, size)}));
 	new_ptr = gpa->free[freelist];
 	if (new_ptr && (align <= 16 || !((t_uptr)new_ptr & (align - 1))))
 		return (xft_reuse_ptr(gpa, freelist, new_ptr,

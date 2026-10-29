@@ -46,7 +46,7 @@ void		xft_indexmap_clear(t_indexmap *__restrict__ const map)\
 void		xft_indexmap_iterate(t_indexmap *__restrict__ const map,
 				t_imap_iter_callback f)\
 				__attribute__((__nonnull__(1)));
-t_u8		*xft_indexmap_meta(const t_indexmap *__restrict__ const indexmap)\
+t_anycl		xft_indexmap_meta(const t_indexmap *__restrict__ const indexmap)\
 				__attribute__((pure, __returns_nonnull__, __nonnull__(1)));
 t_u64a		*xft_indexmap_seed(const t_indexmap *__restrict__ const indexmap)\
 				__attribute__((pure, __returns_nonnull__, __nonnull__(1)));

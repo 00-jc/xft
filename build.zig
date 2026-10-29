@@ -403,6 +403,7 @@ const XFT_SYSCALLS = [_][]const u8{
     "getpid",
     "ioctl",
     "lockf",
+    "madvise",
     "mkdir",
     "mmap",
     "mprotect",

@@ -21,6 +21,8 @@ t_buffer	xft_gpa_realloc(t_any alloc, t_buffer buf,
 
 	if (buf.mem == nullptr)
 		__builtin_unreachable();
+	if (__builtin_expect(align == 0 || (align & (align - 1)) != 0, 0))
+		return (xft_fatptr(nullptr, 0));
 	gpa = (t_gpa *)alloc;
 	if (newsize <= buf.size && !((t_uptr)buf.mem & (align - 1)))
 		return (buf);

@@ -32,3 +32,25 @@ void	xft_reporta_free(t_any allocator, t_buffer buf)
 	*(t_any *)buf.mem = gpa->free[freelist];
 	gpa->free[freelist] = buf.mem;
 }
+
+__attribute__((__nonnull__(1)))
+void	xft_reporta_carve_tail(t_reporta *gpa)
+{
+	t_size	rem;
+	t_size	chunk;
+	t_size	freelist;
+
+	rem = (t_uptr)gpa->slab + gpa->slabsize - (t_uptr)gpa->bmp;
+	if (__builtin_expect(!rem || !xft_palloc_commit(gpa->bmp, rem), 0))
+		return ;
+	while (rem)
+	{
+		chunk = rem & -rem;
+		freelist = 60 - xft_memclz_u64(chunk);
+		++gpa->free_depth[freelist];
+		*(t_any *)gpa->bmp = gpa->free[freelist];
+		gpa->free[freelist] = gpa->bmp;
+		gpa->bmp = (t_any)((t_blk8w)gpa->bmp + chunk);
+		rem -= chunk;
+	}
+}

@@ -16,7 +16,7 @@ __attribute__((__flatten__, __nonnull__(1)))
 t_size	xft_indexmap_delete_seeded(t_indexmap *__restrict__ const map,
 	t_imap_key key)
 {
-	t_u8 *const		meta = xft__imap_meta(map);
+	const t_blk8wcl	meta = xft__imap_meta(map);
 	const t_size	idx = xft__imap_find(map, key.key,
 			xft__imap_probe_seeded(map, key.key, key.seed));
 

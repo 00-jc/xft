@@ -1,4 +1,4 @@
-.Dd October 28, 2026
+.Dd October 29, 2026
 .Dt XFT_PALLOC 3
 .Os xft
 .Sh NAME
@@ -26,6 +26,7 @@
 .Sh DESCRIPTION
 These functions take memory directly from the operating system: Linux uses
 .Xr mmap 2 ,
+.Xr madvise 2 ,
 .Xr mremap 2 ,
 .Xr mprotect 2
 and
@@ -77,9 +78,11 @@ expect the buffer back exactly as returned.
 .Pp
 On Linux, a size of at most 1 MiB rounds up to the next power of two, and
 to at least 8.
-A larger size rounds up to the next hugepage tier: 2 MiB, 8 MiB, 16 MiB,
-256 MiB, 512 MiB, 1 GiB, 2 GiB and, on 64-bit targets, 16 GiB.
-A size beyond the largest tier is kept as is.
+A larger size rounds up to a hugepage tier when the padding is at most an
+eighth of the tier: 2 MiB, 8 MiB, 16 MiB, 256 MiB, 512 MiB, 1 GiB, 2 GiB and,
+on 64-bit targets, 16 GiB.
+Any other size rounds up to a multiple of 4096.
+For example, 15 MiB rounds to the 16 MiB tier, and 17 MiB stays 17 MiB.
 .Pp
 On Windows, sizes round up to a multiple of 4096, and hugepages are not used.
 .Ss Linux
@@ -87,22 +90,31 @@ On Windows, sizes round up to a multiple of 4096, and hugepages are not used.
 maps the memory readable and writable, so a reservation is usable at once and
 .Fn xft_palloc_commit
 does nothing.
-A mapping whose rounded size is a hugepage tier is first requested with
-.Dv MAP_HUGETLB
-and the matching
-.Dv MAP_HUGE_*
-size bits.
-When that fails, because no huge pages of that size are reserved or the CPU
-has no huge pages of that size, the memory is mapped again with ordinary pages,
-which transparent huge pages may promote.
-x86-64 has 2 MiB and 1 GiB huge pages, so its other tiers always get ordinary
-pages.
+The memory is mapped once with ordinary pages.
+When the rounded size is a hugepage tier, the mapping is also marked with
+.Xr madvise 2
+and
+.Dv MADV_HUGEPAGE ,
+and the kernel decides whether and when transparent huge pages back it, either
+at fault time or later through
+.Ql khugepaged .
+.Fn xft_palloc_reserve
+ignores a failed
+.Xr madvise 2 .
 .Fn xft_palloc_resize
 calls
 .Xr mremap 2
 with
-.Dv MREMAP_MAYMOVE ;
-a mapping keeps the page size it was created with.
+.Dv MREMAP_MAYMOVE ,
+and a remapped mapping keeps its
+.Dv MADV_HUGEPAGE
+mark.
+When
+.Xr mremap 2
+fails,
+.Fn xft_palloc_resize
+allocates a new buffer, copies the smaller of the two sizes and frees the old
+buffer.
 .Fn xft_palloc_guard
 calls
 .Xr mprotect 2
@@ -110,7 +122,7 @@ with
 .Dv PROT_NONE ,
 so
 .Fa ptr
-must be aligned to the mapping's page size.
+must be aligned to 4096, and guarding part of a huge page splits it.
 .Ss Windows
 .Fn xft_palloc_reserve
 reserves with
@@ -195,16 +207,15 @@ xft_palloc_free(page);
 .Xr xft_os 3 ,
 .Xr xft 7
 .Sh CAVEATS
-On Linux, the tiers make a request just past one tier reserve the next: 17 MiB
-reserves 256 MiB of address space.
-With ordinary pages only the pages that are touched take memory; a mapping
-backed by huge pages takes them from the reserved pool when it is created.
-.Pp
-On Linux,
-.Fn xft_palloc_resize
-fails on a mapping backed by huge pages when the new size is not a multiple of
-its huge page size, for example when shrinking a 2 MiB mapping to 1 MiB or
-less.
+On Linux, transparent huge pages back a tier only when
+.Pa /sys/kernel/mm/transparent_hugepage/enabled
+is
+.Ql always
+or
+.Ql madvise .
+A huge page takes all of its memory when the kernel installs it, so the padding
+of a tier, up to an eighth of its size, may take real memory; with ordinary
+pages only the pages that are touched take memory.
 .Pp
 On Linux,
 .Fn xft_palloc_free

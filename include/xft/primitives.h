@@ -65,6 +65,7 @@ typedef long double __attribute__((__may_alias__, __aligned__(8)))	t_f80a;
 typedef __UINTPTR_TYPE__ __attribute__((__may_alias__))				t_uptr;
 typedef void * __attribute__((__may_alias__))						t_any;
 typedef const void * __attribute__((__may_alias__))					t_cany;
+typedef t_any __attribute__((align_value(__GCC_CONSTRUCTIVE_SIZE)))	t_anycl;
 
 typedef t_uptr														t_size;
 typedef __INTPTR_TYPE__ __attribute__((__may_alias__))				t_ssize;

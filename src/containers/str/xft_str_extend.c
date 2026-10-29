@@ -24,7 +24,7 @@ t_result	xft_str_reserve(t_allocator allocator,
 	new_cap = n + str->capacity + 1;
 	new_buf = allocator.vtable.realloc(allocator.allocator,
 			xft_fatptr(str->mem, str->capacity), new_cap,
-			xft_next_pow2(new_cap));
+			__GCC_CONSTRUCTIVE_SIZE);
 	if (__builtin_expect(new_buf.mem == nullptr, 0))
 		return (KO);
 	str->mem = new_buf.mem;

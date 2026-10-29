@@ -121,19 +121,10 @@ typedef enum e_xft_prot : t_u8
 	xft_prot_exec = 0x4,
 }	t_xft_prot;
 
-typedef enum e_xft_map : t_u32
+typedef enum e_xft_map : t_u8
 {
 	xft_map_private = 0x02,
 	xft_map_anonymous = 0x20,
-	xft_map_hugetlb = 0x40000,
-	xft_map_huge_2mb = 21 << 26,
-	xft_map_huge_8mb = 23 << 26,
-	xft_map_huge_16mb = 24 << 26,
-	xft_map_huge_256mb = 28 << 26,
-	xft_map_huge_512mb = 29 << 26,
-	xft_map_huge_1gb = 30 << 26,
-	xft_map_huge_2gb = 31 << 26,
-	xft_map_huge_16gb = 34u << 26,
 }	t_xft_map;
 
 typedef enum e_xft_map_ret : t_i8
@@ -145,6 +136,11 @@ typedef enum e_xft_mremap : t_u8
 {
 	xft_mremap_maymove = 1,
 }	t_xft_mremap;
+
+typedef enum e_xft_madv : t_u8
+{
+	xft_madv_hugepage = 14,
+}	t_xft_madv;
 
 typedef enum e_xft_fcntl_cmd : t_u8
 {

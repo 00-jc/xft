@@ -37,7 +37,7 @@ __attribute__((__always_inline__, pure, __nonnull__(1), __used__))
 inline t_size	xft__imap_find(const t_indexmap *__restrict__ const map,
 	t_buffer key, t_imap_probe probe)
 {
-	const t_u8 *const	meta = xft__imap_meta(map);
+	const t_blk8rcl		meta = xft__imap_meta(map);
 	t_nvec				vec;
 	t_nmask				mask;
 	t_size				idx;
@@ -63,7 +63,7 @@ __attribute__((__always_inline__, pure, __nonnull__(1), __used__))
 inline t_size	xft__imap_find_free(const t_indexmap *__restrict__ const map,
 	t_imap_probe probe)
 {
-	const t_u8 *const	meta = xft__imap_meta(map);
+	const t_blk8rcl		meta = xft__imap_meta(map);
 	t_nmask				mask;
 
 	while (1)

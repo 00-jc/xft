@@ -1,4 +1,4 @@
-.Dd October 14, 2026
+.Dd October 29, 2026
 .Dt XFT_STR 3
 .Os xft
 .Sh NAME
@@ -137,8 +137,9 @@ and
 .Dv OK
 otherwise.
 .Sh NOTES
-Allocations and reallocations pass the next power of two of the requested
-byte size as the allocator's alignment argument.
+Allocations and reallocations pass
+.Dv __GCC_CONSTRUCTIVE_SIZE ,
+the target's cache line size, as the allocator's alignment argument.
 .Pp
 .Xr xft_cstr 3
 provides

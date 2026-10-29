@@ -1,4 +1,4 @@
-.Dd October 14, 2026
+.Dd October 29, 2026
 .Dt XFT_SOA 3
 .Os xft
 .Sh NAME
@@ -64,7 +64,11 @@ is the sum of the sizes of the entries before it.
 .Fa total_struct_size
 is the sum of all field sizes, without padding.
 .Fa max_alignment
-must be a nonzero power of two and is used as the allocation alignment.
+must be a nonzero power of two.
+The allocation alignment is the larger of
+.Fa max_alignment
+and
+.Dv __GCC_CONSTRUCTIVE_SIZE .
 Nothing checks that the entries are consistent with each other.
 .Pp
 Column

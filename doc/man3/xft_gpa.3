@@ -1,4 +1,4 @@
-.Dd October 28, 2026
+.Dd October 29, 2026
 .Dt XFT_GPA 3
 .Os xft
 .Sh NAME
@@ -65,6 +65,8 @@ Every slab starts with a pointer to the previous one.
 releases every slab.
 Large blocks that were never freed are not released.
 .Ss Size classes
+.Fa align
+must be a nonzero power of two.
 A request is raised to at least 8 bytes and rounded up to a power of two, and
 to the next power of two of
 .Fa align
@@ -90,10 +92,11 @@ is at most 16 or the head is aligned to
 Otherwise it is carved from the current slab at the next multiple of 16, of
 .Fa align
 when that is larger, or of the block size for blocks under 16 bytes.
-When the slab has no room, a new slab is reserved and the rest of the old one
-is left unused.
 The carved range is committed with
 .Fn xft_palloc_commit .
+When the slab has no room, a new slab is reserved and the rest of the old one
+is committed and pushed onto the free lists as power-of-two blocks, smallest
+first, so that each block is aligned to its own size up to the page size.
 .Pp
 The returned
 .Fa .size
@@ -186,7 +189,12 @@ and their reporting counterparts return a buffer with
 .Fa .mem
 set to
 .Dv nullptr
-on failure; a failed reallocation leaves
+and
+.Fa .size
+set to 0 when
+.Fa align
+is zero or not a power of two, or the allocation fails; a failed reallocation
+leaves
 .Fa buf
 valid.
 .Sh EXAMPLES

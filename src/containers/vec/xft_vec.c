@@ -24,7 +24,7 @@ t_vec	xft_new_vec(t_allocator allocator, t_size size, t_size type_size)
 		|| __builtin_mul_overflow(size, type_size, &res))
 		return ((t_vec){0});
 	buf = allocator.vtable.allocate(allocator.allocator, res,
-			xft_next_pow2(res));
+			__GCC_CONSTRUCTIVE_SIZE);
 	if (__builtin_expect(buf.mem == nullptr, 0))
 		return ((t_vec){0});
 	return ((t_vec){

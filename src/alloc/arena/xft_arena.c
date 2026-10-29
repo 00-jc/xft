@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/03 19:00:00 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/10/03 19:00:00 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/10/29 01:33:15 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ t_arena	xft_new_arena(void)
 	t_hugepage		*initial_page;
 
 	initial_page = new_hugepage(nullptr, xft_match_paging(1ULL << 25));
-	if (!initial_page)
+	if (__builtin_expect(initial_page == nullptr, 0))
 		return ((t_arena){0});
 	return ((t_arena){.current = initial_page});
 }

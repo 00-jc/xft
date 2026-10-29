@@ -1,4 +1,4 @@
-.Dd October 14, 2026
+.Dd October 29, 2026
 .Dt XFT_ARENA 3
 .Os xft
 .Sh NAME
@@ -97,6 +97,14 @@ can hold:
 on 64-bit targets and
 .Dv HUGEPAGE_2GB
 on 32-bit ones.
+.Fn xft_arena_alloc
+is declared with
+.Ql __alloc_align__ ,
+so clang rejects a constant
+.Fa align
+that is not a power of two, and callers are compiled assuming that the
+result is aligned to
+.Fa align .
 If the current page has no room, the arena moves to the next page.
 A page already following
 .Fa current
@@ -110,7 +118,9 @@ The new page size is
 .Fa size
 +
 .Fa align
-\- 1 plus the header, rounded up to 256 MiB, 512 MiB, 1 GiB, 2 GiB or 16 GiB.
+\- 1 plus the header, rounded as
+.Xr xft_palloc 3
+describes and to at least 256 MiB.
 The unused tail of the page being left is not handed out again until a
 rewind returns to it.
 Memory from a freshly mapped page reads as zero; memory reused after a

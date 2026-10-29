@@ -76,11 +76,11 @@ t_buffer		xft_fatptr(t_blk8r mem, t_size size)\
 
 t_any			xft_align_fwd(t_any ptr, const t_size align)\
 					__attribute__((const, __nonnull__(1),\
-					__returns_nonnull__));
+					__returns_nonnull__, __alloc_align__(2)));
 
 t_any			xft_align_bkw(t_any ptr, const t_size align)\
 					__attribute__((const, __nonnull__(1),\
-					__returns_nonnull__));
+					__returns_nonnull__, __alloc_align__(2)));
 
 void			xft_stfence(void);
 void			xft_ldfence(void);

@@ -19,7 +19,7 @@ t_str	xft_new_str(t_allocator allocator, t_size size)
 	if (__builtin_expect(size == 0, 0))
 		return ((t_str){0});
 	buf = allocator.vtable.allocate(allocator.allocator, size + 1,
-			xft_next_pow2(size + 1));
+			__GCC_CONSTRUCTIVE_SIZE);
 	if (__builtin_expect(buf.mem == nullptr, 0))
 		return ((t_str){0});
 	buf.mem[0] = 0;

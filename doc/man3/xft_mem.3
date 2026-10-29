@@ -1,4 +1,4 @@
-.Dd October 22, 2026
+.Dd October 29, 2026
 .Dt XFT_MEM 3
 .Os xft
 .Sh NAME
@@ -259,6 +259,14 @@ rounds it down.
 A pointer that is already aligned is returned unchanged.
 .Fa align
 must be a non-zero power of two.
+Both functions
+is declared with
+.Ql __alloc_align__ ,
+so clang rejects a constant
+.Fa align
+that is not a power of two, and callers are compiled assuming that the
+result is aligned to
+.Fa align .
 .Pp
 .Fn xft_stfence
 and

@@ -16,7 +16,11 @@
 # include <xft/primitives.h>
 
 typedef t_u8 *__restrict__ const									t_blk8w;
+typedef t_u8 *const __attribute__((align_value(__GCC_CONSTRUCTIVE_SIZE)))\
+																	t_blk8wcl;
 typedef const t_u8 *__restrict__ const								t_blk8r;
+typedef t_blk8r __attribute__((align_value(__GCC_CONSTRUCTIVE_SIZE)))\
+																	t_blk8rcl;
 
 # if defined(__AVX512BW__) && defined(__AVX512VL__) && defined(__AVX512DQ__)
 

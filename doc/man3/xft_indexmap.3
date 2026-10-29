@@ -1,4 +1,4 @@
-.Dd October 22, 2026
+.Dd October 29, 2026
 .Dt XFT_INDEXMAP 3
 .Os xft
 .Sh NAME
@@ -11,7 +11,10 @@
 .Nm xft_indexmap_delete ,
 .Nm xft_indexmap_delete_seeded ,
 .Nm xft_indexmap_clear ,
-.Nm xft_indexmap_destroy
+.Nm xft_indexmap_destroy ,
+.Nm xft_indexmap_iterate ,
+.Nm xft_indexmap_meta ,
+.Nm xft_indexmap_seed
 .Nd namespaced open addressing hash map from byte keys to indices
 .Sh SYNOPSIS
 .In indexmap.h
@@ -37,6 +40,12 @@
 .Fn xft_indexmap_clear "t_indexmap *restrict map"
 .Ft void
 .Fn xft_indexmap_destroy "t_allocator allocator" "t_indexmap *restrict map"
+.Ft void
+.Fn xft_indexmap_iterate "t_indexmap *restrict map" "t_imap_iter_callback f"
+.Ft t_anycl
+.Fn xft_indexmap_meta "const t_indexmap *restrict map"
+.Ft "t_u64a *"
+.Fn xft_indexmap_seed "const t_indexmap *restrict map"
 .Sh DESCRIPTION
 A
 .Vt t_indexmap
@@ -46,7 +55,7 @@ but its values are
 .Vt t_size
 integers stored inline, typically indices into a separate array, instead of
 pointers.
-It does not preserve insertion order and has no iteration interface.
+It does not preserve insertion order.
 .Pp
 The map is namespaced: every entry is identified by its key bytes together
 with a 64 bit seed, and the same bytes under different seeds are distinct
@@ -65,6 +74,9 @@ typedef struct s_imap_key {
 	t_buffer	key;	/* name bytes */
 	t_u64a		seed;	/* namespace */
 } t_imap_key;
+
+typedef void	(*t_imap_iter_callback)(t_nvec *restrict const meta,
+		t_buffer *restrict const keys, t_size rem);
 .Ed
 .Pp
 Slots are kept in a
@@ -174,6 +186,26 @@ It does nothing on a map with no storage.
 .Fn xft_indexmap_destroy
 frees the storage and zeroes
 .Fa *map .
+.Pp
+.Fn xft_indexmap_iterate
+calls
+.Fa f
+once per group, in slot order, with the group's control bytes, the keys of
+its first slot, and
+.Fa rem ,
+the number of slots from that group to the end of the table.
+A slot is live when the high bit of its control byte is clear.
+.Pp
+.Fn xft_indexmap_meta
+returns the control byte column,
+.Fa soa Ns .capacity_elements
+bytes aligned to
+.Dv __GCC_CONSTRUCTIVE_SIZE ,
+and
+.Fn xft_indexmap_seed
+returns the seed column.
+Both point into the map's storage, so an insert that rebuilds the map
+invalidates them.
 .Sh RETURN VALUES
 .Fn xft_new_indexmap
 and
@@ -210,6 +242,13 @@ All four return
 if
 .Fa key
 is not present.
+.Pp
+.Fn xft_indexmap_meta
+and
+.Fn xft_indexmap_seed
+return pointers to the map's columns, and
+.Fn xft_indexmap_iterate
+returns nothing.
 .Sh NOTES
 .Dv INDEXMAP_INITIAL_SIZE
 is guarded by

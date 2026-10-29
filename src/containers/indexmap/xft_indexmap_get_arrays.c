@@ -14,9 +14,10 @@
 
 __attribute__((pure, __returns_nonnull__, __always_inline__,
 	used, __nonnull__(1)))
-inline t_u8	*xft_indexmap_meta(const t_indexmap *__restrict__ const indexmap)
+inline t_anycl	xft_indexmap_meta(const t_indexmap *__restrict__ const indexmap)
 {
-	return (xft_soa_fields(&indexmap->soa, xft__imap_ctx(), 0));
+	return (__builtin_assume_aligned(xft_soa_fields(&indexmap->soa,
+				xft__imap_ctx(), 0), __GCC_CONSTRUCTIVE_SIZE));
 }
 
 __attribute__((pure, __returns_nonnull__, __always_inline__,

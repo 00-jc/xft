@@ -66,7 +66,8 @@ t_result	xft_swissmap_insert(t_allocator allocator,
 	if (idx == SWISS_NPOS)
 	{
 		idx = xft__swiss_find_free(map, probe);
-		map->tombstones -= (xft__swiss_meta(map)[idx] == SWISS_DELETED);
+		map->tombstones -= (((t_blk8rcl)xft__swiss_meta(map))[idx]
+				== SWISS_DELETED);
 		++map->count;
 	}
 	xft__swiss_set(map, idx, (t_swiss_slot){.meta = probe.h2,
