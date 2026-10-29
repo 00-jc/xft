@@ -32,10 +32,14 @@ inline t_size	xft_memctz_u64(t_u64 x)
 	return ((t_size)__builtin_ctzg(x, 64));
 }
 
+# ifdef __SIZEOF_INT128__
+
 __attribute__((hot, const, __always_inline__, __used__))
 inline t_size	xft_memctz_u128(t_u128 x)
 {
 	return ((t_size)__builtin_ctzg(x, 128));
 }
+
+# endif
 
 #endif

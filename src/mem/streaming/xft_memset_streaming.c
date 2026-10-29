@@ -6,101 +6,29 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/29 23:39:13 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/06/29 23:39:20 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/10/29 12:00:00 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <xft/xft_p_mem.h>
 
-#if defined (__x86_64__) && XFT_HAS_512_VEC
-
 __attribute__((__nonnull__(1), __always_inline__, __hot__, __used__))
-static inline void	xft__setkernel_stream(t_any restrict d,
-	const t_u8 c, t_size offset)
+static inline void	xft__setkernel_stream(t_vu512a *restrict d, t_vu512a x)
 {
-	__asm__ (
-		"vpbroadcastb %[byte], %%zmm0\n\t"
-		"vmovntdq %%zmm0, %0\n\t"
-		"vmovntdq %%zmm0, %1\n\t"
-		"vmovntdq %%zmm0, %2\n\t"
-		"vmovntdq %%zmm0, %3\n\t"
-		"vmovntdq %%zmm0, %4\n\t"
-		"vmovntdq %%zmm0, %5\n\t"
-		"vmovntdq %%zmm0, %6\n\t"
-		"vmovntdq %%zmm0, %7"
-		: "=m"(((t_blk512wa)d)[offset + 0]),
-		"=m"(((t_blk512wa)d)[offset + 1]),
-		"=m"(((t_blk512wa)d)[offset + 2]),
-		"=m"(((t_blk512wa)d)[offset + 3]),
-		"=m"(((t_blk512wa)d)[offset + 4]),
-		"=m"(((t_blk512wa)d)[offset + 5]),
-		"=m"(((t_blk512wa)d)[offset + 6]),
-		"=m"(((t_blk512wa)d)[offset + 7])
-		: [byte] "r"((unsigned)c)
-		: "zmm0", "memory"
-		);
-	__asm__("sfence" ::: "memory");
+	__builtin_nontemporal_store(x, d + 0);
+	__builtin_nontemporal_store(x, d + 1);
+	__builtin_nontemporal_store(x, d + 2);
+	__builtin_nontemporal_store(x, d + 3);
+	__builtin_nontemporal_store(x, d + 4);
+	__builtin_nontemporal_store(x, d + 5);
+	__builtin_nontemporal_store(x, d + 6);
+	__builtin_nontemporal_store(x, d + 7);
 }
-
-#elif defined (__x86_64__) && XFT_HAS_256_VEC
-
-__attribute__((__nonnull__(1), __always_inline__, __hot__, __used__))
-static inline void	xft__setkernel_stream(t_any restrict d,
-	const t_u8 c, t_size offset)
-{
-	t_vu256a	*restrict	p;
-
-	p = (t_blk256wa)((t_u8 *)d + (offset << 6));
-	__asm__ (
-		"vmovd %[byte], %%xmm0\n\t"
-		"vpbroadcastb %%xmm0, %%ymm0\n\t"
-		"vmovntdq %%ymm0, 0x000(%[p])\n\t" "vmovntdq %%ymm0, 0x020(%[p])\n\t"
-		"vmovntdq %%ymm0, 0x040(%[p])\n\t" "vmovntdq %%ymm0, 0x060(%[p])\n\t"
-		"vmovntdq %%ymm0, 0x080(%[p])\n\t" "vmovntdq %%ymm0, 0x0a0(%[p])\n\t"
-		"vmovntdq %%ymm0, 0x0c0(%[p])\n\t" "vmovntdq %%ymm0, 0x0e0(%[p])\n\t"
-		"vmovntdq %%ymm0, 0x100(%[p])\n\t" "vmovntdq %%ymm0, 0x120(%[p])\n\t"
-		"vmovntdq %%ymm0, 0x140(%[p])\n\t" "vmovntdq %%ymm0, 0x160(%[p])\n\t"
-		"vmovntdq %%ymm0, 0x180(%[p])\n\t" "vmovntdq %%ymm0, 0x1a0(%[p])\n\t"
-		"vmovntdq %%ymm0, 0x1c0(%[p])\n\t" "vmovntdq %%ymm0, 0x1e0(%[p])"
-		:
-		: [p] "r"(p), [byte] "r"((unsigned)c)
-		: "ymm0", "memory"
-		);
-}
-
-#else
-
-__attribute__((__nonnull__(1), __always_inline__, __hot__, __used__))
-static inline void	xft__setkernel_stream(t_any restrict d,
-	const t_u8 c, t_size offset)
-{
-	register t_vu512a	x;
-
-	x = (t_vu512a){c, c, c, c, c, c, c, c, c, c, c, c, c, c, c, c,
-		c, c, c, c, c, c, c, c, c, c, c, c, c, c, c, c,
-		c, c, c, c, c, c, c, c, c, c, c, c, c, c, c, c,
-		c, c, c, c, c, c, c, c, c, c, c, c, c, c, c, c};
-	((t_blk512wa)d)[offset + 0] = x;
-	((t_blk512wa)d)[offset + 1] = x;
-	((t_blk512wa)d)[offset + 2] = x;
-	((t_blk512wa)d)[offset + 3] = x;
-	((t_blk512wa)d)[offset + 4] = x;
-	((t_blk512wa)d)[offset + 5] = x;
-	((t_blk512wa)d)[offset + 6] = x;
-	((t_blk512wa)d)[offset + 7] = x;
-}
-
-#endif
 
 __attribute__((__always_inline__, __nonnull__(1), __used__))
 static inline void	xft_memset_stream_tail(t_any restrict dest,
-	const t_u8 c, t_size n)
+	t_vu512a x, t_size n)
 {
-	register t_vu512a	x;
-
-	x = (t_vu512a){c, c, c, c, c, c, c, c, c, c, c, c, c, c, c, c, c, c, c,
-		c, c, c, c, c, c, c, c, c, c, c, c, c, c, c, c, c, c, c, c, c, c, c,
-		c, c, c, c, c, c, c, c, c, c, c, c, c, c, c, c, c, c, c, c, c, c};
 	if (__builtin_expect(63 < n, 1))
 	{
 		((t_blk512wa)dest)[0] = x;
@@ -120,10 +48,9 @@ __attribute__((__nonnull__(1), __always_inline__, __used__))
 inline void	xft_memset_512_streaming(t_any restrict dest,
 	const t_u8 c, t_size n)
 {
-	t_t_f64_size			s;
-	t_size					delta;
-	t_u8					*d;
-	register t_vu512a		x;
+	t_size		delta;
+	t_vu512a	*d;
+	t_vu512a	x;
 
 	x = (t_vu512a){c, c, c, c, c, c, c, c, c, c, c, c, c, c, c, c,
 		c, c, c, c, c, c, c, c, c, c, c, c, c, c, c, c,
@@ -131,15 +58,14 @@ inline void	xft_memset_512_streaming(t_any restrict dest,
 		c, c, c, c, c, c, c, c, c, c, c, c, c, c, c, c};
 	delta = (-(t_uptr)dest) & 63;
 	*(t_blk512w)dest = x;
-	d = (t_u8 *)dest + delta;
+	d = (t_vu512a *)((t_u8 *)dest + delta);
 	n -= delta;
-	s.blks = (n >> 6);
-	s.i = 0;
-	while (s.i + 8 <= s.blks)
+	while (n >= 512)
 	{
-		xft__setkernel_stream(d, c, s.i);
-		s.i += 8;
+		xft__setkernel_stream(d, x);
+		d += 8;
+		n -= 512;
 	}
 	xft_stfence();
-	xft_memset_stream_tail(d + (s.i << 6), c, n - (s.i << 6));
+	xft_memset_stream_tail(d, x, n);
 }
