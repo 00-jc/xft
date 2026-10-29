@@ -73,3 +73,20 @@ t_u32a	xft_arena_move_fwd(t_arena *alloc, t_size size)
 	}
 	return (1);
 }
+
+__attribute__((__nonnull__(1), __always_inline__, __used__))
+inline t_u32a	xft_arena_try_resize(t_hugepage *page, t_buffer old,
+	t_size new_size)
+{
+	t_u8	*top;
+
+	top = page->data + page->used;
+	if (old.mem + old.size != top
+		|| new_size > (t_size)(page->data + page->total - old.mem))
+		return (0);
+	if (new_size > old.size
+		&& !xft_palloc_commit(top, new_size - old.size))
+		return (0);
+	page->used = (t_size)(old.mem + new_size - page->data);
+	return (1);
+}

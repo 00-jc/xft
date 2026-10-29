@@ -12,6 +12,7 @@
 
 #include <xft/alloc.h>
 #include <xft/mem.h>
+#include <xft/xft_p_arena.h>
 
 __attribute__((__nonnull__(1)))
 static t_buffer	arena_allocate(t_any alloc, t_size size, t_size align)
@@ -36,6 +37,10 @@ static t_buffer	arena_reallocate(t_any alloc, t_buffer old, t_size new_size,
 	t_any	ptr;
 	t_size	copy_size;
 
+	if (!((t_uptr)old.mem & (align - 1))
+		&& (xft_arena_try_resize(((t_arena *)alloc)->current, old, new_size)
+			|| new_size <= old.size))
+		return (xft_fatptr(old.mem, new_size));
 	ptr = xft_arena_alloc((t_arena *)alloc, new_size, align);
 	if (!ptr)
 		return ((t_buffer){0});

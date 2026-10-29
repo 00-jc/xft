@@ -29,4 +29,8 @@ void				xft_arena_clean_fwd(const t_arena *alloc)\
 t_size				xft_match_paging(t_size page_size)\
 						__attribute__((const));
 
+t_u32a				xft_arena_try_resize(t_hugepage *page, t_buffer old,
+						t_size new_size)\
+						__attribute__((__nonnull__(1)));
+
 #endif
