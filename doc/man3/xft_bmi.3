@@ -316,26 +316,33 @@ through
 return the number of leading zero bits.
 A zero argument returns the width of the type in bits.
 .Pp
-On x86_64,
-.Fn xft_popcount_*
-use
-.Ql popcnt ,
-and the
-.Fn xft_memctz_*
+They are
+.Fn __builtin_popcountg ,
+.Fn __builtin_ctzg
 and
-.Fn xft_memclz_*
-families use
+.Fn __builtin_clzg ,
+so the compiler picks the instructions for the target.
+On x86 that is
+.Ql popcnt
+with
+.Dv __POPCNT__ ,
 .Ql tzcnt
+with
+.Dv __BMI__
 and
 .Ql lzcnt
-when the target defines
-.Dv __BMI__ .
-On aarch64 they use
-.Ql clz ,
+with
+.Dv __LZCNT__ ;
+without them, a shift-and-mask popcount and
+.Ql bsf
+or
+.Ql bsr
+with the zero case handled separately.
+On aarch64 it is
+.Ql cnt ,
 .Ql rbit
-and, with NEON,
-.Ql cnt .
-Elsewhere a branchless portable version is used.
+and
+.Ql clz .
 .Ss Byte order
 .Fn xft_bswap16 ,
 .Fn xft_bswap32
@@ -767,17 +774,3 @@ and
 only exist when the compiler defines
 .Dv __SIZEOF_INT128__ ;
 32-bit targets have none of them.
-.Pp
-On x86_64,
-.Fn xft_popcount_*
-use the
-.Ql popcnt
-instruction unconditionally.
-.Pp
-The portable
-.Fn xft_memclz_u128 ,
-used on x86_64 without
-.Dv __BMI__ ,
-ignores the upper 64 bits of
-.Fa x
-and returns 64 plus the leading zero count of the lower half.

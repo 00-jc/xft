@@ -85,7 +85,7 @@ inline t_size	xft_memclz_u128(t_u128 x)
 	t_u128	t;
 	t_size	r;
 
-	t = (t_u128)((x & ~0x0000000000000000FFFFFFFFFFFFFFFF) == 0) << 6;
+	t = (t_u128)((x >> 64) == 0) << 6;
 	x >>= 64 - t;
 	r = (t_size)t;
 	t = (t_u128)((x & 0xFFFFFFFF00000000) == 0) << 5;
