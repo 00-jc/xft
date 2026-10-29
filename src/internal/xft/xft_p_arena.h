@@ -33,4 +33,8 @@ t_u32a				xft_arena_try_resize(t_hugepage *page, t_buffer old,
 						t_size new_size)\
 						__attribute__((__nonnull__(1)));
 
+t_buffer			xft_arena_realloc(t_any alloc, t_buffer old,
+						t_size new_size, t_size align)\
+						__attribute__((__nonnull__(1)));
+
 #endif

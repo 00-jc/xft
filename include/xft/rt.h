@@ -43,6 +43,8 @@ t_xft_rt		xft_get_rt(const t_any *sp)\
 t_sysinfo		xft_get_sysinfo(const t_any *sp)\
 					__attribute__((__nonnull__(1)));
 
+t_result		xft_start_tls_for_main_thread(t_sysinfo sysinfo);
+
 void			xft_kernel_ptrs_destroy(t_kernel_ptrs *kp)\
 					__attribute__((__nonnull__(1)));
 

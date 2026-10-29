@@ -24,6 +24,8 @@ inline void	xft_main(const t_any *__restrict__ const sp)
 
 	writer = xft_get_fs_writer(xft_fatptr(buffer, sizeof(buffer)),
 			xft_get_stdout());
+	xft_pin_invariant_msg(xft_start_tls_for_main_thread(sysinfo) == OK,
+		xft_fatptr((t_u8 *)"tls start", sizeof("tls start") - 1));
 	test_thread_join(sysinfo);
 	test_thread_tls(sysinfo);
 	test_thread_detach(sysinfo);

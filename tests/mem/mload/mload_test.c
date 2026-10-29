@@ -37,13 +37,15 @@ static const t_u64	g_mload[][7] = {
 static void	test_mload_case(const t_u64 *c, t_u8 *end)
 {
 	t_buffer	mem;
+	t_size		rel;
 
-	mem = xft_fatptr(end - c[0], c[0]);
-	xft_pin_invariant(xft_mload_rel_u8(mem, c[1]) == c[2]);
-	xft_pin_invariant(xft_mload_rel_u16(mem, c[1]) == c[3]);
-	xft_pin_invariant(xft_mload_rel_u24(mem, c[1]) == c[4]);
-	xft_pin_invariant(xft_mload_rel_u32(mem, c[1]) == c[5]);
-	xft_pin_invariant(xft_mload_rel_u64(mem, c[1]) == c[6]);
+	mem = xft_fatptr(end - c[0], (t_size)c[0]);
+	rel = (t_size)c[1];
+	xft_pin_invariant(xft_mload_rel_u8(mem, rel) == c[2]);
+	xft_pin_invariant(xft_mload_rel_u16(mem, rel) == c[3]);
+	xft_pin_invariant(xft_mload_rel_u24(mem, rel) == c[4]);
+	xft_pin_invariant(xft_mload_rel_u32(mem, rel) == c[5]);
+	xft_pin_invariant(xft_mload_rel_u64(mem, rel) == c[6]);
 }
 
 void	test_mload(t_test *t)

@@ -234,6 +234,11 @@ to the free or reallocation functions is undefined behavior.
 .Pp
 None of the functions lock; an allocator must not be shared between threads
 without external locking.
+.Vt t_ts_gpa
+and
+.Vt t_ts_reporta
+pair one with a mutex; see
+.Xr xft_alloc 3 .
 .Pp
 Freed blocks keep their contents except for the first word, and reused blocks
 are not zeroed.

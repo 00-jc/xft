@@ -16,7 +16,9 @@
 # include <xft/threads.h>
 # include <xft/hint.h>
 # include <xft/mem.h>
-# include <xft/xft_p_syscalls.h>
+# ifdef __linux__
+#  include <xft/xft_p_syscalls.h>
+# endif
 
 void	test_thread_join(t_sysinfo sysinfo);
 void	test_thread_tls(t_sysinfo sysinfo);

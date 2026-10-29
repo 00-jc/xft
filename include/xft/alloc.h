@@ -15,6 +15,7 @@
 
 # include <xft/types/allocators_types.h>
 # include <xft/types/alloc_types.h>
+# include <xft/alloc/thread_safe_alloc.h>
 
 t_gpa		xft_new_gpa(void);
 void		xft_gpa_destroy(t_gpa *gpa);

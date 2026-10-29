@@ -239,6 +239,11 @@ typedef enum e_xft_futex_op : t_u8
 	xft_futex_op_lock_pi2 = 13,
 }	t_xft_futex_op;
 
+typedef enum e_xft_arch_prctl : t_u16
+{
+	xft_arch_set_fs = 0x1002,
+}	t_xft_arch_prctl;
+
 typedef enum e_xft_clone_flag : t_u32
 {
 	xft_clone_vm = 0x00000100,

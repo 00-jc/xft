@@ -15,6 +15,7 @@
 # include <xft/xft_p_threads.h>
 # include <xft/xft_p_syscalls.h>
 # include <xft/rt.h>
+# include <xft/xft_p_rt.h>
 # include <xft/mem.h>
 # include <xft/bmi.h>
 
@@ -69,10 +70,7 @@ static inline t_i32	xft__thread_clone(t_u8 *__restrict__ const map,
 	args.stack = map + offsets->stack_offset;
 	args.ptid = (t_i32a *)&instance->tid;
 	args.ctid = args.ptid;
-	args.tls = (t_uptr)map + offsets->tls_offset + l->tls_tp_offset;
-	xft_memcpy(map + offsets->tls_offset + l->tls_block_offset,
-		l->tls_image, l->tls_filesz);
-	*(t_uptr *)args.tls = args.tls;
+	args.tls = xft_tls_fill(map + offsets->tls_offset, l);
 	args.fn = xft__thread_entry;
 	args.arg = instance;
 	return (xft_clone(&args));

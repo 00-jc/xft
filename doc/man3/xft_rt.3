@@ -7,6 +7,7 @@
 .Nm xft_kernel_ptrs_destroy ,
 .Nm xft_dyn_cpu_select ,
 .Nm xft_exit_process ,
+.Nm xft_start_tls_for_main_thread ,
 .Nm xft_main
 .Nd program entry point and runtime helpers
 .Sh SYNOPSIS
@@ -22,6 +23,8 @@
 .Fn xft_dyn_cpu_select void
 .Ft void
 .Fn xft_exit_process "t_i32a code"
+.Ft t_result
+.Fn xft_start_tls_for_main_thread "t_sysinfo sysinfo"
 .Ft void
 .Fn xft_main "const t_any *restrict sp"
 .Sh DESCRIPTION
@@ -218,6 +221,33 @@ releases the storage owned by
 .Fa kp
 and zeroes it.
 On Linux it does nothing.
+.Ss Thread-local storage
+.Fn xft_start_tls_for_main_thread
+gives the main thread its own copy of the
+.Vt _Thread_local
+variables of the executable.
+On Linux without the C library the kernel starts the main thread with no
+thread pointer, so the main thread calls it once, with the
+.Fa sysinfo
+of
+.Fn xft_get_sysinfo ,
+before it touches a
+.Vt _Thread_local
+variable.
+It lays out the block like
+.Fn xft_thread_spawn
+does, in a static page when the block fits and in a private mapping
+otherwise, and sets the thread pointer with
+.Fn xft_set_thread_pointer ;
+see
+.Xr xft_os 3 .
+With
+.Dv XFT_REQUIRE_LIBC
+and on Windows the C library or the loader sets up the main thread, and
+.Fn xft_start_tls_for_main_thread
+returns
+.Dv OK
+without doing anything.
 .Ss CPU detection
 .Fn xft_dyn_cpu_select
 queries the running CPU and returns which vector widths are usable:
@@ -298,6 +328,12 @@ with every field false, and
 .Fa x86_64_ver
 .Dv XFT_X86_NONE ,
 if CPUID is unavailable.
+.Fn xft_start_tls_for_main_thread
+returns
+.Dv OK ,
+or
+.Dv KO
+when the block cannot be mapped or the thread pointer cannot be set.
 .Fn xft_main
 and
 .Fn xft_exit_process
@@ -332,6 +368,7 @@ void	xft_main(const t_any *__restrict__ const sp)
 .Sh SEE ALSO
 .Xr xft_io 3 ,
 .Xr xft_os 3 ,
+.Xr xft_threads 3 ,
 .Xr xft 7
 .Sh CAVEATS
 .Fn xft_get_kernel_ptrs

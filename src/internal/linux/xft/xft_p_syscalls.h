@@ -102,6 +102,12 @@ int			xft_perf_event_open(const t_perf_event_attr *restrict attr,\
 				int group_fd)\
 				__attribute__((__nonnull__(1)));
 
+# ifndef XFT_REQUIRE_LIBC
+
+int			xft_set_thread_pointer(t_uptr tp);
+
+# endif
+
 # if defined(__aarch64__) && !defined(XFT_REQUIRE_LIBC)
 
 t_i64a		xft_syscall6(t_u64a nr, const t_u64a args[6])\

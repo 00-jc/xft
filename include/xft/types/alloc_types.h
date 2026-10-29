@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/03 16:00:44 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/10/03 16:00:47 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/10/29 13:43:41 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 # include <xft/alloc/page_alloc.h>
 # include <xft/alloc/arena_alloc.h>
+# include <xft/types/atomic_types.h>
 
 typedef enum e_gpa_conf : t_u32
 {
@@ -51,5 +52,23 @@ typedef struct s_reporta
 	t_f64		avg_frag;
 	t_u8		buffer[REPORTA_BUFFER];
 }	t_reporta;
+
+typedef struct s_ts_gpa
+{
+	t_mutex		mutex;
+	t_gpa		gpa;
+}	t_ts_gpa;
+
+typedef struct s_ts_arena
+{
+	t_mutex		mutex;
+	t_arena		arena;
+}	t_ts_arena;
+
+typedef struct s_ts_reporta
+{
+	t_mutex		mutex;
+	t_reporta	reporta;
+}	t_ts_reporta;
 
 #endif

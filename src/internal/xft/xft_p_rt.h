@@ -38,4 +38,14 @@ typedef enum e_xft_tls_layout : t_u8
 t_u32a	xft_cache_line_size(void)\
 			__attribute__((const));
 
+# ifdef __linux__
+
+typedef t_u8	t_tls_page[4096]	__attribute__((__aligned__(4096)));
+
+t_uptr	xft_tls_fill(t_u8 *__restrict__ const area,\
+			const t_sysinfo_linux *__restrict__ const l)\
+			__attribute__((__nonnull__(1, 2)));
+
+# endif
+
 #endif

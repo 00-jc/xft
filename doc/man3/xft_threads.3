@@ -209,6 +209,10 @@ bytes of the initialized image into the block; the rest of the block is
 zero, so each thread sees
 .Vt _Thread_local
 variables at their initial values.
+The main thread gets its block from
+.Fn xft_start_tls_for_main_thread ;
+see
+.Xr xft_rt 3 .
 .Pp
 The thread is created with
 .Dv CLONE_VM ,

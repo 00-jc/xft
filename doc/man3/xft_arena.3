@@ -238,6 +238,12 @@ After
 .Fn xft_arena_rewind_clean
 to a checkpoint, any checkpoint taken after it may point to an unmapped page.
 .Pp
+None of the functions lock; an arena must not be shared between threads
+without external locking.
+.Vt t_ts_arena
+pairs one with a mutex; see
+.Xr xft_alloc 3 .
+.Pp
 Every page reserves at least 256 MiB of address space.
 On Linux the mappings are plain private anonymous mappings, so physical
 memory is only used for touched pages, but the reservation still counts

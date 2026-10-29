@@ -31,8 +31,8 @@ static void	arena_free(t_any alloc, t_buffer old)
 }
 
 __attribute__((__nonnull__(1)))
-static t_buffer	arena_reallocate(t_any alloc, t_buffer old, t_size new_size,
-					t_size align)
+t_buffer	xft_arena_realloc(t_any alloc, t_buffer old, t_size new_size,
+				t_size align)
 {
 	t_any	ptr;
 	t_size	copy_size;
@@ -61,7 +61,7 @@ t_allocator	xft_arena_allocator(t_arena *arena)
 	return ((t_allocator){
 		.vtable = {
 			.free = arena_free,
-			.realloc = arena_reallocate,
+			.realloc = xft_arena_realloc,
 			.allocate = arena_allocate,
 			.destroy = arena_destroy,
 			.clone = xft_alloc_clone,

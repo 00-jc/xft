@@ -23,6 +23,10 @@ const SRCS = [_][]const u8{
     "src/alloc/report/xft_report_free.c",
     "src/alloc/report/xft_report_realloc.c",
     "src/alloc/report/xft_report_vtable.c",
+    "src/alloc/thread_safe/xft_ts_arena.c",
+    "src/alloc/thread_safe/xft_ts_gpa.c",
+    "src/alloc/thread_safe/xft_ts_reporta.c",
+    "src/alloc/thread_safe/xft_ts_vtable.c",
     "src/atomics/mutex/xft_mutex_backoff_portable.c",
     "src/atomics/mutex/xft_mutex_busy.c",
     "src/atomics/mutex/xft_mutex_init.c",
@@ -336,6 +340,7 @@ const SRCS_RT_linux = [_][]const u8{
     "src/rt/linux/xft_get_kernel_ptrs.c",
     "src/rt/linux/xft_get_rt.c",
     "src/rt/linux/xft_get_sysinfo.c",
+    "src/rt/linux/xft_start_tls_for_main_thread.c",
 };
 
 const SRCS_THREADS_linux = [_][]const u8{
@@ -378,6 +383,7 @@ const SRCS_RT_win32 = [_][]const u8{
     "src/rt/win32/xft_get_kernel_ptrs.c",
     "src/rt/win32/xft_get_rt.c",
     "src/rt/win32/xft_get_sysinfo.c",
+    "src/rt/win32/xft_start_tls_for_main_thread.c",
 };
 
 const SRCS_XID = [_][]const u8{
@@ -448,8 +454,8 @@ fn syscallSrcs(comptime dir: []const u8, comptime names: []const []const u8) [na
     return out;
 }
 
-const SRCS_FREESTANDING_x86_64 = syscallSrcs("src/os/linux/x86_64", &XFT_SYSCALLS);
-const SRCS_FREESTANDING_aarch64 = syscallSrcs("src/os/linux/aarch64", &(XFT_SYSCALLS ++ .{"syscall6"}));
+const SRCS_FREESTANDING_x86_64 = syscallSrcs("src/os/linux/x86_64", &(XFT_SYSCALLS ++ .{"set_thread_pointer"}));
+const SRCS_FREESTANDING_aarch64 = syscallSrcs("src/os/linux/aarch64", &(XFT_SYSCALLS ++ .{ "syscall6", "set_thread_pointer" }));
 const SRCS_LIBC = syscallSrcs("src/os/linux/libc", &XFT_SYSCALLS);
 
 const SRCS_TEST = [_][]const u8{
@@ -996,6 +1002,17 @@ fn hasStackClash(x: xft_ctx) bool {
     };
 }
 
+fn hasFreestandingThreads(x: xft_ctx) bool {
+    return x.target.result.os.tag == .linux and switch (x.target.result.cpu.arch) {
+        .x86_64, .aarch64 => true,
+        else => false,
+    };
+}
+
+fn hasStackCheck(x: xft_ctx) bool {
+    return x.target.result.cpu.arch != .x86;
+}
+
 fn cflags(x: xft_ctx, v: xft_variant, cxx: bool) ![]const []const u8 {
     const a = x.b.allocator;
     var flags: std.ArrayList([]const u8) = .empty;
@@ -1034,7 +1051,7 @@ fn xftModule(x: xft_ctx, v: xft_variant) *std.Build.Module {
         .optimize = x.opt,
         .link_libc = v.libc,
         .stack_protector = v.libc,
-        .stack_check = v.sanitize,
+        .stack_check = v.sanitize and hasStackCheck(x),
         .sanitize_c = if (v.sanitize) .full else .off,
         .omit_frame_pointer = !v.sanitize,
         .no_builtin = if (v.libc) null else true,
@@ -1228,11 +1245,13 @@ pub fn build(b: *std.Build) !void {
             const run = b.addRunArtifact(tests);
             const test_step = b.step("test", "Run the unit tests");
             test_step.dependOn(&run.step);
-            const freestanding = if (xft.libc) try addXft(x, "xft-freestanding", false, false) else xft;
-            const thread_tests = try addHarness(x, "freestanding_thread_tests", freestanding, &SRCS_TEST_THREADS_FREESTANDING, &.{"tests/include"}, &.{});
-            const run_thread_tests = b.addRunArtifact(thread_tests);
-            b.step("freestanding-thread-tests", "Run the thread tests against the freestanding build").dependOn(&run_thread_tests.step);
-            test_step.dependOn(&run_thread_tests.step);
+            if (hasFreestandingThreads(x)) {
+                const freestanding = if (xft.libc) try addXft(x, "xft-freestanding", false, false) else xft;
+                const thread_tests = try addHarness(x, "freestanding_thread_tests", freestanding, &SRCS_TEST_THREADS_FREESTANDING, &.{"tests/include"}, &.{});
+                const run_thread_tests = b.addRunArtifact(thread_tests);
+                b.step("freestanding-thread-tests", "Run the thread tests against the freestanding build").dependOn(&run_thread_tests.step);
+                test_step.dependOn(&run_thread_tests.step);
+            }
         }
         if (cfg.fuzz) {
             const fuzz = b.step("fuzz", "Run the fuzz targets");

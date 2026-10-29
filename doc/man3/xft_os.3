@@ -57,7 +57,17 @@ and passes six-argument calls through
 .Dv XFT_REQUIRE_LIBC .
 The wrapper calls
 .Xr syscall 2 ;
-the C library's own wrappers are not used.
+the C library's own wrappers are not used, except by
+.Fn xft_clock_gettime ,
+which calls
+.Xr clock_gettime 3
+so that
+.Vt t_timespec ,
+the C library's
+.Vt struct timespec ,
+has the layout the call writes on every architecture, including 32-bit
+ones with a 64-bit
+.Vt time_t .
 64-bit arguments are cast to
 .Vt long
 before they reach the variadic call, so they take one slot on 32-bit
@@ -137,7 +147,16 @@ is the public, portable form of the latter.
 which reads or sets a resource limit through a
 .Vt t_rlimit
 of two 64-bit words on every architecture,
-.Fn xft_set_tid_address
+.Fn xft_set_tid_address ,
+.Fn xft_set_thread_pointer ,
+which sets the calling thread's thread pointer with
+.Xr arch_prctl 2
+and
+.Dv ARCH_SET_FS
+on x86_64 and by writing
+.Ql tpidr_el0
+on aarch64, exists only on freestanding x86_64 and aarch64 and returns 0 or
+\-1,
 and
 .Fn xft_clone ,
 which takes a
@@ -227,7 +246,3 @@ by the libc backend.
 .Xr xft 7
 .Sh CAVEATS
 32-bit Linux is supported through the libc backend only.
-.Xr clock_gettime 2
-uses
-.Dv SYS_clock_gettime ,
-which 32-bit musl does not provide.

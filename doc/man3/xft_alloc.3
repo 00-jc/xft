@@ -6,6 +6,24 @@
 .Nm xft_gpa_allocator ,
 .Nm xft_reporta_allocator ,
 .Nm xft_page_allocator ,
+.Nm xft_ts_gpa_allocator ,
+.Nm xft_ts_reporta_allocator ,
+.Nm xft_ts_arena_allocator ,
+.Nm xft_new_ts_gpa ,
+.Nm xft_new_ts_reporta ,
+.Nm xft_new_ts_arena ,
+.Nm xft_ts_gpa_alloc ,
+.Nm xft_ts_gpa_realloc ,
+.Nm xft_ts_gpa_free ,
+.Nm xft_ts_gpa_destroy ,
+.Nm xft_ts_reporta_alloc ,
+.Nm xft_ts_reporta_realloc ,
+.Nm xft_ts_reporta_free ,
+.Nm xft_ts_reporta_destroy ,
+.Nm xft_ts_arena_alloc ,
+.Nm xft_ts_arena_realloc ,
+.Nm xft_ts_arena_free ,
+.Nm xft_ts_arena_destroy ,
 .Nm xft_alloc_clone
 .Nd allocator interface
 .Sh SYNOPSIS
@@ -18,6 +36,42 @@
 .Fn xft_reporta_allocator "t_reporta *gpa"
 .Ft t_allocator
 .Fn xft_page_allocator void
+.Ft t_allocator
+.Fn xft_ts_gpa_allocator "t_ts_gpa *gpa"
+.Ft t_allocator
+.Fn xft_ts_reporta_allocator "t_ts_reporta *gpa"
+.Ft t_allocator
+.Fn xft_ts_arena_allocator "t_ts_arena *arena"
+.Ft t_ts_gpa
+.Fn xft_new_ts_gpa void
+.Ft t_ts_reporta
+.Fn xft_new_ts_reporta void
+.Ft t_ts_arena
+.Fn xft_new_ts_arena void
+.Ft t_buffer
+.Fn xft_ts_gpa_alloc "t_any alloc" "t_size size" "t_size align"
+.Ft t_buffer
+.Fn xft_ts_gpa_realloc "t_any alloc" "t_buffer buf" "t_size newsize" "t_size align"
+.Ft void
+.Fn xft_ts_gpa_free "t_any alloc" "t_buffer buf"
+.Ft void
+.Fn xft_ts_gpa_destroy "t_any alloc"
+.Ft t_buffer
+.Fn xft_ts_reporta_alloc "t_any alloc" "t_size size" "t_size align"
+.Ft t_buffer
+.Fn xft_ts_reporta_realloc "t_any alloc" "t_buffer buf" "t_size newsize" "t_size align"
+.Ft void
+.Fn xft_ts_reporta_free "t_any alloc" "t_buffer buf"
+.Ft void
+.Fn xft_ts_reporta_destroy "t_any alloc"
+.Ft t_buffer
+.Fn xft_ts_arena_alloc "t_any alloc" "t_size size" "t_size align"
+.Ft t_buffer
+.Fn xft_ts_arena_realloc "t_any alloc" "t_buffer buf" "t_size newsize" "t_size align"
+.Ft void
+.Fn xft_ts_arena_free "t_any alloc" "t_buffer buf"
+.Ft void
+.Fn xft_ts_arena_destroy "t_any alloc"
 .Ft t_buffer
 .Fn xft_alloc_clone "t_any self" "t_buffer buffer"
 .Sh DESCRIPTION
@@ -126,7 +180,19 @@ and returns a buffer of exactly
 .Fa size
 bytes.
 .Fa realloc
-always allocates a new block of
+resizes the block in place when
+.Fa old Ns .mem
+is aligned to
+.Fa align
+and the block either ends at the top of the arena's current page, with room
+in that page for
+.Fa new_size
+bytes, or already holds
+.Fa new_size
+bytes.
+A block at the top of the page moves the top to the new end, so shrinking it
+releases the tail to later allocations.
+Otherwise it allocates a new block of
 .Fa new_size
 bytes, copies the smaller of the old and new sizes, and leaves the old block
 in place.
@@ -187,6 +253,92 @@ All four set
 .Fa clone
 to
 .Fn xft_alloc_clone .
+.Ss Thread-safe allocators
+.Vt t_ts_gpa ,
+.Vt t_ts_reporta
+and
+.Vt t_ts_arena
+pair a
+.Vt t_mutex
+with a
+.Vt t_gpa ,
+.Vt t_reporta
+or
+.Vt t_arena :
+.Bd -literal -offset indent
+typedef struct s_ts_gpa {
+	t_mutex    mutex;
+	t_gpa      gpa;
+} t_ts_gpa;
+
+typedef struct s_ts_reporta {
+	t_mutex    mutex;
+	t_reporta  reporta;
+} t_ts_reporta;
+
+typedef struct s_ts_arena {
+	t_mutex    mutex;
+	t_arena    arena;
+} t_ts_arena;
+.Ed
+.Pp
+.Fn xft_new_ts_gpa ,
+.Fn xft_new_ts_reporta
+and
+.Fn xft_new_ts_arena
+return the backend built by
+.Fn xft_new_gpa ,
+.Fn xft_new_reporta
+or
+.Fn xft_new_arena
+with the mutex unlocked.
+.Pp
+Each
+.Fn xft_ts_*_alloc ,
+.Fn xft_ts_*_realloc ,
+.Fn xft_ts_*_free
+and
+.Fn xft_ts_*_destroy
+function takes
+.Fa alloc
+as a pointer to the thread-safe struct, locks its mutex with
+.Dv xft_lock_fast ,
+calls the matching backend function on the inner allocator and unlocks the
+mutex before returning.
+.Fn xft_ts_arena_realloc
+follows the arena vtable's
+.Fa realloc .
+.Fn xft_ts_arena_free
+does nothing and takes no lock.
+.Pp
+.Fn xft_ts_gpa_allocator ,
+.Fn xft_ts_reporta_allocator
+and
+.Fn xft_ts_arena_allocator
+build a
+.Vt t_allocator
+whose vtable entries are those functions, with
+.Fa clone
+set to
+.Fn xft_alloc_clone ,
+which allocates through the locked
+.Fa allocate
+entry.
+They allocate nothing and are declared
+.Ql const .
+A single
+.Vt t_allocator
+built this way may be shared between threads.
+.Pp
+Only these functions lock.
+.Fn xft_arena_checkpoint ,
+the rewind functions and direct calls on the inner
+.Fa gpa ,
+.Fa reporta
+or
+.Fa arena
+member take no lock, and must not run while another thread uses the
+allocator.
 .Pp
 .Fn xft_alloc_clone
 treats
@@ -252,6 +404,7 @@ void	xft_main(const t_any *const __restrict__ sp)
 .Ed
 .Sh SEE ALSO
 .Xr xft_arena 3 ,
+.Xr xft_atomics 3 ,
 .Xr xft_gpa 3 ,
 .Xr xft_indexmap 3 ,
 .Xr xft_palloc 3 ,

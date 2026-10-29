@@ -19,7 +19,7 @@
 __attribute__((__always_inline__, __nonnull__(1), __used__))
 inline t_i64a	xft_clock_gettime(t_timespec *__restrict__ const ts)
 {
-	return ((t_i64a)syscall(SYS_clock_gettime, 1, ts));
+	return (clock_gettime(CLOCK_MONOTONIC, ts));
 }
 
 # endif

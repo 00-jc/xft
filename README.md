@@ -23,16 +23,15 @@ A hosted build (`-Duse-libc`) exposes the same API on a normal toolchain, so the
 | --- | --- | --- | --- |
 | Linux | x86_64 | yes | yes |
 | Linux | aarch64 | yes | yes |
-| Linux | others, including x86 and ARM | no<sup>1</sup> | yes<sup>2, 4</sup> |
-| Windows | x86_64 | yes<sup>3</sup> | yes |
-| Windows | aarch64 | yes<sup>3</sup> | yes |
-| Windows | x86 | yes<sup>3, 4</sup> | yes<sup>4</sup> |
+| Linux | others, including x86 and ARM | no<sup>1</sup> | yes<sup>3</sup> |
+| Windows | x86_64 | yes<sup>2</sup> | yes |
+| Windows | aarch64 | yes<sup>2</sup> | yes |
+| Windows | x86 | yes<sup>2, 3</sup> | yes<sup>3</sup> |
 | Others | any | no | no |
 
 1. Freestanding Linux issues system calls with inline `syscall`/`svc` assembly, which exists for x86_64 and aarch64 only; other architectures go through libc's `syscall(2)`.
-2. 32-bit musl does not build: it has no `SYS_clock_gettime`.
-3. Freestanding Windows calls the win32 API in the system DLLs; see [Usage](#usage).
-4. 32-bit targets have no `__int128`, so `t_u128`/`t_i128` and the functions that take them (`xft_murmur3`, `xft_pow_u128`, `xft_maxu128`, `xft_memclz_u128`, `xft_memctz_u128`) are left out. 64-bit division calls compiler-rt (`__udivdi3`, `__umoddi3`), which Zig links into executables; add it when linking the archive by hand.
+2. Freestanding Windows calls the win32 API in the system DLLs; see [Usage](#usage).
+3. 32-bit targets have no `__int128`, so `t_u128`/`t_i128` and the functions that take them (`xft_murmur3`, `xft_pow_u128`, `xft_maxu128`, `xft_memclz_u128`, `xft_memctz_u128`) are left out. 64-bit division calls compiler-rt (`__udivdi3`, `__umoddi3`), which Zig links into executables; add it when linking the archive by hand.
 
 ## Building
 
@@ -69,7 +68,7 @@ On Linux every build adds `-fstack-clash-protection` where Clang supports it (no
 | `-Dtarget` | host | Target triple |
 | `-Dcpu` | `native` | CPU model and features (`native`, `baseline`, `x86_64_v3`, ...); the ISA paths in `xft` follow it |
 | `-Duse-libc` | `false` | Build against a libc instead of freestanding |
-| `-Dsanitize` | `false` | UBSan plus stack checks; requires `-Duse-libc`, disables LTO; not available on 32-bit x86 |
+| `-Dsanitize` | `false` | UBSan plus stack checks, without the stack checks on 32-bit x86, where Zig rejects them; requires `-Duse-libc`, disables LTO |
 | `-Dlto` | `false` | Full link-time optimization |
 | `-Dfast-math` | `false` | `-ffast-math` |
 | `-Dllc` | `16777216` | Last level cache size in bytes, used to pick the non-temporal thresholds |
@@ -133,13 +132,13 @@ xft_main(const t_any *__restrict__ const sp)
 }
 ```
 
-On Windows, `xft` calls into the system DLLs even in the freestanding flavor, so it depends on the `kernel32`, `shell32`, and `api-ms-win-core-synch-l1-2-0` import libraries. The `xft` artifact links them for you; if you link `xft.lib` by hand, add them yourself. A freestanding Windows executable uses `_start` as its entry point.
+On Windows, `xft` calls into the system DLLs even in the freestanding flavor, so it depends on the `kernel32`, `shell32`, `bcrypt`, and `api-ms-win-core-synch-l1-2-0` import libraries. The `xft` artifact links them for you; if you link `xft.lib` by hand, add them yourself. A freestanding Windows executable uses `_start` as its entry point.
 
 ## Subsystems
 
 | Header | Contents |
 | --- | --- |
-| `xft/alloc.h` | Allocator interface; arena, general-purpose, page, and reporting allocators |
+| `xft/alloc.h` | Allocator interface; arena, general-purpose, page, and reporting allocators, and mutex-locked variants of the arena, general-purpose, and reporting allocators |
 | `xft/atomics.h` | Mutexes and atomic types |
 | `xft/bmi.h` | Bit manipulation, byte order, SIMD mask primitives |
 | `xft/cstr.h` | NUL-terminated string helpers |
@@ -170,7 +169,7 @@ On Windows, `xft` calls into the system DLLs even in the freestanding flavor, so
 
 ## Testing
 
-The `test` step runs two executables:
+The `test` step runs two executables, the second only on freestanding-capable Linux (x86_64 and aarch64):
 
 - `tests`, every unit test, linked against a sanitized hosted build (`xft-san`, or the main library with `-Dsanitize`). Its thread tests exercise pthreads.
 - `freestanding_thread_tests`, the thread tests alone, linked against a freestanding build (`xft-freestanding`, or the main library without `-Duse-libc`). It exercises `clone(2)`.
@@ -185,7 +184,7 @@ To run only the freestanding thread tests:
 zig build -Dtests freestanding-thread-tests
 ```
 
-Tests always build sanitized, so they cannot be built for 32-bit x86, where Zig rejects the stack checks.
+Tests always build sanitized and hosted, so the target needs a libc: use `aarch64-linux-gnu` or `aarch64-linux-musl`, not `aarch64-linux-none`. On 32-bit x86 the sanitized build leaves out the stack checks.
 
 Fuzz targets need the main build sanitized and hosted:
 
