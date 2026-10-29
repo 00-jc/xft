@@ -293,7 +293,6 @@ const SRCS = [_][]const u8{
     "src/mem/xft_fences.c",
     "src/mem/xft_ldfence.c",
     "src/mem/xft_membroadcast.c",
-    "src/mem/xft_memcpy.c",
     "src/mem/xft_memtake.c",
     "src/mem/xft_movs.c",
     "src/mem/xft_overlap.c",

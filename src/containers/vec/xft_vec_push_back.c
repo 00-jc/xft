@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/29 23:39:14 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/10/16 00:19:42 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/10/29 02:11:54 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ inline t_result	xft_vec_push_back(t_allocator allocator,
 				&& !xft_vec_reserve(allocator, vec,
 					xft_tern_s(vec->buf.size, vec->buf.size << 1, 4)), 0))
 			return (KO);
-		xft_memcpy(vec->buf.mem + vec->size, data, type_size);
+		__builtin_memcpy(vec->buf.mem + vec->size, data, type_size);
 		vec->size += type_size;
 		return (OK);
 	}

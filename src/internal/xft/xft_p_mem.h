@@ -16,11 +16,6 @@
 # include <xft/mem.h>
 # include <xft/types/xft_p_mem_types.h>
 
-void			*xft__memcpy(t_any __restrict__ dest,
-					t_cany __restrict__ const src, t_size n)\
-					__attribute__((__nonnull__(1, 2), __hot__, __noinline__,\
-						__returns_nonnull__));
-
 void			xft_memcpy_naive(t_any __restrict__ dest,
 					t_cany __restrict__ const src,
 					t_size n)\

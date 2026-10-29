@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/11 00:20:02 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/10/16 00:19:32 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/10/29 02:05:30 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ inline void	xft_soa_append_from_struct_unchecked(
 		off = ctx->entries[it].offset_from_struct_base;
 		start = (t_any)(base + acc + soa->occupied_elements
 				* ctx->entries[it].size);
-		xft_memcpy(start, (t_blk8r)_struct + off, ctx->entries[it].size);
+		__builtin_memcpy(start, (t_blk8r)_struct + off, ctx->entries[it].size);
 		acc += soa->capacity_elements * ctx->entries[it].size;
 		++it;
 	}
