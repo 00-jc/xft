@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/03 18:01:29 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/10/28 22:10:00 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/10/29 12:20:44 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,22 @@
 # include <xft/rt.h>
 
 # ifndef XFT_NO_RT
+
+# endif
+
+# if defined(__x86_64__)
+
+typedef enum e_xft_tls_layout : t_u8
+{
+	xft_tls_tcb_after = 1,
+}	t_xft_tls_layout;
+
+# else
+
+typedef enum e_xft_tls_layout : t_u8
+{
+	xft_tls_tcb_after = 0,
+}	t_xft_tls_layout;
 
 # endif
 

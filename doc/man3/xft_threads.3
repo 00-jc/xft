@@ -1,0 +1,379 @@
+.Dd October 29, 2026
+.Dt XFT_THREADS 3
+.Os xft
+.Sh NAME
+.Nm xft_thread_spawn ,
+.Nm xft_thread_join ,
+.Nm xft_thread_detach ,
+.Nm xft_thread_id ,
+.Nm xft_thread_destroy
+.Nd threads
+.Sh SYNOPSIS
+.In threads.h
+.Ft t_result
+.Fn xft_thread_spawn "t_thread *thread" "t_sysinfo sysinfo" "t_thread_opts opts"
+.Ft void
+.Fn xft_thread_join "t_thread *thread"
+.Ft void
+.Fn xft_thread_detach "t_thread *thread"
+.Ft t_thread_id
+.Fn xft_thread_id "const t_thread *thread"
+.Ft void
+.Fn xft_thread_destroy "t_thread_instance *instance"
+.Sh DESCRIPTION
+These functions start threads that share the address space, open files and
+signal handlers of the process.
+Linux issues
+.Xr clone 2
+directly, a build with
+.Dv XFT_REQUIRE_LIBC
+calls
+.Xr pthread_create 3 ,
+and Windows calls
+.Ql CreateThread .
+.Ss Types
+.Bd -literal -offset indent
+typedef void (*t_thread_func)(t_any);
+
+typedef struct s_thread_opts {
+	t_thread_func       fn;
+	t_size              stack_size;
+	t_any               argument;
+} t_thread_opts;
+.Ed
+.Pp
+With
+.Dv XFT_REQUIRE_LIBC
+and on Windows,
+.Vt t_thread
+holds the thread's handle by value and nothing else is allocated:
+.Bd -literal -offset indent
+typedef t_uptr t_thread_id;
+
+typedef struct s_thread {
+	t_thread_id         handle;
+} t_thread;
+.Ed
+.Pp
+On Linux without the C library,
+.Vt t_thread
+points to the thread's state, which lives in the memory of the thread itself:
+.Bd -literal -offset indent
+typedef t_u32a t_thread_id;
+
+typedef enum e_thread_status : t_u8 {
+	THREAD_RUNNING,
+	THREAD_DETACHED,
+	THREAD_COMPLETED,
+} t_thread_status;
+
+typedef struct s_thread_instance {
+	t_size              size;
+	t_thread_func       fn;
+	t_any               argument;
+	t_thread_id         tid;
+	t_thread_status     status;
+	t_any               base;
+} t_thread_instance;
+
+typedef struct s_thread {
+	t_thread_instance   *instance;
+} t_thread;
+.Ed
+.Pp
+.Vt t_thread_opts
+names the function the thread runs, its argument and the size of its stack.
+.Dv XFT_THREAD_STACKSIZE
+is 8388608, 8 MiB, unless it is defined before
+.In threads.h
+is included.
+.Pp
+.Vt t_thread_instance ,
+.Vt t_thread_status
+and
+.Fn xft_thread_destroy
+exist only on Linux without the C library, so code that touches them does
+not compile for the other targets.
+.Fa base
+and
+.Fa size
+describe the region that holds the thread,
+.Fa tid
+is its kernel thread ID, and
+.Fa status
+starts as
+.Dv THREAD_RUNNING
+and is read and written atomically.
+.Ss Functions
+.Fn xft_thread_spawn
+starts a thread that calls
+.Fa opts.fn
+with
+.Fa opts.argument
+and stores its state in
+.Fa thread .
+Linux reads the page size and the thread-local storage layout from
+.Fa sysinfo ,
+which comes from
+.Fn xft_get_sysinfo
+of the running process; the other targets ignore it.
+.Pp
+.Fn xft_thread_join
+waits for the thread to return from its function and frees its memory.
+Everything the thread wrote is visible to the caller once
+.Fn xft_thread_join
+returns.
+.Pp
+.Fn xft_thread_detach
+gives the thread's memory to the thread itself, which frees it when its
+function returns.
+When the function has already returned,
+.Fn xft_thread_detach
+frees the memory at once.
+.Pp
+.Fn xft_thread_id
+returns the thread's identifier: the kernel thread ID on Linux without the C
+library, which reads 0 once the thread has exited, the
+.Vt pthread_t
+with
+.Dv XFT_REQUIRE_LIBC
+and the
+.Ql HANDLE
+on Windows.
+.Pp
+.Fn xft_thread_destroy
+frees
+.Fa instance
+and the memory around it and ends the calling thread.
+The thread entry calls it when the function of a detached thread returns;
+a detached thread may also call it on its own
+.Vt t_thread_instance
+to end early.
+.Pp
+Every spawned thread is joined or detached exactly once, and
+.Fa thread
+is invalid after either.
+.Ss Completion
+On Linux without the C library, when its function returns, the thread swaps
+.Fa status
+to
+.Dv THREAD_COMPLETED ,
+and
+.Fn xft_thread_detach
+swaps it to
+.Dv THREAD_DETACHED ,
+both with an acquire-release exchange.
+Whichever side sees the other's value frees the memory: a thread that finds
+.Dv THREAD_DETACHED
+calls
+.Fn xft_thread_destroy ,
+and a detach that finds
+.Dv THREAD_COMPLETED
+frees it from the caller.
+.Ss Linux
+.Fn xft_thread_spawn
+maps one private, anonymous region of
+.Fa size
+bytes with
+.Xr mmap 2
+and
+.Dv PROT_NONE ,
+then makes all of it but the first page readable and writable with
+.Xr mprotect 2 :
+.Bd -literal -offset indent
+base                                                     base + size
+| guard | stack          | TLS block | t_thread_instance | padding |
+                         ^ initial stack pointer
+.Ed
+.Pp
+The guard page faults on a stack overflow.
+The stack takes
+.Fa opts.stack_size
+bytes, at least one page, rounded up to a multiple of the page size.
+The TLS block is aligned to
+.Fa sysinfo._linux.tls_align ,
+which is the alignment of the
+.Dv PT_TLS
+segment and at least the constructive interference size, so the blocks of
+two threads never share a cache line.
+The whole region is a multiple of the page size.
+.Pp
+The TLS block takes the static TLS layout of the target: on x86_64 the
+thread-local data sits below a 16-byte thread control block whose first word
+points to itself, and on aarch64 the 16-byte control block sits below the
+data.
+.Fn xft_thread_spawn
+copies the
+.Fa sysinfo._linux.tls_filesz
+bytes of the initialized image into the block; the rest of the block is
+zero, so each thread sees
+.Vt _Thread_local
+variables at their initial values.
+.Pp
+The thread is created with
+.Dv CLONE_VM ,
+.Dv CLONE_FS ,
+.Dv CLONE_FILES ,
+.Dv CLONE_SIGHAND ,
+.Dv CLONE_THREAD ,
+.Dv CLONE_SYSVSEM ,
+.Dv CLONE_SETTLS ,
+.Dv CLONE_PARENT_SETTID
+and
+.Dv CLONE_CHILD_CLEARTID ,
+through
+.Fn xft_clone ;
+see
+.Xr xft_os 3 .
+Both thread ID pointers point to
+.Fa tid ,
+so the kernel stores the thread ID before
+.Fn xft_thread_spawn
+returns, and clears it and wakes a futex on it when the thread exits.
+.Fn xft_thread_join
+waits on that futex with
+.Fn xft_futex_wait
+until
+.Fa tid
+reads 0, then unmaps the region with
+.Xr munmap 2 .
+The thread inherits the signal mask of the thread that spawned it.
+.Pp
+.Fn xft_thread_destroy
+runs on the stack it frees, so it is written in inline assembly for x86_64
+and aarch64.
+It clears the thread's clear-child-tid address with
+.Xr set_tid_address 2 ,
+so the kernel does not write to the freed region, blocks every signal with
+.Xr rt_sigprocmask 2 ,
+so no handler runs on it, then issues
+.Xr munmap 2
+and
+.Xr exit 2
+without touching the stack in between.
+.Ss XFT_REQUIRE_LIBC
+.Fn xft_thread_spawn
+calls
+.Xr pthread_create 3
+with a stack of
+.Fa opts.stack_size
+bytes set through
+.Xr pthread_attr_setstacksize 3 ;
+the C library provides the stack, its guard and thread-local storage.
+The function and its argument travel to the thread in a structure on the
+stack of
+.Fn xft_thread_spawn ,
+which holds a locked
+.Vt t_mutex ;
+the thread copies both and unlocks it, and
+.Fn xft_thread_spawn
+locks it again with
+.Dv xft_lock_fast
+before it returns, so nothing outlives the call.
+The wait spins briefly, then sleeps until the thread unlocks it.
+.Fn xft_thread_join
+calls
+.Xr pthread_join 3 ,
+and
+.Fn xft_thread_detach
+calls
+.Xr pthread_detach 3 ,
+which leaves freeing the thread to the C library.
+.Pp
+glibc older than 2.34 keeps the thread functions in
+.Pa libpthread ;
+executables built by Zig link it automatically, and linking the archive by
+hand there needs
+.Fl lpthread .
+glibc 2.34 and later and musl keep them in the C library itself.
+.Ss Windows
+.Fn xft_thread_spawn
+calls
+.Ql CreateThread
+with
+.Dv STACK_SIZE_PARAM_IS_A_RESERVATION ,
+so
+.Fa opts.stack_size
+is the reserved size of the stack, and 0 takes the default of the
+executable.
+The function and its argument reach the thread through the same
+.Vt t_mutex
+handoff as with
+.Dv XFT_REQUIRE_LIBC .
+.Fn xft_thread_join
+waits with
+.Ql WaitForSingleObject
+and
+.Dv INFINITE ,
+then closes the handle with
+.Ql CloseHandle .
+.Fn xft_thread_detach
+closes the handle, and the system frees the thread when it ends.
+.Sh RETURN VALUES
+.Fn xft_thread_spawn
+returns
+.Dv OK ,
+or
+.Dv KO
+when the memory cannot be mapped or the thread cannot be created; on failure
+it frees what it allocated and leaves
+.Fa thread
+unchanged.
+.Pp
+.Fn xft_thread_id
+returns the thread's identifier.
+.Fn xft_thread_join
+and
+.Fn xft_thread_detach
+return nothing, and
+.Fn xft_thread_destroy
+does not return.
+.Sh EXAMPLES
+Compute a value on a second thread and wait for it:
+.Bd -literal -offset indent
+static void	work(t_any arg)
+{
+	*(t_u64 *)arg = 42;
+}
+
+void	xft_main(const t_any *__restrict__ const sp)
+{
+	t_thread	thread;
+	t_u64		value;
+
+	value = 0;
+	if (!xft_thread_spawn(&thread, xft_get_sysinfo(sp),
+			(t_thread_opts){.fn = work,
+			.stack_size = XFT_THREAD_STACKSIZE, .argument = &value}))
+		xft_exit_process(1);
+	xft_thread_join(&thread);
+	xft_exit_process(value != 42);
+}
+.Ed
+.Sh SEE ALSO
+.Xr xft_atomics 3 ,
+.Xr xft_os 3 ,
+.Xr xft_rt 3 ,
+.Xr xft 7
+.Sh CAVEATS
+.Bl -bullet
+.It
+On Linux, a thread gets storage only for the
+.Vt _Thread_local
+variables of the executable, not for those of shared libraries.
+.It
+Call
+.Fn xft_thread_destroy
+only from a detached thread, on its own
+.Vt t_thread_instance .
+On any other thread it frees memory that a later
+.Fn xft_thread_join
+reads.
+.It
+With
+.Dv XFT_REQUIRE_LIBC ,
+a stack size below
+.Dv PTHREAD_STACK_MIN
+is silently ignored, and the thread gets the default stack size of the C
+library.
+.El

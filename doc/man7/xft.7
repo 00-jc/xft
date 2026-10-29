@@ -185,6 +185,8 @@ sorting
 growable strings
 .It Xr xft_swissmap 3
 SIMD open-addressing hash map
+.It Xr xft_threads 3
+spawning, joining and detaching threads
 .It Xr xft_timing 3
 clocks and cycle counters
 .It Xr xft_vec 3
@@ -263,6 +265,12 @@ Default
 .Ql native .
 .It Fl Duse-libc
 Build against a libc instead of freestanding.
+Threads go through the C library's pthreads; glibc older than 2.34 keeps
+them in
+.Pa libpthread ,
+which executables built by Zig link automatically and which needs
+.Fl lpthread
+when linking the archive by hand.
 Default off.
 .It Fl Dsanitize
 UndefinedBehaviorSanitizer and stack checks; Zig ships no AddressSanitizer
@@ -291,9 +299,14 @@ and
 switch to non-temporal stores.
 Default 16777216.
 .It Fl Dtests
-Build the unit tests, always sanitized, and the
+Build the unit tests, always sanitized, and the thread tests against a
+freestanding build, which creates threads with
+.Xr clone 2 .
+The
 .Cm test
-step that runs them.
+step runs both, and
+.Cm freestanding-thread-tests
+runs only the thread tests.
 .It Fl Dfuzz
 Build the fuzz targets and the
 .Cm fuzz

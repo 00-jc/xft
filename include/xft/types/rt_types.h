@@ -69,8 +69,10 @@ typedef struct s_sysinfo_linux
 	t_size		phnum;
 	t_any		tls_image;
 	t_size		tls_filesz;
-	t_size		tls_memsz;
 	t_size		tls_align;
+	t_size		tls_size;
+	t_size		tls_block_offset;
+	t_size		tls_tp_offset;
 	t_size		sigstack_size;
 	t_size		secure;
 }	t_sysinfo_linux;

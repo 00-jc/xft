@@ -27,11 +27,11 @@ inline void	xft_mutex_lock(t_mutex *__restrict__ const mutex,
 			false, __ATOMIC_ACQUIRE, __ATOMIC_RELAXED);
 	if (__builtin_expect(ret, 1))
 		return ;
-	if (type == FAST)
+	if (type == xft_lock_fast)
 		xft_mutex_spin(mutex);
-	else if (type == BUSY)
+	else if (type == xft_lock_busy)
 		xft_mutex_busy(mutex);
-	else if (type == SLOW)
+	else if (type == xft_lock_slow)
 		xft_mutex_slow(mutex);
 	else
 		__builtin_unreachable();

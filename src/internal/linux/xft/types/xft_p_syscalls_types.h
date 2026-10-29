@@ -106,6 +106,8 @@ typedef struct s_clone_arg
 	t_i32a	*ptid;
 	t_i32a	*ctid;
 	t_uptr	tls;
+	t_i32	(*fn)(t_any);
+	t_any	arg;
 }	t_clone_arg;
 
 typedef enum e_xft_errno : t_u16

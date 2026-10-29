@@ -50,7 +50,7 @@ inline void	xft_main(const t_any *__restrict__ const sp)
 
 	xft_test_init(&t);
 	run_all_tests(&t);
-	(void)sp;
+	test_threads(&t, xft_get_sysinfo(sp));
 	xft_writer_flush(&t.writer);
 	xft_exit_process(0);
 }

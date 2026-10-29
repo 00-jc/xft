@@ -27,14 +27,15 @@ inline t_i32	xft_clone(const t_clone_arg *__restrict__ const args)
 	r10 = (long)args->ctid;
 	r8 = (long)args->tls;
 	__asm__ volatile (
-		"syscall"
+		"mov %[fn], %%r9\n\tmov %[arg], %%r12\n\t"
+		"syscall\n\ttest %%rax, %%rax\n\tjnz 1f\n\t"
+		"xor %%ebp, %%ebp\n\tmov %%r12, %%rdi\n\tcall *%%r9\n\t"
+		"mov %%eax, %%edi\n\tmov %[ex], %%eax\n\tsyscall\n\t1:"
 		: "=a"(ret)
-		: "0"((long)xft_sys_clone),
-		"D"((long)args->flags),
-		"S"((long)args->stack),
-		"d"((long)args->ptid),
-		"r"(r10), "r"(r8)
-		: "rcx", "r11", "memory"
+		: "0"((long)xft_sys_clone), "D"((long)args->flags),
+		"S"((long)args->stack), "d"((long)args->ptid), "r"(r10), "r"(r8),
+		[fn] "r"(args->fn), [arg] "r"(args->arg), [ex] "i"(xft_sys_exit)
+		: "rcx", "r9", "r11", "r12", "memory"
 	);
 	return ((t_i32)xft_tern(ret < 0, (t_u64a)-1, (t_u64a)ret));
 }

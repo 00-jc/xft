@@ -1,4 +1,4 @@
-.Dd October 14, 2026
+.Dd October 29, 2026
 .Dt XFT_ATOMICS 3
 .Os xft
 .Sh NAME
@@ -35,11 +35,11 @@ typedef volatile  int32_t __attribute__((__aligned__(64))) t_c_i32;
 typedef volatile t_c_i32  t_mutex_nonsh;
 typedef volatile t_i32a   t_mutex;
 
-typedef enum e_mutex_type
+typedef enum e_mutex_type : t_u8
 {
-	FAST,
-	SLOW,
-	BUSY,
+	xft_lock_fast,
+	xft_lock_slow,
+	xft_lock_busy,
 }	t_mutex_type;
 
 #define XFT_UNLOCKED  0
@@ -66,7 +66,7 @@ means it is held and at least one waiter is asleep on it through
 is the number of iterations
 .Fn xft_mutex_lock
 performs on the
-.Dv FAST
+.Dv xft_lock_fast
 path before sleeping.
 It defaults to 32 and can be redefined before
 .In atomics.h
@@ -91,8 +91,8 @@ to
 If it succeeds the function returns without touching the slow path.
 If it fails, execution continues according to
 .Fa type :
-.Bl -tag -width "BUSY"
-.It Dv FAST
+.Bl -tag -width "xft_lock_busy"
+.It Dv xft_lock_fast
 Spin up to
 .Dv XFT_MUTEX_SPIN
 times.
@@ -114,14 +114,14 @@ with the expected value
 .Dv XFT_CONTESTED .
 It retries the exchange after each wake-up.
 This is the general purpose choice.
-.It Dv BUSY
+.It Dv xft_lock_busy
 Spin forever, attempting the same
 .Dv XFT_CONTESTED
 exchange and backing off between attempts.
 No system call is made.
 Suitable when the critical section is short and contention is expected to
 be rare.
-.It Dv SLOW
+.It Dv xft_lock_slow
 Exchange the mutex into
 .Dv XFT_CONTESTED
 and, if the previous value was not
@@ -198,23 +198,24 @@ void	init(void)
 
 void	critical_section(void)
 {
-	xft_mutex_lock(&g_lock, FAST);
+	xft_mutex_lock(&g_lock, xft_lock_fast);
 	/* ... */
 	xft_mutex_unlock(&g_lock);
 }
 .Ed
 .Sh SEE ALSO
 .Xr xft_os 3 ,
+.Xr xft_threads 3 ,
 .Xr xft 7
 .Sh CAVEATS
 .Fn xft_mutex_lock
 with a
 .Fa type
 outside
-.Dv FAST ,
-.Dv SLOW
+.Dv xft_lock_fast ,
+.Dv xft_lock_slow
 and
-.Dv BUSY
+.Dv xft_lock_busy
 reaches
 .Ql __builtin_unreachable
 and compiles to undefined behaviour at the call site.
@@ -228,6 +229,6 @@ leaving the mutex underflowed.
 The mutex does not track its owner and is not recursive; locking it twice
 from the same thread deadlocks.
 .Pp
-.Dv BUSY
+.Dv xft_lock_busy
 mutexes can starve other threads on a uniprocessor or an over-subscribed
 system, since the spin loop never yields through the kernel.

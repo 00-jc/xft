@@ -115,6 +115,8 @@ exe.root_module.linkLibrary(xft.artifact("xft"));
 
 Dependency options use the same names as above, e.g. `.@"use-libc" = true`. The headers come with the artifact. In the freestanding flavor, do not link libc, and compile your own sources with `-ffreestanding -fno-builtin -fno-stack-protector`.
 
+In the hosted flavor, threads go through pthreads. glibc older than 2.34 keeps them in `libpthread`: executables built by Zig link it automatically, but when linking `libxft.a` by hand on such a system add `-lpthread`. glibc 2.34 and later and musl need nothing extra. The freestanding flavor creates threads with `clone(2)` and never links pthreads.
+
 Include `<xft.h>` and define `xft_main` instead of `main`. It receives the initial stack pointer and must end with `xft_exit_process`:
 
 ```c
@@ -159,6 +161,7 @@ On Windows, `xft` calls into the system DLLs even in the freestanding flavor, so
 | `xft/sort.h` | `qsort` variants |
 | `xft/str.h` | Growable NUL-terminated byte string |
 | `xft/swissmap.h` | SIMD open-addressing hash map from byte keys to pointers |
+| `xft/threads.h` | Spawning, joining, and detaching threads |
 | `xft/timing.h` | Clocks and cycle counters |
 | `xft/vec.h` | Untyped growable array |
 | `xft/xid.h` | Unicode XID_Start/XID_Continue lookup and tables |
@@ -167,10 +170,19 @@ On Windows, `xft` calls into the system DLLs even in the freestanding flavor, so
 
 ## Testing
 
-Unit tests always link a sanitized hosted build of the library (`xft-san`), or the main library if `-Dsanitize` is already on:
+The `test` step runs two executables:
+
+- `tests`, every unit test, linked against a sanitized hosted build (`xft-san`, or the main library with `-Dsanitize`). Its thread tests exercise pthreads.
+- `freestanding_thread_tests`, the thread tests alone, linked against a freestanding build (`xft-freestanding`, or the main library without `-Duse-libc`). It exercises `clone(2)`.
 
 ```sh
 zig build -Dtests test
+```
+
+To run only the freestanding thread tests:
+
+```sh
+zig build -Dtests freestanding-thread-tests
 ```
 
 Tests always build sanitized, so they cannot be built for 32-bit x86, where Zig rejects the stack checks.

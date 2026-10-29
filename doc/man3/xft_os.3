@@ -142,7 +142,12 @@ and
 .Fn xft_clone ,
 which takes a
 .Vt t_clone_arg
-and resumes the child on its stack without calling an entry function.
+and runs its
+.Fa fn
+with
+.Fa arg
+in the child on the new stack, then exits the thread with the return value of
+.Fa fn .
 .Fn xft_fork
 issues
 .Xr fork 2
@@ -217,6 +222,7 @@ by the libc backend.
 .Xr xft_io 3 ,
 .Xr xft_rt 3 ,
 .Xr xft_signals 3 ,
+.Xr xft_threads 3 ,
 .Xr xft_timing 3 ,
 .Xr xft 7
 .Sh CAVEATS

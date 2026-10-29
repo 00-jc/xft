@@ -338,6 +338,32 @@ const SRCS_RT_linux = [_][]const u8{
     "src/rt/linux/xft_get_sysinfo.c",
 };
 
+const SRCS_THREADS_linux = [_][]const u8{
+    "src/threads/linux/xft_thread_spawn.c",
+    "src/threads/linux/xft_thread_join.c",
+    "src/threads/linux/xft_thread_detach.c",
+};
+
+const SRCS_THREADS_x86_64 = [_][]const u8{
+    "src/threads/linux/x86_64/xft_thread_destroy.c",
+};
+
+const SRCS_THREADS_aarch64 = [_][]const u8{
+    "src/threads/linux/aarch64/xft_thread_destroy.c",
+};
+
+const SRCS_THREADS_libc = [_][]const u8{
+    "src/threads/linux/libc/xft_thread_spawn.c",
+    "src/threads/linux/libc/xft_thread_join.c",
+    "src/threads/linux/libc/xft_thread_detach.c",
+};
+
+const SRCS_THREADS_win32 = [_][]const u8{
+    "src/threads/win32/xft_thread_spawn.c",
+    "src/threads/win32/xft_thread_join.c",
+    "src/threads/win32/xft_thread_detach.c",
+};
+
 const SRCS_PERF = [_][]const u8{
     "subprojects/perf/src/xft_bind_process_to_cpu.c",
     "subprojects/perf/src/xft_get_flag_groups.c",
@@ -588,11 +614,24 @@ const SRCS_TEST = [_][]const u8{
     "tests/rng/xoshiro/xoshiro_test_state_changes.c",
     "tests/test_state.c",
     "tests/tests_main.c",
+    "tests/threads/thread_test.c",
+    "tests/threads/thread_test_detach.c",
+    "tests/threads/thread_test_detach_utils.c",
+    "tests/threads/thread_test_join.c",
+    "tests/threads/thread_test_tls.c",
     "tests/xid/xid_test.c",
     "tests/xid/xid_test_ascii.c",
     "tests/xid/xid_test_exhaustive.c",
     "tests/xid/xid_test_points.c",
     "tests/xid/xid_test_table.c",
+};
+
+const SRCS_TEST_THREADS_FREESTANDING = [_][]const u8{
+    "tests/freestanding_thread_tests.c",
+    "tests/threads/thread_test_detach.c",
+    "tests/threads/thread_test_detach_utils.c",
+    "tests/threads/thread_test_join.c",
+    "tests/threads/thread_test_tls.c",
 };
 
 const SRCS_BENCH_memcpy_bench = [_][]const u8{
@@ -1045,17 +1084,22 @@ fn addXft(x: xft_ctx, name: []const u8, libc: bool, sanitize: bool) !xft_variant
     try addSrcs(x, mod, v, &SRCS_ARCH_aarch64);
     if (isWin32(x)) {
         try addSrcs(x, mod, v, &SRCS_RT_win32);
+        try addSrcs(x, mod, v, &SRCS_THREADS_win32);
         try addSrcs(x, mod, v, if (v.libc) &SRCS_RT_ENTRY_libc else &SRCS_RT_ENTRY_win32);
     } else if (v.libc) {
         try addSrcs(x, mod, v, &SRCS_RT_linux);
         try addSrcs(x, mod, v, &SRCS_LIBC);
         try addSrcs(x, mod, v, &SRCS_RT_ENTRY_libc);
+        try addSrcs(x, mod, v, &SRCS_THREADS_libc);
     } else {
         try addSrcs(x, mod, v, &SRCS_RT_linux);
         try addSrcs(x, mod, v, &SRCS_FREESTANDING_x86_64);
         try addSrcs(x, mod, v, &SRCS_RT_ENTRY_x86_64);
         try addSrcs(x, mod, v, &SRCS_FREESTANDING_aarch64);
         try addSrcs(x, mod, v, &SRCS_RT_ENTRY_aarch64);
+        try addSrcs(x, mod, v, &SRCS_THREADS_linux);
+        try addSrcs(x, mod, v, &SRCS_THREADS_x86_64);
+        try addSrcs(x, mod, v, &SRCS_THREADS_aarch64);
     }
     v.lib = x.b.addLibrary(.{
         .linkage = .static,
@@ -1182,7 +1226,13 @@ pub fn build(b: *std.Build) !void {
         if (cfg.tests) {
             const tests = try addHarness(x, "tests", san, &SRCS_TEST, &.{"tests/include"}, &.{});
             const run = b.addRunArtifact(tests);
-            b.step("test", "Run the unit tests").dependOn(&run.step);
+            const test_step = b.step("test", "Run the unit tests");
+            test_step.dependOn(&run.step);
+            const freestanding = if (xft.libc) try addXft(x, "xft-freestanding", false, false) else xft;
+            const thread_tests = try addHarness(x, "freestanding_thread_tests", freestanding, &SRCS_TEST_THREADS_FREESTANDING, &.{"tests/include"}, &.{});
+            const run_thread_tests = b.addRunArtifact(thread_tests);
+            b.step("freestanding-thread-tests", "Run the thread tests against the freestanding build").dependOn(&run_thread_tests.step);
+            test_step.dependOn(&run_thread_tests.step);
         }
         if (cfg.fuzz) {
             const fuzz = b.step("fuzz", "Run the fuzz targets");

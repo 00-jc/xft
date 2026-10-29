@@ -15,12 +15,13 @@
 #ifdef __linux__
 
 # ifdef XFT_REQUIRE_LIBC
+#  include <sched.h>
 
 __attribute__((__nonnull__(1), __always_inline__, __used__))
 inline t_i32	xft_clone(const t_clone_arg *__restrict__ const args)
 {
-	return ((t_i32)syscall(SYS_clone, args->flags, args->stack,
-			args->ptid, args->ctid, args->tls));
+	return ((t_i32)clone(args->fn, args->stack, (int)args->flags,
+			args->arg, args->ptid, args->tls, args->ctid));
 }
 
 # endif

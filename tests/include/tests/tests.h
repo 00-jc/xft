@@ -14,6 +14,7 @@
 # define TESTS_H
 
 # include <xft/test.h>
+# include <xft/rt.h>
 
 void	test_memchr(t_test *t);
 void	test_memcmp(t_test *t);
@@ -39,5 +40,6 @@ void	test_gpa_bulk(t_test *t);
 void	test_vtables(t_test *t);
 void	test_xoshiro(t_test *t);
 void	test_xid(t_test *t);
+void	test_threads(t_test *t, t_sysinfo sysinfo);
 
 #endif

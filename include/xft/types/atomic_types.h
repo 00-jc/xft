@@ -26,11 +26,11 @@ typedef volatile int64_t __attribute__((__aligned__(64)))		t_c_i64;
 typedef volatile t_c_i32										t_mutex_nonsh;
 typedef volatile t_i32a											t_mutex;
 
-typedef enum e_mutex_type
+typedef enum e_mutex_type : t_u8
 {
-	FAST,
-	SLOW,
-	BUSY,
+	xft_lock_fast,
+	xft_lock_slow,
+	xft_lock_busy,
 }	t_mutex_type;
 
 typedef enum e_xft_lock_state : t_u8
