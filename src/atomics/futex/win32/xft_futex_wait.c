@@ -1,36 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   xft_mutex_unlock.c                                 :+:      :+:    :+:   */
+/*   xft_futex_wait.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/07/04 16:52:10 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/07/04 17:04:57 by jaicastr         ###   ########.fr       */
+/*   Created: 2026/10/29 21:10:00 by jaicastr          #+#    #+#             */
+/*   Updated: 2026/10/29 21:10:00 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <xft/mem.h>
 #include <xft/atomics.h>
-#include <stdatomic.h>
 
 #if defined(_WIN32)
 
 # define WIN32_LEAN_AND_MEAN
 # include <windows.h>
 
-__attribute__((__nonnull__(1), __used__))
-inline void	xft_mutex_unlock(t_mutex *__restrict__ const mutex)
+__attribute__((__nonnull__(1), __always_inline__, __used__))
+inline void	xft_futex_wait(t_atomic32 *__restrict__ const atomic,
+	t_u32a value_to_wait)
 {
-	t_i32				val;
-
-	xft_prefetch_write0((t_any)mutex, sizeof(*mutex));
-	val = atomic_fetch_sub_explicit(mutex, 1, xft_release);
-	if (__builtin_expect(val == xft_contested, 1))
-	{
-		atomic_store_explicit(mutex, xft_unlocked, xft_release);
-		WakeByAddressSingle((t_any)mutex);
-	}
+	WaitOnAddress(atomic, &value_to_wait, sizeof(*atomic), INFINITE);
 }
 
 #endif

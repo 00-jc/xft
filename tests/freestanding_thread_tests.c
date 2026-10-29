@@ -29,6 +29,7 @@ inline void	xft_main(const t_any *__restrict__ const sp)
 	test_thread_join(sysinfo);
 	test_thread_tls(sysinfo);
 	test_thread_detach(sysinfo);
+	test_thread_signal(sysinfo);
 	xft_writer_write(&writer, xft_fatptr((t_u8 *)"xft_thread: OK\n",
 			sizeof("xft_thread: OK\n") - 1));
 	xft_writer_flush(&writer);

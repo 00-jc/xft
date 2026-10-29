@@ -74,12 +74,6 @@ int			xft_prlimit64(t_i32a pid, t_xft_rlimit resource,\
 t_ssize		xft_writev(int fd, t_iovec *buffers, t_size len)\
 			__attribute__((__nonnull__(2)));
 
-t_i64a		xft_futex_wait(t_u32a *__restrict__ const uaddr, t_u32a val)\
-			__attribute__((__nonnull__(1)));
-
-t_i64a		xft_futex_wake(t_u32a *__restrict__ const uaddr, t_u32a val)\
-			__attribute__((__nonnull__(1)));
-
 int			xft_mprotect(t_any addr, t_size size, int prot)\
 			__attribute__((__nonnull__(1)));
 

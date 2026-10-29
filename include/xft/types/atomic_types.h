@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/03 18:01:29 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/10/29 15:58:21 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/10/29 21:01:17 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,8 @@ typedef volatile _Atomic(t_i8) __attribute__((__aligned__(CLINE)))		t_i8cl;
 typedef volatile _Atomic(t_i16) __attribute__((__aligned__(CLINE)))		t_i16cl;
 typedef volatile _Atomic(t_i32) __attribute__((__aligned__(CLINE)))		t_i32cl;
 typedef volatile _Atomic(t_i64) __attribute__((__aligned__(CLINE)))		t_i64cl;
-typedef volatile _Atomic(t_i32)											t_mutex;
+typedef volatile _Atomic(t_u32)											t_atomic32;
+typedef t_atomic32														t_mutex;
 
 typedef enum e_mutex_type : t_u8
 {

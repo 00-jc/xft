@@ -176,16 +176,6 @@ with only
 .Dv XFT_SIGCHLD
 elsewhere.
 .It Threads and time
-.Fn xft_futex_wait
-and
-.Fn xft_futex_wake
-issue
-.Dv FUTEX_WAIT
-and
-.Dv FUTEX_WAKE
-without
-.Dv FUTEX_PRIVATE_FLAG
-or a timeout.
 .Fn xft_clock_gettime
 reads
 .Dv CLOCK_MONOTONIC .

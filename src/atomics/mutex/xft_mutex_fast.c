@@ -16,10 +16,6 @@
 #include <xft/xft_p_atomics.h>
 #include <stdatomic.h>
 
-#if defined(__linux__)
-
-# include <xft/xft_p_syscalls.h>
-
 __attribute__((__nonnull__(1), __always_inline__, __used__))
 static inline bool	xft__try_lock(t_mutex *__restrict__ const mutex)
 {
@@ -32,7 +28,7 @@ static inline bool	xft__try_lock(t_mutex *__restrict__ const mutex)
 __attribute__((__nonnull__(1), __always_inline__, __used__))
 static inline bool	xft__try_lock_spin(t_mutex *__restrict__ const mutex)
 {
-	t_i32	val;
+	t_u32	val;
 
 	val = xft_unlocked;
 	if (__builtin_expect(atomic_compare_exchange_weak_explicit(mutex,
@@ -46,7 +42,7 @@ __attribute__((__nonnull__(1), __always_inline__, __used__))
 inline void	xft_mutex_spin(t_mutex *__restrict__ const mutex)
 {
 	t_size				iters;
-	t_i32				val;
+	t_u32				val;
 
 	((xft_prefetch_write0((t_any)mutex, sizeof(*mutex))), val = xft_unlocked);
 	while (true)
@@ -64,10 +60,8 @@ inline void	xft_mutex_spin(t_mutex *__restrict__ const mutex)
 		}
 		if (__builtin_expect(xft__try_lock(mutex), 0))
 			return ;
-		xft_futex_wait((t_any)mutex, xft_contested);
+		xft_futex_wait(mutex, xft_contested);
 		if (__builtin_expect(xft__try_lock(mutex), 1))
 			return ;
 	}
 }
-
-#endif

@@ -32,12 +32,10 @@ const SRCS = [_][]const u8{
     "src/atomics/mutex/xft_mutex_init.c",
     "src/atomics/mutex/xft_mutex_lock.c",
     "src/arch/xft_cache_line_size.c",
-    "src/atomics/mutex/linux/xft_mutex_fast.c",
-    "src/atomics/mutex/linux/xft_mutex_slow.c",
-    "src/atomics/mutex/linux/xft_mutex_unlock.c",
-    "src/atomics/mutex/win32/xft_mutex_fast.c",
-    "src/atomics/mutex/win32/xft_mutex_slow.c",
-    "src/atomics/mutex/win32/xft_mutex_unlock.c",
+    "src/atomics/mutex/xft_mutex_fast.c",
+    "src/atomics/mutex/xft_mutex_slow.c",
+    "src/atomics/mutex/xft_mutex_unlock.c",
+    "src/atomics/xft_signal.c",
     "src/bmi/xft_align.c",
     "src/bmi/xft_bswap.c",
     "src/bmi/xft_bswap_builtin.c",
@@ -349,6 +347,26 @@ const SRCS_THREADS_linux = [_][]const u8{
     "src/threads/linux/xft_thread_detach.c",
 };
 
+const SRCS_FUTEX_x86_64 = [_][]const u8{
+    "src/atomics/futex/linux/x86_64/xft_futex_wait.c",
+    "src/atomics/futex/linux/x86_64/xft_futex_wake.c",
+};
+
+const SRCS_FUTEX_aarch64 = [_][]const u8{
+    "src/atomics/futex/linux/aarch64/xft_futex_wait.c",
+    "src/atomics/futex/linux/aarch64/xft_futex_wake.c",
+};
+
+const SRCS_FUTEX_libc = [_][]const u8{
+    "src/atomics/futex/linux/libc/xft_futex_wait.c",
+    "src/atomics/futex/linux/libc/xft_futex_wake.c",
+};
+
+const SRCS_FUTEX_win32 = [_][]const u8{
+    "src/atomics/futex/win32/xft_futex_wait.c",
+    "src/atomics/futex/win32/xft_futex_wake.c",
+};
+
 const SRCS_THREADS_x86_64 = [_][]const u8{
     "src/threads/linux/x86_64/xft_thread_destroy.c",
 };
@@ -426,7 +444,6 @@ const XFT_SYSCALLS = [_][]const u8{
     "exit_group",
     "fmap",
     "fork",
-    "futex",
     "getpid",
     "ioctl",
     "lockf",
@@ -624,6 +641,7 @@ const SRCS_TEST = [_][]const u8{
     "tests/threads/thread_test_detach.c",
     "tests/threads/thread_test_detach_utils.c",
     "tests/threads/thread_test_join.c",
+    "tests/threads/thread_test_signal.c",
     "tests/threads/thread_test_tls.c",
     "tests/xid/xid_test.c",
     "tests/xid/xid_test_ascii.c",
@@ -637,6 +655,7 @@ const SRCS_TEST_THREADS_FREESTANDING = [_][]const u8{
     "tests/threads/thread_test_detach.c",
     "tests/threads/thread_test_detach_utils.c",
     "tests/threads/thread_test_join.c",
+    "tests/threads/thread_test_signal.c",
     "tests/threads/thread_test_tls.c",
 };
 
@@ -1102,12 +1121,14 @@ fn addXft(x: xft_ctx, name: []const u8, libc: bool, sanitize: bool) !xft_variant
     if (isWin32(x)) {
         try addSrcs(x, mod, v, &SRCS_RT_win32);
         try addSrcs(x, mod, v, &SRCS_THREADS_win32);
+        try addSrcs(x, mod, v, &SRCS_FUTEX_win32);
         try addSrcs(x, mod, v, if (v.libc) &SRCS_RT_ENTRY_libc else &SRCS_RT_ENTRY_win32);
     } else if (v.libc) {
         try addSrcs(x, mod, v, &SRCS_RT_linux);
         try addSrcs(x, mod, v, &SRCS_LIBC);
         try addSrcs(x, mod, v, &SRCS_RT_ENTRY_libc);
         try addSrcs(x, mod, v, &SRCS_THREADS_libc);
+        try addSrcs(x, mod, v, &SRCS_FUTEX_libc);
     } else {
         try addSrcs(x, mod, v, &SRCS_RT_linux);
         try addSrcs(x, mod, v, &SRCS_FREESTANDING_x86_64);
@@ -1117,6 +1138,8 @@ fn addXft(x: xft_ctx, name: []const u8, libc: bool, sanitize: bool) !xft_variant
         try addSrcs(x, mod, v, &SRCS_THREADS_linux);
         try addSrcs(x, mod, v, &SRCS_THREADS_x86_64);
         try addSrcs(x, mod, v, &SRCS_THREADS_aarch64);
+        try addSrcs(x, mod, v, &SRCS_FUTEX_x86_64);
+        try addSrcs(x, mod, v, &SRCS_FUTEX_aarch64);
     }
     v.lib = x.b.addLibrary(.{
         .linkage = .static,

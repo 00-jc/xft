@@ -19,7 +19,7 @@ __attribute__((__nonnull__(1), __always_inline__, __used__))
 inline void	xft_mutex_busy(t_mutex *__restrict__ const mutex)
 {
 	t_size	iters;
-	t_i32	val;
+	t_u32	val;
 
 	((xft_prefetch_write0((t_any)mutex, sizeof(*mutex))), val = xft_unlocked);
 	iters = 0;

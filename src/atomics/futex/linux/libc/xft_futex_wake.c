@@ -1,34 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   xft_mutex_slow.c                                   :+:      :+:    :+:   */
+/*   xft_futex_wake.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/07/04 18:00:00 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/07/04 17:41:08 by jaicastr         ###   ########.fr       */
+/*   Created: 2026/10/29 21:10:00 by jaicastr          #+#    #+#             */
+/*   Updated: 2026/10/29 21:10:00 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <xft/types/atomic_types.h>
-#include <xft/xft_p_atomics.h>
-#include <stdatomic.h>
+#include <xft/atomics.h>
+#include <xft/xft_p_syscalls.h>
 
-#if defined(_WIN32)
+#ifdef __linux__
 
-# define WIN32_LEAN_AND_MEAN
-# include <windows.h>
+# ifdef XFT_REQUIRE_LIBC
 
 __attribute__((__nonnull__(1), __always_inline__, __used__))
-inline void	xft_mutex_slow(t_mutex *__restrict__ const mutex)
+inline void	xft_futex_wake(t_atomic32 *__restrict__ const atomic,
+	t_u32a waiters)
 {
-	while (true)
-	{
-		if (__builtin_expect(atomic_exchange_explicit(mutex, xft_contested,
-					xft_acq_rel) == xft_unlocked, 1))
-			return ;
-		WaitOnAddress(mutex, &(t_i32){xft_contested}, sizeof(*mutex), INFINITE);
-	}
+	syscall(SYS_futex, atomic, xft_futex_op_wake,
+		waiters, (t_any)0, (t_any)0, 0);
 }
+
+# endif
 
 #endif

@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <xft/atomics.h>
 #include <xft/threads.h>
 #include <xft/xft_p_syscalls.h>
 
@@ -24,7 +25,7 @@ void	xft_thread_join(t_thread *__restrict__ const thread)
 	tid = __atomic_load_n(&instance->tid, xft_acquire);
 	while (tid != 0)
 	{
-		xft_futex_wait(&instance->tid, tid);
+		xft_futex_wait((t_any)&instance->tid, tid);
 		tid = __atomic_load_n(&instance->tid, xft_acquire);
 	}
 	xft_munmap(instance->base, instance->size);

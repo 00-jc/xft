@@ -20,7 +20,7 @@ inline void	xft_mutex_lock(t_mutex *__restrict__ const mutex,
 	const t_mutex_type type)
 {
 	bool	ret;
-	t_i32	val;
+	t_u32	val;
 
 	val = xft_unlocked;
 	ret = atomic_compare_exchange_strong_explicit(mutex, &val, xft_locked,

@@ -4,16 +4,28 @@
 .Sh NAME
 .Nm xft_thread_fence ,
 .Nm xft_signal_fence ,
+.Nm xft_futex_wait ,
+.Nm xft_futex_wake ,
+.Nm xft_wait_for_signal ,
+.Nm xft_send_signal ,
 .Nm xft_mutex_init ,
 .Nm xft_mutex_lock ,
 .Nm xft_mutex_unlock
-.Nd mutexes and memory fences
+.Nd mutexes, signals, futexes and memory fences
 .Sh SYNOPSIS
 .In atomics.h
 .Ft void
 .Fn xft_thread_fence "t_xft_atomic_ordering memorder"
 .Ft void
 .Fn xft_signal_fence "t_xft_atomic_ordering memorder"
+.Ft void
+.Fn xft_futex_wait "t_atomic32 *restrict atomic" "t_u32a value_to_wait"
+.Ft void
+.Fn xft_futex_wake "t_atomic32 *restrict atomic" "t_u32a waiters"
+.Ft void
+.Fn xft_wait_for_signal "t_atomic32 *restrict atomic"
+.Ft void
+.Fn xft_send_signal "t_atomic32 *restrict atomic"
 .Ft void
 .Fn xft_mutex_init "t_mutex *restrict mutex"
 .Ft void
@@ -22,16 +34,20 @@
 .Fn xft_mutex_unlock "t_mutex *restrict mutex"
 .Sh DESCRIPTION
 .In atomics.h
-provides a single 32-bit mutex primitive and a pair of memory fences.
-The mutex is built directly on C11 atomics and, on Linux, the
-.Xr futex 2
-system call; it does not depend on
+provides a single 32-bit mutex primitive, a broadcast signal, a futex wait
+and wake pair and a pair of memory fences.
+The mutex is built directly on C11 atomics,
+.Fn xft_futex_wait
+and
+.Fn xft_futex_wake ;
+it does not depend on
 .Xr pthread 3 .
 .Pp
 The types and state constants are declared in
 .In types/atomic_types.h :
 .Bd -literal -offset indent
-typedef volatile _Atomic(t_i32) t_mutex;
+typedef volatile _Atomic(t_u32) t_atomic32;
+typedef t_atomic32 t_mutex;
 
 typedef enum e_mutex_type : t_u8
 {
@@ -58,8 +74,12 @@ typedef enum e_xft_atomic_ordering : t_i32
 }	t_xft_atomic_ordering;
 .Ed
 .Pp
+.Vt t_atomic32
+is an atomic 32-bit unsigned integer and
 .Vt t_mutex
-is an atomic 32-bit signed integer, accessed through the
+is a
+.Vt t_atomic32 ,
+accessed through the
 .In stdatomic.h
 operations.
 Its value is one of
@@ -72,8 +92,8 @@ means the mutex is free,
 .Dv xft_locked
 means it is held and no waiter has been recorded by the unlock path, and
 .Dv xft_contested
-means it is held and at least one waiter is asleep on it through
-.Xr futex 2 .
+means it is held and at least one waiter is asleep on it in
+.Fn xft_futex_wait .
 .Pp
 .Dv XFT_MUTEX_SPIN
 is the number of iterations
@@ -84,6 +104,88 @@ path before sleeping.
 It defaults to 32 and can be redefined before
 .In atomics.h
 is included.
+.Ss Futexes
+.Fn xft_futex_wait
+sleeps while
+.Fa atomic
+holds
+.Fa value_to_wait .
+If
+.Fa atomic
+holds a different value on entry it returns at once.
+On Linux it issues the
+.Xr futex 2
+system call with
+.Dv FUTEX_WAIT ,
+without
+.Dv FUTEX_PRIVATE_FLAG
+or a timeout, and is woken by
+.Fn xft_futex_wake
+on the same address or by the wake-up the kernel issues for
+.Dv CLONE_CHILD_CLEARTID .
+On Windows it calls
+.Fn WaitOnAddress
+with an
+.Dv INFINITE
+timeout.
+.Pp
+It may return without a matching wake-up, so callers reload
+.Fa atomic
+and wait again while the value has not changed.
+.Pp
+.Fn xft_futex_wake
+wakes threads sleeping in
+.Fn xft_futex_wait
+on
+.Fa atomic .
+On Linux it issues the
+.Xr futex 2
+system call with
+.Dv FUTEX_WAKE ,
+without
+.Dv FUTEX_PRIVATE_FLAG ,
+and wakes at most
+.Fa waiters
+threads.
+The kernel reads
+.Fa waiters
+as a signed
+.Vt int ,
+so
+.Dv INT32_MAX
+wakes every waiter and any value above it wakes one.
+On Windows a
+.Fa waiters
+of 1 calls
+.Fn WakeByAddressSingle ,
+and any other value calls
+.Fn WakeByAddressAll .
+Neither function stores to
+.Fa atomic ;
+the caller updates the value before waking.
+.Ss Signals
+A signal is a
+.Vt t_atomic32
+that counts the sends made on it.
+A zeroed
+.Vt t_atomic32
+is a signal that has not been sent.
+.Pp
+.Fn xft_wait_for_signal
+loads the count on entry and blocks until it changes, sleeping in
+.Fn xft_futex_wait
+and reloading the count with acquire ordering after every wake-up.
+It waits for the next send after the call; a send made before the call
+does not release it.
+.Pp
+.Fn xft_send_signal
+adds one to the count with release ordering and wakes every waiter through
+.Fn xft_futex_wake
+with
+.Dv INT32_MAX .
+Writes made before the call are visible to every thread it releases from
+.Fn xft_wait_for_signal .
+A signal needs no reset between sends.
 .Ss Mutex functions
 .Fn xft_mutex_init
 stores
@@ -250,6 +352,15 @@ does not check that the mutex is held.
 Calling it on an unlocked mutex performs a release fetch-and-subtract on
 .Dv xft_unlocked ,
 leaving the mutex underflowed.
+.Pp
+.Fn xft_wait_for_signal
+misses a send made between the caller's last check of the shared state
+and the call, and sleeps until the following send.
+Use it only when the sender sends after the waiters are already waiting,
+or when the sender keeps sending until the waiters respond.
+.Pp
+A waiter that sleeps through exactly 2^32 sends reads the count it loaded
+on entry and keeps sleeping.
 .Pp
 The mutex does not track its owner and is not recursive; locking it twice
 from the same thread deadlocks.
