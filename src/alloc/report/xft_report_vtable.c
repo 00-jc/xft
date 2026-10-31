@@ -12,25 +12,25 @@
 
 #include <xft/xft_p_gpa.h>
 
-__attribute__((__nonnull__(1)))
+__attribute__((__flatten__, __nonnull__(1)))
 static void	gpa_destroy(t_any alloc)
 {
 	xft_reporta_destroy((t_reporta *)alloc);
 }
 
-__attribute__((__nonnull__(1)))
+__attribute__((__flatten__, __nonnull__(1)))
 static t_buffer	gpa_allocate(t_any alloc, t_size size, t_size align)
 {
 	return (xft_reporta_alloc(alloc, size, align));
 }
 
-__attribute__((__nonnull__(1)))
+__attribute__((__flatten__, __nonnull__(1)))
 static void	gpa_free(t_any alloc, t_buffer old)
 {
 	xft_reporta_free(alloc, old);
 }
 
-__attribute__((__nonnull__(1)))
+__attribute__((__flatten__, __nonnull__(1)))
 static t_buffer	gpa_reallocate(t_any alloc, t_buffer old, t_size new_size,
 				t_size align)
 {

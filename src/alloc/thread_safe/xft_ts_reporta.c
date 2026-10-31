@@ -19,7 +19,7 @@ t_ts_reporta	xft_new_ts_reporta(void)
 		.reporta = xft_new_reporta()});
 }
 
-__attribute__((__nonnull__(1)))
+__attribute__((__flatten__, __nonnull__(1)))
 t_buffer	xft_ts_reporta_alloc(t_any alloc, t_size size, t_size align)
 {
 	t_buffer	buf;
@@ -30,7 +30,7 @@ t_buffer	xft_ts_reporta_alloc(t_any alloc, t_size size, t_size align)
 	return (buf);
 }
 
-__attribute__((__nonnull__(1)))
+__attribute__((__flatten__, __nonnull__(1)))
 t_buffer	xft_ts_reporta_realloc(t_any alloc, t_buffer buf, t_size newsize,
 				t_size align)
 {
@@ -41,7 +41,7 @@ t_buffer	xft_ts_reporta_realloc(t_any alloc, t_buffer buf, t_size newsize,
 	return (buf);
 }
 
-__attribute__((__nonnull__(1)))
+__attribute__((__flatten__, __nonnull__(1)))
 void	xft_ts_reporta_free(t_any alloc, t_buffer buf)
 {
 	xft_mutex_lock(&((t_ts_reporta *)alloc)->mutex, xft_lock_fast);
@@ -49,7 +49,7 @@ void	xft_ts_reporta_free(t_any alloc, t_buffer buf)
 	xft_mutex_unlock(&((t_ts_reporta *)alloc)->mutex);
 }
 
-__attribute__((__nonnull__(1)))
+__attribute__((__flatten__, __nonnull__(1)))
 void	xft_ts_reporta_destroy(t_any alloc)
 {
 	xft_mutex_lock(&((t_ts_reporta *)alloc)->mutex, xft_lock_fast);

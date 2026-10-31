@@ -1030,7 +1030,7 @@ fn hasFreestandingThreads(x: xft_ctx) bool {
 }
 
 fn hasStackCheck(x: xft_ctx) bool {
-    return x.target.result.cpu.arch != .x86;
+    return x.target.result.cpu.arch != .x86 and x.target.result.cpu.arch != .arm;
 }
 
 fn cflags(x: xft_ctx, v: xft_variant, cxx: bool) ![]const []const u8 {

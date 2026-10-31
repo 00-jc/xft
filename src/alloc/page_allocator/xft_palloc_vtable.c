@@ -12,7 +12,7 @@
 
 #include <xft/xft_p_palloc.h>
 
-__attribute__((__nonnull__(1)))
+__attribute__((__flatten__, __nonnull__(1)))
 static t_buffer	palloc_allocate(t_any alloc, t_size size, t_size align)
 {
 	(void)alloc;
@@ -20,7 +20,7 @@ static t_buffer	palloc_allocate(t_any alloc, t_size size, t_size align)
 	return (xft_palloc(size));
 }
 
-__attribute__((__nonnull__(1)))
+__attribute__((__flatten__, __nonnull__(1)))
 static t_buffer	palloc_reallocate(t_any alloc, t_buffer old, t_size new_size,
 					t_size align)
 {
@@ -29,7 +29,7 @@ static t_buffer	palloc_reallocate(t_any alloc, t_buffer old, t_size new_size,
 	return (xft_palloc_resize(old, new_size));
 }
 
-__attribute__((__nonnull__(1)))
+__attribute__((__flatten__, __nonnull__(1)))
 static void	palloc_free(t_any alloc, t_buffer old)
 {
 	(void)alloc;

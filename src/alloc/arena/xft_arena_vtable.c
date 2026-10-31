@@ -14,7 +14,7 @@
 #include <xft/mem.h>
 #include <xft/xft_p_arena.h>
 
-__attribute__((__nonnull__(1)))
+__attribute__((__flatten__, __nonnull__(1)))
 static t_buffer	arena_allocate(t_any alloc, t_size size, t_size align)
 {
 	t_any	ptr;
@@ -23,14 +23,14 @@ static t_buffer	arena_allocate(t_any alloc, t_size size, t_size align)
 	return (xft_fatptr(ptr, size));
 }
 
-__attribute__((__nonnull__(1)))
+__attribute__((__flatten__, __nonnull__(1)))
 static void	arena_free(t_any alloc, t_buffer old)
 {
 	(void)alloc;
 	(void)old;
 }
 
-__attribute__((__nonnull__(1)))
+__attribute__((__flatten__, __nonnull__(1)))
 t_buffer	xft_arena_realloc(t_any alloc, t_buffer old, t_size new_size,
 				t_size align)
 {
@@ -49,7 +49,7 @@ t_buffer	xft_arena_realloc(t_any alloc, t_buffer old, t_size new_size,
 	return (xft_fatptr(ptr, new_size));
 }
 
-__attribute__((__nonnull__(1)))
+__attribute__((__flatten__, __nonnull__(1)))
 static void	arena_destroy(t_any alloc)
 {
 	xft_destroy_arena((t_arena *)alloc);

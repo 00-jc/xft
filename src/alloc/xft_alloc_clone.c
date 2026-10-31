@@ -13,6 +13,7 @@
 #include <xft/alloc.h>
 #include <xft/mem.h>
 
+__attribute__((__flatten__))
 t_buffer	xft_alloc_clone(t_allocator self, t_buffer buffer)
 {
 	t_buffer	mem;

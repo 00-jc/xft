@@ -65,7 +65,7 @@ static void	check_load_native_64(void)
 	while (i < vmanip_n(8))
 	{
 		if (i % 2 == 0)
-			xft_pin_invariant(l[i] == a[i]);
+			xft_pin_invariant(l[i] == (t_u64)(i * 3 + 1));
 		else
 			xft_pin_invariant(l[i] == 0);
 		i++;

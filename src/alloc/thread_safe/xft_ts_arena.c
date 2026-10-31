@@ -20,7 +20,7 @@ t_ts_arena	xft_new_ts_arena(void)
 	return ((t_ts_arena){.mutex = xft_unlocked, .arena = xft_new_arena()});
 }
 
-__attribute__((__nonnull__(1)))
+__attribute__((__flatten__, __nonnull__(1)))
 t_buffer	xft_ts_arena_alloc(t_any alloc, t_size size, t_size align)
 {
 	t_any	ptr;
@@ -31,7 +31,7 @@ t_buffer	xft_ts_arena_alloc(t_any alloc, t_size size, t_size align)
 	return (xft_fatptr(ptr, size));
 }
 
-__attribute__((__nonnull__(1)))
+__attribute__((__flatten__, __nonnull__(1)))
 t_buffer	xft_ts_arena_realloc(t_any alloc, t_buffer buf, t_size newsize,
 				t_size align)
 {
@@ -42,14 +42,14 @@ t_buffer	xft_ts_arena_realloc(t_any alloc, t_buffer buf, t_size newsize,
 	return (buf);
 }
 
-__attribute__((__nonnull__(1)))
+__attribute__((__flatten__, __nonnull__(1)))
 void	xft_ts_arena_free(t_any alloc, t_buffer buf)
 {
 	(void)alloc;
 	(void)buf;
 }
 
-__attribute__((__nonnull__(1)))
+__attribute__((__flatten__, __nonnull__(1)))
 void	xft_ts_arena_destroy(t_any alloc)
 {
 	xft_mutex_lock(&((t_ts_arena *)alloc)->mutex, xft_lock_fast);

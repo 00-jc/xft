@@ -65,7 +65,7 @@ static void	check_load_native_32(void)
 	while (i < vmanip_n(4))
 	{
 		if (i % 2 == 0)
-			xft_pin_invariant(l[i] == a[i]);
+			xft_pin_invariant(l[i] == (t_u32)(i * 3 + 1));
 		else
 			xft_pin_invariant(l[i] == 0);
 		i++;
