@@ -17,6 +17,8 @@
 __attribute__((__always_inline__, __nonnull__(1), __used__))
 inline t_result	xft_writer_flush(t_writer *__restrict__ const writer)
 {
+	if (writer->vtable == nullptr || writer->vtable->flush == nullptr)
+		__builtin_unreachable();
 	return (writer->vtable->flush(writer));
 }
 
@@ -29,7 +31,8 @@ inline t_result	xft_writer_write(t_writer *__restrict__ const writer,
 	t_size							to_buffer;
 	t_size							raw_written;
 
-	if (writer->buffer.mem == nullptr || buf.mem == nullptr)
+	if (writer->buffer.mem == nullptr || buf.mem == nullptr
+		|| writer->vtable == nullptr || writer->vtable->drain == nullptr)
 		__builtin_unreachable();
 	head = writer->buffer.size - writer->end;
 	if (buf.size <= head)

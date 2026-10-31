@@ -16,9 +16,11 @@ t_str	xft_new_str(t_allocator allocator, t_size size)
 {
 	t_buffer	buf;
 
+	if (allocator.vtable == nullptr || allocator.vtable->allocate == nullptr)
+		__builtin_unreachable();
 	if (__builtin_expect(size == 0, 0))
 		return ((t_str){0});
-	buf = allocator.vtable.allocate(allocator.allocator, size + 1,
+	buf = allocator.vtable->allocate(allocator.allocator, size + 1,
 			__GCC_CONSTRUCTIVE_SIZE);
 	if (__builtin_expect(buf.mem == nullptr, 0))
 		return ((t_str){0});
@@ -29,10 +31,11 @@ t_str	xft_new_str(t_allocator allocator, t_size size)
 __attribute__((__nonnull__(2)))
 void	xft_str_destroy(t_allocator allocator, t_str *str)
 {
-	if (allocator.allocator == nullptr)
+	if (allocator.allocator == nullptr || allocator.vtable == nullptr
+		|| allocator.vtable->free == nullptr)
 		__builtin_unreachable();
 	if (str->mem)
-		allocator.vtable.free(allocator.allocator,
+		allocator.vtable->free(allocator.allocator,
 			xft_fatptr(str->mem, str->capacity));
 	*str = (t_str){0};
 }

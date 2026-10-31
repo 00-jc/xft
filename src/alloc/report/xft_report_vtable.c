@@ -40,14 +40,16 @@ static t_buffer	gpa_reallocate(t_any alloc, t_buffer old, t_size new_size,
 __attribute__((__nonnull__(1), __const__))
 t_allocator	xft_reporta_allocator(t_reporta *gpa)
 {
+	static t_alloc_vtable const	vtable = {
+		.free = gpa_free,
+		.realloc = gpa_reallocate,
+		.allocate = gpa_allocate,
+		.destroy = gpa_destroy,
+		.clone = xft_alloc_clone,
+	};
+
 	return ((t_allocator){
-		.vtable = {
-			.free = gpa_free,
-			.realloc = gpa_reallocate,
-			.allocate = gpa_allocate,
-			.destroy = gpa_destroy,
-			.clone = xft_alloc_clone,
-		},
+		.vtable = &vtable,
 		.allocator = gpa,
 	});
 }

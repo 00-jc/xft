@@ -23,6 +23,7 @@ void	test_gpa_vtable(void);
 void	test_gpa_vtable_realloc(t_allocator *alloc, t_buffer buf);
 void	test_gpa_freelist(void);
 void	test_gpa_freelist_advance(t_allocator *alloc);
+void	test_clone_vtable(void);
 void	test_vtables(t_test *t);
 
 #endif

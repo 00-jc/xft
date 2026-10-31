@@ -43,12 +43,12 @@ inline t_result	xft_vec_pop_managed(t_allocator allocator,
 	t_u8	*last;
 
 	if (v->buf.mem == nullptr || allocator.allocator == nullptr
-		|| allocator.vtable.free == nullptr)
+		|| allocator.vtable == nullptr || allocator.vtable->free == nullptr)
 		__builtin_unreachable();
 	last = xft_vec_get_last(v, type_size);
 	if (__builtin_expect(last != nullptr, 1))
 	{
-		allocator.vtable.free(allocator.allocator, *(t_buffer *)last);
+		allocator.vtable->free(allocator.allocator, *(t_buffer *)last);
 		xft_vec_pop(v, type_size);
 		return (OK);
 	}

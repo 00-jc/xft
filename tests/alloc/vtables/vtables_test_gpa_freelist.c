@@ -21,18 +21,18 @@ void	test_gpa_freelist(void)
 
 	gpa = xft_new_gpa();
 	alloc = xft_gpa_allocator(&gpa);
-	buf = alloc.vtable.allocate(alloc.allocator, 64, 8);
+	buf = alloc.vtable->allocate(alloc.allocator, 64, 8);
 	xft_pin_invariant_msg(buf.mem != nullptr,
 		xft_fatptr((t_u8 *)"gpa: freelist init",
 			sizeof("gpa: freelist init") - 1));
-	alloc.vtable.free(alloc.allocator, buf);
-	buf2 = alloc.vtable.allocate(alloc.allocator, 64, 8);
+	alloc.vtable->free(alloc.allocator, buf);
+	buf2 = alloc.vtable->allocate(alloc.allocator, 64, 8);
 	xft_pin_invariant_msg(buf2.mem != nullptr,
 		xft_fatptr((t_u8 *)"gpa: alloc after free",
 			sizeof("gpa: alloc after free") - 1));
 	xft_pin_invariant_msg(buf2.mem == buf.mem,
 		xft_fatptr((t_u8 *)"gpa: freelist reuse",
 			sizeof("gpa: freelist reuse") - 1));
-	alloc.vtable.free(alloc.allocator, buf2);
+	alloc.vtable->free(alloc.allocator, buf2);
 	test_gpa_freelist_advance(&alloc);
 }

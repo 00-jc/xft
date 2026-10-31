@@ -18,7 +18,8 @@ t_soa	xft_new_soa(t_allocator allocator, t_size element_size_capacity,
 {
 	t_buffer		buf;
 
-	if (allocator.allocator == nullptr || allocator.vtable.allocate == nullptr)
+	if (allocator.allocator == nullptr || allocator.vtable == nullptr
+		|| allocator.vtable->allocate == nullptr)
 		__builtin_unreachable();
 	if (__builtin_expect(element_size_capacity == 0
 			|| context->total_struct_size == 0
@@ -29,7 +30,7 @@ t_soa	xft_new_soa(t_allocator allocator, t_size element_size_capacity,
 	element_size_capacity = (element_size_capacity
 			+ context->max_alignment - 1)
 		& ~(context->max_alignment - 1);
-	buf = allocator.vtable.allocate(allocator.allocator,
+	buf = allocator.vtable->allocate(allocator.allocator,
 			element_size_capacity * context->total_struct_size,
 			xft_max_s(context->max_alignment, __GCC_CONSTRUCTIVE_SIZE));
 	if (__builtin_expect(buf.mem == nullptr, 0))
@@ -43,10 +44,11 @@ t_soa	xft_new_soa(t_allocator allocator, t_size element_size_capacity,
 __attribute__((__nonnull__(2)))
 void	xft_destroy_soa(t_allocator allocator, t_soa *soa)
 {
-	if (allocator.allocator == nullptr || allocator.vtable.free == nullptr)
+	if (allocator.allocator == nullptr || allocator.vtable == nullptr
+		|| allocator.vtable->free == nullptr)
 		__builtin_unreachable();
 	if (soa->ptr)
-		allocator.vtable.free(allocator.allocator,
+		allocator.vtable->free(allocator.allocator,
 			xft_fatptr(soa->ptr, soa->allocator_bytes_given));
 	*soa = (t_soa){0};
 }

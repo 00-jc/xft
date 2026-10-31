@@ -18,7 +18,7 @@ void	test_palloc_vtable(void)
 	t_buffer	buf;
 
 	alloc = xft_page_allocator();
-	buf = alloc.vtable.allocate(alloc.allocator, 64, 8);
+	buf = alloc.vtable->allocate(alloc.allocator, 64, 8);
 	xft_pin_invariant_msg(buf.mem != nullptr,
 		xft_fatptr((t_u8 *)"palloc: alloc non-null",
 			sizeof("palloc: alloc non-null") - 1));

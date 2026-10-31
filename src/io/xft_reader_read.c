@@ -21,7 +21,9 @@ inline t_result	xft_read_from_reader(t_reader *__restrict__ const reader,
 	t_size	step;
 	t_size	n;
 
-	if (reader->buffer.mem == nullptr)
+	if (reader->buffer.mem == nullptr || reader->vtable == nullptr
+		|| reader->vtable->fill == nullptr
+		|| reader->vtable->unbufered_fill == nullptr)
 		__builtin_unreachable();
 	if (reader->buffer.size <= len)
 		return (reader->vtable->unbufered_fill(reader, dst, len, total));

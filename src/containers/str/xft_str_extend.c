@@ -19,10 +19,11 @@ t_result	xft_str_reserve(t_allocator allocator,
 	t_buffer	new_buf;
 	t_size		new_cap;
 
-	if (str->mem == nullptr || allocator.allocator == nullptr)
+	if (str->mem == nullptr || allocator.allocator == nullptr
+		|| allocator.vtable == nullptr || allocator.vtable->realloc == nullptr)
 		__builtin_unreachable();
 	new_cap = n + str->capacity + 1;
-	new_buf = allocator.vtable.realloc(allocator.allocator,
+	new_buf = allocator.vtable->realloc(allocator.allocator,
 			xft_fatptr(str->mem, str->capacity), new_cap,
 			__GCC_CONSTRUCTIVE_SIZE);
 	if (__builtin_expect(new_buf.mem == nullptr, 0))

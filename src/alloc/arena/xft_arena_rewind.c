@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include <xft/xft_p_arena.h>
-#include <xft/alloc/page_alloc.h>
+#include <xft/alloc.h>
 
 __attribute__((__nonnull__(1), __always_inline__, __used__))
 inline void	xft_arena_clean_fwd(const t_arena *restrict const alloc)

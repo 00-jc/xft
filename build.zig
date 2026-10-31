@@ -497,6 +497,7 @@ const SRCS_TEST = [_][]const u8{
     "tests/alloc/vtables/vtables_test.c",
     "tests/alloc/vtables/vtables_test_arena.c",
     "tests/alloc/vtables/vtables_test_arena_realloc.c",
+    "tests/alloc/vtables/vtables_test_clone.c",
     "tests/alloc/vtables/vtables_test_gpa.c",
     "tests/alloc/vtables/vtables_test_gpa_freelist.c",
     "tests/alloc/vtables/vtables_test_gpa_freelist_advance.c",

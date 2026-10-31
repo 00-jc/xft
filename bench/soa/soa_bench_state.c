@@ -39,7 +39,9 @@ const t_soa_context	*xft_get_bench_soa_ctx(void)
 	if (ctx != nullptr)
 		return (ctx);
 	a = xft_gpa_allocator(xft_get_bench_soa_gpa());
-	ctx = (t_soa_context *)a.vtable.allocate(a.allocator,
+	if (a.vtable == nullptr || a.vtable->allocate == nullptr)
+		__builtin_unreachable();
+	ctx = (t_soa_context *)a.vtable->allocate(a.allocator,
 			sizeof(t_soa_context) + SOA_BENCH_FIELDS
 			* sizeof(t_soa_field_meta), alignof(t_soa_context)).mem;
 	xft_pin_invariant(ctx != nullptr);

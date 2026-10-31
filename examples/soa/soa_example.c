@@ -14,21 +14,22 @@
 
 //	describes every member of t_particle as a soa column. columns are laid
 //	out back to back, so size_of_prev_fields is the running sum of sizes
-static t_buffer	particle_ctx_new(t_allocator a)
+static t_soa_context	*particle_ctx_new(t_allocator a, t_buffer *buf)
 {
 	static const t_u32	sizes[FIELDS] = {8, 4, 4, 4, 4};
 	static const t_u32	offs[FIELDS] = {__builtin_offsetof(t_particle, id),
 		__builtin_offsetof(t_particle, x), __builtin_offsetof(t_particle, y),
 		__builtin_offsetof(t_particle, vx), __builtin_offsetof(t_particle, vy)};
-	t_buffer			buf;
 	t_soa_context		*ctx;
 	t_size				i;
 
-	buf = a.vtable.allocate(a.allocator, sizeof(t_soa_context)
+	if (a.vtable == nullptr || a.vtable->allocate == nullptr)
+		__builtin_unreachable();
+	*buf = a.vtable->allocate(a.allocator, sizeof(t_soa_context)
 			+ FIELDS * sizeof(t_soa_field_meta), alignof(t_soa_context));
-	if (__builtin_expect(buf.mem == nullptr, 0))
-		return (buf);
-	ctx = (t_soa_context *)buf.mem;
+	if (__builtin_expect(buf->mem == nullptr, 0))
+		return (nullptr);
+	ctx = (t_soa_context *)buf->mem;
 	*ctx = (t_soa_context){.max_alignment = alignof(t_particle),
 		.fields_count = FIELDS};
 	i = 0;
@@ -39,7 +40,7 @@ static t_buffer	particle_ctx_new(t_allocator a)
 			.size_of_prev_fields = (t_u32)ctx->total_struct_size};
 		ctx->total_struct_size += sizes[i++];
 	}
-	return (buf);
+	return (ctx);
 }
 
 //	soa starts with room for 4, appends grow it and reshuffle the columns
@@ -114,10 +115,12 @@ void	xft_main(const t_any *const __restrict__ sp)
 	(void)sp;
 	gpa = xft_new_gpa();
 	a = xft_gpa_allocator(&gpa);
-	ctx_buf = particle_ctx_new(a);
-	if (__builtin_expect(ctx_buf.mem == nullptr, 0))
+	if (a.vtable == nullptr || a.vtable->free == nullptr
+		|| a.vtable->destroy == nullptr)
+		__builtin_unreachable();
+	ctx = particle_ctx_new(a, &ctx_buf);
+	if (__builtin_expect(ctx == nullptr, 0))
 		xft_exit_process(1);
-	ctx = (t_soa_context *)ctx_buf.mem;
 	soa = xft_new_soa(a, 4, ctx);
 	if (__builtin_expect(soa.ptr == nullptr
 			|| !particles_fill(a, &soa, ctx), 0))
@@ -125,7 +128,7 @@ void	xft_main(const t_any *const __restrict__ sp)
 	particles_step(&soa, ctx, STEPS);
 	particles_print(&soa, ctx);
 	xft_destroy_soa(a, &soa);
-	a.vtable.free(a.allocator, ctx_buf);
-	a.vtable.destroy(a.allocator);
+	a.vtable->free(a.allocator, ctx_buf);
+	a.vtable->destroy(a.allocator);
 	xft_exit_process(0);
 }

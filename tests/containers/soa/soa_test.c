@@ -23,7 +23,7 @@ static void	test_soa_with(t_allocator a)
 	test_soa_append(a, ctx);
 	test_soa_grow(a, ctx);
 	test_soa_reserve(a, ctx);
-	a.vtable.free(a.allocator, ctx_buf);
+	a.vtable->free(a.allocator, ctx_buf);
 }
 
 void	test_soa(t_test *t)

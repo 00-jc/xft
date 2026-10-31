@@ -19,8 +19,10 @@ inline t_result	xft_vec_reserve(t_allocator allocator,
 	t_buffer	new_buf;
 	t_size		new_cap;
 
+	if (allocator.vtable == nullptr || allocator.vtable->realloc == nullptr)
+		__builtin_unreachable();
 	new_cap = n + vec->buf.size;
-	new_buf = allocator.vtable.realloc(allocator.allocator,
+	new_buf = allocator.vtable->realloc(allocator.allocator,
 			vec->buf, new_cap, __GCC_CONSTRUCTIVE_SIZE);
 	if (__builtin_expect(new_buf.mem != nullptr, 1))
 	{

@@ -13,7 +13,7 @@
 #ifndef XFT_P_ARENA_H
 # define XFT_P_ARENA_H
 
-# include <xft/alloc/arena_alloc.h>
+# include <xft/alloc.h>
 
 t_any				get_next_ptr(t_hugepage *slab, t_size align)\
 						__attribute__((__nonnull__(1), __returns_nonnull__));

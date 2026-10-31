@@ -70,17 +70,17 @@ void	xft_soa_bench_aos_update(t_any ptr)
 	t_soa_bench_particle	*p;
 	t_size					n;
 
-	buf = a.vtable.allocate(a.allocator,
+	if (a.vtable == nullptr || a.vtable->allocate == nullptr
+		|| a.vtable->free == nullptr)
+		__builtin_unreachable();
+	buf = a.vtable->allocate(a.allocator,
 			SOA_BENCH_FILL * sizeof(t_soa_bench_particle),
 			alignof(t_soa_bench_particle));
 	p = (t_soa_bench_particle *)buf.mem;
 	xft_pin_invariant(p != nullptr);
-	n = 0;
-	while (n < SOA_BENCH_FILL)
-	{
+	n = SOA_BENCH_FILL;
+	while (n-- > 0)
 		p[n] = xft_soa_bench_make(n);
-		++n;
-	}
 	n = xft_tailor_getcount(ptr);
 	while (n-- > 0)
 	{
@@ -89,5 +89,5 @@ void	xft_soa_bench_aos_update(t_any ptr)
 	}
 	xft_tailor_add_processed_bytes(ptr, xft_tailor_getcount(ptr)
 		* SOA_BENCH_FILL * 4 * sizeof(t_i32));
-	a.vtable.free(a.allocator, buf);
+	a.vtable->free(a.allocator, buf);
 }

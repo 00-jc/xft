@@ -19,5 +19,6 @@ void	test_vtables(t_test *t)
 	test_arena_vtable();
 	test_gpa_vtable();
 	test_gpa_freelist();
+	test_clone_vtable();
 	xft_test_print(t, "  vtables: OK\n");
 }

@@ -58,14 +58,16 @@ static void	arena_destroy(t_any alloc)
 __attribute__((__nonnull__(1), __const__))
 t_allocator	xft_arena_allocator(t_arena *arena)
 {
+	static t_alloc_vtable const	vtable = {
+		.free = arena_free,
+		.realloc = xft_arena_realloc,
+		.allocate = arena_allocate,
+		.destroy = arena_destroy,
+		.clone = xft_alloc_clone,
+	};
+
 	return ((t_allocator){
-		.vtable = {
-			.free = arena_free,
-			.realloc = xft_arena_realloc,
-			.allocate = arena_allocate,
-			.destroy = arena_destroy,
-			.clone = xft_alloc_clone,
-		},
+		.vtable = &vtable,
 		.allocator = arena,
 	});
 }

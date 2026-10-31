@@ -13,7 +13,7 @@
 #ifndef XFT_P_HUGEPAGE_H
 # define XFT_P_HUGEPAGE_H
 
-# include <xft/alloc/page_alloc.h>
+# include <xft/alloc.h>
 
 # if defined(__linux__)
 

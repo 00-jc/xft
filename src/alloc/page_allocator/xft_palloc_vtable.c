@@ -39,16 +39,17 @@ static void	palloc_free(t_any alloc, t_buffer old)
 __attribute__((__const__))
 t_allocator	xft_page_allocator(void)
 {
-	static t_page_alloc	instance = {0};
+	static t_page_alloc			instance = {0};
+	static t_alloc_vtable const	vtable = {
+		.free = palloc_free,
+		.realloc = palloc_reallocate,
+		.allocate = palloc_allocate,
+		.destroy = nullptr,
+		.clone = xft_alloc_clone,
+	};
 
 	return ((t_allocator){
-		.vtable = {
-			.free = palloc_free,
-			.realloc = palloc_reallocate,
-			.allocate = palloc_allocate,
-			.destroy = nullptr,
-			.clone = xft_alloc_clone,
-		},
+		.vtable = &vtable,
 		.allocator = &instance,
 	});
 }

@@ -22,13 +22,17 @@ void	xft_main(const t_any *const __restrict__ sp)
 	(void)sp;
 	gpa = xft_new_gpa();
 	allocator = xft_gpa_allocator(&gpa);
-	memory = allocator.vtable.allocate(allocator.allocator, 1000, 64);
+	if (allocator.vtable == nullptr || allocator.vtable->allocate == nullptr
+		|| allocator.vtable->destroy == nullptr
+		|| allocator.vtable->free == nullptr)
+		__builtin_unreachable();
+	memory = allocator.vtable->allocate(allocator.allocator, 1000, 64);
 	if (__builtin_expect(memory.mem == nullptr, 0))
 	{
-		allocator.vtable.destroy(allocator.allocator);
+		allocator.vtable->destroy(allocator.allocator);
 		xft_exit_process(1);
 	}
 	xft_pin_invariant(memory.size >= 1000);
-	allocator.vtable.free(allocator.allocator, memory);
+	allocator.vtable->free(allocator.allocator, memory);
 	xft_exit_process(0);
 }

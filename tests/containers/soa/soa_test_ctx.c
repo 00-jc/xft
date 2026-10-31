@@ -30,7 +30,7 @@ t_buffer	soa_test_ctx_new(t_allocator a)
 	t_buffer		buf;
 	t_soa_context	*ctx;
 
-	buf = a.vtable.allocate(a.allocator, sizeof(t_soa_context)
+	buf = a.vtable->allocate(a.allocator, sizeof(t_soa_context)
 			+ SOA_TEST_FIELDS * sizeof(t_soa_field_meta), SOA_TEST_ALIGN);
 	xft_pin_invariant(buf.mem != nullptr);
 	ctx = (t_soa_context *)buf.mem;
