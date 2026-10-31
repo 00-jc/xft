@@ -13,9 +13,39 @@
 #ifndef ALLOC_TYPES_H
 # define ALLOC_TYPES_H
 
-# include <xft/alloc/page_alloc.h>
-# include <xft/alloc/arena_alloc.h>
+# include <stddef.h>
+# include <xft/primitives.h>
+# include <xft/mem.h>
 # include <xft/types/atomic_types.h>
+
+typedef enum e_hugepage_size : t_u64
+{
+	HUGEPAGE_2MB = 2097152,
+	HUGEPAGE_8MB = 8388608,
+	HUGEPAGE_16MB = 16777216,
+	HUGEPAGE_256MB = 268435456,
+	HUGEPAGE_512MB = 536870912,
+	HUGEPAGE_1GB = 1073741824,
+	HUGEPAGE_2GB = 2147483648,
+	HUGEPAGE_16GB = 17179869184,
+}	t_hugepage_size;
+
+// largest tier a t_size can hold
+# if UINTPTR_MAX > 0xFFFFFFFF
+
+typedef enum e_hugepage_max : t_u64
+{
+	HUGEPAGE_MAX = HUGEPAGE_16GB,
+}	t_hugepage_max;
+
+# else
+
+typedef enum e_hugepage_max : t_u64
+{
+	HUGEPAGE_MAX = HUGEPAGE_2GB,
+}	t_hugepage_max;
+
+# endif
 
 typedef enum e_gpa_conf : t_u32
 {
@@ -27,6 +57,65 @@ typedef enum e_reporta_conf : t_u16
 {
 	REPORTA_BUFFER = 1024,
 }	t_reporta_conf;
+
+typedef struct s_allocator	t_allocator;
+
+typedef void		(*t_free)(t_any alloc, t_buffer old)\
+						__attribute__((__nonnull__(1)));
+
+typedef t_buffer	(*t_reallocate)(t_any alloc, t_buffer old, t_size new_size,\
+						t_size align)\
+						__attribute__((__nonnull__(1)));
+
+typedef t_buffer	(*t_allocate)(t_any alloc, t_size size, t_size align)\
+						__attribute__((__nonnull__(1)));
+
+typedef void		(*t_destroy)(t_any alloc)\
+						__attribute__((__nonnull__(1)));
+
+typedef t_buffer	(*t_clone)(t_allocator self, t_buffer buffer);
+
+typedef struct e_alloc_vtable
+{
+	t_free			free;
+	t_reallocate	realloc;
+	t_allocate		allocate;
+	t_destroy		destroy;
+	t_clone			clone;
+} __attribute__((__aligned__(__GCC_CONSTRUCTIVE_SIZE)))	t_alloc_vtable;
+
+typedef struct s_allocator
+{
+	_Alignas(__GCC_CONSTRUCTIVE_SIZE)
+	const t_alloc_vtable	*__restrict__ vtable;
+	t_any					allocator;
+}	t_allocator;
+
+typedef struct s_page_alloc
+{
+	t_u8	_pad;
+}	t_page_alloc;
+
+typedef struct s_hugepage
+{
+	struct s_hugepage	*next;
+	struct s_hugepage	*prev;
+	t_size				page_size;
+	t_size				total;
+	t_size				used;
+	t_u8				data[];
+}	t_hugepage;
+
+typedef struct s_arena
+{
+	t_hugepage		*current;
+}	t_arena;
+
+typedef struct s_checkpoint
+{
+	t_size			used;
+	t_hugepage		*location;
+}	t_arena_checkpoint;
 
 typedef struct s_gpa
 {

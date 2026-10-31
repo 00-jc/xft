@@ -1,34 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   hydra.h                                            :+:      :+:    :+:   */
+/*   xft_backoff_x86_64.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/10/29 19:28:39 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/10/29 19:51:10 by jaicastr         ###   ########.fr       */
+/*   Created: 2026/07/09 00:00:00 by jaicastr          #+#    #+#             */
+/*   Updated: 2026/07/09 00:00:00 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef HYDRA_H
-# define HYDRA_H
+#include <xft/atomics.h>
 
-# include <xft/primitives.h>
+#ifdef __x86_64__
 
-typedef enum e_hydra_head_type
+__attribute__((__always_inline__, __used__))
+inline void	xft_backoff(t_u64 n)
 {
-	xft_hydra_heapbound,
-	xft_hydra_stackbound,
-}	t_hydra_head_type;
-
-typedef struct s_hydra_head
-{
-	// TODO: t_signal (i don't have it yet)
-	t_result			(*fn)(t_any);
-	t_result			result;
-	t_any				state;
-	t_hydra_head_type	type;
-	struct s_hydra_head	*next;
-}	t_hydra_head;
+	while (n--)
+		__builtin_ia32_pause();
+}
 
 #endif

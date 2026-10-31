@@ -27,7 +27,7 @@ const SRCS = [_][]const u8{
     "src/alloc/thread_safe/xft_ts_gpa.c",
     "src/alloc/thread_safe/xft_ts_reporta.c",
     "src/alloc/thread_safe/xft_ts_vtable.c",
-    "src/atomics/mutex/xft_mutex_backoff_portable.c",
+    "src/atomics/backoff/xft_backoff_portable.c",
     "src/atomics/mutex/xft_mutex_busy.c",
     "src/atomics/mutex/xft_mutex_init.c",
     "src/atomics/mutex/xft_mutex_lock.c",
@@ -35,6 +35,9 @@ const SRCS = [_][]const u8{
     "src/atomics/mutex/xft_mutex_fast.c",
     "src/atomics/mutex/xft_mutex_slow.c",
     "src/atomics/mutex/xft_mutex_unlock.c",
+    "src/atomics/ring_buffer/xft_ring_buffer_init.c",
+    "src/atomics/ring_buffer/xft_ring_buffer_steal.c",
+    "src/atomics/ring_buffer/xft_ring_buffer_submit.c",
     "src/atomics/xft_signal.c",
     "src/bmi/xft_align.c",
     "src/bmi/xft_bswap.c",
@@ -411,12 +414,12 @@ const SRCS_XID = [_][]const u8{
 };
 
 const SRCS_ARCH_x86_64 = [_][]const u8{
-    "src/atomics/mutex/xft_mutex_backoff_x86_64.c",
+    "src/atomics/backoff/xft_backoff_x86_64.c",
     "src/arch/x86_64/xft_cache_line_size.c",
 };
 
 const SRCS_ARCH_aarch64 = [_][]const u8{
-    "src/atomics/mutex/xft_mutex_backoff_aarch64.c",
+    "src/atomics/backoff/xft_backoff_aarch64.c",
     "src/arch/aarch64/xft_cache_line_size.c",
 };
 
@@ -504,6 +507,10 @@ const SRCS_TEST = [_][]const u8{
     "tests/alloc/vtables/vtables_test_gpa_realloc.c",
     "tests/alloc/vtables/vtables_test_palloc.c",
     "tests/alloc/vtables/vtables_test_palloc_realloc.c",
+    "tests/atomics/mutex/mutex_test.c",
+    "tests/atomics/ring_buffer/ring_buffer_test.c",
+    "tests/atomics/ring_buffer/ring_buffer_test_fifo.c",
+    "tests/atomics/ring_buffer/ring_buffer_test_init.c",
     "tests/bmi/bmi_test.c",
     "tests/bmi/bmi_test_bswap.c",
     "tests/bmi/bmi_test_clz.c",
@@ -642,6 +649,9 @@ const SRCS_TEST = [_][]const u8{
     "tests/threads/thread_test_detach.c",
     "tests/threads/thread_test_detach_utils.c",
     "tests/threads/thread_test_join.c",
+    "tests/threads/thread_test_ring_buffer.c",
+    "tests/threads/thread_test_ring_buffer_backoff.c",
+    "tests/threads/thread_test_ring_buffer_backoff_utils.c",
     "tests/threads/thread_test_signal.c",
     "tests/threads/thread_test_tls.c",
     "tests/xid/xid_test.c",
@@ -656,6 +666,9 @@ const SRCS_TEST_THREADS_FREESTANDING = [_][]const u8{
     "tests/threads/thread_test_detach.c",
     "tests/threads/thread_test_detach_utils.c",
     "tests/threads/thread_test_join.c",
+    "tests/threads/thread_test_ring_buffer.c",
+    "tests/threads/thread_test_ring_buffer_backoff.c",
+    "tests/threads/thread_test_ring_buffer_backoff_utils.c",
     "tests/threads/thread_test_signal.c",
     "tests/threads/thread_test_tls.c",
 };

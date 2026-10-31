@@ -1,24 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   xft_mutex_backoff_aarch64.c                        :+:      :+:    :+:   */
+/*   ring_buffer_test.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/07/09 00:00:00 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/07/09 00:00:00 by jaicastr         ###   ########.fr       */
+/*   Created: 2026/10/31 12:00:00 by jaicastr          #+#    #+#             */
+/*   Updated: 2026/10/31 12:00:00 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <xft/xft_p_atomics.h>
+#include "tests/atomics/ring_buffer/ring_buffer_test.h"
 
-#ifdef __aarch64__
-
-__attribute__((__always_inline__, __used__))
-inline void	xft_mutex_backoff(t_u64 n)
+void	test_ring_buffer(t_test *t)
 {
-	while (n--)
-		__asm__ volatile ("yield" ::: "memory");
+	xft_test_print(t, "Testing ring buffer...\n");
+	test_ring_buffer_init();
+	test_ring_buffer_fifo();
+	xft_test_print(t, "  ring buffer: OK\n");
 }
-
-#endif

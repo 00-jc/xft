@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/04 18:00:00 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/08/02 20:22:57 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/10/31 04:13:32 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,13 +38,13 @@ static inline bool	xft__try_lock_spin(t_mutex *__restrict__ const mutex)
 	return (false);
 }
 
-__attribute__((__nonnull__(1), __always_inline__, __used__))
+__attribute__((__nonnull__(1), __always_inline__, __used__, __flatten__))
 inline void	xft_mutex_spin(t_mutex *__restrict__ const mutex)
 {
 	t_size				iters;
 	t_u32				val;
 
-	((xft_prefetch_write0((t_any)mutex, sizeof(*mutex))), val = xft_unlocked);
+	val = xft_unlocked;
 	while (true)
 	{
 		iters = 0;
@@ -56,7 +56,7 @@ inline void	xft_mutex_spin(t_mutex *__restrict__ const mutex)
 				if (__builtin_expect(xft__try_lock_spin(mutex), 1))
 					return ;
 			}
-			xft_mutex_backoff(xft_last_pow2(iters++ | 1));
+			xft_backoff(xft_last_pow2(iters++ | 1));
 		}
 		if (__builtin_expect(xft__try_lock(mutex), 0))
 			return ;

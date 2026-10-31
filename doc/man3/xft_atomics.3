@@ -1,4 +1,4 @@
-.Dd October 29, 2026
+.Dd October 31, 2026
 .Dt XFT_ATOMICS 3
 .Os xft
 .Sh NAME
@@ -10,8 +10,13 @@
 .Nm xft_send_signal ,
 .Nm xft_mutex_init ,
 .Nm xft_mutex_lock ,
-.Nm xft_mutex_unlock
-.Nd mutexes, signals, futexes and memory fences
+.Nm xft_mutex_unlock ,
+.Nm xft_backoff ,
+.Nm xft_new_ring_buffer ,
+.Nm xft_destroy_ring_buffer ,
+.Nm xft_ring_buffer_submit ,
+.Nm xft_ring_buffer_steal
+.Nd mutexes, signals, futexes, ring buffers, spin backoff and memory fences
 .Sh SYNOPSIS
 .In atomics.h
 .Ft void
@@ -32,10 +37,21 @@
 .Fn xft_mutex_lock "t_mutex *restrict mutex" "const t_mutex_type type"
 .Ft void
 .Fn xft_mutex_unlock "t_mutex *restrict mutex"
+.Ft void
+.Fn xft_backoff "t_u64 n"
+.Ft t_ring_buffer
+.Fn xft_new_ring_buffer "t_allocator allocator" "t_u32a min_size"
+.Ft void
+.Fn xft_destroy_ring_buffer "t_allocator allocator" "t_ring_buffer *restrict rb"
+.Ft t_result
+.Fn xft_ring_buffer_submit "t_ring_buffer *restrict rb" "t_any ptr"
+.Ft t_any
+.Fn xft_ring_buffer_steal "t_ring_buffer *restrict rb"
 .Sh DESCRIPTION
 .In atomics.h
 provides a single 32-bit mutex primitive, a broadcast signal, a futex wait
-and wake pair and a pair of memory fences.
+and wake pair, a bounded multi-producer multi-consumer ring buffer of
+pointers, a spin backoff and a pair of memory fences.
 The mutex is built directly on C11 atomics,
 .Fn xft_futex_wait
 and
@@ -47,7 +63,21 @@ The types and state constants are declared in
 .In types/atomic_types.h :
 .Bd -literal -offset indent
 typedef volatile _Atomic(t_u32) t_atomic32;
+typedef volatile _Atomic(t_u64) t_atomic64;
+typedef volatile _Atomic(t_any) t_atomicptr;
 typedef t_atomic32 t_mutex;
+
+typedef struct s_ring_buffer
+{
+	t_atomicptr	*memory;
+	t_size		alloc_bytes;
+	t_u32a		size;
+
+	_Alignas(XFT_DESTRUCTIVE_ALIGN)
+	t_atomic32	head;
+	_Alignas(XFT_DESTRUCTIVE_ALIGN)
+	t_atomic32	tail;
+}	t_ring_buffer;
 
 typedef enum e_mutex_type : t_u8
 {
@@ -82,6 +112,11 @@ is a
 accessed through the
 .In stdatomic.h
 operations.
+.Vt t_atomic64
+and
+.Vt t_atomicptr
+are the 64-bit and pointer counterparts of
+.Vt t_atomic32 .
 Its value is one of
 .Dv xft_unlocked ,
 .Dv xft_locked
@@ -90,9 +125,10 @@ or
 .Dv xft_unlocked
 means the mutex is free,
 .Dv xft_locked
-means it is held and no waiter has been recorded by the unlock path, and
+means it is held and no other thread has tried to take it, and
 .Dv xft_contested
-means it is held and at least one waiter is asleep on it in
+means it is held and another thread has tried to take it and may be asleep
+on it in
 .Fn xft_futex_wait .
 .Pp
 .Dv XFT_MUTEX_SPIN
@@ -218,7 +254,7 @@ the thread attempts a compare-and-exchange from
 to
 .Dv xft_contested .
 Between attempts the thread calls
-.Fn xft_mutex_backoff
+.Fn xft_backoff
 with the largest power of two not greater than the current iteration
 count.
 If the spin fails, the thread exchanges the mutex into
@@ -261,18 +297,133 @@ Passing a value that is not one of the three enumerators reaches
 .Fn xft_mutex_unlock
 releases
 .Fa mutex .
-It performs a release fetch-and-subtract of one.
+It performs a release exchange of
+.Dv xft_unlocked
+into the mutex.
 If the previous value was
 .Dv xft_contested ,
-the mutex is stored back to
-.Dv xft_unlocked
-and one thread is woken via
+one thread is woken via
 .Fn xft_futex_wake .
-If the previous value was
-.Dv xft_locked ,
-the fetch-and-subtract leaves the mutex at
+Otherwise no wake-up is issued, so calling it on a mutex that is already
 .Dv xft_unlocked
-and no wake-up is issued.
+leaves it unchanged.
+.Ss Ring buffers
+A
+.Vt t_ring_buffer
+is a bounded first-in first-out queue of non-null pointers that any number
+of threads can submit to and steal from at the same time.
+.Fa memory
+is an array of
+.Fa size
+slots, where
+.Fa size
+is a power of two and a null slot is empty.
+.Fa alloc_bytes
+is the size of the allocation that holds the array.
+.Fa tail
+counts the positions handed out to producers and
+.Fa head
+counts the positions handed out to consumers;
+position
+.Va p
+lives in slot
+.Ql p & (size - 1) .
+Both counters are 32-bit and wrap around.
+.Pp
+.Fa head
+and
+.Fa tail
+each start on their own
+.Dv XFT_DESTRUCTIVE_ALIGN
+boundary, so producers and consumers do not write to the same cache line.
+.Dv XFT_DESTRUCTIVE_ALIGN
+is 128 bytes on x86_64, aarch64 and powerpc64, 256 on s390x, 32 on 32-bit
+arm, mips, hexagon and 32-bit sparc, 16 on m68k and 64 elsewhere.
+.Pp
+.Fn xft_new_ring_buffer
+rounds
+.Fa min_size
+up to the next power of two, allocates that many slots through
+.Fa allocator
+with an alignment of
+.Dv __GCC_CONSTRUCTIVE_SIZE ,
+zeroes the whole allocation and returns the ring buffer with both counters
+at 0.
+It returns a zeroed
+.Vt t_ring_buffer ,
+whose
+.Fa memory
+is a null pointer, when
+.Fa min_size
+is 0 or above 2^31, when the slot array does not fit in a
+.Vt t_size ,
+or when the allocation fails.
+On 32-bit targets the
+.Vt t_size
+limit rejects every
+.Fa min_size
+above 2^29.
+.Pp
+.Fn xft_destroy_ring_buffer
+returns the slot array of
+.Fa rb
+to
+.Fa allocator .
+It does not modify
+.Fa rb .
+.Pp
+.Fn xft_ring_buffer_submit
+appends
+.Fa ptr .
+It returns
+.Dv KO
+when the buffer holds
+.Fa size
+pointers.
+Otherwise it claims the position at
+.Fa tail
+with a weak release compare-and-exchange, stores
+.Fa ptr
+into its slot with release ordering and returns
+.Dv OK .
+.Pp
+.Fn xft_ring_buffer_steal
+removes the oldest pointer.
+It returns a null pointer when
+.Fa head
+equals
+.Fa tail .
+Otherwise it claims the position at
+.Fa head
+with a weak release compare-and-exchange, stores a null pointer into its
+slot with release ordering and returns the pointer the slot held.
+.Pp
+Both functions load
+.Fa head ,
+.Fa tail
+and the slot with acquire ordering and retry at once when another thread
+wins the compare-and-exchange.
+A slot can be in flight: claimed by a producer that has not stored its
+pointer, which
+.Fn xft_ring_buffer_steal
+reads as null, or claimed by a consumer that has not cleared it, which
+.Fn xft_ring_buffer_submit
+reads as the previous pointer.
+On an in-flight slot both functions call
+.Fn xft_backoff
+and retry.
+The count starts at 1 and grows by one with each in-flight slot the call
+meets, with no upper bound; a failed compare-and-exchange does not reset it.
+The window between the claim and the store is a few instructions, so the
+wait is short unless the thread that claimed the slot is preempted or
+stopped.
+.Pp
+Pointers come out in the order their positions were claimed.
+Writes made before
+.Fn xft_ring_buffer_submit
+are visible to the thread whose
+.Fn xft_ring_buffer_steal
+returns that pointer.
 .Ss Memory fences
 .Fn xft_thread_fence
 issues a hardware memory fence with the memory order given by
@@ -291,8 +442,7 @@ explicit operations and of the
 builtins.
 The mutex functions use these constants for every atomic access.
 .Ss Backoff
-The internal
-.Fn xft_mutex_backoff
+.Fn xft_backoff
 executes
 .Fa n
 relaxation instructions:
@@ -302,13 +452,37 @@ on x86_64,
 on aarch64, or an empty memory-clobbering
 .Ql asm
 statement elsewhere.
-The spin loops call it with a count derived from the current iteration
-number through
+It does not sleep or make a system call, and an
+.Fa n
+of 0 returns at once.
+.Pp
+The mutex spin loops call it with a count derived from the current
+iteration number through
 .Fn xft_last_pow2 ,
 so the number of instructions in a single backoff step stays bounded by
 the loop's own iteration cap.
+The ring buffer functions call it with a per-call count that starts at 1
+and grows by one on every retry on an in-flight slot, so the pause grows
+linearly for as long as the slot stays in flight.
 .Sh RETURN VALUES
-These functions return nothing.
+.Fn xft_new_ring_buffer
+returns the new ring buffer, or a zeroed
+.Vt t_ring_buffer
+on failure.
+.Pp
+.Fn xft_ring_buffer_submit
+returns
+.Dv OK
+when
+.Fa ptr
+has been stored and
+.Dv KO
+when the buffer is full.
+.Pp
+.Fn xft_ring_buffer_steal
+returns the oldest pointer, or a null pointer when the buffer is empty.
+.Pp
+The other functions return nothing.
 .Fn xft_mutex_lock
 blocks until it holds the mutex; it has no failure mode.
 .Sh EXAMPLES
@@ -327,6 +501,22 @@ void	critical_section(void)
 	xft_mutex_lock(&g_lock, xft_lock_fast);
 	/* ... */
 	xft_mutex_unlock(&g_lock);
+}
+
+void	queue(t_any job)
+{
+	const t_allocator	alloc = xft_page_allocator();
+	t_ring_buffer		rb;
+	t_any				out;
+
+	rb = xft_new_ring_buffer(alloc, 64);
+	if (rb.memory == nullptr)
+		return ;
+	while (xft_ring_buffer_submit(&rb, job) == KO)
+		xft_backoff(1);
+	out = xft_ring_buffer_steal(&rb);
+	/* ... */
+	xft_destroy_ring_buffer(alloc, &rb);
 }
 .Ed
 .Sh SEE ALSO
@@ -347,12 +537,6 @@ reaches
 .Ql __builtin_unreachable
 and compiles to undefined behaviour at the call site.
 .Pp
-.Fn xft_mutex_unlock
-does not check that the mutex is held.
-Calling it on an unlocked mutex performs a release fetch-and-subtract on
-.Dv xft_unlocked ,
-leaving the mutex underflowed.
-.Pp
 .Fn xft_wait_for_signal
 misses a send made between the caller's last check of the shared state
 and the call, and sleeps until the following send.
@@ -368,3 +552,56 @@ from the same thread deadlocks.
 .Dv xft_lock_busy
 mutexes can starve other threads on a uniprocessor or an over-subscribed
 system, since the spin loop never yields through the kernel.
+.Pp
+A null pointer marks an empty slot, so it cannot be stored.
+Passing a null
+.Fa ptr
+to
+.Fn xft_ring_buffer_submit ,
+or a ring buffer whose
+.Fa memory
+is a null pointer to
+.Fn xft_ring_buffer_submit
+or
+.Fn xft_ring_buffer_steal ,
+reaches
+.Ql __builtin_unreachable .
+So does an
+.Fa allocator
+with a null vtable, or a null
+.Fa allocate
+or
+.Fa free
+entry, passed to
+.Fn xft_new_ring_buffer
+or
+.Fn xft_destroy_ring_buffer .
+.Pp
+Calling
+.Fn xft_ring_buffer_submit
+or
+.Fn xft_ring_buffer_steal
+from a signal handler on a ring buffer that the interrupted thread is
+inside
+.Fn xft_ring_buffer_submit
+or
+.Fn xft_ring_buffer_steal
+on can spin forever: the handler waits on a slot that the interrupted
+thread cannot finish until the handler returns.
+Signals whose handlers do not touch the ring buffer only delay the
+interrupted call.
+.Pp
+A thread stopped between claiming a slot and storing to it, by preemption
+or a debugger, makes every thread that reaches that slot spin in
+.Fn xft_backoff
+until it resumes.
+The spin never yields through the kernel, so on a uniprocessor or an
+over-subscribed system the spinning threads can hold the CPU the stopped
+thread needs.
+.Pp
+.Fn xft_destroy_ring_buffer
+must not run while another thread uses
+.Fa rb ,
+and
+.Fa allocator
+must be the allocator that created it.

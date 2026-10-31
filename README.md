@@ -139,7 +139,7 @@ On Windows, `xft` calls into the system DLLs even in the freestanding flavor, so
 | Header | Contents |
 | --- | --- |
 | `xft/alloc.h` | Allocator interface; arena, general-purpose, page, and reporting allocators, and mutex-locked variants of the arena, general-purpose, and reporting allocators |
-| `xft/atomics.h` | Mutexes and atomic types |
+| `xft/atomics.h` | Mutexes, futexes, signals, ring buffers, and atomic types |
 | `xft/bmi.h` | Bit manipulation, byte order, SIMD mask primitives |
 | `xft/cstr.h` | NUL-terminated string helpers |
 | `xft/ctype.h` | ASCII character classification |

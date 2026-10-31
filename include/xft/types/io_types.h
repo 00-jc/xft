@@ -28,7 +28,7 @@ typedef struct s_writer_vtable
 	t_result	(*flush)(t_any __restrict__ const writer);
 	t_result	(*drain)(t_any __restrict__ const writer,\
 					t_iovec * __restrict__ const bufs, t_size nbufs);
-}	t_writer_vtable;
+} __attribute__((__aligned__(__GCC_CONSTRUCTIVE_SIZE)))	t_writer_vtable;
 
 typedef struct s_fs_writer
 {
@@ -63,10 +63,11 @@ typedef union u_writer_union
 
 typedef struct s_writer
 {
-	const t_writer_vtable *__restrict__				vtable;
-	t_buffer										buffer;
-	t_size											end;
-	t_writer_union									as;
+	_Alignas(__GCC_CONSTRUCTIVE_SIZE)
+	const t_writer_vtable	*__restrict__ vtable;
+	t_buffer				buffer;
+	t_size					end;
+	t_writer_union			as;
 }	t_writer;
 
 typedef struct s_reader_vtable
@@ -75,7 +76,7 @@ typedef struct s_reader_vtable
 					t_u8 * __restrict__ const dst, const t_size len,\
 					t_size * __restrict__ const total);
 	t_result	(*fill)(t_any __restrict__ const reader);
-}	t_reader_vtable;
+} __attribute__((__aligned__(__GCC_CONSTRUCTIVE_SIZE)))	t_reader_vtable;
 
 typedef struct s_fs_reader
 {
@@ -96,11 +97,12 @@ typedef union u_reader_union
 
 typedef struct s_reader
 {
-	const t_reader_vtable *__restrict__				vtable;
-	t_buffer										buffer;
-	t_size											end;
-	t_size											valid;
-	t_reader_union									as;
+	_Alignas(__GCC_CONSTRUCTIVE_SIZE)
+	const t_reader_vtable	*__restrict__ vtable;
+	t_buffer				buffer;
+	t_size					end;
+	t_size					valid;
+	t_reader_union			as;
 }	t_reader;
 
 #endif

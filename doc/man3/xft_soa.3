@@ -1,4 +1,4 @@
-.Dd October 29, 2026
+.Dd October 31, 2026
 .Dt XFT_SOA 3
 .Os xft
 .Sh NAME
@@ -198,7 +198,7 @@ static t_buffer	particle_ctx_new(t_allocator a)
 	t_soa_context	*ctx;
 	t_size			i;
 
-	buf = a.vtable.allocate(a.allocator, sizeof(t_soa_context)
+	buf = a.vtable->allocate(a.allocator, sizeof(t_soa_context)
 			+ FIELDS * sizeof(t_soa_field_meta),
 			alignof(t_soa_context));
 	if (buf.mem == nullptr)
@@ -256,8 +256,11 @@ static t_result	step(t_allocator a, const t_soa_context *ctx)
 .Sh CAVEATS
 A
 .Dv nullptr
-.Fa allocator Ns .allocator
-or missing vtable entry is treated as unreachable.
+.Fa allocator Ns .allocator ,
+a
+.Dv nullptr
+.Fa allocator Ns .vtable
+or a missing vtable entry is treated as unreachable.
 .Fn xft_soa_fields
 treats
 .Fa field_idx

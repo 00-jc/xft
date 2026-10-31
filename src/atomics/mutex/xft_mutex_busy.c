@@ -11,11 +11,12 @@
 /* ************************************************************************** */
 
 #include <xft/mem.h>
+#include <xft/atomics.h>
 #include <xft/types/atomic_types.h>
 #include <xft/xft_p_atomics.h>
 #include <stdatomic.h>
 
-__attribute__((__nonnull__(1), __always_inline__, __used__))
+__attribute__((__nonnull__(1), __always_inline__, __used__, __flatten__))
 inline void	xft_mutex_busy(t_mutex *__restrict__ const mutex)
 {
 	t_size	iters;
@@ -33,7 +34,7 @@ inline void	xft_mutex_busy(t_mutex *__restrict__ const mutex)
 						xft_relaxed), 1))
 				return ;
 		}
-		xft_mutex_backoff(xft_last_pow2(iters++ | 1));
+		xft_backoff(xft_last_pow2(iters++ | 1));
 		iters &= (1ULL << 11) - 1;
 	}
 }

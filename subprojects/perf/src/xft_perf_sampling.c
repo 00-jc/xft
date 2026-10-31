@@ -38,7 +38,7 @@ static inline t_result	xft__get_sample_plexed(t_perf_counters c, t_u64 *v)
 	if (adjust)
 	{
 		scale = (t_f64)t.enabled / (t_f64)t.running;
-		while (i < t.nr)
+		while (i < (t_size)t.nr)
 		{
 			v[i] = (t_u64)((t_f64)t.val[i] * scale);
 			++i;

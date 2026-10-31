@@ -15,8 +15,6 @@
 
 # include <xft/types/atomic_types.h>
 
-void			xft_mutex_backoff(t_u64 n);
-
 void			xft_mutex_spin(t_mutex *__restrict__ const mutex)\
 					__attribute__((__nonnull__(1)));
 

@@ -13,7 +13,7 @@
 #include <xft/atomics.h>
 #include <stdatomic.h>
 
-__attribute__((__nonnull__(1), __always_inline__, __used__))
+__attribute__((__nonnull__(1), __always_inline__, __used__, __flatten__))
 inline void	xft_mutex_init(t_mutex *__restrict__ const mutex)
 {
 	atomic_init(mutex, xft_unlocked);

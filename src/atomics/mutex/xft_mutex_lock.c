@@ -15,7 +15,7 @@
 #include <xft/xft_p_atomics.h>
 #include <stdatomic.h>
 
-__attribute__((__nonnull__(1), __used__))
+__attribute__((__nonnull__(1), __used__, __flatten__))
 inline void	xft_mutex_lock(t_mutex *__restrict__ const mutex,
 	const t_mutex_type type)
 {

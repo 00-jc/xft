@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/03 18:01:29 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/10/29 21:01:17 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/10/31 01:16:44 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,16 +17,46 @@
 
 # define CLINE __GCC_CONSTRUCTIVE_SIZE
 
-typedef volatile _Atomic(t_u8) __attribute__((__aligned__(CLINE)))		t_u8cl;
-typedef volatile _Atomic(t_u16) __attribute__((__aligned__(CLINE)))		t_u16cl;
-typedef volatile _Atomic(t_u32) __attribute__((__aligned__(CLINE)))		t_u32cl;
-typedef volatile _Atomic(t_u64) __attribute__((__aligned__(CLINE)))		t_u64cl;
-typedef volatile _Atomic(t_i8) __attribute__((__aligned__(CLINE)))		t_i8cl;
-typedef volatile _Atomic(t_i16) __attribute__((__aligned__(CLINE)))		t_i16cl;
-typedef volatile _Atomic(t_i32) __attribute__((__aligned__(CLINE)))		t_i32cl;
-typedef volatile _Atomic(t_i64) __attribute__((__aligned__(CLINE)))		t_i64cl;
-typedef volatile _Atomic(t_u32)											t_atomic32;
-typedef t_atomic32														t_mutex;
+typedef volatile _Atomic(t_u8) __attribute__((__aligned__(CLINE)))	t_u8cl;
+typedef volatile _Atomic(t_u16) __attribute__((__aligned__(CLINE)))	t_u16cl;
+typedef volatile _Atomic(t_u32) __attribute__((__aligned__(CLINE)))	t_u32cl;
+typedef volatile _Atomic(t_u64) __attribute__((__aligned__(CLINE)))	t_u64cl;
+typedef volatile _Atomic(t_i8) __attribute__((__aligned__(CLINE)))	t_i8cl;
+typedef volatile _Atomic(t_i16) __attribute__((__aligned__(CLINE)))	t_i16cl;
+typedef volatile _Atomic(t_i32) __attribute__((__aligned__(CLINE)))	t_i32cl;
+typedef volatile _Atomic(t_i64) __attribute__((__aligned__(CLINE)))	t_i64cl;
+
+typedef volatile _Atomic(t_u32)										t_atomic32;
+typedef volatile _Atomic(t_u64)										t_atomic64;
+typedef volatile _Atomic(t_any)										t_atomicptr;
+typedef t_atomic32													t_mutex;
+
+# undef CLINE
+
+# if defined(__x86_64__) || defined(__aarch64__) || defined(__powerpc64__)
+#  define XFT_DESTRUCTIVE_ALIGN 128
+# elif defined(__s390x__)
+#  define XFT_DESTRUCTIVE_ALIGN 256
+# elif defined(__arm__) || defined(__mips__) || defined(__hexagon__) \
+	|| (defined(__sparc__) && !defined(__arch64__))
+#  define XFT_DESTRUCTIVE_ALIGN 32
+# elif defined(__m68k__)
+#  define XFT_DESTRUCTIVE_ALIGN 16
+# else
+#  define XFT_DESTRUCTIVE_ALIGN 64
+# endif
+
+typedef struct s_ring_buffer
+{
+	t_atomicptr		*memory;
+	t_size			alloc_bytes;
+	t_u32a			size;
+
+	_Alignas(XFT_DESTRUCTIVE_ALIGN)
+	t_atomic32		head;
+	_Alignas(XFT_DESTRUCTIVE_ALIGN)
+	t_atomic32		tail;
+}	t_ring_buffer;
 
 typedef enum e_mutex_type : t_u8
 {

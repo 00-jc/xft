@@ -1,4 +1,4 @@
-.Dd October 29, 2026
+.Dd October 31, 2026
 .Dt XFT_ALLOC 3
 .Os xft
 .Sh NAME
@@ -73,15 +73,15 @@
 .Ft void
 .Fn xft_ts_arena_destroy "t_any alloc"
 .Ft t_buffer
-.Fn xft_alloc_clone "t_any self" "t_buffer buffer"
+.Fn xft_alloc_clone "t_allocator self" "t_buffer buffer"
 .Sh DESCRIPTION
 Every xft container that owns memory takes a
 .Vt t_allocator
 by value and calls through its vtable.
 A
 .Vt t_allocator
-pairs a table of function pointers with an untyped pointer to the backend
-state:
+pairs a pointer to a constant table of function pointers with an untyped
+pointer to the backend state:
 .Bd -literal -offset indent
 typedef void     (*t_free)(t_any alloc, t_buffer old);
 typedef t_buffer (*t_reallocate)(t_any alloc, t_buffer old,
@@ -89,7 +89,7 @@ typedef t_buffer (*t_reallocate)(t_any alloc, t_buffer old,
 typedef t_buffer (*t_allocate)(t_any alloc, t_size size,
                      t_size align);
 typedef void     (*t_destroy)(t_any alloc);
-typedef t_buffer (*t_clone)(t_any self, t_buffer buffer);
+typedef t_buffer (*t_clone)(t_allocator self, t_buffer buffer);
 
 typedef struct e_alloc_vtable {
 	t_free        free;
@@ -97,13 +97,33 @@ typedef struct e_alloc_vtable {
 	t_allocate    allocate;
 	t_destroy     destroy;
 	t_clone       clone;
-} t_alloc_vtable;
+} __attribute__((__aligned__(__GCC_CONSTRUCTIVE_SIZE)))
+  t_alloc_vtable;
 
 typedef struct s_allocator {
-	t_alloc_vtable  vtable;
-	t_any           allocator;
+	_Alignas(__GCC_CONSTRUCTIVE_SIZE)
+	const t_alloc_vtable *__restrict__  vtable;
+	t_any                               allocator;
 } t_allocator;
 .Ed
+.Pp
+Each constructor below points
+.Fa vtable
+at a
+.Ql static const
+table defined inside it, so every
+.Vt t_allocator
+of one backend shares the same read-only table, and copying a
+.Vt t_allocator
+copies two pointers.
+Entries are called as
+.Ql allocator.vtable->allocate(allocator.allocator, size, align) .
+The table cannot be changed per instance; to override an entry, define a
+separate
+.Vt t_alloc_vtable
+and point
+.Fa vtable
+at it.
 .Pp
 The
 .Fa alloc
@@ -120,10 +140,15 @@ The
 .Fa self
 argument of
 .Fa clone
-is a pointer to the
+is the
 .Vt t_allocator
-itself.
-All five types are declared
+itself, passed by value.
+.Vt t_free ,
+.Vt t_reallocate ,
+.Vt t_allocate
+and
+.Vt t_destroy
+are declared
 .Ql nonnull
 on their first argument.
 .Pp
@@ -169,7 +194,10 @@ build a
 .Vt t_allocator
 around one backend.
 They allocate nothing and are declared
-.Ql const .
+.Ql const ;
+every call to one constructor returns the same
+.Fa vtable
+pointer.
 The vtable entries map onto the backends as follows:
 .Bl -tag -width "xft_reporta_allocator"
 .It Fn xft_arena_allocator
@@ -341,15 +369,12 @@ member take no lock, and must not run while another thread uses the
 allocator.
 .Pp
 .Fn xft_alloc_clone
-treats
-.Fa self
-as a
-.Vt "t_allocator *" ,
 allocates
 .Fa buffer Ns .size
-bytes through its
-.Fa allocate
-entry with an alignment of
+bytes by calling
+.Fa self Ns .vtable->allocate
+on
+.Fa self Ns .allocator with an alignment of
 .Dv __GCC_CONSTRUCTIVE_SIZE ,
 and copies
 .Fa buffer Ns .size
@@ -387,18 +412,18 @@ void	xft_main(const t_any *const __restrict__ sp)
 	if (gpa.slab == nullptr)
 		xft_exit_process(1);
 	allocator = xft_gpa_allocator(&gpa);
-	memory = allocator.vtable.allocate(allocator.allocator, 1000, 64);
+	memory = allocator.vtable->allocate(allocator.allocator, 1000, 64);
 	if (memory.mem == nullptr)
 	{
-		allocator.vtable.destroy(allocator.allocator);
+		allocator.vtable->destroy(allocator.allocator);
 		xft_exit_process(1);
 	}
 	xft_pin_invariant(memory.size >= 1000);
-	copy = allocator.vtable.clone(&allocator, memory);
+	copy = allocator.vtable->clone(allocator, memory);
 	if (copy.mem != nullptr)
-		allocator.vtable.free(allocator.allocator, copy);
-	allocator.vtable.free(allocator.allocator, memory);
-	allocator.vtable.destroy(allocator.allocator);
+		allocator.vtable->free(allocator.allocator, copy);
+	allocator.vtable->free(allocator.allocator, memory);
+	allocator.vtable->destroy(allocator.allocator);
 	xft_exit_process(0);
 }
 .Ed
@@ -419,10 +444,12 @@ Calling
 on a page allocator calls a null pointer.
 .Pp
 .Fn xft_alloc_clone
-must be called with a pointer to the
-.Vt t_allocator ,
-not with its
-.Fa allocator
-member.
+treats a null
+.Fa self Ns .vtable ,
+a null
+.Fa allocate
+entry or a null
+.Fa buffer Ns .mem
+as unreachable; the behaviour is undefined.
 .Fa buffer Ns .size
 must be nonzero.

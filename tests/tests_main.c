@@ -39,6 +39,8 @@ inline void	run_all_tests(t_test *t)
 	test_arena_extend(t);
 	test_gpa_bulk(t);
 	test_vtables(t);
+	test_mutex(t);
+	test_ring_buffer(t);
 	test_xoshiro(t);
 	test_xid(t);
 }
