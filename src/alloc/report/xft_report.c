@@ -31,8 +31,8 @@ t_reporta	xft_new_reporta(void)
 		return ((t_reporta){0});
 	if (__builtin_expect(!xft_palloc_commit(buf.mem, sizeof(t_any *)), 0))
 		return (xft_palloc_free(buf), (t_reporta){0});
-	xft_memset((t_any)gpa.free, 0, sizeof(t_uptr) * GPA_CLASSES);
-	xft_memset((t_any)gpa.free_depth, 0, sizeof(t_size) * GPA_CLASSES);
+	xft_memset((t_any)gpa.free, 0, sizeof(t_uptr) * GPA_FREELISTS);
+	xft_memset((t_any)gpa.free_depth, 0, sizeof(t_size) * GPA_FREELISTS);
 	gpa.slab = buf.mem;
 	*(t_any *)gpa.slab = nullptr;
 	gpa.bmp = (t_blk8w)gpa.slab + sizeof(t_any *);
@@ -75,8 +75,21 @@ void	xft_reporta_destroy(t_reporta *gpa)
 {
 	t_any	*ptr;
 	t_any	*next;
+	t_size	k;
 
 	xft_reporta_report(gpa);
+	k = 60 - xft_memclz_u64(GPA_SLABSIZE);
+	while (k < GPA_FREELISTS)
+	{
+		ptr = (t_any *)gpa->free[k];
+		while (ptr != nullptr)
+		{
+			next = (t_any *)*ptr;
+			xft_palloc_free(xft_fatptr((t_any)ptr, (t_size)8 << k));
+			ptr = next;
+		}
+		++k;
+	}
 	ptr = (t_any *)gpa->slab;
 	while (ptr != nullptr)
 	{

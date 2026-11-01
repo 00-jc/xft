@@ -16,7 +16,7 @@
 # include <xft/soa.h>
 
 # ifndef SWISS_INITIAL_SIZE
-#  define SWISS_INITIAL_SIZE	512
+#  define SWISS_INITIAL_SIZE	435
 # endif
 
 typedef struct s_swissmap

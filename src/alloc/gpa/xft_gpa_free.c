@@ -21,8 +21,8 @@ void	xft_gpa_free(t_any allocator, t_buffer buf)
 	if (buf.mem == nullptr)
 		__builtin_unreachable();
 	gpa = (t_gpa *)allocator;
-	freelist = 60 - xft_memclz_u64(buf.size);
-	if (GPA_CLASSES <= freelist)
+	freelist = 61 - xft_memclz_u64(buf.size - 1);
+	if (GPA_FREELISTS <= freelist)
 	{
 		xft_palloc_free(buf);
 		return ;

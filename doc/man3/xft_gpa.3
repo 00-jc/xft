@@ -1,4 +1,4 @@
-.Dd October 29, 2026
+.Dd November 1, 2026
 .Dt XFT_GPA 3
 .Os xft
 .Sh NAME
@@ -62,7 +62,7 @@ reserves the first slab of
 .Xr xft_palloc 3 .
 Every slab starts with a pointer to the previous one.
 .Fn xft_gpa_destroy
-releases every slab.
+releases every slab and every large block on a free list.
 Large blocks that were never freed are not released.
 .Ss Size classes
 .Fa align
@@ -72,10 +72,15 @@ to the next power of two of
 .Fa align
 if that is larger.
 The
-.Dv GPA_CLASSES
-(14) classes cover 8 bytes to 64 KiB.
+.Dv GPA_FREELISTS
+(18) classes cover 8 bytes to 1 MiB.
+Blocks under
+.Dv GPA_SLABSIZE ,
+8 bytes to 64 KiB, are carved from slabs; blocks from 128 KiB to 1 MiB are
+large blocks from the page allocator.
 .Pp
-A larger request goes to
+A request above 1 MiB, or a large request whose class's free list has no
+usable head, goes to
 .Fn xft_palloc
 with the larger of
 .Fa size
@@ -85,11 +90,11 @@ and the returned
 .Fa .size
 is the page allocator's rounded size.
 .Pp
-A small request takes the head of its class's free list when
+A request up to 1 MiB takes the head of its class's free list when
 .Fa align
 is at most 16 or the head is aligned to
 .Fa align .
-Otherwise it is carved from the current slab at the next multiple of 16, of
+Otherwise a small request is carved from the current slab at the next multiple of 16, of
 .Fa align
 when that is larger, or of the block size for blocks under 16 bytes.
 The carved range is committed with
@@ -107,10 +112,13 @@ and
 pick the class from it, so the buffer must be passed back as returned.
 .Ss Freeing
 .Fn xft_gpa_free
-pushes a small block onto its class's free list, storing the link in its first
-word, and returns a large block with
+takes the class of
+.Fa buf Ns .size
+rounded up to a power of two.
+A block of 1 MiB or less is pushed onto its class's free list, storing the
+link in its first word, and a larger block is returned with
 .Fn xft_palloc_free .
-Slabs are not returned to the operating system before
+Slabs and listed large blocks are not returned to the operating system before
 .Fn xft_gpa_destroy ,
 and freed blocks are not merged or split.
 .Ss Reallocating
@@ -125,11 +133,11 @@ and
 .Fa buf Ns .mem
 is aligned to
 .Fa align .
-A large block is resized with
+A block above 1 MiB is resized with
 .Fn xft_palloc_resize ,
 which ignores
 .Fa align .
-A small block is moved: a new block is allocated, the smaller of the two sizes
+Any other block is moved: a new block is allocated, the smaller of the two sizes
 is copied and
 .Fa buf
 is freed.
@@ -152,7 +160,7 @@ including the ones made by
 calls to
 .Fn xft_reporta_free
 .It reuses
-small blocks taken from a free list
+blocks taken from a free list
 .It misses
 small blocks carved from a slab
 .It paged

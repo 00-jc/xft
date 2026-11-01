@@ -42,53 +42,37 @@ void	xft_stl_bench_vector(t_tailor *t)
 	(void)xft_tailor_bench(t, benches, sizeof(benches) / sizeof(*benches));
 }
 
-void	xft_stl_bench_map(t_tailor *t)
-{
-	static t_tailor_bench	benches[] = {
-	{xft_swiss_bench_insert_grow, (t_blk8r)"xft_swiss_insert_grow"},
-	{xft_std_umap_bench_insert_grow, (t_blk8r)"std_umap_insert_grow"},
-	{xft_swiss_bench_insert_reserved, (t_blk8r)"xft_swiss_insert_reserved"},
-	{xft_std_umap_bench_insert_reserved, (t_blk8r)"std_umap_insert_reserved"},
-	{xft_swiss_bench_lookup_hit, (t_blk8r)"xft_swiss_lookup_hit"},
-	{xft_std_umap_bench_lookup_hit, (t_blk8r)"std_umap_lookup_hit"},
-	{xft_swiss_bench_lookup_miss, (t_blk8r)"xft_swiss_lookup_miss"},
-	{xft_std_umap_bench_lookup_miss, (t_blk8r)"std_umap_lookup_miss"},
-	{xft_swiss_bench_delete_insert, (t_blk8r)"xft_swiss_delete_insert"},
-	{xft_std_umap_bench_delete_insert, (t_blk8r)"std_umap_delete_insert"},
-	{xft_swiss_bench_large_lookup_hit, (t_blk8r)"xft_swiss_1m_lookup_hit"},
-	{xft_std_umap_bench_large_lookup_hit, (t_blk8r)"std_umap_1m_lookup_hit"},
-	{xft_swiss_bench_large_lookup_miss, (t_blk8r)"xft_swiss_1m_lookup_miss"},
-	{xft_std_umap_bench_large_lookup_miss, (t_blk8r)"std_umap_1m_lookup_miss"},
-	{xft_swiss_bench_large_delete_insert,
-		(t_blk8r)"xft_swiss_1m_delete_insert"},
-	{xft_std_umap_bench_large_delete_insert,
-		(t_blk8r)"std_umap_1m_delete_insert"},
-	};
-
-	(void)xft_tailor_bench(t, benches, sizeof(benches) / sizeof(*benches));
-}
-
-/* same workloads as xft_stl_bench_map, with 12..40 byte string keys and
-   values: both maps hash the bytes (xxh3 vs std::hash<std::string_view>) */
+/* 12..40 byte string keys and values: every map hashes the bytes (xxh3 vs std::hash<std::string_view>
+   vs absl::Hash<std::string_view>) */
 void	xft_stl_bench_map_strings(t_tailor *t)
 {
 	static t_tailor_bench	benches[] = {
 	{xft_swiss_str_bench_insert_grow, (t_blk8r)"xft_map_strings_insert_grow"},
 	{xft_std_umap_str_bench_insert_grow,
 		(t_blk8r)"stl_map_strings_insert_grow"},
+	{xft_absl_flat_str_bench_insert_grow,
+		(t_blk8r)"absl_map_strings_insert_grow"},
 	{xft_swiss_str_bench_insert_reserved,
 		(t_blk8r)"xft_map_strings_insert_reserved"},
 	{xft_std_umap_str_bench_insert_reserved,
 		(t_blk8r)"stl_map_strings_insert_reserved"},
+	{xft_absl_flat_str_bench_insert_reserved,
+		(t_blk8r)"absl_map_strings_insert_reserved"},
 	{xft_swiss_str_bench_lookup_hit, (t_blk8r)"xft_map_strings_lookup_hit"},
 	{xft_std_umap_str_bench_lookup_hit, (t_blk8r)"stl_map_strings_lookup_hit"},
+	{xft_absl_flat_str_bench_lookup_hit,
+		(t_blk8r)"absl_map_strings_lookup_hit"},
 	{xft_swiss_str_bench_lookup_miss, (t_blk8r)"xft_map_strings_lookup_miss"},
 	{xft_std_umap_str_bench_lookup_miss,
 		(t_blk8r)"stl_map_strings_lookup_miss"},
+	{xft_absl_flat_str_bench_lookup_miss,
+		(t_blk8r)"absl_map_strings_lookup_miss"},
 	{xft_swiss_str_bench_delete_insert,
 		(t_blk8r)"xft_map_strings_delete_insert"},
 	{xft_std_umap_str_bench_delete_insert,
 		(t_blk8r)"stl_map_strings_delete_insert"},
+	{xft_absl_flat_str_bench_delete_insert,
+		(t_blk8r)"absl_map_strings_delete_insert"},
 	};
 
 	(void)xft_tailor_bench(t, benches, sizeof(benches) / sizeof(*benches));
@@ -101,14 +85,20 @@ void	xft_stl_bench_map_strings_1m(t_tailor *t)
 		(t_blk8r)"xft_map_strings_1m_lookup_hit"},
 	{xft_std_umap_str_bench_large_lookup_hit,
 		(t_blk8r)"stl_map_strings_1m_lookup_hit"},
+	{xft_absl_flat_str_bench_large_lookup_hit,
+		(t_blk8r)"absl_map_strings_1m_lookup_hit"},
 	{xft_swiss_str_bench_large_lookup_miss,
 		(t_blk8r)"xft_map_strings_1m_lookup_miss"},
 	{xft_std_umap_str_bench_large_lookup_miss,
 		(t_blk8r)"stl_map_strings_1m_lookup_miss"},
+	{xft_absl_flat_str_bench_large_lookup_miss,
+		(t_blk8r)"absl_map_strings_1m_lookup_miss"},
 	{xft_swiss_str_bench_large_delete_insert,
 		(t_blk8r)"xft_map_strings_1m_delete_insert"},
 	{xft_std_umap_str_bench_large_delete_insert,
 		(t_blk8r)"stl_map_strings_1m_delete_insert"},
+	{xft_absl_flat_str_bench_large_delete_insert,
+		(t_blk8r)"absl_map_strings_1m_delete_insert"},
 	};
 
 	(void)xft_tailor_bench(t, benches, sizeof(benches) / sizeof(*benches));

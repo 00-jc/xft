@@ -45,7 +45,7 @@ t_swissmap	*xft_get_bench_swiss_large_filled(void)
 	if (map.soa.ptr != nullptr)
 		return (&map);
 	a = xft_gpa_allocator(xft_get_bench_swiss_gpa());
-	map = xft_new_swissmap_with(a, SWISS_BENCH_LARGE_FILL * 2);
+	map = xft_new_swissmap_with(a, SWISS_BENCH_LARGE_FILL);
 	xft_pin_invariant(map.soa.ptr != nullptr);
 	i = 0;
 	while (i < SWISS_BENCH_LARGE_FILL)

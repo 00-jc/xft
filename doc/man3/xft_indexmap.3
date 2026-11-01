@@ -1,4 +1,4 @@
-.Dd October 29, 2026
+.Dd November 1, 2026
 .Dt XFT_INDEXMAP 3
 .Os xft
 .Sh NAME
@@ -18,7 +18,7 @@
 .Nd namespaced open addressing hash map from byte keys to indices
 .Sh SYNOPSIS
 .In indexmap.h
-.Fd #define INDEXMAP_INITIAL_SIZE 512
+.Fd #define INDEXMAP_INITIAL_SIZE 435
 .Fd #define INDEXMAP_NPOS __SIZE_MAX__
 .Ft t_indexmap
 .Fn xft_new_indexmap "t_allocator allocator"
@@ -91,10 +91,10 @@ Keys are hashed with
 .Fn xft_xxh3_64bits
 using the entry's seed, 0 for the functions that take a plain
 .Vt t_buffer .
-The hash modulo the number of groups picks the first group, and its top
-7 bits are stored in the control byte.
-Probing is linear, one group at a time, and a lookup stops at the first
-group that contains an empty slot.
+The low bits of the hash pick the first group, and its top 7 bits are
+stored in the control byte.
+Probing is linear, one group at a time, wrapping at the last group, and a
+lookup stops at the first group that contains an empty slot.
 Two keys are equal when they have the same seed, the same size and the
 same bytes.
 The seed is stored with each entry, so rebuilds keep entries under their
@@ -107,11 +107,15 @@ It does not copy or free the key bytes; they must stay valid and unchanged
 while the entry is in the map.
 .Pp
 .Fn xft_new_indexmap_with
-creates an empty map with
+creates an empty map that holds
 .Fa capacity
-slots.
+entries before its first rebuild.
+Its slot count is the smallest power of two, no less than the group width,
+that keeps
 .Fa capacity
-must be a nonzero multiple of the group width.
+entries under the 85% rebuild threshold.
+.Fa capacity
+must be nonzero.
 .Fn xft_new_indexmap
 is
 .Fn xft_new_indexmap_with
@@ -213,7 +217,7 @@ and
 return the new map.
 If
 .Fa capacity
-is zero or not a multiple of the group width, or the allocation fails, they
+is zero or the allocation fails, they
 return a zeroed map whose
 .Fa soa Ns .ptr
 is
@@ -302,8 +306,8 @@ cannot be told apart from a missing key.
 .Fn xft_indexmap_delete
 and
 .Fn xft_indexmap_delete_seeded
-divide by the number of groups, so calling them on a map whose creation
-failed is undefined behavior.
+read the control array without checking it, so calling them on a map whose
+creation failed is undefined behavior.
 .Fn xft_indexmap_insert
 and
 .Fn xft_indexmap_insert_seeded

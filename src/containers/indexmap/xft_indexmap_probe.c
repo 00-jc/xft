@@ -55,7 +55,7 @@ inline t_size	xft__imap_find(const t_indexmap *__restrict__ const map,
 		}
 		if (xft_veqmask(vec, IMAP_EMPTY))
 			return (INDEXMAP_NPOS);
-		probe.group = (probe.group + 1) % probe.nblks;
+		probe.group = (probe.group + 1) & probe.mask;
 	}
 }
 
@@ -71,6 +71,6 @@ inline t_size	xft__imap_find_free(const t_indexmap *__restrict__ const map,
 		mask = xft_vmask(((t_blknra)meta)[probe.group]);
 		if (mask)
 			return (probe.group * IMAP_GROUP + xft_memctz_u64(mask));
-		probe.group = (probe.group + 1) % probe.nblks;
+		probe.group = (probe.group + 1) & probe.mask;
 	}
 }

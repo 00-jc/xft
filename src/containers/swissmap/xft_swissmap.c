@@ -6,20 +6,21 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                             +#+#+#+#+#+   +#+              */
 /*   Created: 2026/06/29 23:39:14 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/10/13 20:00:00 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/11/01 20:00:00 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <xft/xft_p_swissmap.h>
 
+/* the fewest slots that take capacity inserts under the 85% rehash check */
 t_swissmap	xft_new_swissmap_with(t_allocator allocator, t_size capacity)
 {
 	t_swissmap	map;
 
-	if (capacity == 0 || (capacity & (SWISS_GROUP - 1)))
+	if (__builtin_expect(capacity == 0, 0))
 		return ((t_swissmap){0});
-	map = (t_swissmap){.soa = xft_new_soa(allocator, capacity,
-			xft__swiss_ctx())};
+	map = (t_swissmap){.soa = xft_new_soa(allocator,
+			xft_next_pow2((capacity - 1) * 20 / 17 + 1), xft__swiss_ctx())};
 	if (__builtin_expect(map.soa.ptr == nullptr, 0))
 		return (map);
 	xft_memset(xft__swiss_meta(&map), SWISS_EMPTY, map.soa.capacity_elements);

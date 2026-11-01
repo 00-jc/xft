@@ -1,4 +1,4 @@
-.Dd October 14, 2026
+.Dd November 1, 2026
 .Dt XFT_SWISSMAP 3
 .Os xft
 .Sh NAME
@@ -12,7 +12,7 @@
 .Nd open addressing hash map from byte keys to pointers
 .Sh SYNOPSIS
 .In swissmap.h
-.Fd #define SWISS_INITIAL_SIZE 512
+.Fd #define SWISS_INITIAL_SIZE 435
 .Ft t_swissmap
 .Fn xft_new_swissmap "t_allocator allocator"
 .Ft t_swissmap
@@ -52,10 +52,10 @@ compares a whole group of control bytes at once.
 Keys are hashed with
 .Fn xft_xxh3_64bits
 using seed 0.
-The hash modulo the number of groups picks the first group, and its top
-7 bits are stored in the control byte.
-Probing is linear, one group at a time, and a lookup stops at the first
-group that contains an empty slot.
+The low bits of the hash pick the first group, and its top 7 bits are
+stored in the control byte.
+Probing is linear, one group at a time, wrapping at the last group, and a
+lookup stops at the first group that contains an empty slot.
 Two keys are equal when they have the same size and the same bytes.
 .Pp
 The map stores the
@@ -65,11 +65,15 @@ It does not copy or free the key bytes or the value; both must stay valid,
 and the key bytes unchanged, while the entry is in the map.
 .Pp
 .Fn xft_new_swissmap_with
-creates an empty map with
+creates an empty map that holds
 .Fa capacity
-slots.
+entries before its first rebuild.
+Its slot count is the smallest power of two, no less than the group width,
+that keeps
 .Fa capacity
-must be a nonzero multiple of the group width.
+entries under the 85% rebuild threshold.
+.Fa capacity
+must be nonzero.
 .Fn xft_new_swissmap
 is
 .Fn xft_new_swissmap_with
@@ -131,7 +135,7 @@ and
 return the new map.
 If
 .Fa capacity
-is zero or not a multiple of the group width, or the allocation fails, they
+is zero or the allocation fails, they
 return a zeroed map whose
 .Fa soa Ns .ptr
 is
@@ -198,8 +202,8 @@ t_result	demo(t_allocator a)
 .Fn xft_swissmap_lookup
 and
 .Fn xft_swissmap_delete
-divide by the number of groups, so calling them on a map whose creation
-failed is undefined behavior.
+read the control array without checking it, so calling them on a map whose
+creation failed is undefined behavior.
 .Fn xft_swissmap_insert
 on such a map returns
 .Dv KO .

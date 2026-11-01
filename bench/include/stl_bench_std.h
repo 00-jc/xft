@@ -41,15 +41,6 @@ void	xft_std_vector_bench_read(void *ptr);
 void	xft_std_vector_bench_extend(void *ptr);
 void	xft_std_vector_bench_remove_front(void *ptr);
 
-void	xft_std_umap_bench_insert_grow(void *ptr);
-void	xft_std_umap_bench_insert_reserved(void *ptr);
-void	xft_std_umap_bench_lookup_hit(void *ptr);
-void	xft_std_umap_bench_lookup_miss(void *ptr);
-void	xft_std_umap_bench_delete_insert(void *ptr);
-void	xft_std_umap_bench_large_lookup_hit(void *ptr);
-void	xft_std_umap_bench_large_lookup_miss(void *ptr);
-void	xft_std_umap_bench_large_delete_insert(void *ptr);
-
 void	xft_std_umap_str_bench_insert_grow(void *ptr);
 void	xft_std_umap_str_bench_insert_reserved(void *ptr);
 void	xft_std_umap_str_bench_lookup_hit(void *ptr);
@@ -58,5 +49,14 @@ void	xft_std_umap_str_bench_delete_insert(void *ptr);
 void	xft_std_umap_str_bench_large_lookup_hit(void *ptr);
 void	xft_std_umap_str_bench_large_lookup_miss(void *ptr);
 void	xft_std_umap_str_bench_large_delete_insert(void *ptr);
+
+void	xft_absl_flat_str_bench_insert_grow(void *ptr);
+void	xft_absl_flat_str_bench_insert_reserved(void *ptr);
+void	xft_absl_flat_str_bench_lookup_hit(void *ptr);
+void	xft_absl_flat_str_bench_lookup_miss(void *ptr);
+void	xft_absl_flat_str_bench_delete_insert(void *ptr);
+void	xft_absl_flat_str_bench_large_lookup_hit(void *ptr);
+void	xft_absl_flat_str_bench_large_lookup_miss(void *ptr);
+void	xft_absl_flat_str_bench_large_delete_insert(void *ptr);
 
 #endif

@@ -26,7 +26,7 @@ t_buffer	xft_reporta_realloc(t_any alloc, t_buffer buf,
 	gpa = (t_reporta *)alloc;
 	if (newsize <= buf.size && !((t_uptr)buf.mem & (align - 1)))
 		return (buf);
-	if (GPA_CLASSES <= 60 - xft_memclz_u64(buf.size))
+	if (GPA_FREELISTS <= 61 - xft_memclz_u64(buf.size - 1))
 		return (xft_palloc_resize(buf, newsize));
 	buf2 = xft_reporta_alloc(gpa, newsize, align);
 	if (!buf2.mem)

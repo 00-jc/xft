@@ -42,7 +42,7 @@ typedef struct s_imap_slot
 
 typedef struct s_imap_probe
 {
-	t_size		nblks;
+	t_size		mask;
 	t_size		group;
 	t_u64a		seed;
 	t_u8		h2;

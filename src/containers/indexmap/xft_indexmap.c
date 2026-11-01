@@ -12,14 +12,15 @@
 
 #include <xft/xft_p_indexmap.h>
 
+/* the fewest slots that take capacity inserts under the 85% rehash check */
 t_indexmap	xft_new_indexmap_with(t_allocator allocator, t_size capacity)
 {
 	t_indexmap	map;
 
-	if (capacity == 0 || (capacity & (IMAP_GROUP - 1)))
+	if (__builtin_expect(capacity == 0, 0))
 		return ((t_indexmap){0});
-	map = (t_indexmap){.soa = xft_new_soa(allocator, capacity,
-			xft__imap_ctx())};
+	map = (t_indexmap){.soa = xft_new_soa(allocator,
+			xft_next_pow2((capacity - 1) * 20 / 17 + 1), xft__imap_ctx())};
 	if (__builtin_expect(map.soa.ptr == nullptr, 0))
 		return (map);
 	xft_memset(xft__imap_meta(&map), IMAP_EMPTY, map.soa.capacity_elements);

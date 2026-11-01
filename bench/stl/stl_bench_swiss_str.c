@@ -54,7 +54,6 @@ void	xft_swiss_str_bench_insert_reserved(t_any ptr)
 	cap = xft_tailor_getcount(ptr);
 	if (cap > STL_BENCH_KEYS)
 		cap = STL_BENCH_KEYS;
-	cap = ((cap * 2) + XFT_NVEC_SIZE - 1) & ~(t_size)(XFT_NVEC_SIZE - 1);
 	map = xft_new_swissmap_with(a, cap);
 	xft_pin_invariant(map.soa.ptr != nullptr);
 	swiss_str_bench_insert(ptr, a, &map);

@@ -16,7 +16,7 @@
 # include <xft/soa.h>
 
 # ifndef INDEXMAP_INITIAL_SIZE
-#  define INDEXMAP_INITIAL_SIZE	512
+#  define INDEXMAP_INITIAL_SIZE	435
 # endif
 
 typedef enum e_indexmap_npos : t_u64

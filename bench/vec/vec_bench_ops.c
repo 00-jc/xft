@@ -41,13 +41,11 @@ void	xft_vec_bench_push_back_reserved(t_any ptr)
 	t_allocator	a;
 	t_vec		vec;
 	t_size		n;
-	t_size		needed;
 	t_u64		val;
 
 	a = xft_gpa_allocator(xft_get_bench_vec_gpa());
 	n = xft_tailor_getcount(ptr);
-	needed = n * sizeof(t_u64);
-	vec = xft_new_vec(a, needed, sizeof(t_u64));
+	vec = xft_new_vec(a, n, sizeof(t_u64));
 	val = 0;
 	while (n-- > 0)
 	{

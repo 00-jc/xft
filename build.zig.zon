@@ -1,6 +1,13 @@
 .{
     .name = .xft,
     .version = "0.0.1",
+    .dependencies = .{
+        .abseil = .{
+            .url = "https://github.com/abseil/abseil-cpp/archive/refs/tags/20250814.1.tar.gz",
+            .hash = "N-V-__8AAB93oAAhnlSUqVkNHA2gdowdBZ0UVZ9rNp_RVkT0",
+            .lazy = true,
+        },
+    },
     .minimum_zig_version = "0.17.0",
     .paths = .{""},
     .fingerprint = 0xc16c99fee59c252a,

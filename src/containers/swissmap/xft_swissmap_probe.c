@@ -17,10 +17,10 @@ inline t_swiss_probe	xft__swiss_probe(
 	const t_swissmap *__restrict__ const map, t_buffer key)
 {
 	const t_u64a	hash = xft_xxh3_64bits(key, 0);
-	const t_size	nblks = map->soa.capacity_elements / SWISS_GROUP;
+	const t_size	mask = map->soa.capacity_elements / SWISS_GROUP - 1;
 
 	return ((t_swiss_probe){.h2 = (hash >> 57) & SWISS_H2_MASK,
-		.nblks = nblks, .group = hash % nblks});
+		.mask = mask, .group = hash & mask});
 }
 
 __attribute__((__always_inline__, pure, __nonnull__(1)))
@@ -56,7 +56,7 @@ inline t_size	xft__swiss_find(const t_swissmap *__restrict__ const map,
 		}
 		if (xft_veqmask(vec, SWISS_EMPTY))
 			return (SWISS_NPOS);
-		probe.group = (probe.group + 1) % probe.nblks;
+		probe.group = (probe.group + 1) & probe.mask;
 	}
 }
 
@@ -72,6 +72,6 @@ inline t_size	xft__swiss_find_free(const t_swissmap *__restrict__ const map,
 		mask = xft_vmask(((t_blknra)meta)[probe.group]);
 		if (mask)
 			return (probe.group * SWISS_GROUP + xft_memctz_u64(mask));
-		probe.group = (probe.group + 1) % probe.nblks;
+		probe.group = (probe.group + 1) & probe.mask;
 	}
 }

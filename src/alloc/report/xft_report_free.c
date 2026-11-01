@@ -22,8 +22,8 @@ void	xft_reporta_free(t_any allocator, t_buffer buf)
 		__builtin_unreachable();
 	gpa = (t_reporta *)allocator;
 	++gpa->n_frees;
-	freelist = 60 - xft_memclz_u64(buf.size);
-	if (GPA_CLASSES <= freelist)
+	freelist = 61 - xft_memclz_u64(buf.size - 1);
+	if (GPA_FREELISTS <= freelist)
 	{
 		xft_palloc_free(buf);
 		return ;

@@ -45,7 +45,7 @@ typedef struct s_swiss_slot
 
 typedef struct s_swiss_probe
 {
-	t_size		nblks;
+	t_size		mask;
 	t_size		group;
 	t_u8		h2;
 }	t_swiss_probe;

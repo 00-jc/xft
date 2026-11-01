@@ -18,7 +18,6 @@
 # include <xft/tailor.h>
 
 void	xft_stl_bench_vector(t_tailor *t);
-void	xft_stl_bench_map(t_tailor *t);
 void	xft_stl_bench_map_strings(t_tailor *t);
 void	xft_stl_bench_map_strings_1m(t_tailor *t);
 

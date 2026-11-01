@@ -804,23 +804,19 @@ const SRCS_BENCH_indexmap_bench = [_][]const u8{
 
 const SRCS_BENCH_stl_bench = [_][]const u8{
     "bench/stl/stl_bench.c",
+    "bench/stl/stl_bench_flat_str.cpp",
+    "bench/stl/stl_bench_flat_str_large.cpp",
+    "bench/stl/stl_bench_flat_str_state.cpp",
     "bench/stl/stl_bench_run.c",
     "bench/stl/stl_bench_str_state.c",
     "bench/stl/stl_bench_swiss_str.c",
     "bench/stl/stl_bench_swiss_str_large.c",
     "bench/stl/stl_bench_swiss_str_state.c",
-    "bench/stl/stl_bench_umap.cpp",
-    "bench/stl/stl_bench_umap_large.cpp",
-    "bench/stl/stl_bench_umap_state.cpp",
     "bench/stl/stl_bench_umap_str.cpp",
     "bench/stl/stl_bench_umap_str_large.cpp",
     "bench/stl/stl_bench_umap_str_state.cpp",
     "bench/stl/stl_bench_vector.cpp",
     "bench/stl/stl_bench_vector_access.cpp",
-    "bench/swissmap/swissmap_bench_insert.c",
-    "bench/swissmap/swissmap_bench_large.c",
-    "bench/swissmap/swissmap_bench_large_state.c",
-    "bench/swissmap/swissmap_bench_lookup.c",
     "bench/swissmap/swissmap_bench_state.c",
     "bench/vec/vec_bench_extend.c",
     "bench/vec/vec_bench_ops.c",
@@ -857,6 +853,51 @@ const SRCS_GENTABLE = [_][]const u8{
     "subprojects/gentable/src/xft_gentable_jmpline.c",
     "subprojects/gentable/src/xft_gentable_tag.c",
     "subprojects/gentable/src/xft_gentable_emit.c",
+};
+
+const SRCS_ABSEIL = [_][]const u8{
+    "absl/base/internal/cycleclock.cc",
+    "absl/base/internal/low_level_alloc.cc",
+    "absl/base/internal/raw_logging.cc",
+    "absl/base/internal/spinlock.cc",
+    "absl/base/internal/spinlock_wait.cc",
+    "absl/base/internal/strerror.cc",
+    "absl/base/internal/sysinfo.cc",
+    "absl/base/internal/thread_identity.cc",
+    "absl/base/internal/throw_delegate.cc",
+    "absl/base/internal/tracing.cc",
+    "absl/base/internal/unscaledcycleclock.cc",
+    "absl/base/log_severity.cc",
+    "absl/container/internal/hashtablez_sampler.cc",
+    "absl/container/internal/hashtablez_sampler_force_weak_definition.cc",
+    "absl/container/internal/raw_hash_set.cc",
+    "absl/debugging/internal/address_is_readable.cc",
+    "absl/debugging/stacktrace.cc",
+    "absl/hash/internal/city.cc",
+    "absl/hash/internal/hash.cc",
+    "absl/profiling/internal/exponential_biased.cc",
+    "absl/synchronization/internal/create_thread_identity.cc",
+    "absl/synchronization/internal/futex_waiter.cc",
+    "absl/synchronization/internal/graphcycles.cc",
+    "absl/synchronization/internal/kernel_timeout.cc",
+    "absl/synchronization/internal/per_thread_sem.cc",
+    "absl/synchronization/internal/pthread_waiter.cc",
+    "absl/synchronization/internal/sem_waiter.cc",
+    "absl/synchronization/internal/stdcpp_waiter.cc",
+    "absl/synchronization/internal/waiter_base.cc",
+    "absl/synchronization/internal/win32_waiter.cc",
+    "absl/synchronization/mutex.cc",
+    "absl/time/clock.cc",
+    "absl/time/duration.cc",
+    "absl/time/internal/cctz/src/time_zone_fixed.cc",
+    "absl/time/internal/cctz/src/time_zone_if.cc",
+    "absl/time/internal/cctz/src/time_zone_impl.cc",
+    "absl/time/internal/cctz/src/time_zone_info.cc",
+    "absl/time/internal/cctz/src/time_zone_libc.cc",
+    "absl/time/internal/cctz/src/time_zone_lookup.cc",
+    "absl/time/internal/cctz/src/time_zone_posix.cc",
+    "absl/time/internal/cctz/src/zone_info_source.cc",
+    "absl/time/time.cc",
 };
 
 const BENCHES = .{
@@ -1339,6 +1380,11 @@ pub fn build(b: *std.Build) !void {
         const libc_bench = try addHarness(x, "libc_bench", hosted, &SRCS_BENCH_libc_bench, &.{"bench/include"}, &.{"-fno-builtin"});
         run_bench.dependOn(&b.addRunArtifact(libc_bench).step);
         const stl_bench = try addHarness(x, "stl_bench", hosted, &SRCS_BENCH_stl_bench, &.{"bench/include"}, &.{});
+        if (b.lazyDependency("abseil", .{})) |absl| {
+            const absl_flags = try std.mem.concat(b.allocator, []const u8, &.{ try cflags(x, hosted, true), &.{"-w"} });
+            stl_bench.root_module.addSystemIncludePath(absl.path(""));
+            stl_bench.root_module.addCSourceFiles(.{ .root = absl.path(""), .files = &SRCS_ABSEIL, .flags = absl_flags, .language = .cpp });
+        }
         run_bench.dependOn(&b.addRunArtifact(stl_bench).step);
     }
 }
