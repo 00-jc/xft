@@ -83,10 +83,10 @@ static void	ring_buffer_check(t_ring_buffer_test *__restrict__ const s)
 
 void	test_thread_ring_buffer(t_sysinfo sysinfo)
 {
-	const t_allocator	alloc = xft_page_allocator();
-	t_ring_buffer_test	s;
-	t_thread			threads[RB_TEST_THREADS];
-	t_u32a				i;
+	const t_allocator			alloc = xft_page_allocator();
+	static t_ring_buffer_test	s;
+	t_thread					threads[RB_TEST_THREADS];
+	t_u32a						i;
 
 	xft_bzero(&s, sizeof(s));
 	s.rb = xft_new_ring_buffer(alloc, RB_TEST_SIZE);
