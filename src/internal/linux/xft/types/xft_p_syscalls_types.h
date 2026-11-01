@@ -141,6 +141,7 @@ typedef enum e_xft_mremap : t_u8
 
 typedef enum e_xft_madv : t_u8
 {
+	xft_madv_free = 8,
 	xft_madv_hugepage = 14,
 }	t_xft_madv;
 

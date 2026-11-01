@@ -73,14 +73,13 @@ to the next power of two of
 if that is larger.
 The
 .Dv GPA_FREELISTS
-(18) classes cover 8 bytes to 1 MiB.
+(21) classes cover 8 bytes to 8 MiB.
 Blocks under
 .Dv GPA_SLABSIZE ,
-8 bytes to 64 KiB, are carved from slabs; blocks from 128 KiB to 1 MiB are
+8 bytes to 64 KiB, are carved from slabs; blocks from 128 KiB to 8 MiB are
 large blocks from the page allocator.
 .Pp
-A request above 1 MiB, or a large request whose class's free list has no
-usable head, goes to
+A request above 8 MiB goes to
 .Fn xft_palloc
 with the larger of
 .Fa size
@@ -89,12 +88,16 @@ and
 and the returned
 .Fa .size
 is the page allocator's rounded size.
+A large request whose class's free list has no usable head goes to
+.Fn xft_palloc
+with its class size.
 .Pp
-A request up to 1 MiB takes the head of its class's free list when
+A request up to 8 MiB takes the head of its class's free list when
 .Fa align
 is at most 16 or the head is aligned to
 .Fa align .
-Otherwise a small request is carved from the current slab at the next multiple of 16, of
+Otherwise a small request is carved from the current slab at the next
+multiple of 16, of
 .Fa align
 when that is larger, or of the block size for blocks under 16 bytes.
 The carved range is committed with
@@ -115,8 +118,17 @@ pick the class from it, so the buffer must be passed back as returned.
 takes the class of
 .Fa buf Ns .size
 rounded up to a power of two.
-A block of 1 MiB or less is pushed onto its class's free list, storing the
-link in its first word, and a larger block is returned with
+A small block is pushed onto its class's free list, storing the link in its
+first word.
+A large block is pushed the same way while fewer than
+.Dv GPA_BIGPAGES
+(8) large blocks are listed, counted in the
+.Fa bigpages
+member, and it is passed to
+.Fn xft_palloc_discard
+before the link is stored, so the operating system can reclaim the memory of
+every page but the first.
+A block above 8 MiB, or a large block past that limit, is returned with
 .Fn xft_palloc_free .
 Slabs and listed large blocks are not returned to the operating system before
 .Fn xft_gpa_destroy ,
@@ -133,8 +145,11 @@ and
 .Fa buf Ns .mem
 is aligned to
 .Fa align .
-A block above 1 MiB is resized with
-.Fn xft_palloc_resize ,
+A block above 8 MiB is resized with
+.Fn xft_palloc_resize
+when
+.Fa newsize
+is also above 8 MiB,
 which ignores
 .Fa align .
 Any other block is moved: a new block is allocated, the smaller of the two sizes

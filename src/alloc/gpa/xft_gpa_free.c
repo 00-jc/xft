@@ -22,10 +22,15 @@ void	xft_gpa_free(t_any allocator, t_buffer buf)
 		__builtin_unreachable();
 	gpa = (t_gpa *)allocator;
 	freelist = 61 - xft_memclz_u64(buf.size - 1);
-	if (GPA_FREELISTS <= freelist)
+	if (GPA_SLABSIZE <= buf.size)
 	{
-		xft_palloc_free(buf);
-		return ;
+		if (GPA_FREELISTS <= freelist || GPA_BIGPAGES <= gpa->bigpages)
+		{
+			xft_palloc_free(buf);
+			return ;
+		}
+		++gpa->bigpages;
+		xft_palloc_discard(buf.mem, buf.size);
 	}
 	*(t_any *)buf.mem = gpa->free[freelist];
 	gpa->free[freelist] = buf.mem;

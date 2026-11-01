@@ -23,10 +23,15 @@ void	xft_reporta_free(t_any allocator, t_buffer buf)
 	gpa = (t_reporta *)allocator;
 	++gpa->n_frees;
 	freelist = 61 - xft_memclz_u64(buf.size - 1);
-	if (GPA_FREELISTS <= freelist)
+	if (GPA_SLABSIZE <= buf.size)
 	{
-		xft_palloc_free(buf);
-		return ;
+		if (GPA_FREELISTS <= freelist || GPA_BIGPAGES <= gpa->bigpages)
+		{
+			xft_palloc_free(buf);
+			return ;
+		}
+		++gpa->bigpages;
+		xft_palloc_discard(buf.mem, buf.size);
 	}
 	++gpa->free_depth[freelist];
 	*(t_any *)buf.mem = gpa->free[freelist];

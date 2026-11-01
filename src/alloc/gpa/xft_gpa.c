@@ -27,6 +27,7 @@ t_gpa	xft_new_gpa(void)
 	*(t_any *)gpa.slab = nullptr;
 	gpa.bmp = (t_blk8w)gpa.slab + sizeof(t_any *);
 	gpa.slabsize = buf.size;
+	gpa.bigpages = 0;
 	return (gpa);
 }
 

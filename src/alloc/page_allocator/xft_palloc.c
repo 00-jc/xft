@@ -12,6 +12,13 @@
 
 #include <xft/xft_p_palloc.h>
 
+#if defined(__linux__)
+# include <xft/xft_p_syscalls.h>
+#elif defined(_WIN32)
+# define WIN32_LEAN_AND_MEAN
+# include <windows.h>
+#endif
+
 __attribute__((__always_inline__, __used__))
 inline t_buffer	xft_palloc(t_size size)
 {
@@ -25,3 +32,22 @@ inline t_buffer	xft_palloc(t_size size)
 	}
 	return (b);
 }
+
+#if defined(__linux__)
+
+__attribute__((__nonnull__(1), __always_inline__, __used__))
+inline t_result	xft_palloc_discard(t_any ptr, t_size size)
+{
+	return ((t_result)(xft_madvise(ptr, size, xft_madv_free) == 0));
+}
+
+#elif defined(_WIN32)
+
+__attribute__((__nonnull__(1), __always_inline__, __used__))
+inline t_result	xft_palloc_discard(t_any ptr, t_size size)
+{
+	return ((t_result)(VirtualAlloc(ptr, size, MEM_RESET, PAGE_READWRITE)
+		!= nullptr));
+}
+
+#endif

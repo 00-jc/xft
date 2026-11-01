@@ -37,6 +37,7 @@ t_reporta	xft_new_reporta(void)
 	*(t_any *)gpa.slab = nullptr;
 	gpa.bmp = (t_blk8w)gpa.slab + sizeof(t_any *);
 	gpa.slabsize = buf.size;
+	gpa.bigpages = 0;
 	gpa.avg_frag = 0;
 	gpa.n_allocs = 0;
 	gpa.n_frees = 0;

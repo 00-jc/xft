@@ -1,4 +1,4 @@
-.Dd October 29, 2026
+.Dd November 1, 2026
 .Dt XFT_PALLOC 3
 .Os xft
 .Sh NAME
@@ -6,6 +6,7 @@
 .Nm xft_palloc_reserve ,
 .Nm xft_palloc_commit ,
 .Nm xft_palloc_guard ,
+.Nm xft_palloc_discard ,
 .Nm xft_palloc_resize ,
 .Nm xft_palloc_free
 .Nd page allocator
@@ -19,6 +20,8 @@
 .Fn xft_palloc_commit "t_any ptr" "t_size size"
 .Ft t_result
 .Fn xft_palloc_guard "t_any ptr" "t_size size"
+.Ft t_result
+.Fn xft_palloc_discard "t_any ptr" "t_size size"
 .Ft t_buffer
 .Fn xft_palloc_resize "t_buffer b" "t_size new_size"
 .Ft void
@@ -58,6 +61,10 @@ with readable and writable memory.
 does both and releases the reservation if the commit fails.
 .Fn xft_palloc_guard
 makes the pages of a range inaccessible, so that any access to them faults.
+.Fn xft_palloc_discard
+tells the operating system that the contents of a range are no longer needed,
+so it can reclaim the memory; the range stays usable, and a page read after a
+discard holds its old contents or zeros.
 .Fn xft_palloc_resize
 grows or shrinks
 .Fa b
@@ -123,6 +130,17 @@ with
 so
 .Fa ptr
 must be aligned to 4096, and guarding part of a huge page splits it.
+.Fn xft_palloc_discard
+calls
+.Xr madvise 2
+with
+.Dv MADV_FREE ,
+so
+.Fa ptr
+must be aligned to 4096.
+The kernel frees the pages only under memory pressure, and a page written
+after the discard keeps its memory and contents; discarding part of a huge page
+splits it.
 .Ss Windows
 .Fn xft_palloc_reserve
 reserves with
@@ -141,6 +159,13 @@ with
 .Ql VirtualProtect ,
 which works on committed pages only; reserved pages that were never committed
 fault on access anyway.
+.Fn xft_palloc_discard
+calls
+.Ql VirtualAlloc
+with
+.Dv MEM_RESET ,
+which keeps the pages committed, and a page written after the discard keeps its
+contents.
 .Fn xft_palloc_resize
 allocates a new buffer, copies the smaller of the two sizes and frees the old
 buffer.
@@ -177,9 +202,10 @@ set to 0 on failure, in which case
 .Fa b
 remains valid.
 .Pp
-.Fn xft_palloc_commit
-and
+.Fn xft_palloc_commit ,
 .Fn xft_palloc_guard
+and
+.Fn xft_palloc_discard
 return
 .Dv OK ,
 or

@@ -49,8 +49,9 @@ typedef enum e_hugepage_max : t_u64
 
 typedef enum e_gpa_conf : t_u32
 {
-	GPA_FREELISTS = 18,
+	GPA_FREELISTS = 21,
 	GPA_SLABSIZE = 131072,
+	GPA_BIGPAGES = 8,
 }	t_gpa_conf;
 
 typedef enum e_reporta_conf : t_u16
@@ -122,6 +123,7 @@ typedef struct s_gpa
 	t_any	slab;
 	t_size	slabsize;
 	t_any	bmp;
+	t_size	bigpages;
 	t_any	free[GPA_FREELISTS];
 }	t_gpa;
 
@@ -130,6 +132,7 @@ typedef struct s_reporta
 	t_any		slab;
 	t_size		slabsize;
 	t_any		bmp;
+	t_size		bigpages;
 	t_any		free[GPA_FREELISTS];
 	t_size		n_allocs;
 	t_size		n_frees;

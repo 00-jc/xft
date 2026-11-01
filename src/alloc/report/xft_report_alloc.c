@@ -61,6 +61,7 @@ static inline t_buffer	xft_reuse_ptr(t_reporta *gpa, t_size freelist,
 {
 	++gpa->reuses;
 	--gpa->free_depth[freelist];
+	gpa->bigpages -= GPA_SLABSIZE <= sizes[1];
 	gpa->avg_frag += (t_f64)((t_f64)(sizes[1] - sizes[0]) - gpa->avg_frag)
 		/ (t_f64)gpa->n_allocs;
 	gpa->free[freelist] = *(t_any *)new_ptr;
@@ -105,8 +106,7 @@ t_buffer	xft_reporta_alloc(t_any alloc, t_size size, t_size align)
 		return (xft_reuse_ptr(gpa, freelist, new_ptr,
 				(t_size[2]){size, snapped}));
 	if (GPA_SLABSIZE <= snapped)
-		return (xft_paged_ptr(gpa, (t_size[2]){size,
-				xft_tern_s(size < align, align, size)}));
+		return (xft_paged_ptr(gpa, (t_size[2]){size, snapped}));
 	return (xft_return_ptr(gpa, (t_size[2]){size, snapped},
 		xft_tern_s(align < 16, xft_tern_s(snapped < 16, snapped, 16), align)));
 }
