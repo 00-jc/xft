@@ -39,6 +39,7 @@ typedef struct s_thread_opts {
 	t_thread_func       fn;
 	t_size              stack_size;
 	t_any               argument;
+	bool                cpu_pinning;
 } t_thread_opts;
 .Ed
 .Pp
@@ -83,6 +84,12 @@ typedef struct s_thread {
 .Pp
 .Vt t_thread_opts
 names the function the thread runs, its argument and the size of its stack.
+.Fn xft_thread_spawn
+ignores
+.Fa cpu_pinning ;
+.Fn xft_threadpool_init
+reads it to pin its workers; see
+.Xr xft_threadpool 3 .
 .Dv XFT_THREAD_STACKSIZE
 is 8388608, 8 MiB, unless it is defined before
 .In threads.h
@@ -358,6 +365,7 @@ void	xft_main(const t_any *__restrict__ const sp)
 .Xr xft_atomics 3 ,
 .Xr xft_os 3 ,
 .Xr xft_rt 3 ,
+.Xr xft_threadpool 3 ,
 .Xr xft 7
 .Sh CAVEATS
 .Bl -bullet

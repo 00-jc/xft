@@ -61,7 +61,8 @@ void	pool_round_wait(t_pool_test *__restrict__ const s, t_sysinfo sysinfo)
 {
 	t_u32a	it;
 
-	pool_assert(xft_threadpool_init(s->alloc, sysinfo, &s->tp) == OK,
+	pool_assert(xft_threadpool_init(s->alloc, sysinfo,
+			xft_threadpool_default(), &s->tp) == OK,
 		"pool: init");
 	s->count = 0;
 	s->n_outer = POOL_TEST_OUTER;

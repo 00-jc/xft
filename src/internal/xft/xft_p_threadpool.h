@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/01 02:54:58 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/11/01 03:02:44 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/11/01 20:54:45 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ typedef struct s_threadpool_arg
 	t_threadpool		*tp;
 	t_u32a				idx;
 	t_atomic32			claimed;
+	bool				pin;
 }	t_threadpool_arg;
 
 typedef struct s_tp_self
@@ -46,8 +47,8 @@ void		xft__stop_threads(t_allocator allocator, t_threadpool *tp,\
 				__attribute__((__nonnull__(2)));
 
 t_result	xft__init_threads(t_allocator allocator, t_sysinfo sysinfo,\
-				t_threadpool *tp)\
-				__attribute__((__nonnull__(3)));
+				t_thread_opts opts, t_threadpool *tp)\
+				__attribute__((__nonnull__(4)));
 
 void		xft__thread_routine(t_any any)\
 				__attribute__((__nonnull__(1)));

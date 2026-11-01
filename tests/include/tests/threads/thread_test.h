@@ -126,5 +126,7 @@ void	pool_round_cancel(t_pool_test *__restrict__ const s,\
 			t_sysinfo sysinfo);
 void	pool_round_wait(t_pool_test *__restrict__ const s,\
 			t_sysinfo sysinfo);
+void	pool_round_fair(t_pool_test *__restrict__ const s,\
+			t_sysinfo sysinfo);
 
 #endif

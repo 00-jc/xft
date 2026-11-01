@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/01 13:59:00 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/11/01 13:59:00 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/11/01 20:57:47 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,29 @@ static inline void	xft__notify(t_threadpool *__restrict__ const tp)
 	xft_thread_fence(xft_seq_cst);
 	if (atomic_load_explicit(&tp->n_maybe_parked, xft_relaxed) != 0)
 		xft_futex_wake(&tp->wake_up, 1);
+}
+
+__attribute__((__nonnull__(1, 2), __flatten__))
+void	xft_threadpool_submit_fair(t_threadpool *__restrict__ const tp,
+	t_thread_task *__restrict__ const tasks, t_size alloc_task,
+	t_size n_tasks)
+{
+	const t_size	workers = tp->n_workers;
+	t_size			it;
+	t_size			idx;
+
+	it = 0;
+	while (it < n_tasks)
+	{
+		idx = it % workers;
+		tasks[it].alloc_task = alloc_task;
+		tasks[it].completion = 0;
+		if (xft_ring_buffer_submit(
+				&tp->worker_rings[idx], &tasks[it]) == KO)
+			xft__global_push(tp, &tasks[it]);
+		xft__notify(tp);
+		it++;
+	}
 }
 
 __attribute__((__nonnull__(1, 2), __flatten__))

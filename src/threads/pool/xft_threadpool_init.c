@@ -13,9 +13,16 @@
 #include <xft/xft_p_threadpool.h>
 #include <xft/os.h>
 
-__attribute__((__nonnull__(3), __flatten__))
+t_thread_opts	xft_threadpool_default(void)
+{
+	return ((t_thread_opts){.stack_size = XFT_THREAD_STACKSIZE,
+		.cpu_pinning = true});
+}
+
+__attribute__((__nonnull__(4), __flatten__))
 t_result	xft_threadpool_init(t_allocator allocator,
-	const t_sysinfo info, t_threadpool *__restrict__ const tp)
+	const t_sysinfo info, t_thread_opts opts,
+	t_threadpool *__restrict__ const tp)
 {
 	t_size			cpu_count;
 
@@ -31,7 +38,7 @@ t_result	xft_threadpool_init(t_allocator allocator,
 	tp->q_len = 0;
 	if (__builtin_expect(xft__init_rings(allocator, tp) == KO, 0))
 		return (KO);
-	if (__builtin_expect(xft__init_threads(allocator, info, tp) == KO, 0))
+	if (__builtin_expect(xft__init_threads(allocator, info, opts, tp) == KO, 0))
 		return ((void)(xft__free_rings(allocator, tp, tp->n_workers)), KO);
 	return (OK);
 }

@@ -2,18 +2,24 @@
 .Dt XFT_THREADPOOL 3
 .Os xft
 .Sh NAME
+.Nm xft_threadpool_default ,
 .Nm xft_threadpool_init ,
 .Nm xft_threadpool_submit ,
+.Nm xft_threadpool_submit_fair ,
 .Nm xft_threadpool_wait_task ,
 .Nm xft_threadpool_destroy ,
 .Nm xft_threadpool_cancel
 .Nd work-stealing thread pool
 .Sh SYNOPSIS
 .In threads.h
+.Ft t_thread_opts
+.Fn xft_threadpool_default void
 .Ft t_result
-.Fn xft_threadpool_init "t_allocator allocator" "const t_sysinfo info" "t_threadpool *tp"
+.Fn xft_threadpool_init "t_allocator allocator" "const t_sysinfo info" "t_thread_opts opts" "t_threadpool *tp"
 .Ft void
 .Fn xft_threadpool_submit "t_threadpool *tp" "t_thread_task *task" "t_size alloc_task"
+.Ft void
+.Fn xft_threadpool_submit_fair "t_threadpool *tp" "t_thread_task *tasks" "t_size alloc_task" "t_size n_tasks"
 .Ft void
 .Fn xft_threadpool_wait_task "t_thread_task *task"
 .Ft void
@@ -23,10 +29,13 @@
 .Sh DESCRIPTION
 A
 .Vt t_threadpool
-runs one worker thread per CPU and hands them tasks.
+runs one worker thread per CPU, optionally each pinned to its own CPU, and
+hands them tasks.
 Each worker owns a ring of 256 slots; a task submitted from a worker goes
 into that worker's ring, and a task submitted from any other thread goes into
 a global queue shared by all workers.
+.Fn xft_threadpool_submit_fair
+spreads a batch of tasks over the workers' rings from any thread.
 Idle workers take work from the other workers' rings, so a task runs on
 whichever worker is free first.
 .Ss Thread-local storage
@@ -131,18 +140,46 @@ The fields of
 belong to the pool; the caller allocates the structure and passes it to every
 call.
 .Ss Functions
+.Fn xft_threadpool_default
+returns the worker options
+.Fn xft_threadpool_init
+takes by default: a stack of
+.Dv XFT_THREAD_STACKSIZE
+bytes and
+.Fa cpu_pinning
+set.
+.Pp
 .Fn xft_threadpool_init
 reads the CPU count with
 .Fn xft_get_cpu_count ,
 allocates one ring per worker and the worker handles through
 .Fa allocator ,
 and starts the workers with
-.Fn xft_thread_spawn
+.Fn xft_thread_spawn ,
+.Fa info
 and
-.Fa info ;
+.Fa opts ;
 see
 .Xr xft_threads 3 .
+It replaces
+.Fa opts.fn
+and
+.Fa opts.argument
+with the worker routine and its argument, and uses
+.Fa opts.stack_size
+and
+.Fa opts.cpu_pinning
+as given.
 It returns once every worker has started.
+.Pp
+When
+.Fa opts.cpu_pinning
+is set, each worker pins itself to the CPU numbered by its index, worker 0 to CPU 0
+and so on, with
+.Fn xft_pin_thread_to_cpu
+before it takes any task; see
+.Xr xft_os 3 .
+A worker whose pin fails runs unpinned.
 .Pp
 .Fn xft_threadpool_submit
 stores
@@ -164,6 +201,25 @@ From a worker of
 it pushes into that worker's ring, and into the global queue when the ring is
 full; from any other thread it pushes into the global queue.
 It then wakes one sleeping worker, if any.
+.Pp
+.Fn xft_threadpool_submit_fair
+queues the
+.Fa n_tasks
+tasks of the array
+.Fa tasks
+round-robin over the workers: task
+.Va i
+goes into the ring of worker
+.Va i
+modulo the worker count, or into the global queue when that ring is full.
+It stores
+.Fa alloc_task
+and sets
+.Fa completion
+to 0 in every task as
+.Fn xft_threadpool_submit
+does, and wakes one sleeping worker per task, if any.
+Any thread may call it.
 .Pp
 .Fn xft_threadpool_wait_task
 returns once
@@ -234,6 +290,9 @@ is not 0.
 A sequentially consistent fence on both sides keeps a worker from sleeping
 past a task submitted while it was going to sleep.
 .Sh RETURN VALUES
+.Fn xft_threadpool_default
+returns the default options.
+.Pp
 .Fn xft_threadpool_init
 returns
 .Dv OK ,
@@ -244,6 +303,7 @@ started; on failure it stops the workers it started and frees what it
 allocated.
 .Pp
 .Fn xft_threadpool_submit ,
+.Fn xft_threadpool_submit_fair ,
 .Fn xft_threadpool_wait_task ,
 .Fn xft_threadpool_destroy
 and
@@ -267,7 +327,8 @@ void	xft_main(const t_any *__restrict__ const sp)
 	t_u64				value;
 
 	if (xft_start_tls_for_main_thread(info) == KO
-		|| xft_threadpool_init(alloc, info, &tp) == KO)
+		|| xft_threadpool_init(alloc, info, xft_threadpool_default(),
+			&tp) == KO)
 		xft_exit_process(1);
 	task = (t_thread_task){.f = work, .arg = &value, .allocator = alloc,
 		.arg_model = xft_must_keep_all_alive};
@@ -280,11 +341,23 @@ void	xft_main(const t_any *__restrict__ const sp)
 .Sh SEE ALSO
 .Xr xft_alloc 3 ,
 .Xr xft_atomics 3 ,
+.Xr xft_os 3 ,
 .Xr xft_rt 3 ,
 .Xr xft_threads 3 ,
 .Xr xft 7
 .Sh CAVEATS
 .Bl -bullet
+.It
+With
+.Fa opts.cpu_pinning
+set, worker
+.Va i
+is pinned to CPU number
+.Va i ,
+not to the
+.Va i Ns th
+CPU the process may run on, so under an affinity mask that leaves out low CPU
+numbers some pins fail and those workers run unpinned.
 .It
 Only threads of
 .Fa tp
@@ -302,6 +375,8 @@ is freed with the
 .Fa alloc_task
 passed to
 .Fn xft_threadpool_submit
+or
+.Fn xft_threadpool_submit_fair
 and its argument with
 .Fa arg_size ,
 and an allocator may round a request up, so both hold the

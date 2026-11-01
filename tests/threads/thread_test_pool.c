@@ -59,7 +59,8 @@ static void	pool_round(t_pool_test *__restrict__ const s, t_sysinfo sysinfo,
 {
 	t_u32a	it;
 
-	pool_assert(xft_threadpool_init(s->alloc, sysinfo, &s->tp) == OK,
+	pool_assert(xft_threadpool_init(s->alloc, sysinfo,
+			xft_threadpool_default(), &s->tp) == OK,
 		"pool: init");
 	s->count = 0;
 	s->bad_self = 0;
@@ -97,5 +98,6 @@ void	test_thread_pool(t_sysinfo sysinfo)
 		pool_round(&s, sysinfo, false);
 		pool_round_cancel(&s, sysinfo);
 		pool_round_wait(&s, sysinfo);
+		pool_round_fair(&s, sysinfo);
 	}
 }

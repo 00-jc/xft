@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/31 15:49:49 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/11/01 13:19:16 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/11/01 20:53:37 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ typedef struct s_thread_opts
 	t_thread_func		fn;
 	t_size				stack_size;
 	t_any				argument;
+	bool				cpu_pinning;
 }	t_thread_opts;
 
 # if defined(_WIN32) || defined(XFT_REQUIRE_LIBC)

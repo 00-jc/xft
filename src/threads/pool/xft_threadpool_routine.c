@@ -6,11 +6,12 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/01 02:54:58 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/11/01 13:50:59 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/11/01 21:02:00 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <xft/xft_p_threadpool.h>
+#include <xft/os.h>
 #include <xft/atomics.h>
 #include <stdatomic.h>
 
@@ -100,7 +101,8 @@ void	xft__thread_routine(t_any any)
 	t_u32a								epoch;
 	t_u32a								kill;
 
-	(void)idx;
+	if (((t_threadpool_arg *)any)->pin)
+		xft_pin_thread_to_cpu(idx);
 	xft_send_signal(&((t_threadpool_arg *)any)->claimed);
 	xft__self()->tp = tp;
 	xft__self()->idx = idx;
