@@ -12,8 +12,6 @@
 
 #include "tests/threads/thread_test.h"
 
-#ifdef __linux__
-
 static void	thread_tls_fn(t_any arg)
 {
 	static _Thread_local t_u64	tdata = 7;
@@ -64,5 +62,3 @@ void	test_thread_tls(t_sysinfo sysinfo)
 		&& out[1][2] != out[2][2], xft_fatptr((t_u8 *)"thread tls shared",
 			sizeof("thread tls shared") - 1));
 }
-
-#endif

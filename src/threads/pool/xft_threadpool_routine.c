@@ -39,7 +39,7 @@ static inline bool	xft__steal_other(t_threadpool *__restrict__ const tp,
 	t_thread_task *__restrict__	task;
 	t_size						it;
 
-	it = xft_tern(idx + 1 >= tp->n_workers, 0, idx + 1);
+	it = xft_tern_s(idx + 1 >= tp->n_workers, 0, idx + 1);
 	while (it != idx)
 	{
 		task = xft_ring_buffer_steal(&tp->worker_rings[it]);
@@ -49,7 +49,7 @@ static inline bool	xft__steal_other(t_threadpool *__restrict__ const tp,
 			xft__handle_completion(task);
 			return (true);
 		}
-		it = xft_tern(it + 1 >= tp->n_workers, 0, it + 1);
+		it = xft_tern_s(it + 1 >= tp->n_workers, 0, it + 1);
 	}
 	return (false);
 }

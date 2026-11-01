@@ -12,8 +12,6 @@
 
 #include "tests/threads/thread_test.h"
 
-#ifdef __linux__
-
 static t_result	pool_leaf(t_any arg)
 {
 	t_pool_test *__restrict__ const	s = arg;
@@ -101,5 +99,3 @@ void	test_thread_pool(t_sysinfo sysinfo)
 		pool_round_wait(&s, sysinfo);
 	}
 }
-
-#endif

@@ -12,16 +12,21 @@
 
 #include "tests/threads/thread_test.h"
 
-#ifdef __linux__
+#ifdef _WIN32
 
-# ifdef XFT_REQUIRE_LIBC
+static void	thread_detach_wait_exit(const t_thread *__restrict__ const thread)
+{
+	WaitForSingleObject((HANDLE)xft_thread_id(thread), INFINITE);
+}
+
+#elif defined(XFT_REQUIRE_LIBC)
 
 static void	thread_detach_wait_exit(const t_thread *__restrict__ const thread)
 {
 	(void)thread;
 }
 
-# else
+#else
 
 static void	thread_detach_wait_exit(const t_thread *__restrict__ const thread)
 {
@@ -29,7 +34,7 @@ static void	thread_detach_wait_exit(const t_thread *__restrict__ const thread)
 		__atomic_thread_fence(xft_seq_cst);
 }
 
-# endif
+#endif
 
 void	test_thread_detach(t_sysinfo sysinfo)
 {
@@ -44,5 +49,3 @@ void	test_thread_detach(t_sysinfo sysinfo)
 	thread_detach_wait_exit(&thread);
 	xft_thread_detach(&thread);
 }
-
-#endif

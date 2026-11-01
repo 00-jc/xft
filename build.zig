@@ -448,6 +448,7 @@ const SRCS_RT_ENTRY_libc = [_][]const u8{
 
 const SRCS_RT_ENTRY_win32 = [_][]const u8{
     "src/rt/win32/xft_rt.c",
+    "src/rt/win32/xft_tls.c",
 };
 
 const XFT_SYSCALLS = [_][]const u8{
@@ -1057,8 +1058,15 @@ fn hasStackClash(x: xft_ctx) bool {
 }
 
 fn hasFreestandingThreads(x: xft_ctx) bool {
-    return x.target.result.os.tag == .linux and switch (x.target.result.cpu.arch) {
-        .x86_64, .aarch64 => true,
+    return switch (x.target.result.os.tag) {
+        .linux => switch (x.target.result.cpu.arch) {
+            .x86_64, .aarch64 => true,
+            else => false,
+        },
+        .windows => switch (x.target.result.cpu.arch) {
+            .x86, .x86_64, .aarch64 => true,
+            else => false,
+        },
         else => false,
     };
 }

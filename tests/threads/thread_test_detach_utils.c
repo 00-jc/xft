@@ -13,24 +13,22 @@
 #include "tests/threads/thread_test.h"
 #include <xft/atomics.h>
 
-#ifdef __linux__
-
 static void	thread_detach_fn(t_any arg)
 {
 	t_u32a *__restrict__ const	flags = arg;
 
 	while (__atomic_load_n(&flags[0], xft_acquire) == 0)
-		xft_futex_wait((t_any)&flags[0], 0);
+		xft_futex_wait((t_any) & flags[0], 0);
 	__atomic_store_n(&flags[1], 1, xft_release);
-	xft_futex_wake((t_any)&flags[1], 1);
+	xft_futex_wake((t_any) & flags[1], 1);
 }
 
 void	thread_detach_run(t_u32a *__restrict__ const flags)
 {
 	__atomic_store_n(&flags[0], 1, xft_release);
-	xft_futex_wake((t_any)&flags[0], 1);
+	xft_futex_wake((t_any) & flags[0], 1);
 	while (__atomic_load_n(&flags[1], xft_acquire) == 0)
-		xft_futex_wait((t_any)&flags[1], 0);
+		xft_futex_wait((t_any) & flags[1], 0);
 }
 
 void	thread_detach_spawn(t_thread *__restrict__ const thread,
@@ -46,5 +44,3 @@ void	thread_detach_spawn(t_thread *__restrict__ const thread,
 	xft_pin_invariant_msg(xft_thread_spawn(thread, sysinfo, opts) == OK,
 		xft_fatptr((t_u8 *)"thread spawn", sizeof("thread spawn") - 1));
 }
-
-#endif

@@ -12,8 +12,6 @@
 
 #include "tests/threads/thread_test.h"
 
-#ifdef __linux__
-
 static void	thread_signal_fn(t_any arg)
 {
 	t_signal_test *__restrict__ const	s = arg;
@@ -75,5 +73,3 @@ void	thread_signal_rounds(t_sysinfo sysinfo,
 		== s->rounds * n, xft_fatptr((t_u8 *)"signal rounds",
 			sizeof("signal rounds") - 1));
 }
-
-#endif

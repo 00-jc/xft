@@ -12,8 +12,6 @@
 
 #include "tests/threads/thread_test.h"
 
-#ifdef __linux__
-
 static void	ring_buffer_producer(t_any arg)
 {
 	t_ring_buffer_test *__restrict__ const	s = arg;
@@ -109,5 +107,3 @@ void	test_thread_ring_buffer(t_sysinfo sysinfo)
 	ring_buffer_check(&s);
 	xft_destroy_ring_buffer(alloc, &s.rb);
 }
-
-#endif

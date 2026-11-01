@@ -12,8 +12,6 @@
 
 #include "tests/threads/thread_test.h"
 
-#ifdef __linux__
-
 static t_result	wait_leaf(t_any arg)
 {
 	t_pool_test *__restrict__ const	s = arg;
@@ -79,5 +77,3 @@ void	pool_round_wait(t_pool_test *__restrict__ const s, t_sysinfo sysinfo)
 	wait_check(s);
 	xft_threadpool_destroy(s->alloc, &s->tp);
 }
-
-#endif

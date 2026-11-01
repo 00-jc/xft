@@ -13,8 +13,6 @@
 #include "tests/threads/thread_test.h"
 #include <stdint.h>
 
-#ifdef __linux__
-
 static void	thread_futex_fn(t_any arg)
 {
 	t_signal_test *__restrict__ const	s = arg;
@@ -53,5 +51,3 @@ void	test_thread_signal(t_sysinfo sysinfo)
 	thread_signal_rounds(sysinfo, &s, 2, true);
 	thread_signal_rounds(sysinfo, &s, 1, false);
 }
-
-#endif

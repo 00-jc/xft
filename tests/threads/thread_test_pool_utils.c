@@ -12,8 +12,6 @@
 
 #include "tests/threads/thread_test.h"
 
-#ifdef __linux__
-
 void	pool_assert(bool ok, const char *msg)
 {
 	xft_pin_invariant_msg(ok, xft_fatptr((t_u8 *)msg, xft_strlen(msg)));
@@ -54,5 +52,3 @@ void	pool_check_tasks(t_thread_task *__restrict__ const t, t_u32a n,
 		pool_assert(t[it++].result == OK, "pool: task result");
 	}
 }
-
-#endif

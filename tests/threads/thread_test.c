@@ -13,8 +13,6 @@
 #include "tests/threads/thread_test.h"
 #include "tests/tests.h"
 
-#ifdef __linux__
-
 void	test_threads(t_test *t, t_sysinfo sysinfo)
 {
 	xft_test_print(t, "Testing xft_thread...\n");
@@ -27,13 +25,3 @@ void	test_threads(t_test *t, t_sysinfo sysinfo)
 	test_thread_pool(sysinfo);
 	xft_test_print(t, "  xft_thread: OK\n");
 }
-
-#else
-
-void	test_threads(t_test *t, t_sysinfo sysinfo)
-{
-	(void)t;
-	(void)sysinfo;
-}
-
-#endif

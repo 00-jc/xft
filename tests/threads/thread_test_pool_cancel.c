@@ -12,8 +12,6 @@
 
 #include "tests/threads/thread_test.h"
 
-#ifdef __linux__
-
 static t_result	cancel_leaf(t_any arg)
 {
 	t_pool_test *__restrict__ const	s = arg;
@@ -83,5 +81,3 @@ void	pool_round_cancel(t_pool_test *__restrict__ const s, t_sysinfo sysinfo)
 	xft_threadpool_cancel(s->alloc, &s->tp);
 	cancel_check(s);
 }
-
-#endif

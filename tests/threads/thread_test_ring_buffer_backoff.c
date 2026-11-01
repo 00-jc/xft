@@ -12,8 +12,6 @@
 
 #include "tests/threads/thread_test.h"
 
-#ifdef __linux__
-
 // positions [0, RB_BACKOFF_THREADS) are claimed by a producer that has not
 // stored yet, so every stealer backs off on slot 0 until the stores land
 static void	rb_backoff_steal(t_sysinfo sysinfo,
@@ -78,5 +76,3 @@ void	test_thread_ring_buffer_backoff(t_sysinfo sysinfo)
 	rb_backoff_submit(sysinfo, &s);
 	xft_destroy_ring_buffer(alloc, &s.rb);
 }
-
-#endif

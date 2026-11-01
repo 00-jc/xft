@@ -12,8 +12,6 @@
 
 #include "tests/threads/thread_test.h"
 
-#ifdef __linux__
-
 static void	rb_backoff_stealer(t_any arg)
 {
 	t_rb_backoff_test *__restrict__ const	s = arg;
@@ -93,5 +91,3 @@ void	thread_rb_backoff_finish(t_rb_backoff_test *__restrict__ const s,
 		xft_fatptr((t_u8 *)"ring buffer: backoff once",
 			sizeof("ring buffer: backoff once") - 1));
 }
-
-#endif
