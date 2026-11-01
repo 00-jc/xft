@@ -13,9 +13,9 @@
 #include <xft/tailor.h>
 #include "mem_bench.h"
 #include <xft/rt.h>
+#include "bench.h"
 
-__attribute__((__always_inline__, __used__))
-inline void	xft_main(const t_any *__restrict__ const sp)
+void	xft_bench_memcpy_stream(t_tailor *t)
 {
 	static t_size			bufsizes[] = {
 		XFT_LLC + 1, XFT_LLC + 1,
@@ -28,17 +28,15 @@ inline void	xft_main(const t_any *__restrict__ const sp)
 		64, 64, 64, 64,
 	};
 	static t_tailor_bench	benches[] = {
-	{xft_memcpy_test_stream_1x_unaligned, (t_blk8r)"memcpy_stream_1x_unalign"},
-	{xft_memcpy_test_stream_2x_unaligned, (t_blk8r)"memcpy_stream_2x_unalign"},
-	{xft_memcpy_test_stream_1x_aligned, (t_blk8r)"memcpy_stream_1x_aligned"},
-	{xft_memcpy_test_stream_2x_aligned, (t_blk8r)"memcpy_stream_2x_aligned"},
+	{xft_memcpy_test_stream_1x_unaligned, "memcpy_stream_1x_unalign", nullptr},
+	{xft_memcpy_test_stream_2x_unaligned, "memcpy_stream_2x_unalign", nullptr},
+	{xft_memcpy_test_stream_1x_aligned, "memcpy_stream_1x_aligned", nullptr},
+	{xft_memcpy_test_stream_2x_aligned, "memcpy_stream_2x_aligned", nullptr},
 	};
-	t_tailor				t;
 
-	((void)sp, xft_bind_process_to_cpu(0));
-	if (!xft_new_tailor(&t, 2, 2000)
-		|| !xft_tailor_buffers(&t, bufsizes, bufalign, 8))
+	if (!xft_tailor_buffers(t, bufsizes, bufalign,
+			sizeof(bufsizes) / sizeof(*bufsizes)))
 		xft_exit_process(1);
-	((void)xft_tailor_bench(&t, benches, 4),
-		xft_tailor_destroy(&t), xft_exit_process(0));
+	(void)xft_tailor_bench_exclusive(t, benches,
+		sizeof(benches) / sizeof(*benches));
 }

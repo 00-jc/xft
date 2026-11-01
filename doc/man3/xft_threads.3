@@ -1,4 +1,4 @@
-.Dd October 29, 2026
+.Dd November 1, 2026
 .Dt XFT_THREADS 3
 .Os xft
 .Sh NAME
@@ -40,6 +40,7 @@ typedef struct s_thread_opts {
 	t_size              stack_size;
 	t_any               argument;
 	bool                cpu_pinning;
+	bool                use_only_physical;
 } t_thread_opts;
 .Ed
 .Pp
@@ -86,9 +87,11 @@ typedef struct s_thread {
 names the function the thread runs, its argument and the size of its stack.
 .Fn xft_thread_spawn
 ignores
-.Fa cpu_pinning ;
+.Fa cpu_pinning
+and
+.Fa use_only_physical ;
 .Fn xft_threadpool_init
-reads it to pin its workers; see
+reads them to size its pool and pin its workers; see
 .Xr xft_threadpool 3 .
 .Dv XFT_THREAD_STACKSIZE
 is 8388608, 8 MiB, unless it is defined before

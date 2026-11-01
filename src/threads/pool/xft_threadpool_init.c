@@ -25,8 +25,13 @@ t_result	xft_threadpool_init(t_allocator allocator,
 	t_threadpool *__restrict__ const tp)
 {
 	t_size			cpu_count;
+	t_result		res;
 
-	if (__builtin_expect(xft_get_cpu_count(&cpu_count) == KO, 0))
+	if (opts.use_only_physical)
+		res = xft_get_physical_cpu_count(&cpu_count);
+	else
+		res = xft_get_cpu_count(&cpu_count);
+	if (__builtin_expect(res == KO, 0))
 		return (KO);
 	tp->global_lock = xft_unlocked;
 	tp->n_workers = cpu_count;

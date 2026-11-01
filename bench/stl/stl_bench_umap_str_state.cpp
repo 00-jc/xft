@@ -29,7 +29,7 @@ static void	std_umap_str_fill(t_std_umap_str &map, const t_stl_str *keys,
 
 t_std_umap_str	&xft_get_bench_std_umap_str_filled(void)
 {
-	static t_std_umap_str	map;
+	static thread_local t_std_umap_str	map;
 
 	if (map.empty())
 		std_umap_str_fill(map, xft_get_bench_str_keys(), STL_BENCH_FILL);
@@ -38,7 +38,7 @@ t_std_umap_str	&xft_get_bench_std_umap_str_filled(void)
 
 t_std_umap_str	&xft_get_bench_std_umap_str_large_filled(void)
 {
-	static t_std_umap_str	map;
+	static thread_local t_std_umap_str	map;
 
 	if (map.empty())
 		std_umap_str_fill(map, xft_get_bench_str_large_keys(),

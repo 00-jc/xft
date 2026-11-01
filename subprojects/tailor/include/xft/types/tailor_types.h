@@ -17,14 +17,17 @@
 # include <xft/alloc.h>
 # include <xft/rng.h>
 # include <xft/primitives.h>
+# include <xft/threads.h>
 # include <xft/types/io_types.h>
+# include <xft/types/vec_types.h>
 
 typedef void	(*t_tailor_fn)(t_any);
 
 typedef struct s_tailor_bench
 {
 	t_tailor_fn		fn;
-	t_blk8r			name;
+	const char		*name;
+	const char		*group;
 }	t_tailor_bench;
 
 typedef struct s_tailor_arg
@@ -40,24 +43,44 @@ typedef enum e_tailor_buf : t_u16
 	TAILOR_BUFFER_SIZE = 1024,
 }	t_tailor_buf;
 
+typedef struct s_tailor_result
+{
+	const char	*name;
+	const char	*group;
+	t_f64		ns;
+	t_f64		ipc;
+	t_f64		gb_per_sec;
+	t_f64		cycles;
+	t_f64		instr;
+	t_u64a		total_iters;
+	t_u64a		med;
+	t_u64a		lo;
+	t_u64a		hi;
+	t_u64a		min;
+	t_u64a		relevant;
+	t_u64a		burst;
+	t_u64a		resamples;
+	t_u64a		branches;
+	t_u64a		branch_miss;
+	t_u64a		cache_ll;
+	t_u64a		cache_miss;
+	t_u64a		alignment_faults;
+	t_u64a		page_faults;
+}	t_tailor_result;
+
 typedef struct s_tailor
 {
+	t_gpa				gpa;
 	t_arena				arena;
-	t_perf_counters		counters;
+	t_threadpool		pool;
+	t_vec				jobs;
+	t_vec				results;
 	t_u64				phase1_ns;
 	t_u64				phase2_ns;
 	t_u64				min_samples;
 	t_buffer			rand_buffers;
-	t_arena_checkpoint	rpoint;
-	t_u64a				swap;
 	t_u8				buffer[TAILOR_BUFFER_SIZE];
 	t_writer			writer;
 }	t_tailor;
-
-typedef struct s_tailor_report_ctx
-{
-	t_blk8r							name;
-	t_writer *__restrict__ const	writer;
-}	t_tailor_report_ctx;
 
 #endif

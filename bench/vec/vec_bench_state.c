@@ -14,7 +14,7 @@
 
 t_gpa	*xft_get_bench_vec_gpa(void)
 {
-	static t_gpa	gpa = {0};
+	static _Thread_local t_gpa	gpa = {0};
 
 	if (gpa.slab == nullptr)
 		gpa = xft_new_gpa();

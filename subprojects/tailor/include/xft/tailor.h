@@ -17,10 +17,15 @@
 
 #  include <xft/types/tailor_types.h>
 
-t_result	xft_new_tailor(t_tailor *t, t_f64 warmup_sec, t_u64a min_samples)\
+t_result	xft_new_tailor(t_tailor *t, t_sysinfo sysinfo, t_f64 warmup_sec,\
+					t_u64a min_samples)\
 					__attribute__((__nonnull__(1)));
 
 t_result	xft_tailor_bench(t_tailor *t, t_tailor_bench benches[],\
+				t_size size)\
+				__attribute__((__nonnull__(1, 2)));
+
+t_result	xft_tailor_bench_exclusive(t_tailor *t, t_tailor_bench benches[],\
 				t_size size)\
 				__attribute__((__nonnull__(1, 2)));
 
@@ -32,6 +37,15 @@ t_result	xft_tailor_buffers(t_tailor *t, t_size *sizes,\
 				__attribute__((__nonnull__(1, 2, 3)));
 
 t_buffer	xft_get_random_buffer(t_cany ptr)\
+				__attribute__((__nonnull__(1)));
+
+t_result	xft_tailor_run(t_tailor *t)\
+				__attribute__((__nonnull__(1)));
+
+void		xft_tailor_report(t_tailor *t)\
+				__attribute__((__nonnull__(1)));
+
+t_result	xft_tailor_compare(t_tailor *t)\
 				__attribute__((__nonnull__(1)));
 
 void		xft_tailor_destroy(t_tailor *t)\

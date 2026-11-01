@@ -1,15 +1,18 @@
-.Dd October 29, 2026
+.Dd November 1, 2026
 .Dt XFT_OS 3
 .Os xft
 .Sh NAME
 .Nm xft_get_cpu_count ,
+.Nm xft_get_physical_cpu_count ,
 .Nm xft_pin_process_to_cpu ,
 .Nm xft_pin_thread_to_cpu
-.Nd CPU count, CPU pinning, and the private Linux system call layer
+.Nd CPU and core count, CPU pinning, and the private Linux system call layer
 .Sh SYNOPSIS
 .In os.h
 .Ft t_result
 .Fn xft_get_cpu_count "t_size *count"
+.Ft t_result
+.Fn xft_get_physical_cpu_count "t_size *count"
 .Ft t_result
 .Fn xft_pin_process_to_cpu "t_u32 cpu"
 .Ft t_result
@@ -24,6 +27,14 @@ On Linux it is the population count of a 128-byte
 mask, so at most 1024; on Windows it is the population count of
 .Ql GetProcessAffinityMask ,
 so at most the 64 CPUs of the current processor group.
+.Pp
+.Fn xft_get_physical_cpu_count
+stores in
+.Fa *count
+the number of physical cores, taken as half of what
+.Fn xft_get_cpu_count
+counts, and 1 when that half is 0.
+It assumes two threads per core and reads no topology from the system.
 .Pp
 .Fn xft_pin_process_to_cpu
 restricts the process to CPU
@@ -243,7 +254,9 @@ The prefix keeps them from colliding with the C library's macros of the
 same names.
 .Sh RETURN VALUES
 .Fn xft_get_cpu_count
-returns
+and
+.Fn xft_get_physical_cpu_count
+return
 .Dv OK ,
 or
 .Dv KO
@@ -278,4 +291,12 @@ by the libc backend.
 .Xr xft_timing 3 ,
 .Xr xft 7
 .Sh CAVEATS
+.Bl -bullet
+.It
 32-bit Linux is supported through the libc backend only.
+.It
+.Fn xft_get_physical_cpu_count
+is exact only with two threads per core on every core: on a processor
+without simultaneous multithreading it gives half the cores, and on one that
+mixes cores with one and two threads it gives fewer than the cores there are.
+.El

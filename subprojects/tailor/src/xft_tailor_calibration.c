@@ -26,8 +26,8 @@ static inline t_u64	xft_tailor_run1(t_tailor_fn fn, t_tailor_arg *arg)
 	return (xft_tern(t1 - t0 == 0, 1, t1 - t0));
 }
 
-__attribute__((__nonnull__(1, 2), __always_inline__))
-static inline t_phase1	xft_tailor_calibrate_mu(t_tailor *t, t_tailor_fn fn)
+__attribute__((__nonnull__(1), __always_inline__))
+static inline t_phase1	xft_tailor_calibrate_mu(t_tailor_job *j)
 {
 	t_u64a			sum;
 	t_u64a			total;
@@ -36,19 +36,20 @@ static inline t_phase1	xft_tailor_calibrate_mu(t_tailor *t, t_tailor_fn fn)
 	t_tailor_arg	arg;
 
 	arg.iters = 1;
-	arg.buffers = t->rand_buffers;
+	arg.buffers = j->buffers;
+	arg.bytes_processed = 0;
 	xft_xoshiro_init(arg.xoshiro);
-	xft_tailor_run1(fn, &arg);
+	xft_tailor_run1(j->fn, &arg);
 	arg.iters = 2;
-	sum = xft_tailor_run1(fn, &arg);
+	sum = xft_tailor_run1(j->fn, &arg);
 	arg.iters = 1;
 	cap = xft_tern_s(sum > 200, (1 << 20), TAILOR_MAX);
-	deadline = xft_get_nanos() + t->phase1_ns;
+	deadline = xft_get_nanos() + j->t->phase1_ns;
 	sum = 0;
 	total = 0;
 	while (__builtin_expect(xft_get_nanos() < deadline, 1))
 	{
-		sum += xft_tailor_run1(fn, &arg);
+		sum += xft_tailor_run1(j->fn, &arg);
 		total += arg.iters;
 		arg.iters = xft_tern_s(arg.iters < cap, arg.iters << 1, cap);
 	}
@@ -81,9 +82,8 @@ static inline t_f64	xft__welford(t_datapoint *dp, t_u64a sample, t_u64a n)
 	return (xft_dtern(ci < 0.01, ci, 1000.0));
 }
 
-__attribute__((__nonnull__(1, 2), __always_inline__))
-static inline t_datapoint	xft_tailor_calibrate_welford(t_tailor *t,
-	t_tailor_fn fn)
+__attribute__((__nonnull__(1), __always_inline__))
+static inline t_datapoint	xft_tailor_calibrate_welford(t_tailor_job *j)
 {
 	t_datapoint		dp;
 	t_phase1		p1;
@@ -92,28 +92,28 @@ static inline t_datapoint	xft_tailor_calibrate_welford(t_tailor *t,
 	t_tailor_arg	arg;
 
 	dp = (t_datapoint){0, 0, 0, 0, 0, DBL_MAX, 0};
-	p1 = xft_tailor_calibrate_mu(t, fn);
+	p1 = xft_tailor_calibrate_mu(j);
+	arg = (t_tailor_arg){.buffers = j->buffers};
 	xft_xoshiro_init(arg.xoshiro);
-	arg.buffers = t->rand_buffers;
 	fpv[0] = (t_f64)p1.sum / (t_f64)p1.n;
-	fpv[1] = (t_f64)t->phase2_ns / (t_f64)(t->min_samples << 1);
+	fpv[1] = (t_f64)j->t->phase2_ns / (t_f64)(j->t->min_samples << 1);
 	fpv[2] = 50000.0 / fpv[0];
 	fpv[0] = fpv[1] / fpv[0];
 	arg.iters = (t_size)xft_dtern(fpv[0] < fpv[2], fpv[0], fpv[2]);
 	arg.iters = xft_tern_s(arg.iters == 0, 1, arg.iters);
 	arg.iters = xft_tern_s(arg.iters > TAILOR_MAX, TAILOR_MAX, arg.iters);
-	xft_tailor_run1(fn, &arg);
+	xft_tailor_run1(j->fn, &arg);
 	fpv[0] = 100.0;
-	deadline = xft_get_nanos() + t->phase2_ns;
+	deadline = xft_get_nanos() + j->t->phase2_ns;
 	while (__builtin_expect((xft_get_nanos() < deadline && !(0 <= fpv[0]
-					&& fpv[0] < 0.01)) || dp.n < t->min_samples, 1))
-		fpv[0] = xft__welford(&dp, xft_tailor_run1(fn, &arg), arg.iters);
+					&& fpv[0] < 0.01)) || dp.n < j->t->min_samples, 1))
+		fpv[0] = xft__welford(&dp, xft_tailor_run1(j->fn, &arg), arg.iters);
 	dp.iters = arg.iters;
 	return (dp);
 }
 
-__attribute__((__nonnull__(1, 2)))
-t_plankb	xft_get_kb(t_tailor *t, t_tailor_fn fn)
+__attribute__((__nonnull__(1)))
+t_plankb	xft_get_kb(t_tailor_job *j)
 {
 	t_datapoint		dp;
 	t_u64			div;
@@ -121,13 +121,13 @@ t_plankb	xft_get_kb(t_tailor *t, t_tailor_fn fn)
 	t_f64			ktmp;
 	t_u64a			kb[2];
 
-	dp = xft_tailor_calibrate_welford(t, fn);
+	dp = xft_tailor_calibrate_welford(j);
 	cv = xft_dsqrt(dp.m2 / (t_f64)(dp.n - 1)) / dp.mu;
 	ktmp = 1.96 * (cv / K_REL_CI);
 	ktmp = 1.5 * ktmp * ktmp;
 	div = (t_u64a)dp.mu * dp.iters;
 	div = xft_tern(div == 0, 1, div);
-	kb[0] = ((t->phase1_ns + t->phase2_ns) << 2) / div;
+	kb[0] = ((j->t->phase1_ns + j->t->phase2_ns) << 2) / div;
 	kb[1] = (t_u64a)ktmp;
 	kb[1] = xft_tern(kb[1] < 120, 120, kb[1]);
 	kb[1] = xft_tern(10000 < kb[1], 10000, kb[1]);

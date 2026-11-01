@@ -13,9 +13,40 @@
 #include <xft/tailor.h>
 #include "mem_bench.h"
 #include <xft/rt.h>
+#include "bench.h"
 
-__attribute__((__always_inline__, __used__))
-inline void	xft_main(const t_any *__restrict__ const sp)
+static void	memcpy_bench_exclusive(t_tailor *t)
+{
+	static t_tailor_bench	benches[] = {
+	{xft_memcpy_test_varied, "xft_memcpy_varied", "memcpy_varied"},
+	{xft_memcpy_test_large_aligned, "xft_memcpy_large_aligned",
+		"memcpy_large_aligned"},
+	{xft_memcpy_test_large_unaligned, "xft_memcpy_large_unaligned",
+		"memcpy_large_unaligned"},
+	};
+
+	(void)xft_tailor_bench_exclusive(t, benches,
+		sizeof(benches) / sizeof(*benches));
+}
+
+static void	memcpy_bench_queue(t_tailor *t)
+{
+	static t_tailor_bench	benches[] = {
+	{xft_memcpy_test_short_aligned, "xft_memcpy_short_aligned",
+		"memcpy_short_aligned"},
+	{xft_memcpy_test_short_unaligned, "xft_memcpy_short_unaligned",
+		"memcpy_short_unaligned"},
+	{xft_memcpy_test_medium_aligned, "xft_memcpy_medium_aligned",
+		"memcpy_medium_aligned"},
+	{xft_memcpy_test_medium_unaligned, "xft_memcpy_medium_unaligned",
+		"memcpy_medium_unaligned"},
+	};
+
+	(void)xft_tailor_bench(t, benches, sizeof(benches) / sizeof(*benches));
+	memcpy_bench_exclusive(t);
+}
+
+void	xft_bench_memcpy(t_tailor *t)
 {
 	static t_size			bufsizes[] = {
 		1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2049, (1 << 18), (1 << 20),
@@ -25,21 +56,9 @@ inline void	xft_main(const t_any *__restrict__ const sp)
 		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
 		64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
 	};
-	static t_tailor_bench	benches[] = {
-	{xft_memcpy_test_varied, (t_blk8r)"memcpy_test_varied"},
-	{xft_memcpy_test_short_aligned, (t_blk8r)"memcpy_short_aligned"},
-	{xft_memcpy_test_short_unaligned, (t_blk8r)"memcpy_test_short_unaligned"},
-	{xft_memcpy_test_medium_aligned, (t_blk8r)"memcpy_medium_aligned"},
-	{xft_memcpy_test_medium_unaligned, (t_blk8r)"memcpy_medium_unaligned"},
-	{xft_memcpy_test_large_aligned, (t_blk8r)"memcpy_large_aligned"},
-	{xft_memcpy_test_large_unaligned, (t_blk8r)"memcpy_large_unaligned"},
-	};
-	t_tailor				t;
 
-	((void)sp, xft_bind_process_to_cpu(0));
-	if (!xft_new_tailor(&t, 2, 2000)
-		|| !xft_tailor_buffers(&t, bufsizes, bufalign, 28))
+	if (!xft_tailor_buffers(t, bufsizes, bufalign,
+			sizeof(bufsizes) / sizeof(*bufsizes)))
 		xft_exit_process(1);
-	((void)xft_tailor_bench(&t, benches, 7),
-		xft_tailor_destroy(&t), xft_exit_process(0));
+	memcpy_bench_queue(t);
 }

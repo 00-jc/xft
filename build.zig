@@ -277,6 +277,10 @@ const SRCS = [_][]const u8{
     "src/io/raw_buffer/xft_fill.c",
     "src/io/raw_buffer/xft_flush.c",
     "src/io/raw_buffer/xft_vtable.c",
+    "src/io/threadsafe/xft_drain.c",
+    "src/io/threadsafe/xft_fill.c",
+    "src/io/threadsafe/xft_flush.c",
+    "src/io/threadsafe/xft_vtable.c",
     "src/math/3d/xft_3dadd.c",
     "src/math/3d/xft_3dcross.c",
     "src/math/3d/xft_3ddiv.c",
@@ -342,6 +346,7 @@ const SRCS = [_][]const u8{
     "src/os/linux/xft_mmap_commit.c",
     "src/os/linux/xft_map_failed.c",
     "src/os/xft_get_cpu_count.c",
+    "src/os/xft_get_physical_cpu_count.c",
     "src/os/xft_pin_process_to_cpu.c",
     "src/os/xft_pin_thread_to_cpu.c",
     "src/time/linux/xft_get_nanos.c",
@@ -699,30 +704,22 @@ const SRCS_TEST_THREADS_FREESTANDING = [_][]const u8{
     "tests/threads/thread_test_tls.c",
 };
 
-const SRCS_BENCH_memcpy_bench = [_][]const u8{
-    "bench/memcpy/memcpy_bench.c",
-    "bench/memcpy/memcpy_bench_large.c",
-    "bench/memcpy/memcpy_bench_medium.c",
-    "bench/memcpy/memcpy_bench_short.c",
-    "bench/memcpy/memcpy_bench_varied.c",
-};
-
-const SRCS_BENCH_memcpy_stream_bench = [_][]const u8{
-    "bench/memcpy/memcpy_stream_bench.c",
-    "bench/memcpy/memcpy_bench_stream.c",
-};
-
-const SRCS_BENCH_strlen_bench = [_][]const u8{
-    "bench/strlen/strlen_bench.c",
-    "bench/strlen/strlen_bench_large.c",
-    "bench/strlen/strlen_bench_medium.c",
-    "bench/strlen/strlen_bench_short.c",
-    "bench/strlen/strlen_bench_utils.c",
-    "bench/strlen/strlen_bench_varied.c",
-};
-
-const SRCS_BENCH_libc_bench = [_][]const u8{
-    "bench/libc/libc_bench.c",
+const SRCS_BENCH = [_][]const u8{
+    "bench/arena/arena_bench.c",
+    "bench/arena/arena_bench_ops.c",
+    "bench/arena/arena_bench_rand.c",
+    "bench/bench.c",
+    "bench/gpa/gpa_bench.c",
+    "bench/gpa/gpa_bench_bulk.c",
+    "bench/gpa/gpa_bench_get.c",
+    "bench/gpa/gpa_bench_ops.c",
+    "bench/gpa/gpa_bench_rand.c",
+    "bench/indexmap/indexmap_bench.c",
+    "bench/indexmap/indexmap_bench_insert.c",
+    "bench/indexmap/indexmap_bench_large.c",
+    "bench/indexmap/indexmap_bench_large_state.c",
+    "bench/indexmap/indexmap_bench_lookup.c",
+    "bench/indexmap/indexmap_bench_state.c",
     "bench/libc/libc_bench_run.c",
     "bench/libc/libc_memcpy_large.c",
     "bench/libc/libc_memcpy_medium.c",
@@ -732,82 +729,31 @@ const SRCS_BENCH_libc_bench = [_][]const u8{
     "bench/libc/libc_strlen_medium.c",
     "bench/libc/libc_strlen_short.c",
     "bench/libc/libc_strlen_varied.c",
-    "bench/strlen/strlen_bench_utils.c",
-};
-
-const SRCS_BENCH_memmove_bench = [_][]const u8{
+    "bench/memcpy/memcpy_bench.c",
+    "bench/memcpy/memcpy_bench_large.c",
+    "bench/memcpy/memcpy_bench_medium.c",
+    "bench/memcpy/memcpy_bench_short.c",
+    "bench/memcpy/memcpy_bench_stream.c",
+    "bench/memcpy/memcpy_bench_varied.c",
+    "bench/memcpy/memcpy_stream_bench.c",
     "bench/memmove/memmove_bench.c",
     "bench/memmove/memmove_bench_large.c",
     "bench/memmove/memmove_bench_medium.c",
     "bench/memmove/memmove_bench_short.c",
     "bench/memmove/memmove_bench_utils.c",
     "bench/memmove/memmove_bench_varied.c",
-};
-
-const SRCS_BENCH_memset_bench = [_][]const u8{
     "bench/memset/memset_bench.c",
     "bench/memset/memset_bench_large.c",
     "bench/memset/memset_bench_medium.c",
     "bench/memset/memset_bench_short.c",
-    "bench/memset/memset_bench_varied.c",
-};
-
-const SRCS_BENCH_memset_stream_bench = [_][]const u8{
-    "bench/memset/memset_stream_bench.c",
     "bench/memset/memset_bench_stream.c",
-};
-
-const SRCS_BENCH_gpa_bench = [_][]const u8{
-    "bench/gpa/gpa_bench.c",
-    "bench/gpa/gpa_bench_bulk.c",
-    "bench/gpa/gpa_bench_get.c",
-    "bench/gpa/gpa_bench_ops.c",
-    "bench/gpa/gpa_bench_rand.c",
-};
-
-const SRCS_BENCH_arena_bench = [_][]const u8{
-    "bench/arena/arena_bench.c",
-    "bench/arena/arena_bench_ops.c",
-    "bench/arena/arena_bench_rand.c",
-};
-
-const SRCS_BENCH_vec_bench = [_][]const u8{
-    "bench/vec/vec_bench.c",
-    "bench/vec/vec_bench_extend.c",
-    "bench/vec/vec_bench_ops.c",
-    "bench/vec/vec_bench_read.c",
-    "bench/vec/vec_bench_remove.c",
-    "bench/vec/vec_bench_state.c",
-};
-
-const SRCS_BENCH_soa_bench = [_][]const u8{
+    "bench/memset/memset_bench_varied.c",
+    "bench/memset/memset_stream_bench.c",
     "bench/soa/soa_bench.c",
     "bench/soa/soa_bench_append.c",
     "bench/soa/soa_bench_iter.c",
     "bench/soa/soa_bench_read.c",
     "bench/soa/soa_bench_state.c",
-};
-
-const SRCS_BENCH_swissmap_bench = [_][]const u8{
-    "bench/swissmap/swissmap_bench.c",
-    "bench/swissmap/swissmap_bench_insert.c",
-    "bench/swissmap/swissmap_bench_large.c",
-    "bench/swissmap/swissmap_bench_large_state.c",
-    "bench/swissmap/swissmap_bench_lookup.c",
-    "bench/swissmap/swissmap_bench_state.c",
-};
-
-const SRCS_BENCH_indexmap_bench = [_][]const u8{
-    "bench/indexmap/indexmap_bench.c",
-    "bench/indexmap/indexmap_bench_insert.c",
-    "bench/indexmap/indexmap_bench_large.c",
-    "bench/indexmap/indexmap_bench_large_state.c",
-    "bench/indexmap/indexmap_bench_lookup.c",
-    "bench/indexmap/indexmap_bench_state.c",
-};
-
-const SRCS_BENCH_stl_bench = [_][]const u8{
-    "bench/stl/stl_bench.c",
     "bench/stl/stl_bench_flat_str.cpp",
     "bench/stl/stl_bench_flat_str_large.cpp",
     "bench/stl/stl_bench_flat_str_state.cpp",
@@ -821,7 +767,19 @@ const SRCS_BENCH_stl_bench = [_][]const u8{
     "bench/stl/stl_bench_umap_str_state.cpp",
     "bench/stl/stl_bench_vector.cpp",
     "bench/stl/stl_bench_vector_access.cpp",
+    "bench/strlen/strlen_bench.c",
+    "bench/strlen/strlen_bench_large.c",
+    "bench/strlen/strlen_bench_medium.c",
+    "bench/strlen/strlen_bench_short.c",
+    "bench/strlen/strlen_bench_utils.c",
+    "bench/strlen/strlen_bench_varied.c",
+    "bench/swissmap/swissmap_bench.c",
+    "bench/swissmap/swissmap_bench_insert.c",
+    "bench/swissmap/swissmap_bench_large.c",
+    "bench/swissmap/swissmap_bench_large_state.c",
+    "bench/swissmap/swissmap_bench_lookup.c",
     "bench/swissmap/swissmap_bench_state.c",
+    "bench/vec/vec_bench.c",
     "bench/vec/vec_bench_extend.c",
     "bench/vec/vec_bench_ops.c",
     "bench/vec/vec_bench_read.c",
@@ -838,15 +796,20 @@ const SRCS_FUZZ = [_][2][]const u8{
 const SRCS_TAILOR = [_][]const u8{
     "subprojects/tailor/src/xft_tailor_bytes.c",
     "subprojects/tailor/src/xft_tailor_calibration.c",
+    "subprojects/tailor/src/xft_tailor_compare.c",
     "subprojects/tailor/src/xft_tailor_fuzz.c",
     "subprojects/tailor/src/xft_tailor_get_rand_buffer.c",
     "subprojects/tailor/src/xft_tailor_get_random_num.c",
     "subprojects/tailor/src/xft_tailor_getcount.c",
+    "subprojects/tailor/src/xft_tailor_job.c",
     "subprojects/tailor/src/xft_tailor_new.c",
+    "subprojects/tailor/src/xft_tailor_queue.c",
     "subprojects/tailor/src/xft_tailor_resample.c",
     "subprojects/tailor/src/xft_tailor_run.c",
     "subprojects/tailor/src/xft_tailor_summary.c",
+    "subprojects/tailor/src/xft_tailor_survivors.c",
     "subprojects/tailor/src/xft_tailor_top.c",
+    "subprojects/tailor/src/xft_tailor_units.c",
 };
 
 const SRCS_GENTABLE = [_][]const u8{
@@ -902,21 +865,6 @@ const SRCS_ABSEIL = [_][]const u8{
     "absl/time/internal/cctz/src/time_zone_posix.cc",
     "absl/time/internal/cctz/src/zone_info_source.cc",
     "absl/time/time.cc",
-};
-
-const BENCHES = .{
-    .{ "memcpy_bench",        &SRCS_BENCH_memcpy_bench },
-    .{ "memcpy_stream_bench", &SRCS_BENCH_memcpy_stream_bench },
-    .{ "memmove_bench",       &SRCS_BENCH_memmove_bench },
-    .{ "memset_bench",        &SRCS_BENCH_memset_bench },
-    .{ "memset_stream_bench", &SRCS_BENCH_memset_stream_bench },
-    .{ "strlen_bench",        &SRCS_BENCH_strlen_bench },
-    .{ "gpa_bench",           &SRCS_BENCH_gpa_bench },
-    .{ "arena_bench",         &SRCS_BENCH_arena_bench },
-    .{ "vec_bench",           &SRCS_BENCH_vec_bench },
-    .{ "soa_bench",           &SRCS_BENCH_soa_bench },
-    .{ "swissmap_bench",      &SRCS_BENCH_swissmap_bench },
-    .{ "indexmap_bench",      &SRCS_BENCH_indexmap_bench },
 };
 
 const INTERNAL_DIRS = [_][]const u8{
@@ -1376,19 +1324,13 @@ pub fn build(b: *std.Build) !void {
     if (cfg.benches) {
         const hosted = if (cfg.use_libc) xft else try addXft(x, "xft-libc", true, false);
 
-        const run_bench = b.step("run-bench", "Run the benchmarks");
-        inline for (BENCHES) |bench| {
-            const exe = try addHarness(x, bench[0], xft, bench[1], &.{"bench/include"}, &.{});
-            run_bench.dependOn(&b.addRunArtifact(exe).step);
-        }
-        const libc_bench = try addHarness(x, "libc_bench", hosted, &SRCS_BENCH_libc_bench, &.{"bench/include"}, &.{"-fno-builtin"});
-        run_bench.dependOn(&b.addRunArtifact(libc_bench).step);
-        const stl_bench = try addHarness(x, "stl_bench", hosted, &SRCS_BENCH_stl_bench, &.{"bench/include"}, &.{});
+        const bench = try addHarness(x, "bench", hosted, &SRCS_BENCH, &.{"bench/include"}, &.{"-fno-builtin"});
+        bench.bundle_compiler_rt = !x.target.query.isNative();
         if (b.lazyDependency("abseil", .{})) |absl| {
             const absl_flags = try std.mem.concat(b.allocator, []const u8, &.{ try cflags(x, hosted, true), &.{"-w"} });
-            stl_bench.root_module.addSystemIncludePath(absl.path(""));
-            stl_bench.root_module.addCSourceFiles(.{ .root = absl.path(""), .files = &SRCS_ABSEIL, .flags = absl_flags, .language = .cpp });
+            bench.root_module.addSystemIncludePath(absl.path(""));
+            bench.root_module.addCSourceFiles(.{ .root = absl.path(""), .files = &SRCS_ABSEIL, .flags = absl_flags, .language = .cpp });
         }
-        run_bench.dependOn(&b.addRunArtifact(stl_bench).step);
+        b.step("run-bench", "Run the benchmarks").dependOn(&b.addRunArtifact(bench).step);
     }
 }

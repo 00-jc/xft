@@ -31,7 +31,7 @@ static void	swiss_str_fill(t_swissmap *map, t_stl_str *keys, t_size n)
 
 t_swissmap	*xft_get_bench_swiss_str_filled(void)
 {
-	static t_swissmap	map = {0};
+	static _Thread_local t_swissmap	map = {0};
 
 	if (map.soa.ptr == nullptr)
 		swiss_str_fill(&map, xft_get_bench_str_keys(), STL_BENCH_FILL);
@@ -40,7 +40,7 @@ t_swissmap	*xft_get_bench_swiss_str_filled(void)
 
 t_swissmap	*xft_get_bench_swiss_str_large_filled(void)
 {
-	static t_swissmap	map = {0};
+	static _Thread_local t_swissmap	map = {0};
 
 	if (map.soa.ptr == nullptr)
 		swiss_str_fill(&map, xft_get_bench_str_large_keys(),

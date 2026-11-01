@@ -26,6 +26,7 @@ void	xft_memmove_test_medium_aligned(t_any ptr)
 	bufn[0] = 8;
 	xft_pin_invariant_msg(buffers != nullptr,
 		xft_fatptr((t_u8 *)"NO BUFFERS", 10));
+	n *= bufn[0];
 	bufn[2] = 0;
 	while (n-- > 0)
 	{
@@ -49,6 +50,7 @@ void	xft_memmove_test_medium_unaligned(t_any ptr)
 	bufn[0] = 8;
 	xft_pin_invariant_msg(buffers != nullptr,
 		xft_fatptr((t_u8 *)"NO BUFFERS", 10));
+	n *= bufn[0];
 	bufn[2] = 0;
 	while (n-- > 0)
 	{

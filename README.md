@@ -86,7 +86,7 @@ Zig ships no AddressSanitizer runtime, so `-Dsanitize` is UBSan only.
 On Linux, `xft` builds two more libraries on top of `perf_event_open`, compiled with the same flavor (libc, sanitizers, LTO) as `xft` itself:
 
 - **`perf`** (`<xft/perf.h>`): hardware and software performance counter groups, sampling, and CPU pinning.
-- **`tailor`** (`<xft/tailor.h>`): the benchmark harness used by `bench/`, built on `perf`.
+- **`tailor`** (`<xft/tailor.h>`): the benchmark harness used by `bench/`, built on `perf`. It runs benchmarks in parallel on a thread pool, one worker per physical core, interleaves the samples of the benchmarks it compares, runs the ones marked exclusive alone, calibrates each one, filters outliers, bootstraps a confidence interval for the median, and keeps every result so runs can be compared side by side. See [`xft_tailor(3)`](doc/man3/xft_tailor.3).
 
 Zig consumers that link the `xft` artifact get both automatically. When linking the archives by hand, link them before `xft`: `-lxft-tailor -lxft-perf -lxft`. They are not built for Windows.
 
@@ -200,7 +200,29 @@ Benchmarks use the `tailor` harness and are Linux only:
 zig build -Doptimize=fast -Dbenches run-bench
 ```
 
-`libc_bench` and `stl_bench` link a hosted build (`xft-libc`) to compare against the system libc and the C++ standard library.
+This builds and runs a single `bench` executable. It links a hosted build (`xft-libc`) without zig's compiler_rt, so `strlen`, `memcpy` and the other C library functions resolve to the system libc, for the `libc_` benchmarks and for the C++ standard library and Abseil alike, and the suites compare `xft` against all three.
+
+`bench/bench.c` queues every suite and runs them in one `xft_tailor_run`, on one worker per physical core, each pinned to its own CPU. It then prints a block per benchmark, followed by the comparison groups. Each entry of a suite's table names its benchmark function, its name and its group (`nullptr` for none):
+
+```c
+{xft_memcpy_test_varied, "xft_memcpy_varied", "memcpy_varied"},
+{xft_libc_memcpy_varied, "libc_memcpy_varied", "memcpy_varied"},
+```
+
+The benchmarks of one group run together on one worker and take their samples in turns, so every member sees the same clock and the same neighbours. The groups that move more data than the caches hold (the varied and large `memcpy` and `strlen` groups, the streaming `memcpy` and `memset` suites and the 1M-entry map suite) are queued with `xft_tailor_bench_exclusive` and run one at a time after the rest, with no other group beside them.
+
+The comparison lists each group with its first member, the `xft` one, as the baseline and every other member's cycles per call against it:
+
+```
+ ≈ map_strings_1m_lookup_hit
+ ├─ xft_map_strings_1m_lookup_hit = 1099.902546 cycles per_call (baseline) [307.190285 ns]
+ ├─ std_map_strings_1m_lookup_hit = 1078.422594 cycles per_call (1.019917x faster) [302.939720 ns]
+ ├─ absl_map_strings_1m_lookup_hit = 529.411691 cycles per_call (2.077593x faster) [145.357383 ns]
+```
+
+The comparison is on cycles because the clock of a loaded multi-core part moves with the load, so the times of two benchmarks that ran beside different neighbours are not comparable.
+
+A group runs on whichever worker picks it up, at the same time as the others, so the state benchmarks share in `bench/` is thread-local, or read-only and filled before the run.
 
 ## Warning
 

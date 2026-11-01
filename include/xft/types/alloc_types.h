@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/03 16:00:44 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/10/29 13:43:41 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/11/01 22:13:25 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,6 @@ typedef enum e_hugepage_size : t_u64
 	HUGEPAGE_16GB = 17179869184,
 }	t_hugepage_size;
 
-// largest tier a t_size can hold
 # if UINTPTR_MAX > 0xFFFFFFFF
 
 typedef enum e_hugepage_max : t_u64
@@ -61,20 +60,20 @@ typedef enum e_reporta_conf : t_u16
 
 typedef struct s_allocator	t_allocator;
 
-typedef void		(*t_free)(t_any alloc, t_buffer old)\
+typedef void				(*t_free)(t_any, t_buffer)\
 						__attribute__((__nonnull__(1)));
 
-typedef t_buffer	(*t_reallocate)(t_any alloc, t_buffer old, t_size new_size,\
+typedef t_buffer			(*t_reallocate)(t_any, t_buffer, t_size,\
 						t_size align)\
 						__attribute__((__nonnull__(1)));
 
-typedef t_buffer	(*t_allocate)(t_any alloc, t_size size, t_size align)\
+typedef t_buffer			(*t_allocate)(t_any alloc, t_size size, t_size align)\
 						__attribute__((__nonnull__(1)));
 
-typedef void		(*t_destroy)(t_any alloc)\
+typedef void				(*t_destroy)(t_any alloc)\
 						__attribute__((__nonnull__(1)));
 
-typedef t_buffer	(*t_clone)(t_allocator self, t_buffer buffer);
+typedef t_buffer			(*t_clone)(t_allocator self, t_buffer buffer);
 
 typedef struct e_alloc_vtable
 {

@@ -36,21 +36,22 @@ t_result	xft_tailor_buffers(t_tailor *t,
 {
 	t_size				i;
 	t_any				tmp;
+	t_buffer			*bufs;
 	t_arena_checkpoint	c;
 
 	i = 0;
 	c = xft_arena_checkpoint(&t->arena);
-	t->rand_buffers.mem = xft_arena_alloc(&t->arena, n * sizeof(t_buffer), 32);
-	if (!t->rand_buffers.mem)
+	bufs = xft_arena_alloc(&t->arena, n * sizeof(t_buffer), 32);
+	if (!bufs)
 		return (xft_arena_rewind(&t->arena, c), KO);
-	t->rand_buffers.size = n;
 	while (i < n)
 	{
 		tmp = xft__handle_alignment_alloc(t, sizes[i], alignment[i]);
 		if (!tmp)
 			return (xft_arena_rewind(&t->arena, c), KO);
-		((t_buffer *)t->rand_buffers.mem)[i] = xft_fatptr(tmp, sizes[i]);
+		bufs[i] = xft_fatptr(tmp, sizes[i]);
 		++i;
 	}
+	t->rand_buffers = xft_fatptr((t_u8 *)bufs, n);
 	return (OK);
 }

@@ -45,6 +45,14 @@ t_writer		xft_get_raw_writer(t_buffer buffer,\
 t_reader		xft_get_raw_reader(t_buffer buffer, t_buffer external)\
 					__attribute__((const));
 
+t_writer		xft_get_ts_fs_writer(t_buffer buffer, t_i32 fd,\
+					t_mutex *__restrict__ const mutex)\
+					__attribute__((const));
+
+t_reader		xft_get_ts_fs_reader(t_buffer buffer, t_i32 fd,\
+					t_mutex *__restrict__ const mutex)\
+					__attribute__((const));
+
 t_i32			xft_get_stderr(void)\
 					__attribute__((const));
 t_i32			xft_get_stdin(void)\

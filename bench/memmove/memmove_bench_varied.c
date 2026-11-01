@@ -24,6 +24,7 @@ void	xft_memmove_test_varied(t_any ptr)
 	buffers = xft_get_all_buffers(ptr, bufn);
 	xft_pin_invariant_msg(buffers != nullptr,
 		xft_fatptr((t_u8 *)"NO BUFFERS", 10));
+	n *= bufn[0];
 	bufn[2] = 0;
 	while (n-- > 0)
 	{

@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/03 18:01:29 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/10/03 18:01:32 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/11/01 21:17:01 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define IO_TYPES_H
 
 # include <xft/primitives.h>
+# include <xft/atomics.h>
 
 typedef struct s_iovec
 {
@@ -55,10 +56,17 @@ typedef struct s_mem_writer
 
 # endif
 
+typedef struct s_ts_fs_writer
+{
+	t_i32		fd;
+	t_mutex		*mutex;
+}	t_ts_fs_writer;
+
 typedef union u_writer_union
 {
 	t_fs_writer		fs_writer;
 	t_mem_writer	mem_writer;
+	t_ts_fs_writer	ts_fs_writer;
 }	t_writer_union;
 
 typedef struct s_writer
@@ -89,10 +97,17 @@ typedef struct s_mem_reader
 	t_size					drained;
 }	t_mem_reader;
 
+typedef struct s_ts_fs_reader
+{
+	t_i32		fd;
+	t_mutex		*mutex;
+}	t_ts_fs_reader;
+
 typedef union u_reader_union
 {
 	t_fs_reader		fs_reader;
 	t_mem_reader	mem_reader;
+	t_ts_fs_reader	ts_fs_reader;
 }	t_reader_union;
 
 typedef struct s_reader

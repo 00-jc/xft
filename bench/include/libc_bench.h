@@ -15,9 +15,6 @@
 
 # include "cstr_bench.h"
 
-void	xft_libc_bench_memcpy(t_tailor *t);
-void	xft_libc_bench_strlen(t_tailor *t);
-
 void	xft_libc_memcpy_varied(t_any ptr);
 void	xft_libc_memcpy_short_aligned(t_any ptr);
 void	xft_libc_memcpy_short_unaligned(t_any ptr);

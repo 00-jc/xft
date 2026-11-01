@@ -35,6 +35,7 @@ typedef struct s_thread_opts
 	t_size				stack_size;
 	t_any				argument;
 	bool				cpu_pinning;
+	bool				use_only_physical;
 }	t_thread_opts;
 
 # if defined(_WIN32) || defined(XFT_REQUIRE_LIBC)

@@ -1,28 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   libc_bench.c                                       :+:      :+:    :+:   */
+/*   xft_get_physical_cpu_count.c                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/09/08 01:34:28 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/09/08 01:34:28 by jaicastr         ###   ########.fr       */
+/*   Created: 2026/11/01 12:00:00 by jaicastr          #+#    #+#             */
+/*   Updated: 2026/11/01 21:53:11 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <xft/tailor.h>
-#include "libc_bench.h"
-#include <xft/rt.h>
+#include <xft/bmi.h>
+#include <xft/os.h>
 
-__attribute__((__always_inline__, __used__))
-inline void	xft_main(const t_any *__restrict__ const sp)
+__attribute__((__nonnull__(1)))
+t_result	xft_get_physical_cpu_count(t_size *count)
 {
-	t_tailor	t;
+	t_size	cpus;
 
-	((void)sp, xft_bind_process_to_cpu(0));
-	if (!xft_new_tailor(&t, 2, 2000))
-		xft_exit_process(1);
-	xft_libc_bench_memcpy(&t);
-	xft_libc_bench_strlen(&t);
-	(xft_tailor_destroy(&t), xft_exit_process(0));
+	if (__builtin_expect(xft_get_cpu_count(&cpus) == KO, 0))
+		return (KO);
+	*count = xft_tern_s(cpus >> 1 != 0, cpus >> 1, cpus);
+	return (OK);
 }

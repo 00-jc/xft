@@ -38,9 +38,9 @@ t_buffer	xft_imap_bench_large_key(t_size i)
 
 t_indexmap	*xft_get_bench_imap_large_filled(void)
 {
-	static t_indexmap	map = {0};
-	t_allocator			a;
-	t_size				i;
+	static _Thread_local t_indexmap	map = {0};
+	t_allocator						a;
+	t_size							i;
 
 	if (map.soa.ptr != nullptr)
 		return (&map);

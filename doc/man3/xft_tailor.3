@@ -1,0 +1,638 @@
+.Dd November 1, 2026
+.Dt XFT_TAILOR 3
+.Os xft
+.Sh NAME
+.Nm xft_new_tailor ,
+.Nm xft_tailor_buffers ,
+.Nm xft_tailor_bench ,
+.Nm xft_tailor_bench_exclusive ,
+.Nm xft_tailor_run ,
+.Nm xft_tailor_report ,
+.Nm xft_tailor_compare ,
+.Nm xft_tailor_destroy ,
+.Nm xft_tailor_getcount ,
+.Nm xft_tailor_add_processed_bytes ,
+.Nm xft_tailor_get_random_num ,
+.Nm xft_get_random_buffer ,
+.Nm xft_get_all_buffers
+.Nd parallel benchmark harness on hardware performance counters
+.Sh SYNOPSIS
+.In xft/tailor.h
+.Ft t_result
+.Fn xft_new_tailor "t_tailor *t" "t_sysinfo sysinfo" "t_f64 warmup_sec" "t_u64a min_samples"
+.Ft t_result
+.Fn xft_tailor_buffers "t_tailor *t" "t_size *sizes" "t_u8 *alignment" "t_size n"
+.Ft t_result
+.Fn xft_tailor_bench "t_tailor *t" "t_tailor_bench benches[]" "t_size size"
+.Ft t_result
+.Fn xft_tailor_bench_exclusive "t_tailor *t" "t_tailor_bench benches[]" "t_size size"
+.Ft t_result
+.Fn xft_tailor_run "t_tailor *t"
+.Ft void
+.Fn xft_tailor_report "t_tailor *t"
+.Ft t_result
+.Fn xft_tailor_compare "t_tailor *t"
+.Ft void
+.Fn xft_tailor_destroy "t_tailor *t"
+.Pp
+Inside a benchmark function:
+.Ft t_size
+.Fn xft_tailor_getcount "t_cany ptr"
+.Ft void
+.Fn xft_tailor_add_processed_bytes "t_any ptr" "const t_size bytes"
+.Ft t_u64a
+.Fn xft_tailor_get_random_num "t_any ptr"
+.Ft t_buffer
+.Fn xft_get_random_buffer "t_cany ptr"
+.Ft t_buffer *
+.Fn xft_get_all_buffers "t_cany ptr" "t_size *n"
+.Sh DESCRIPTION
+.Nm tailor
+measures functions with
+.Xr perf_event_open 2
+counters and reports, for each one, the time, cycles and instructions per
+call, the median with a bootstrap confidence interval, and the cache and
+branch behaviour.
+It runs the benchmarks in parallel on a thread pool, the members of a
+comparison group together on one worker, sample by sample, and keeps every
+result in a vector so that runs can be printed together at the end and
+compared against each other.
+It is Linux only and is what
+.Pa bench/
+is built on.
+It lives in
+.Pa libxft-tailor.a
+on top of
+.Pa libxft-perf.a ;
+linking the archives by hand, they go before
+.Nm xft :
+.Fl lxft-tailor Fl lxft-perf Fl lxft .
+.Pp
+A program uses it in this order:
+.Bl -enum -compact
+.It
+.Fn xft_new_tailor
+sets up the harness and starts the workers.
+.It
+.Fn xft_tailor_buffers
+optionally allocates the input buffers for the benchmarks queued after it.
+.It
+.Fn xft_tailor_bench
+and
+.Fn xft_tailor_bench_exclusive
+queue benchmarks; they run nothing.
+.It
+.Fn xft_tailor_run
+runs every queued benchmark and stores the results.
+.It
+.Fn xft_tailor_report
+and
+.Fn xft_tailor_compare
+print the stored results.
+.It
+.Fn xft_tailor_destroy
+stops the workers and frees everything.
+.El
+.Pp
+Steps 2 and 3 may repeat before step 4, each group of benchmarks with its own
+buffers, and steps 2 to 4 may repeat before step 5; results accumulate until
+.Fn xft_tailor_destroy .
+.Ss Types
+.Bd -literal -offset indent
+typedef void	(*t_tailor_fn)(t_any);
+
+typedef struct s_tailor_bench {
+	t_tailor_fn    fn;
+	const char     *name;
+	const char     *group;
+} t_tailor_bench;
+
+typedef struct s_tailor_result {
+	const char     *name;
+	const char     *group;
+	t_f64          ns;
+	t_f64          ipc;
+	t_f64          gb_per_sec;
+	t_f64          cycles;
+	t_f64          instr;
+	t_u64a         total_iters;
+	t_u64a         med;
+	t_u64a         lo;
+	t_u64a         hi;
+	t_u64a         min;
+	t_u64a         relevant;
+	t_u64a         burst;
+	t_u64a         resamples;
+	t_u64a         branches;
+	t_u64a         branch_miss;
+	t_u64a         cache_ll;
+	t_u64a         cache_miss;
+	t_u64a         alignment_faults;
+	t_u64a         page_faults;
+} t_tailor_result;
+.Ed
+.Pp
+A
+.Vt t_tailor_bench
+pairs a benchmark function with its name and its comparison group, or
+.Dv nullptr
+for none; see
+.Fn xft_tailor_run
+and
+.Fn xft_tailor_compare .
+Both are NUL-terminated strings that must outlive the harness, and the result
+of the benchmark keeps the same two pointers.
+The function receives an opaque pointer, read only through the functions
+listed under
+.Sx Benchmark functions ;
+each call performs
+.Fn xft_tailor_getcount
+iterations of the measured operation.
+.Pp
+A
+.Vt t_tailor_result
+holds the measurement of one benchmark.
+.Fa ns ,
+.Fa cycles
+and
+.Fa instr
+are per iteration, averaged over the kept samples;
+.Fa ipc
+is instructions over cycles;
+.Fa gb_per_sec
+is the bytes reported per iteration over
+.Fa ns .
+.Fa med
+is the median nanoseconds per iteration of the kept samples,
+.Fa lo
+and
+.Fa hi
+the bounds of its 95% bootstrap interval and
+.Fa min
+the fastest kept sample, all truncated to whole nanoseconds.
+.Fa total_iters
+counts every measured iteration,
+.Fa relevant
+the kept samples,
+.Fa burst
+the iterations per sample and
+.Fa resamples
+the bootstrap resamples.
+The counter fields are totals over the kept samples.
+.Pp
+The fields of
+.Vt t_tailor
+belong to the harness, except two the caller may read:
+.Fa rand_buffers ,
+a
+.Vt t_buffer
+whose
+.Fa mem
+is an array of
+.Fa size
+.Vt t_buffer
+set by the last
+.Fn xft_tailor_buffers ,
+and
+.Fa results ,
+a
+.Vt t_vec
+of
+.Vt t_tailor_result ;
+see
+.Xr xft_vec 3 .
+The workers keep pointers into the structure, so it must not move between
+.Fn xft_new_tailor
+and
+.Fn xft_tailor_destroy .
+.Ss Functions
+.Fn xft_new_tailor
+creates the harness's general-purpose allocator, scratch arena, job queue
+and result vector, and starts a thread pool with
+.Fa use_only_physical
+and
+.Fa cpu_pinning
+set: one worker per physical core, as counted by
+.Fn xft_get_physical_cpu_count ,
+worker
+.Va i
+pinned to CPU
+.Va i ;
+see
+.Xr xft_threadpool 3
+and
+.Xr xft_os 3 .
+.Fa sysinfo
+is passed to
+.Fn xft_threadpool_init .
+.Fa warmup_sec ,
+raised to 0.75 when lower, is the calibration budget of each benchmark:
+one fifth for the first phase, the rest for the second; see
+.Sx Measurement .
+.Fa min_samples ,
+raised to 150 when lower, is the least number of samples the second phase
+takes.
+Output goes to standard output through a writer with a 1024-byte buffer.
+.Pp
+.Fn xft_tailor_buffers
+allocates
+.Fa n
+buffers in the harness's arena, buffer
+.Va i
+.Fa sizes Ns Bq Va i
+bytes long.
+An
+.Fa alignment Ns Bq Va i
+of 1 places the buffer one byte past a 32-byte boundary, so it is
+misaligned on purpose; any other value is the alignment, a power of two.
+The contents are left uninitialized.
+It sets
+.Fa t->rand_buffers
+to the new set; earlier sets stay allocated, and the benchmarks queued
+before the call keep the set they were queued with.
+.Pp
+.Fn xft_tailor_bench
+appends the
+.Fa size
+benchmarks of
+.Fa benches
+to the queue, each with the buffer set current at the time of the call.
+.Pp
+.Fn xft_tailor_bench_exclusive
+does the same and marks the benchmarks exclusive: they run with no other
+benchmark beside them.
+It is for memory-bound benchmarks, whose cycles depend on what else uses
+the memory bus and the last-level cache at the same time.
+.Pp
+.Fn xft_tailor_run
+splits the queue into units: the queued benchmarks of one group, found with
+an
+.Xr xft_indexmap 3
+on the group string, form one unit, and a benchmark with no group is a unit
+of its own.
+A unit is exclusive when any of its members is.
+It submits the units that are not exclusive to the pool as one batch with
+.Fn xft_threadpool_submit_fair
+and waits for all of them, then submits each exclusive unit alone and waits
+for it before the next, so the other workers sit idle meanwhile.
+It appends the results to
+.Fa t->results
+in queue order, whatever order they finish in, and empties the queue.
+The calling thread only waits on each task's completion signal, so it needs
+no thread-local storage set up.
+.Pp
+A unit runs as one task on one worker, with its own:
+.Bl -bullet -compact
+.It
+arena, for the samples and statistics of its members;
+.It
+counter group, opened on the worker, which counts that thread only;
+.It
+copy of each member's buffer set, each buffer at the same address modulo 64
+as the original, so alignment is preserved and no two benchmarks write to
+the same memory.
+.El
+Every member calibrates in turn, then the members take their samples in
+rounds, one sample each per round, until each has the count it planned;
+finally each member computes its result.
+Interleaving the samples puts every member of a group under the same
+conditions, clock and neighbours alike, through the whole run.
+The unit frees its arena and counters before it completes.
+.Pp
+.Fn xft_tailor_report
+prints every stored result, in order, as a block:
+.Bd -literal -offset indent
+ * xft_memcpy_large_aligned
+ ├─ time         = 5643.814526 ns per_call
+ ├─ ipc          = 1.178716
+ ├─ GB/sec       = 46.448018
+ ├─ cycles       = 17491.058451 per_call
+ ├─ instr        = 20617.000804 per_call
+ ├─ total_iters  = 77021
+ ├─ med          = 5623ns [5622, 5623] min=5596ns
+ ├─ relevant     = 6396 samples (burst of=7 iters)
+ ├─ resamples    = 10000 bootstrap_runs
+ │
+ ├─ branch miss  = 0.109758%
+ │  └───────────── total_ratio=51577/46991448
+ │
+ ├─ LL     miss  = 25.991189%
+ │  └───────────── total_ratio=118/454
+ ├─ align faults = 0
+ └─ page  faults = 0
+.Ed
+.Pp
+and flushes the writer.
+.Pp
+.Fn xft_tailor_compare
+prints the stored results grouped by their
+.Fa group ,
+compared as strings; results with no group are left out.
+It maps each group to its members with an
+.Xr xft_indexmap 3
+and per-group lists of result indices, built in the harness's arena and
+released before it returns.
+Groups come in the order of their first result, and members in result order.
+For each group it prints the group, then one line per member with its name,
+its cycles per iteration, how it compares to the first member, and its
+nanoseconds per iteration:
+.Bd -literal -offset indent
+ ≈ map_strings_1m_lookup_hit
+ ├─ xft_map_strings_1m_lookup_hit = 1099.902546 cycles per_call
+    (baseline) [307.190285 ns]
+ ├─ std_map_strings_1m_lookup_hit = 1078.422594 cycles per_call
+    (1.019917x faster) [302.939720 ns]
+ ├─ absl_map_strings_1m_lookup_hit = 529.411691 cycles per_call
+    (2.077593x faster) [145.357383 ns]
+.Ed
+.Pp
+Each member is on one line; they are wrapped here to fit the page.
+The first member is the baseline, marked
+.Ql (baseline) ,
+so queue the implementation to compare against first.
+Every other member shows the larger of its cycles and the baseline's over
+the smaller, followed by
+.Ql faster
+when it takes fewer cycles than the baseline and
+.Ql slower
+otherwise, so the factor is never below 1.
+The ratio is on cycles because the clock of a loaded multi-core part moves
+with the load: the nanoseconds of two benchmarks that ran beside different
+neighbours are not comparable, their cycles are.
+It flushes the writer.
+.Pp
+.Fn xft_tailor_destroy
+stops and joins the workers, and frees the queue, the results, the arena with
+every buffer set, and the allocator.
+Benchmarks queued and not run are dropped.
+It prints nothing.
+.Ss Benchmark functions
+Each takes the pointer the benchmark function received.
+.Pp
+.Fn xft_tailor_getcount
+returns the number of iterations the current call must perform.
+.Pp
+.Fn xft_tailor_add_processed_bytes
+adds
+.Fa bytes
+to the bytes processed by the benchmark, from which
+.Fa gb_per_sec
+is computed; a benchmark that never calls it reports 0.
+.Pp
+.Fn xft_tailor_get_random_num
+returns the next value of the job's xoshiro256** generator, seeded per
+phase; see
+.Xr xft_rng 3 .
+.Pp
+.Fn xft_get_random_buffer
+returns one of the job's buffers, picked with that generator.
+.Pp
+.Fn xft_get_all_buffers
+stores the number of the job's buffers in
+.Fa *n
+and returns the array, in the order given to
+.Fn xft_tailor_buffers .
+.Ss Measurement
+Every timing below is of one call of the benchmark function, a burst of
+.Fn xft_tailor_getcount
+iterations, so the timer's cost is spread over the burst.
+.Pp
+The first phase calls the function once with 1 iteration to warm it, then
+times a call with 2 iterations: when that call takes more than 200
+nanoseconds the iterations per call are capped at 2^20, otherwise at 2^23.
+Until one fifth of the budget is spent it calls the function with
+1, 2, 4, ... iterations, doubling up to the cap, and divides the total time
+by the total iterations for a first estimate of the time per iteration.
+.Pp
+The second phase fixes the burst: enough iterations for a call to last the
+smaller of 50 microseconds and the rest of the budget split over twice
+.Fa min_samples ,
+from 1 to 2^23.
+After one warm-up call it times calls and keeps a running mean and variance
+of the time per iteration, and stops once it has at least
+.Fa min_samples
+samples and either the budget is spent or the 95% confidence interval of the
+mean is within 1% of it, checked every 16 samples.
+.Pp
+From the coefficient of variation
+.Va cv
+of that phase it plans
+.Va k = 1.5 * (1.96 * cv / 0.01)^2
+samples, the count that brings the interval of the mean within 1%, held
+between 120 and 10000 and to what fits in four times the budget.
+It takes
+.Va k + k/10 + 3
+samples, reading the counters around each call, and drops the first 3.
+.Pp
+Samples slower than the median plus 7.413 times the median absolute
+deviation are dropped as outliers: for normally distributed times the
+deviation is about 0.6745 standard deviations, so the cut sits 5 standard
+deviations above the median.
+The cut is one-sided, since noise only makes a call slower.
+The kept samples give every average in the result.
+.Pp
+The interval around the median comes from
+2000 bootstrap resamples, or 10000 when
+.Va cv
+is 0.1 or more: each resample draws as many kept samples as there are, with
+replacement, and takes their median; the bounds are the 2.5th and 97.5th
+percentiles of those medians.
+.Pp
+The counter group holds cycles, instructions, last-level cache references
+and misses, branches, branch misses, alignment faults and page faults, user
+space only.
+When the kernel multiplexes the counters, each value is scaled by its
+enabled time over its running time.
+.Sh RETURN VALUES
+.Fn xft_new_tailor
+returns
+.Dv OK ,
+or
+.Dv KO
+when an allocation fails or the pool cannot start; it frees what it set up.
+.Pp
+.Fn xft_tailor_buffers
+returns
+.Dv OK ,
+or
+.Dv KO
+when an allocation fails; the arena is rewound to where it was and
+.Fa t->rand_buffers
+is unchanged.
+.Pp
+.Fn xft_tailor_bench
+and
+.Fn xft_tailor_bench_exclusive
+return
+.Dv OK ,
+or
+.Dv KO
+when the queue cannot grow; the benchmarks before the failing one stay
+queued.
+.Pp
+.Fn xft_tailor_run
+returns
+.Dv OK ,
+or
+.Dv KO
+when a unit fails or a result cannot be stored.
+A unit fails when its arena cannot be created, its counters cannot be
+opened, an allocation fails or a counter read fails; its members then leave
+no result, the members of the other units are stored.
+When the units cannot be built, for lack of scratch memory, nothing runs,
+the queue is kept and it returns
+.Dv KO .
+.Pp
+.Fn xft_tailor_compare
+returns
+.Dv OK ,
+or
+.Dv KO
+when its scratch memory cannot be allocated; it then prints nothing.
+.Pp
+.Fn xft_tailor_getcount
+returns the iterations per call,
+.Fn xft_tailor_get_random_num
+the next random value,
+.Fn xft_get_random_buffer
+a buffer and
+.Fn xft_get_all_buffers
+the buffer array.
+The other functions return nothing.
+.Sh EXAMPLES
+Compare a copy loop against
+.Fn xft_memcpy
+on 4096-byte buffers:
+.Bd -literal -offset indent
+#include <xft/tailor.h>
+#include <xft/mem.h>
+#include <xft/rt.h>
+
+static void	copy_loop(t_any ptr)
+{
+	t_buffer	*b;
+	t_size		n;
+	t_size		i;
+	t_size		count;
+
+	b = xft_get_all_buffers(ptr, &count);
+	n = xft_tailor_getcount(ptr);
+	while (n-- > 0)
+	{
+		i = 0;
+		while (i < b[0].size)
+		{
+			b[1].mem[i] = b[0].mem[i];
+			++i;
+		}
+		__asm__("" : : "r"(b[1].mem) : "memory");
+	}
+	xft_tailor_add_processed_bytes(ptr,
+		xft_tailor_getcount(ptr) * b[0].size);
+}
+
+static void	copy_xft(t_any ptr)
+{
+	t_buffer	*b;
+	t_size		n;
+	t_size		count;
+
+	b = xft_get_all_buffers(ptr, &count);
+	n = xft_tailor_getcount(ptr);
+	while (n-- > 0)
+	{
+		xft_memcpy(b[1].mem, b[0].mem, b[0].size);
+		__asm__("" : : "r"(b[1].mem) : "memory");
+	}
+	xft_tailor_add_processed_bytes(ptr,
+		xft_tailor_getcount(ptr) * b[0].size);
+}
+
+void	xft_main(const t_any *__restrict__ const sp)
+{
+	static t_size			sizes[] = {4096, 4096};
+	static t_u8				align[] = {64, 64};
+	static t_tailor_bench	benches[] = {
+	{copy_xft, "xft_copy_4k", "copy_4k"},
+	{copy_loop, "loop_copy_4k", "copy_4k"},
+	};
+	t_tailor				t;
+
+	if (!xft_new_tailor(&t, xft_get_sysinfo(sp), 2, 2000)
+		|| !xft_tailor_buffers(&t, sizes, align, 2)
+		|| !xft_tailor_bench(&t, benches, 2)
+		|| !xft_tailor_run(&t))
+		xft_exit_process(1);
+	xft_tailor_report(&t);
+	if (!xft_tailor_compare(&t))
+		xft_exit_process(1);
+	xft_tailor_destroy(&t);
+	xft_exit_process(0);
+}
+.Ed
+.Sh SEE ALSO
+.Xr perf_event_open 2 ,
+.Xr xft_arena 3 ,
+.Xr xft_fmt 3 ,
+.Xr xft_gpa 3 ,
+.Xr xft_indexmap 3 ,
+.Xr xft_os 3 ,
+.Xr xft_rng 3 ,
+.Xr xft_soa 3 ,
+.Xr xft_threadpool 3 ,
+.Xr xft_vec 3 ,
+.Xr xft 7
+.Sh CAVEATS
+.Bl -bullet
+.It
+Units run concurrently on different threads, and a unit may run on any
+worker.
+State that two benchmarks share must be read-only while they run, or
+thread-local; a read-only table that is filled lazily must be filled on the
+calling thread before
+.Fn xft_tailor_run .
+.It
+Concurrent units share the memory bus and the last-level cache, so
+memory-bound benchmarks slow each other down, by an amount that depends on
+which units run beside them.
+Queue them with
+.Fn xft_tailor_bench_exclusive ;
+each exclusive unit then adds its whole run time to that of
+.Fn xft_tailor_run .
+.It
+The members of a group share one core and run one after the other, so each
+sample starts with the caches as the previous member left them.
+A member whose data does not fit in the caches together with the others'
+loses some of it to them between its samples.
+.It
+The counters count user space only: the time a benchmark spends in the kernel,
+in page faults or system calls, is in
+.Fa ns
+but not in
+.Fa cycles ,
+so the comparison by cycles leaves it out.
+.It
+.Fn xft_get_physical_cpu_count
+takes half the logical CPUs, at least one.
+Without simultaneous multithreading that is half the cores, and on a machine
+that numbers the two threads of a core next to each other, 0 and 1, the
+workers pinned to CPUs 0 to
+.Va n-1
+share cores.
+.It
+Every running unit holds a copy of each member's buffer set, so the peak
+memory is about the worker count times the largest group times the largest
+set queued.
+.It
+.Fa gb_per_sec
+spreads the bytes reported over every sampled iteration, the dropped ones
+included.
+.It
+.Fn xft_get_random_buffer
+divides by the buffer count, which must not be 0.
+.It
+.Xr perf_event_open 2
+fails when
+.Pa /proc/sys/kernel/perf_event_paranoid
+is above 2, and every job then fails.
+.El

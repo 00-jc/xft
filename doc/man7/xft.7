@@ -1,4 +1,4 @@
-.Dd October 31, 2026
+.Dd November 1, 2026
 .Dt XFT 7
 .Os xft
 .Sh NAME
@@ -356,7 +356,10 @@ pinning.
 the benchmark harness used by
 .Pa bench/ ,
 built on
-.Nm perf .
+.Nm perf :
+it runs benchmarks in parallel, one worker per physical core, and keeps
+their results to report and compare them together; see
+.Xr xft_tailor 3 .
 .El
 .Pp
 Both link

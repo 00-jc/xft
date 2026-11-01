@@ -13,28 +13,22 @@
 #include <xft/tailor.h>
 #include "indexmap_bench.h"
 #include <xft/rt.h>
+#include "bench.h"
 
-__attribute__((__always_inline__, __used__))
-inline void	xft_main(const t_any *__restrict__ const sp)
+void	xft_bench_indexmap(t_tailor *t)
 {
 	static t_tailor_bench	benches[] = {
-	{xft_imap_bench_insert_grow, (t_blk8r)"imap_insert_grow"},
-	{xft_imap_bench_insert_reserved, (t_blk8r)"imap_insert_reserved"},
-	{xft_imap_bench_lookup_hit, (t_blk8r)"imap_lookup_hit"},
-	{xft_imap_bench_lookup_miss, (t_blk8r)"imap_lookup_miss"},
-	{xft_imap_bench_delete_insert, (t_blk8r)"imap_delete_insert"},
-	{xft_imap_bench_large_lookup_hit, (t_blk8r)"imap_1m_lookup_hit"},
-	{xft_imap_bench_large_lookup_miss, (t_blk8r)"imap_1m_lookup_miss"},
-	{xft_imap_bench_large_delete_insert, (t_blk8r)"imap_1m_delete_insert"},
+	{xft_imap_bench_insert_grow, "imap_insert_grow", nullptr},
+	{xft_imap_bench_insert_reserved, "imap_insert_reserved", nullptr},
+	{xft_imap_bench_lookup_hit, "imap_lookup_hit", nullptr},
+	{xft_imap_bench_lookup_miss, "imap_lookup_miss", nullptr},
+	{xft_imap_bench_delete_insert, "imap_delete_insert", nullptr},
+	{xft_imap_bench_large_lookup_hit, "imap_1m_lookup_hit", nullptr},
+	{xft_imap_bench_large_lookup_miss, "imap_1m_lookup_miss", nullptr},
+	{xft_imap_bench_large_delete_insert, "imap_1m_delete_insert", nullptr},
 	};
-	t_tailor				t;
 
-	(void)sp;
-	xft_bind_process_to_cpu(0);
-	if (!xft_new_tailor(&t, 2, 2000))
-		xft_exit_process(1);
-	(void)xft_tailor_bench(&t, benches, 8);
-	xft_gpa_destroy(xft_get_bench_imap_gpa());
-	xft_tailor_destroy(&t);
-	xft_exit_process(0);
+	(void)xft_get_bench_imap_keys();
+	(void)xft_get_bench_imap_large_keys();
+	(void)xft_tailor_bench(t, benches, sizeof(benches) / sizeof(*benches));
 }

@@ -13,26 +13,19 @@
 #include <xft/tailor.h>
 #include "vec_bench.h"
 #include <xft/rt.h>
+#include "bench.h"
 
-__attribute__((__always_inline__, __used__))
-inline void	xft_main(const t_any *__restrict__ const sp)
+void	xft_bench_vec(t_tailor *t)
 {
 	static t_tailor_bench	benches[] = {
-	{xft_vec_bench_push_back, (t_blk8r)"vec_push_back"},
-	{xft_vec_bench_push_back_reserved, (t_blk8r)"vec_push_back_reserved"},
-	{xft_vec_bench_push_pop, (t_blk8r)"vec_pop"},
-	{xft_vec_bench_read, (t_blk8r)"vec_read"},
-	{xft_vec_bench_extend, (t_blk8r)"vec_extend"},
-	{xft_vec_bench_remove_front, (t_blk8r)"vec_remove_front"},
+	{xft_vec_bench_push_back, "xft_vec_push_back", "vec_push_back"},
+	{xft_vec_bench_push_back_reserved, "xft_vec_push_back_reserved",
+		"vec_push_back_reserved"},
+	{xft_vec_bench_push_pop, "xft_vec_push_pop", "vec_push_pop"},
+	{xft_vec_bench_read, "xft_vec_read", "vec_read"},
+	{xft_vec_bench_extend, "xft_vec_extend", "vec_extend"},
+	{xft_vec_bench_remove_front, "xft_vec_remove_front", "vec_remove_front"},
 	};
-	t_tailor				t;
 
-	(void)sp;
-	xft_bind_process_to_cpu(0);
-	if (!xft_new_tailor(&t, 2, 2000))
-		xft_exit_process(1);
-	(void)xft_tailor_bench(&t, benches, 6);
-	xft_gpa_destroy(xft_get_bench_vec_gpa());
-	xft_tailor_destroy(&t);
-	xft_exit_process(0);
+	(void)xft_tailor_bench(t, benches, sizeof(benches) / sizeof(*benches));
 }

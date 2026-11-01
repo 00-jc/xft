@@ -15,7 +15,7 @@
 
 t_gpa	*xft_get_bench_soa_gpa(void)
 {
-	static t_gpa	gpa = {0};
+	static _Thread_local t_gpa	gpa = {0};
 
 	if (gpa.slab == nullptr)
 		gpa = xft_new_gpa();
@@ -33,8 +33,8 @@ static void	soa_bench_set_field(t_soa_context *ctx, t_size idx,
 
 const t_soa_context	*xft_get_bench_soa_ctx(void)
 {
-	static t_soa_context	*ctx = nullptr;
-	t_allocator				a;
+	static _Thread_local t_soa_context	*ctx = nullptr;
+	t_allocator							a;
 
 	if (ctx != nullptr)
 		return (ctx);

@@ -13,26 +13,37 @@
 #include <xft/tailor.h>
 #include "cstr_bench.h"
 #include <xft/rt.h>
+#include "bench.h"
 
-__attribute__((__always_inline__, __used__))
-inline void	xft_main(const t_any *__restrict__ const sp)
+static void	strlen_bench_exclusive(t_tailor *t)
 {
 	static t_tailor_bench	benches[] = {
-	{xft_strlen_test_varied, (t_blk8r)"strlen_varied"},
-	{xft_strlen_test_short_aligned, (t_blk8r)"strlen_short_aligned"},
-	{xft_strlen_test_short_unaligned, (t_blk8r)"strlen_short_unaligned"},
-	{xft_strlen_test_medium_aligned, (t_blk8r)"strlen_medium_aligned"},
-	{xft_strlen_test_medium_unaligned, (t_blk8r)"strlen_medium_unaligned"},
-	{xft_strlen_test_large_aligned, (t_blk8r)"strlen_large_aligned"},
-	{xft_strlen_test_large_unaligned, (t_blk8r)"strlen_large_unaligned"},
+	{xft_strlen_test_varied, "xft_strlen_varied", "strlen_varied"},
+	{xft_strlen_test_large_aligned, "xft_strlen_large_aligned",
+		"strlen_large_aligned"},
+	{xft_strlen_test_large_unaligned, "xft_strlen_large_unaligned",
+		"strlen_large_unaligned"},
 	};
-	t_tailor				t;
 
-	((void)sp, xft_bind_process_to_cpu(0));
-	if (!xft_new_tailor(&t, 2, 2000))
+	(void)xft_tailor_bench_exclusive(t, benches,
+		sizeof(benches) / sizeof(*benches));
+}
+
+void	xft_bench_strlen(t_tailor *t)
+{
+	static t_tailor_bench	benches[] = {
+	{xft_strlen_test_short_aligned, "xft_strlen_short_aligned",
+		"strlen_short_aligned"},
+	{xft_strlen_test_short_unaligned, "xft_strlen_short_unaligned",
+		"strlen_short_unaligned"},
+	{xft_strlen_test_medium_aligned, "xft_strlen_medium_aligned",
+		"strlen_medium_aligned"},
+	{xft_strlen_test_medium_unaligned, "xft_strlen_medium_unaligned",
+		"strlen_medium_unaligned"},
+	};
+
+	if (!xft_strlen_bench_buffers(t))
 		xft_exit_process(1);
-	if (!xft_strlen_bench_buffers(&t))
-		xft_exit_process(1);
-	((void)xft_tailor_bench(&t, benches, 7),
-		xft_tailor_destroy(&t), xft_exit_process(0));
+	(void)xft_tailor_bench(t, benches, sizeof(benches) / sizeof(*benches));
+	strlen_bench_exclusive(t);
 }

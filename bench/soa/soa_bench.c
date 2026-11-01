@@ -13,27 +13,19 @@
 #include <xft/tailor.h>
 #include "soa_bench.h"
 #include <xft/rt.h>
+#include "bench.h"
 
-__attribute__((__always_inline__, __used__))
-inline void	xft_main(const t_any *__restrict__ const sp)
+void	xft_bench_soa(t_tailor *t)
 {
 	static t_tailor_bench	benches[] = {
-	{xft_soa_bench_append, (t_blk8r)"soa_append"},
-	{xft_soa_bench_append_reserved, (t_blk8r)"soa_append_reserved"},
-	{xft_soa_bench_append_unchecked, (t_blk8r)"soa_append_unchecked"},
-	{xft_soa_bench_update, (t_blk8r)"soa_update"},
-	{xft_soa_bench_aos_update, (t_blk8r)"aos_update"},
-	{xft_soa_bench_read, (t_blk8r)"soa_read"},
-	{xft_soa_bench_column_sum, (t_blk8r)"soa_column_sum"},
+	{xft_soa_bench_append, "soa_append", nullptr},
+	{xft_soa_bench_append_reserved, "soa_append_reserved", nullptr},
+	{xft_soa_bench_append_unchecked, "soa_append_unchecked", nullptr},
+	{xft_soa_bench_update, "soa_update", nullptr},
+	{xft_soa_bench_aos_update, "aos_update", nullptr},
+	{xft_soa_bench_read, "soa_read", nullptr},
+	{xft_soa_bench_column_sum, "soa_column_sum", nullptr},
 	};
-	t_tailor				t;
 
-	(void)sp;
-	xft_bind_process_to_cpu(0);
-	if (!xft_new_tailor(&t, 2, 2000))
-		xft_exit_process(1);
-	(void)xft_tailor_bench(&t, benches, 7);
-	xft_gpa_destroy(xft_get_bench_soa_gpa());
-	xft_tailor_destroy(&t);
-	xft_exit_process(0);
+	(void)xft_tailor_bench(t, benches, sizeof(benches) / sizeof(*benches));
 }

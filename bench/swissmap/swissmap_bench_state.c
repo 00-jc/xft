@@ -15,7 +15,7 @@
 
 t_gpa	*xft_get_bench_swiss_gpa(void)
 {
-	static t_gpa	gpa = {0};
+	static _Thread_local t_gpa	gpa = {0};
 
 	if (gpa.slab == nullptr)
 		gpa = xft_new_gpa();
@@ -47,9 +47,9 @@ t_buffer	xft_swiss_bench_key(t_size i)
 
 t_swissmap	*xft_get_bench_swiss_filled(void)
 {
-	static t_swissmap	map = {0};
-	t_allocator			a;
-	t_size				i;
+	static _Thread_local t_swissmap	map = {0};
+	t_allocator						a;
+	t_size							i;
 
 	if (map.soa.ptr != nullptr)
 		return (&map);

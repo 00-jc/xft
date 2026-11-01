@@ -13,29 +13,21 @@
 #include <xft/tailor.h>
 #include "alloc_bench.h"
 #include <xft/rt.h>
+#include "bench.h"
 
-__attribute__((__always_inline__, __used__))
-inline void	xft_main(const t_any *__restrict__ const sp)
+void	xft_bench_gpa(t_tailor *t)
 {
 	static t_tailor_bench	benches[] = {
-	{xft_gpa_bench_8, (t_blk8r)"gpa_alloc_free_8"},
-	{xft_gpa_bench_64, (t_blk8r)"gpa_alloc_free_64"},
-	{xft_gpa_bench_512, (t_blk8r)"gpa_alloc_free_512"},
-	{xft_gpa_bench_8k, (t_blk8r)"gpa_alloc_free_8k"},
-	{xft_gpa_bench_varied, (t_blk8r)"gpa_alloc_free_varied"},
-	{xft_gpa_bench_random, (t_blk8r)"gpa_alloc_free_random"},
-	{xft_gpa_bulk_bench_64, (t_blk8r)"gpa_bulk_64"},
-	{xft_gpa_bulk_bench_512, (t_blk8r)"gpa_bulk_512"},
-	{xft_gpa_bulk_bench_mixed, (t_blk8r)"gpa_bulk_mixed"},
+	{xft_gpa_bench_8, "gpa_alloc_free_8", nullptr},
+	{xft_gpa_bench_64, "gpa_alloc_free_64", nullptr},
+	{xft_gpa_bench_512, "gpa_alloc_free_512", nullptr},
+	{xft_gpa_bench_8k, "gpa_alloc_free_8k", nullptr},
+	{xft_gpa_bench_varied, "gpa_alloc_free_varied", nullptr},
+	{xft_gpa_bench_random, "gpa_alloc_free_random", nullptr},
+	{xft_gpa_bulk_bench_64, "gpa_bulk_64", nullptr},
+	{xft_gpa_bulk_bench_512, "gpa_bulk_512", nullptr},
+	{xft_gpa_bulk_bench_mixed, "gpa_bulk_mixed", nullptr},
 	};
-	t_tailor				t;
 
-	(void)sp;
-	xft_bind_process_to_cpu(0);
-	if (!xft_new_tailor(&t, 2, 2000))
-		xft_exit_process(1);
-	(void)xft_tailor_bench(&t, benches, 9);
-	xft_gpa_destroy(xft_get_bench_gpa());
-	xft_tailor_destroy(&t);
-	xft_exit_process(0);
+	(void)xft_tailor_bench(t, benches, sizeof(benches) / sizeof(*benches));
 }

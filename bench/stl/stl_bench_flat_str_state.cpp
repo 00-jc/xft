@@ -29,7 +29,7 @@ static void	absl_flat_str_fill(t_absl_flat_str &map, const t_stl_str *keys,
 
 t_absl_flat_str	&xft_get_bench_absl_flat_str_filled(void)
 {
-	static t_absl_flat_str	map;
+	static thread_local t_absl_flat_str	map;
 
 	if (map.empty())
 		absl_flat_str_fill(map, xft_get_bench_str_keys(), STL_BENCH_FILL);
@@ -38,7 +38,7 @@ t_absl_flat_str	&xft_get_bench_absl_flat_str_filled(void)
 
 t_absl_flat_str	&xft_get_bench_absl_flat_str_large_filled(void)
 {
-	static t_absl_flat_str	map;
+	static thread_local t_absl_flat_str	map;
 
 	if (map.empty())
 		absl_flat_str_fill(map, xft_get_bench_str_large_keys(),

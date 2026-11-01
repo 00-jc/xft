@@ -26,6 +26,7 @@ void	xft_memcpy_test_stream_1x_unaligned(t_any ptr)
 	bufn[0] = 2;
 	xft_pin_invariant_msg(buffers != nullptr,
 		xft_fatptr((t_u8 *)"NO BUFFERS", 10));
+	n *= bufn[0];
 	bufn[2] = 0;
 	while (n-- > 0)
 	{
@@ -53,6 +54,7 @@ void	xft_memcpy_test_stream_2x_unaligned(t_any ptr)
 	bufn[0] = 2;
 	xft_pin_invariant_msg(buffers != nullptr,
 		xft_fatptr((t_u8 *)"NO BUFFERS", 10));
+	n *= bufn[0];
 	bufn[2] = 0;
 	while (n-- > 0)
 	{
@@ -80,6 +82,7 @@ void	xft_memcpy_test_stream_1x_aligned(t_any ptr)
 	bufn[0] = 2;
 	xft_pin_invariant_msg(buffers != nullptr,
 		xft_fatptr((t_u8 *)"NO BUFFERS", 10));
+	n *= bufn[0];
 	bufn[2] = 0;
 	while (n-- > 0)
 	{
@@ -107,6 +110,7 @@ void	xft_memcpy_test_stream_2x_aligned(t_any ptr)
 	bufn[0] = 2;
 	xft_pin_invariant_msg(buffers != nullptr,
 		xft_fatptr((t_u8 *)"NO BUFFERS", 10));
+	n *= bufn[0];
 	bufn[2] = 0;
 	while (n-- > 0)
 	{

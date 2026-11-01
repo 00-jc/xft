@@ -14,14 +14,14 @@
 #include <xft/xft_p_tailor.h>
 #include <xft/macros.h>
 #include <xft/fmt.h>
-#include <xft/bmi.h>
 #include <xft/math.h>
+#include <xft/vec.h>
 
 #define H0		" * %s\n"
 #define H1		" ├─ time         = %f ns per_call\n"
 #define H2		" ├─ ipc          = %f\n"
 #define H3		" ├─ GB/sec       = %f\n"
-#define H4		" ├─ cycles       = %f\n"
+#define H4		" ├─ cycles       = %f per_call\n"
 #define H5		" ├─ instr        = %f per_call\n"
 
 #define H6	" │\n"
@@ -37,93 +37,57 @@
 #define B6		" ├─ resamples    = %q bootstrap_runs\n"
 
 __attribute__((__nonnull__(1, 2), __always_inline__))
-static inline void	xft_sum_counters(t_perf_sample *src, t_perf_sample *sum,
-	t_size n)
+static inline void	xft_init_args(const t_tailor_result *r, t_u64a *args)
 {
-	t_size	i;
+	args[0] = (t_u64a)(t_uptr)r->name;
+	args[1] = xft_strlen(r->name);
+	args[2] = (t_dp){.f = r->ns}.i;
+	args[3] = (t_dp){.f = r->ipc}.i;
+	args[4] = (t_dp){.f = r->gb_per_sec}.i;
+	args[5] = (t_dp){.f = r->cycles}.i;
+	args[6] = (t_dp){.f = r->instr}.i;
+	args[7] = r->total_iters;
+	args[8] = r->med;
+	args[9] = r->lo;
+	args[10] = r->hi;
+	args[11] = r->min;
+	args[12] = r->relevant;
+	args[13] = r->burst;
+	args[14] = r->resamples;
+}
 
-	*sum = (t_perf_sample){0};
+__attribute__((__nonnull__(1, 2), __always_inline__))
+static inline void	xft_init_args2(const t_tailor_result *r, t_u64a *args)
+{
+	args[15] = (t_dp){.f = xft_dtern(r->branches > 0,
+			(t_f64)r->branch_miss / (t_f64)r->branches * 100.0, 0.0)}.i;
+	args[16] = r->branch_miss;
+	args[17] = r->branches;
+	args[18] = (t_dp){.f = xft_dtern(r->cache_ll > 0,
+			(t_f64)r->cache_miss / (t_f64)r->cache_ll * 100.0, 0.0)}.i;
+	args[19] = r->cache_miss;
+	args[20] = r->cache_ll;
+	args[21] = r->alignment_faults;
+	args[22] = r->page_faults;
+}
+
+__attribute__((__nonnull__(1)))
+void	xft_tailor_report(t_tailor *t)
+{
+	const t_size			size = sizeof(ANSI_BCYAN H0 ANSI_RESET H1 H2 H3
+			H4 H5 B3 B4 B5 B6 H6 H7 H8 H6 H9 H8 B1 B2 "\n") - 1;
+	const t_tailor_result	*r;
+	t_size					i;
+	t_u64a					args[23];
+
 	i = 0;
-	while (i < n)
+	while (i < xft_vec_len(&t->results, sizeof(t_tailor_result)))
 	{
-		sum->ns += src[i].ns;
-		sum->cycles += src[i].cycles;
-		sum->instr += src[i].instr;
-		sum->cache_miss += src[i].cache_miss;
-		sum->cache_ll += src[i].cache_ll;
-		sum->branches += src[i].branches;
-		sum->branch_miss += src[i].branch_miss;
-		sum->alignment_faults += src[i].alignment_faults;
-		sum->page_faults += src[i].page_faults;
-		++i;
+		r = xft_vec_get(&t->results, i++, sizeof(t_tailor_result));
+		(xft_init_args(r, args), xft_init_args2(r, args));
+		xft_fmt_writer(&t->writer, xft_fatptr(
+				(t_u8 *)ANSI_BCYAN H0 ANSI_RESET H1 H2 H3 H4 H5
+				B3 B4 B5 B6 H6 H7 H8 H6 H9 H8 B1 B2 "\n", size), args);
 	}
-}
-
-__attribute__((__nonnull__(3, 4), __always_inline__))
-static inline void	xft_init_args(t_perf_sample sum, t_plankb plan,
-	t_u64a *data, t_u64a *args)
-{
-	t_u64a	total_iters;
-	t_u64a	it;
-
-	total_iters = plan.k_runs * plan.dp.iters;
-	it = plan.dp.iters;
-	args[2] = (t_dp){.f = xft_dtern(total_iters != 0,
-			(t_f64)sum.ns / (t_f64)total_iters, 0.0)}.i;
-	args[3] = (t_dp){.f = xft_dtern(sum.cycles != 0,
-			(t_f64)sum.instr / (t_f64)sum.cycles, 0.0)}.i;
-	args[4] = (t_dp){.f = xft_dtern(sum.ns != 0,
-			(t_f64)plan.dp.bytes_processed / (t_f64)sum.ns
-			* 1e9, 0.0) * 1e-9}.i;
-	args[5] = (t_dp){.f = (t_f64)sum.cycles / (t_f64)plan.dp.iters}.i;
-	args[6] = (t_dp){.f = (t_f64)sum.instr / (t_f64)plan.dp.iters}.i;
-	args[7] = total_iters;
-	args[8] = data[0] / it;
-	args[9] = data[2] / it;
-	args[10] = data[3] / it;
-	args[11] = data[1] / it;
-}
-
-__attribute__((__nonnull__(4), __always_inline__))
-static inline void	xft_init_args2(t_perf_sample sum, t_buffer surv,
-	t_plankb plan, t_u64a *args)
-{
-	if (surv.mem == nullptr)
-		__builtin_unreachable();
-	args[12] = surv.size;
-	args[13] = plan.dp.iters;
-	args[14] = plan.b;
-	args[15] = (t_dp){.f = xft_dtern(sum.branches > 0,
-			(t_f64)sum.branch_miss / (t_f64)sum.branches
-			* 100.0, 0.0)}.i;
-	args[16] = sum.branch_miss;
-	args[17] = sum.branches;
-	args[18] = (t_dp){.f = xft_dtern(sum.cache_ll > 0,
-			(t_f64)sum.cache_miss / (t_f64)sum.cache_ll
-			* 100.0, 0.0)}.i;
-	args[19] = sum.cache_miss;
-	args[20] = sum.cache_ll;
-	args[21] = sum.alignment_faults;
-	args[22] = sum.page_faults;
-}
-
-__attribute__((__nonnull__(4)))
-void	xft_print_summary(t_buffer surv, t_plankb plan, t_tailor_report_ctx ctx,
-			t_u64a data[4])
-{
-	const t_size	size = sizeof(ANSI_BCYAN H0 ANSI_RESET H1 H2 H3 H4 H5
-			B3 B4 B5 B6 H6 H7 H8 H6 H9 H8 B1 B2 "\n") - 1;
-	t_perf_sample	sum;
-	t_u64a			args[28];
-
-	if (surv.mem == nullptr || ctx.name == nullptr)
-		__builtin_unreachable();
-	xft_sum_counters((t_perf_sample *)surv.mem, &sum, surv.size);
-	args[0] = (t_u64a)(t_uptr)ctx.name;
-	args[1] = xft_strlen((const char *)ctx.name);
-	xft_init_args(sum, plan, data, args);
-	xft_init_args2(sum, surv, plan, args);
-	xft_fmt_writer(ctx.writer, xft_fatptr(
-			(t_u8 *)ANSI_BCYAN H0 ANSI_RESET H1 H2 H3 H4 H5
-			B3 B4 B5 B6 H6 H7 H8 H6 H9 H8 B1 B2 "\n", size), args);
+	xft_writer_flush(&t->writer);
 }

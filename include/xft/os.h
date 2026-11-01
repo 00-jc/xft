@@ -18,6 +18,9 @@
 t_result	xft_get_cpu_count(t_size *count)\
 				__attribute__((__nonnull__(1)));
 
+t_result	xft_get_physical_cpu_count(t_size *count)\
+				__attribute__((__nonnull__(1)));
+
 t_result	xft_pin_process_to_cpu(t_u32 cpu);
 
 t_result	xft_pin_thread_to_cpu(t_u32 cpu);

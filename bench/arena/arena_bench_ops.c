@@ -15,8 +15,8 @@
 
 t_arena	*xft_get_bench_arena(void)
 {
-	static t_arena				arena = {0};
-	static t_arena_checkpoint	cp = {0};
+	static _Thread_local t_arena			arena = {0};
+	static _Thread_local t_arena_checkpoint	cp = {0};
 
 	if (arena.current == nullptr)
 	{

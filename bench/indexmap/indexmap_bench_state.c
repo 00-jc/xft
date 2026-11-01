@@ -15,7 +15,7 @@
 
 t_gpa	*xft_get_bench_imap_gpa(void)
 {
-	static t_gpa	gpa = {0};
+	static _Thread_local t_gpa	gpa = {0};
 
 	if (gpa.slab == nullptr)
 		gpa = xft_new_gpa();
@@ -47,9 +47,9 @@ t_buffer	xft_imap_bench_key(t_size i)
 
 t_indexmap	*xft_get_bench_imap_filled(void)
 {
-	static t_indexmap	map = {0};
-	t_allocator			a;
-	t_size				i;
+	static _Thread_local t_indexmap	map = {0};
+	t_allocator						a;
+	t_size							i;
 
 	if (map.soa.ptr != nullptr)
 		return (&map);

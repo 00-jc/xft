@@ -29,8 +29,8 @@
 .Sh DESCRIPTION
 A
 .Vt t_threadpool
-runs one worker thread per CPU, optionally each pinned to its own CPU, and
-hands them tasks.
+runs one worker thread per CPU, or per physical core, optionally each pinned
+to its own CPU, and hands them tasks.
 Each worker owns a ring of 256 slots; a task submitted from a worker goes
 into that worker's ring, and a task submitted from any other thread goes into
 a global queue shared by all workers.
@@ -145,14 +145,22 @@ returns the worker options
 .Fn xft_threadpool_init
 takes by default: a stack of
 .Dv XFT_THREAD_STACKSIZE
-bytes and
+bytes,
 .Fa cpu_pinning
-set.
+set and
+.Fa use_only_physical
+clear.
 .Pp
 .Fn xft_threadpool_init
-reads the CPU count with
+takes one worker per CPU the process may run on, counted with
 .Fn xft_get_cpu_count ,
-allocates one ring per worker and the worker handles through
+or, when
+.Fa opts.use_only_physical
+is set, one per physical core, counted with
+.Fn xft_get_physical_cpu_count ;
+see
+.Xr xft_os 3 .
+It allocates one ring per worker and the worker handles through
 .Fa allocator ,
 and starts the workers with
 .Fn xft_thread_spawn ,
@@ -166,9 +174,10 @@ It replaces
 and
 .Fa opts.argument
 with the worker routine and its argument, and uses
-.Fa opts.stack_size
-and
+.Fa opts.stack_size ,
 .Fa opts.cpu_pinning
+and
+.Fa opts.use_only_physical
 as given.
 It returns once every worker has started.
 .Pp
@@ -298,7 +307,7 @@ returns
 .Dv OK ,
 or
 .Dv KO
-when the CPU count cannot be read, an allocation fails or a worker cannot be
+when the CPU or core count cannot be read, an allocation fails or a worker cannot be
 started; on failure it stops the workers it started and frees what it
 allocated.
 .Pp
@@ -358,6 +367,22 @@ not to the
 .Va i Ns th
 CPU the process may run on, so under an affinity mask that leaves out low CPU
 numbers some pins fail and those workers run unpinned.
+.It
+With
+.Fa opts.use_only_physical
+set, the
+.Va n
+workers are pinned to CPUs 0 to
+.Va n-1 ,
+where
+.Va n
+is half the CPUs; they run on distinct cores only when the system numbers the
+two threads of a core
+.Va i
+and
+.Va i+n ,
+as Linux does on most x86 machines, not when it numbers them next to each
+other.
 .It
 Only threads of
 .Fa tp
