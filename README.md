@@ -160,7 +160,7 @@ On Windows, `xft` calls into the system DLLs even in the freestanding flavor, so
 | `xft/sort.h` | `qsort` variants |
 | `xft/str.h` | Growable NUL-terminated byte string |
 | `xft/swissmap.h` | SIMD open-addressing hash map from byte keys to pointers |
-| `xft/threads.h` | Spawning, joining, and detaching threads |
+| `xft/threads.h` | Spawning, joining, detaching threads and general purpose threadpools |
 | `xft/timing.h` | Clocks and cycle counters |
 | `xft/vec.h` | Untyped growable array |
 | `xft/xid.h` | Unicode XID_Start/XID_Continue lookup and tables |
