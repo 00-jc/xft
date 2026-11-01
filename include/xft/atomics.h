@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/03 18:01:29 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/10/31 01:25:10 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/10/31 17:39:06 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,10 +33,17 @@ void			xft_futex_wake(t_atomic32 *__restrict__ const atomic,
 					t_u32a waiters)\
 					__attribute__((__nonnull__(1)));
 
-void			xft_wait_for_signal(t_atomic32 *__restrict__ const atomic)\
+t_u32a			xft_signal_epoch(t_atomic32 *__restrict__ const atomic)\
+					__attribute__((__nonnull__(1)));
+
+void			xft_wait_for_signal(t_atomic32 *__restrict__ const atomic,\
+					t_u32a epoch)\
 					__attribute__((__nonnull__(1)));
 
 void			xft_send_signal(t_atomic32 *__restrict__ const atomic)\
+					__attribute__((__nonnull__(1)));
+
+void			xft_send_signal_for_all(t_atomic32 *__restrict__ const atomic)\
 					__attribute__((__nonnull__(1)));
 
 void			xft_mutex_lock(t_mutex *__restrict__ const mutex,\
@@ -54,6 +61,10 @@ t_ring_buffer	xft_new_ring_buffer(t_allocator allocator, t_u32a min_size);
 void			xft_destroy_ring_buffer(t_allocator allocator,\
 					t_ring_buffer *__restrict__ const rb)\
 					__attribute__((__nonnull__(2)));
+
+t_result		xft_ring_buffer_submit_1ton(t_ring_buffer *__restrict__ const rb,\
+					t_any ptr)\
+					__attribute__((__nonnull__(1)));
 
 t_result		xft_ring_buffer_submit(t_ring_buffer *__restrict__ const rb,\
 					t_any ptr)\

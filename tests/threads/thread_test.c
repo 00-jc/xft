@@ -24,6 +24,7 @@ void	test_threads(t_test *t, t_sysinfo sysinfo)
 	test_thread_signal(sysinfo);
 	test_thread_ring_buffer(sysinfo);
 	test_thread_ring_buffer_backoff(sysinfo);
+	test_thread_pool(sysinfo);
 	xft_test_print(t, "  xft_thread: OK\n");
 }
 

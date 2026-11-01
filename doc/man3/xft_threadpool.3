@@ -1,0 +1,325 @@
+.Dd November 1, 2026
+.Dt XFT_THREADPOOL 3
+.Os xft
+.Sh NAME
+.Nm xft_threadpool_init ,
+.Nm xft_threadpool_submit ,
+.Nm xft_threadpool_wait_task ,
+.Nm xft_threadpool_destroy ,
+.Nm xft_threadpool_cancel
+.Nd work-stealing thread pool
+.Sh SYNOPSIS
+.In threads.h
+.Ft t_result
+.Fn xft_threadpool_init "t_allocator allocator" "const t_sysinfo info" "t_threadpool *tp"
+.Ft void
+.Fn xft_threadpool_submit "t_threadpool *tp" "t_thread_task *task" "t_size alloc_task"
+.Ft void
+.Fn xft_threadpool_wait_task "t_thread_task *task"
+.Ft void
+.Fn xft_threadpool_destroy "t_allocator allocator" "t_threadpool *tp"
+.Ft void
+.Fn xft_threadpool_cancel "t_allocator allocator" "t_threadpool *tp"
+.Sh DESCRIPTION
+A
+.Vt t_threadpool
+runs one worker thread per CPU and hands them tasks.
+Each worker owns a ring of 256 slots; a task submitted from a worker goes
+into that worker's ring, and a task submitted from any other thread goes into
+a global queue shared by all workers.
+Idle workers take work from the other workers' rings, so a task runs on
+whichever worker is free first.
+.Ss Thread-local storage
+.Fn xft_threadpool_submit
+and
+.Fn xft_threadpool_wait_task
+read a
+.Vt _Thread_local
+variable to tell whether the calling thread is a worker of a pool.
+On Linux without the C library, a thread that calls either must have its
+thread-local storage set up: threads started with
+.Fn xft_thread_spawn
+have it, and the main thread calls
+.Fn xft_start_tls_for_main_thread
+before its first call;
+see
+.Xr xft_rt 3 .
+With
+.Dv XFT_REQUIRE_LIBC
+and on Windows the C library or the loader sets it up.
+.Ss Types
+.Bd -literal -offset indent
+typedef enum e_thread_task_model : t_u8 {
+	xft_must_keep_all_alive,
+	xft_must_free_arg_on_completion,
+	xft_must_free_task_on_completion,
+	xft_must_free_task_and_arg_on_completion,
+} t_thread_task_model;
+
+typedef struct s_thread_task {
+	t_result               (*f)(t_any);
+	t_any                  arg;
+	struct s_thread_task   *next;
+	t_allocator            allocator;
+	t_size                 alloc_task;
+	t_atomic32             completion;
+	t_u32a                 arg_size;
+	t_result               result;
+	t_thread_task_model    arg_model;
+} t_thread_task;
+.Ed
+.Pp
+The caller fills
+.Fa f ,
+.Fa arg ,
+.Fa allocator ,
+.Fa arg_size
+and
+.Fa arg_model ;
+the pool owns
+.Fa next
+and
+.Fa completion ,
+writes
+.Fa alloc_task
+from the argument of
+.Fn xft_threadpool_submit ,
+and writes
+.Fa result .
+A worker calls
+.Fa f
+with
+.Fa arg ,
+stores its return value in
+.Fa result ,
+then completes the task according to
+.Fa arg_model :
+.Bl -tag -width "xft_must_free_task_and_arg_on_completion"
+.It Dv xft_must_keep_all_alive
+signals
+.Fa completion ;
+the caller owns the task and its argument.
+.It Dv xft_must_free_arg_on_completion
+frees
+.Fa arg ,
+.Fa arg_size
+bytes long, through
+.Fa allocator ,
+then signals
+.Fa completion .
+.It Dv xft_must_free_task_on_completion
+frees the task,
+.Fa alloc_task
+bytes long, through
+.Fa allocator ,
+and signals nothing.
+.It Dv xft_must_free_task_and_arg_on_completion
+frees the argument, then the task, and signals nothing.
+.El
+.Pp
+.Fa allocator
+names a valid allocator whose
+.Fa free
+is set, whatever the model.
+The signal on
+.Fa completion
+is the last access the pool makes to a task it signals, so the caller may
+reuse or free the task as soon as it sees it.
+.Pp
+The fields of
+.Vt t_threadpool
+belong to the pool; the caller allocates the structure and passes it to every
+call.
+.Ss Functions
+.Fn xft_threadpool_init
+reads the CPU count with
+.Fn xft_get_cpu_count ,
+allocates one ring per worker and the worker handles through
+.Fa allocator ,
+and starts the workers with
+.Fn xft_thread_spawn
+and
+.Fa info ;
+see
+.Xr xft_threads 3 .
+It returns once every worker has started.
+.Pp
+.Fn xft_threadpool_submit
+stores
+.Fa alloc_task ,
+the size of the allocation that holds
+.Fa task ,
+in
+.Fa task->alloc_task ,
+sets
+.Fa task->completion
+to 0 and queues
+.Fa task .
+The pool frees
+.Fa task
+with that size when its model says so; for any other model the size is
+unused.
+From a worker of
+.Fa tp
+it pushes into that worker's ring, and into the global queue when the ring is
+full; from any other thread it pushes into the global queue.
+It then wakes one sleeping worker, if any.
+.Pp
+.Fn xft_threadpool_wait_task
+returns once
+.Fa task
+is completed, with its
+.Fa result
+readable.
+Called from a worker, it runs other tasks of that worker's pool while it
+waits: one task at a time from its own ring, else from the global queue,
+else from another worker's ring, until
+.Fa task
+is completed or none is left to run, then sleeps on
+.Fa task->completion
+until the task completes.
+A task that submits tasks and waits for them uses it, so the waiting worker
+runs the work it waits for and keeps no thread of the pool idle.
+Called from any other thread, it sleeps on
+.Fa task->completion
+with
+.Fn xft_wait_for_signal "&task->completion" 0 ;
+see
+.Xr xft_atomics 3 .
+.Pp
+.Fn xft_threadpool_destroy
+runs every queued task, including the tasks those tasks submit, then stops
+the workers, joins them and frees what
+.Fn xft_threadpool_init
+allocated through
+.Fa allocator .
+.Pp
+.Fn xft_threadpool_cancel
+stops the workers without running the queued tasks: a worker finishes the
+task it is running and exits.
+A worker inside
+.Fn xft_threadpool_wait_task
+keeps running tasks until its task completes, so the tasks a running task
+waits for run before the workers exit.
+Once the workers are joined, every task left in a ring or in the global queue
+gets
+.Dv KO
+in
+.Fa result
+and is completed without running, so its memory is freed or its
+.Fa completion
+signalled as its model says.
+It then frees the pool like
+.Fn xft_threadpool_destroy .
+.Ss Scheduling
+A worker runs the tasks in its own ring until the ring is empty, then takes
+one task from the global queue, or else one task from the ring of another
+worker, scanning from the next index and wrapping around, and goes back to its
+own ring.
+It sleeps only after its ring, the global queue and every other ring were
+empty.
+.Pp
+Workers sleep on the
+.Fa wake_up
+signal of the pool and count themselves in
+.Fa n_maybe_parked
+first.
+Every submission increments
+.Fa wake_up ;
+it makes the
+.Xr futex 2
+wake call only when
+.Fa n_maybe_parked
+is not 0.
+A sequentially consistent fence on both sides keeps a worker from sleeping
+past a task submitted while it was going to sleep.
+.Sh RETURN VALUES
+.Fn xft_threadpool_init
+returns
+.Dv OK ,
+or
+.Dv KO
+when the CPU count cannot be read, an allocation fails or a worker cannot be
+started; on failure it stops the workers it started and frees what it
+allocated.
+.Pp
+.Fn xft_threadpool_submit ,
+.Fn xft_threadpool_wait_task ,
+.Fn xft_threadpool_destroy
+and
+.Fn xft_threadpool_cancel
+return nothing.
+.Sh EXAMPLES
+Run a task on the pool and wait for it:
+.Bd -literal -offset indent
+static t_result	work(t_any arg)
+{
+	*(t_u64 *)arg = 42;
+	return (OK);
+}
+
+void	xft_main(const t_any *__restrict__ const sp)
+{
+	const t_sysinfo		info = xft_get_sysinfo(sp);
+	const t_allocator	alloc = xft_page_allocator();
+	t_threadpool		tp;
+	t_thread_task		task;
+	t_u64				value;
+
+	if (xft_start_tls_for_main_thread(info) == KO
+		|| xft_threadpool_init(alloc, info, &tp) == KO)
+		xft_exit_process(1);
+	task = (t_thread_task){.f = work, .arg = &value, .allocator = alloc,
+		.arg_model = xft_must_keep_all_alive};
+	xft_threadpool_submit(&tp, &task, sizeof(task));
+	xft_threadpool_wait_task(&task);
+	xft_threadpool_destroy(alloc, &tp);
+	xft_exit_process(value != 42);
+}
+.Ed
+.Sh SEE ALSO
+.Xr xft_alloc 3 ,
+.Xr xft_atomics 3 ,
+.Xr xft_rt 3 ,
+.Xr xft_threads 3 ,
+.Xr xft 7
+.Sh CAVEATS
+.Bl -bullet
+.It
+Only threads of
+.Fa tp
+may submit while
+.Fn xft_threadpool_destroy
+or
+.Fn xft_threadpool_cancel
+runs, and nothing may submit after either returns.
+.It
+A task of model
+.Dv xft_must_free_task_on_completion
+or
+.Dv xft_must_free_task_and_arg_on_completion
+is freed with the
+.Fa alloc_task
+passed to
+.Fn xft_threadpool_submit
+and its argument with
+.Fa arg_size ,
+and an allocator may round a request up, so both hold the
+.Fa size
+of the
+.Vt t_buffer
+that
+.Fa allocator
+returned, not the size that was asked for.
+.It
+Nothing may wait on the
+.Fa completion
+of a task the pool frees, with
+.Fn xft_threadpool_wait_task
+or otherwise.
+.It
+A worker that blocks inside a task other than in
+.Fn xft_threadpool_wait_task
+holds its ring: its tasks run only when another worker takes them, and when
+every worker blocks that way the pool stops.
+.El

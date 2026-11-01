@@ -6,8 +6,10 @@
 .Nm xft_signal_fence ,
 .Nm xft_futex_wait ,
 .Nm xft_futex_wake ,
+.Nm xft_signal_epoch ,
 .Nm xft_wait_for_signal ,
 .Nm xft_send_signal ,
+.Nm xft_send_signal_for_all ,
 .Nm xft_mutex_init ,
 .Nm xft_mutex_lock ,
 .Nm xft_mutex_unlock ,
@@ -15,6 +17,7 @@
 .Nm xft_new_ring_buffer ,
 .Nm xft_destroy_ring_buffer ,
 .Nm xft_ring_buffer_submit ,
+.Nm xft_ring_buffer_submit_1ton ,
 .Nm xft_ring_buffer_steal
 .Nd mutexes, signals, futexes, ring buffers, spin backoff and memory fences
 .Sh SYNOPSIS
@@ -27,10 +30,14 @@
 .Fn xft_futex_wait "t_atomic32 *restrict atomic" "t_u32a value_to_wait"
 .Ft void
 .Fn xft_futex_wake "t_atomic32 *restrict atomic" "t_u32a waiters"
+.Ft t_u32a
+.Fn xft_signal_epoch "t_atomic32 *restrict atomic"
 .Ft void
-.Fn xft_wait_for_signal "t_atomic32 *restrict atomic"
+.Fn xft_wait_for_signal "t_atomic32 *restrict atomic" "t_u32a epoch"
 .Ft void
 .Fn xft_send_signal "t_atomic32 *restrict atomic"
+.Ft void
+.Fn xft_send_signal_for_all "t_atomic32 *restrict atomic"
 .Ft void
 .Fn xft_mutex_init "t_mutex *restrict mutex"
 .Ft void
@@ -45,11 +52,13 @@
 .Fn xft_destroy_ring_buffer "t_allocator allocator" "t_ring_buffer *restrict rb"
 .Ft t_result
 .Fn xft_ring_buffer_submit "t_ring_buffer *restrict rb" "t_any ptr"
+.Ft t_result
+.Fn xft_ring_buffer_submit_1ton "t_ring_buffer *restrict rb" "t_any ptr"
 .Ft t_any
 .Fn xft_ring_buffer_steal "t_ring_buffer *restrict rb"
 .Sh DESCRIPTION
 .In atomics.h
-provides a single 32-bit mutex primitive, a broadcast signal, a futex wait
+provides a single 32-bit mutex primitive, a signal, a futex wait
 and wake pair, a bounded multi-producer multi-consumer ring buffer of
 pointers, a spin backoff and a pair of memory fences.
 The mutex is built directly on C11 atomics,
@@ -207,19 +216,37 @@ A zeroed
 .Vt t_atomic32
 is a signal that has not been sent.
 .Pp
+.Fn xft_signal_epoch
+loads the count with acquire ordering and returns it.
+The returned value is the epoch a waiter passes to
+.Fn xft_wait_for_signal .
+.Pp
 .Fn xft_wait_for_signal
-loads the count on entry and blocks until it changes, sleeping in
+blocks while the count equals
+.Fa epoch ,
+sleeping in
 .Fn xft_futex_wait
 and reloading the count with acquire ordering after every wake-up.
-It waits for the next send after the call; a send made before the call
-does not release it.
+If the count differs from
+.Fa epoch
+on entry it returns at once, so a send made between
+.Fn xft_signal_epoch
+and the call releases it.
+A waiter takes the epoch, checks the shared state it waits on, and calls
+.Fn xft_wait_for_signal
+with that epoch only if the state is not ready yet.
 .Pp
 .Fn xft_send_signal
-adds one to the count with release ordering and wakes every waiter through
+adds one to the count with release ordering and wakes one thread sleeping on
+it through
 .Fn xft_futex_wake
-with
+with a count of 1.
+.Fn xft_send_signal_for_all
+does the same and wakes every sleeping thread, passing
 .Dv INT32_MAX .
-Writes made before the call are visible to every thread it releases from
+A waiter that has taken its epoch but is not asleep yet returns without a
+wake-up under both functions.
+Writes made before either call are visible to every thread it releases from
 .Fn xft_wait_for_signal .
 A signal needs no reset between sends.
 .Ss Mutex functions
@@ -387,6 +414,27 @@ with a weak release compare-and-exchange, stores
 into its slot with release ordering and returns
 .Dv OK .
 .Pp
+.Fn xft_ring_buffer_submit_1ton
+is the single-producer form of
+.Fn xft_ring_buffer_submit .
+It loads
+.Fa tail
+with relaxed ordering, returns
+.Dv KO
+when the buffer is full, stores
+.Fa ptr
+into the slot at
+.Fa tail
+with release ordering and then stores
+.Fa tail
+plus one with release ordering, without a compare-and-exchange.
+Only one thread may submit to a ring buffer submitted to with
+.Fn xft_ring_buffer_submit_1ton ,
+and it must not be mixed with
+.Fn xft_ring_buffer_submit
+on the same buffer.
+Any number of threads can steal from it.
+.Pp
 .Fn xft_ring_buffer_steal
 removes the oldest pointer.
 It returns a null pointer when
@@ -408,8 +456,14 @@ pointer, which
 .Fn xft_ring_buffer_steal
 reads as null, or claimed by a consumer that has not cleared it, which
 .Fn xft_ring_buffer_submit
-reads as the previous pointer.
-On an in-flight slot both functions call
+and
+.Fn xft_ring_buffer_submit_1ton
+read as the previous pointer.
+.Fn xft_ring_buffer_submit_1ton
+stores the pointer before it publishes
+.Fa tail ,
+so its slots are never in flight on the producer side.
+On an in-flight slot every function calls
 .Fn xft_backoff
 and retry.
 The count starts at 1 and grows by one with each in-flight slot the call
@@ -421,6 +475,8 @@ stopped.
 Pointers come out in the order their positions were claimed.
 Writes made before
 .Fn xft_ring_buffer_submit
+or
+.Fn xft_ring_buffer_submit_1ton
 are visible to the thread whose
 .Fn xft_ring_buffer_steal
 returns that pointer.
@@ -471,7 +527,9 @@ returns the new ring buffer, or a zeroed
 on failure.
 .Pp
 .Fn xft_ring_buffer_submit
-returns
+and
+.Fn xft_ring_buffer_submit_1ton
+return
 .Dv OK
 when
 .Fa ptr
@@ -538,13 +596,25 @@ reaches
 and compiles to undefined behaviour at the call site.
 .Pp
 .Fn xft_wait_for_signal
-misses a send made between the caller's last check of the shared state
-and the call, and sleeps until the following send.
-Use it only when the sender sends after the waiters are already waiting,
-or when the sender keeps sending until the waiters respond.
+does not see a send made before the
+.Fn xft_signal_epoch
+call that produced
+.Fa epoch .
+A waiter that checks the shared state before taking the epoch can miss a
+send made between the check and
+.Fn xft_signal_epoch ,
+and sleeps until the following send.
 .Pp
-A waiter that sleeps through exactly 2^32 sends reads the count it loaded
-on entry and keeps sleeping.
+.Fn xft_send_signal
+wakes one sleeping thread, chosen by the kernel.
+The other sleeping threads stay asleep although the count has changed and
+return on a later send that wakes them.
+.Pp
+A waiter whose count advances by exactly 2^32 sends between
+.Fn xft_signal_epoch
+and its next reload reads
+.Fa epoch
+again and keeps sleeping.
 .Pp
 The mutex does not track its owner and is not recursive; locking it twice
 from the same thread deadlocks.
@@ -557,13 +627,12 @@ A null pointer marks an empty slot, so it cannot be stored.
 Passing a null
 .Fa ptr
 to
-.Fn xft_ring_buffer_submit ,
-or a ring buffer whose
-.Fa memory
-is a null pointer to
 .Fn xft_ring_buffer_submit
 or
-.Fn xft_ring_buffer_steal ,
+.Fn xft_ring_buffer_submit_1ton ,
+or a ring buffer whose
+.Fa memory
+is a null pointer to any of the three,
 reaches
 .Ql __builtin_unreachable .
 So does an
@@ -577,18 +646,12 @@ entry, passed to
 or
 .Fn xft_destroy_ring_buffer .
 .Pp
-Calling
-.Fn xft_ring_buffer_submit
-or
-.Fn xft_ring_buffer_steal
-from a signal handler on a ring buffer that the interrupted thread is
-inside
-.Fn xft_ring_buffer_submit
-or
-.Fn xft_ring_buffer_steal
-on can spin forever: the handler waits on a slot that the interrupted
-thread cannot finish until the handler returns.
-Signals whose handlers do not touch the ring buffer only delay the
+A signal handler must not use a ring buffer that the thread it
+interrupted was using.
+If the thread was interrupted in the middle of a submit or steal, the
+handler can wait forever on a slot that only the interrupted thread can
+finish, and that thread does not run again until the handler returns.
+A handler that does not touch the ring buffer only delays the
 interrupted call.
 .Pp
 A thread stopped between claiming a slot and storing to it, by preemption
