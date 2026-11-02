@@ -1,4 +1,4 @@
-.Dd October 31, 2026
+.Dd November 2, 2026
 .Dt XFT_ATOMICS 3
 .Os xft
 .Sh NAME
@@ -71,9 +71,10 @@ it does not depend on
 The types and state constants are declared in
 .In types/atomic_types.h :
 .Bd -literal -offset indent
-typedef volatile _Atomic(t_u32) t_atomic32;
-typedef volatile _Atomic(t_u64) t_atomic64;
-typedef volatile _Atomic(t_any) t_atomicptr;
+typedef volatile _Atomic(t_u32) __attribute__((__aligned__(4))) t_atomic32;
+typedef volatile _Atomic(t_u64) __attribute__((__aligned__(8))) t_atomic64;
+typedef volatile _Atomic(t_any)
+    __attribute__((__aligned__(sizeof(t_any)))) t_atomicptr;
 typedef t_atomic32 t_mutex;
 
 typedef struct s_ring_buffer
@@ -365,7 +366,7 @@ each start on their own
 boundary, so producers and consumers do not write to the same cache line.
 .Dv XFT_DESTRUCTIVE_ALIGN
 is 128 bytes on x86_64, aarch64 and powerpc64, 256 on s390x, 32 on 32-bit
-arm, mips, hexagon and 32-bit sparc, 16 on m68k and 64 elsewhere.
+arm, mips, hexagon and 32-bit sparc, and 64 elsewhere.
 .Pp
 .Fn xft_new_ring_buffer
 rounds
