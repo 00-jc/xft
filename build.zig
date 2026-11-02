@@ -455,6 +455,9 @@ const SRCS_RT_ENTRY_libc = [_][]const u8{
 
 const SRCS_RT_ENTRY_win32 = [_][]const u8{
     "src/rt/win32/xft_rt.c",
+};
+
+const SRCS_RT_TLS_win32 = [_][]const u8{
     "src/rt/win32/xft_tls.c",
 };
 
@@ -1164,6 +1167,11 @@ fn addXft(x: xft_ctx, name: []const u8, libc: bool, sanitize: bool) !xft_variant
         try addSrcs(x, mod, v, &SRCS_LIBC);
         try addSrcs(x, mod, v, &SRCS_RT_ENTRY_libc);
         try addSrcs(x, mod, v, &SRCS_THREADS_libc);
+        if (!v.libc) mod.addCSourceFiles(.{
+            .files = &SRCS_RT_TLS_win32,
+            .flags = try std.mem.concat(x.b.allocator, []const u8, &.{ try cflags(x, v, false), &.{"-fno-lto"} }),
+            .language = .c,
+        });
         try addSrcs(x, mod, v, &SRCS_FUTEX_libc);
     } else {
         try addSrcs(x, mod, v, &SRCS_RT_linux);
@@ -1254,7 +1262,7 @@ pub fn build(b: *std.Build) !void {
     .{
         .use_libc     = b.option(bool, "use-libc",  "Link against libc")                  orelse false,
         .sanitize     = b.option(bool, "sanitize",  "Enable sanitizers")                  orelse false,
-        .lto          = b.option(bool, "lto",       "Enable link-time optimization")      orelse false,
+        .lto          = b.option(bool, "lto",       "Enable link-time optimization")      orelse true,
         .fast_math    = b.option(bool, "fast-math", "-ffast-math")                        orelse false,
         .benches      = b.option(bool, "benches",   "Build benchmarks")                   orelse false,
         .tests        = b.option(bool, "tests",     "Build tests")                        orelse false,
