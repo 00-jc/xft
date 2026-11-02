@@ -1045,10 +1045,15 @@ fn isWin32(x: xft_ctx) bool {
     return x.target.result.os.tag == .windows;
 }
 
+fn isLinux(x: xft_ctx) bool {
+    return x.target.result.os.tag == .linux;
+}
+
 fn hasStackClash(x: xft_ctx) bool {
+    if (x.target.result.os.tag != .linux and x.target.result.os.tag != .freebsd) return false;
     return switch (x.target.result.cpu.arch) {
         .x86, .x86_64, .aarch64, .aarch64_be, .riscv32, .riscv64,
-        .powerpc, .powerpc64, .powerpc64le, .s390x, .loongarch64 => true,
+        .powerpc64, .powerpc64le, .s390x, .loongarch64 => true,
         else => false,
     };
 }
@@ -1068,7 +1073,7 @@ fn hasFreestandingThreads(x: xft_ctx) bool {
 }
 
 fn hasStackCheck(x: xft_ctx) bool {
-    return x.target.result.cpu.arch != .x86 and x.target.result.cpu.arch != .arm;
+    return x.target.result.cpu.arch != .x86 and x.target.result.cpu.arch != .arm and x.target.result.cpu.arch != .thumb;
 }
 
 fn cflags(x: xft_ctx, v: xft_variant, cxx: bool) ![]const []const u8 {
@@ -1078,7 +1083,7 @@ fn cflags(x: xft_ctx, v: xft_variant, cxx: bool) ![]const []const u8 {
     try flags.appendSlice(a, &CFLAGS);
     if (!isWin32(x))
         try flags.appendSlice(a, &CFLAGS_linux);
-    if (!isWin32(x) and hasStackClash(x))
+    if (hasStackClash(x))
         try flags.append(a, "-fstack-clash-protection");
     if (x.target.result.cpu.arch == .x86_64)
         try flags.appendSlice(a, &CFLAGS_x86_64);
@@ -1116,7 +1121,7 @@ fn xftModule(x: xft_ctx, v: xft_variant) *std.Build.Module {
     });
     mod.addIncludePath(b.path("include"));
     for (INTERNAL_DIRS) |d| mod.addIncludePath(b.path(d));
-    if (!isWin32(x))
+    if (isLinux(x))
         for (SUBPROJECT_INCLUDES) |d| mod.addIncludePath(b.path(d));
     mod.addCMacro("XFT_LLC", b.fmt("{d}", .{x.cfg.llc}));
     mod.addCMacro("XFT_LLC_SIZE", b.fmt("{d}ULL", .{x.cfg.llc}));
@@ -1162,16 +1167,16 @@ fn addXft(x: xft_ctx, name: []const u8, libc: bool, sanitize: bool) !xft_variant
         try addSrcs(x, mod, v, &SRCS_THREADS_win32);
         try addSrcs(x, mod, v, &SRCS_FUTEX_win32);
         try addSrcs(x, mod, v, if (v.libc) &SRCS_RT_ENTRY_libc else &SRCS_RT_ENTRY_win32);
-    } else if (v.libc) {
-        try addSrcs(x, mod, v, &SRCS_RT_linux);
-        try addSrcs(x, mod, v, &SRCS_LIBC);
-        try addSrcs(x, mod, v, &SRCS_RT_ENTRY_libc);
-        try addSrcs(x, mod, v, &SRCS_THREADS_libc);
         if (!v.libc) mod.addCSourceFiles(.{
             .files = &SRCS_RT_TLS_win32,
             .flags = try std.mem.concat(x.b.allocator, []const u8, &.{ try cflags(x, v, false), &.{"-fno-lto"} }),
             .language = .c,
         });
+    } else if (v.libc) {
+        try addSrcs(x, mod, v, &SRCS_RT_linux);
+        try addSrcs(x, mod, v, &SRCS_LIBC);
+        try addSrcs(x, mod, v, &SRCS_RT_ENTRY_libc);
+        try addSrcs(x, mod, v, &SRCS_THREADS_libc);
         try addSrcs(x, mod, v, &SRCS_FUTEX_libc);
     } else {
         try addSrcs(x, mod, v, &SRCS_RT_linux);
@@ -1193,7 +1198,7 @@ fn addXft(x: xft_ctx, name: []const u8, libc: bool, sanitize: bool) !xft_variant
         .root_module = mod,
     });
     if (v.lto) v.lib.lto = .full;
-    if (!isWin32(x)) {
+    if (isLinux(x)) {
         v.perf = try addSubproject(x, v, "perf", &SRCS_PERF);
         v.tailor = try addSubproject(x, v, "tailor", &SRCS_TAILOR);
         v.lib.root_module.linkLibrary(v.perf.?);
