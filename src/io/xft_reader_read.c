@@ -18,7 +18,6 @@ inline t_result	xft_read_from_reader(t_reader *__restrict__ const reader,
 	t_size *__restrict__ const total)
 {
 	t_size	read;
-	t_size	step;
 	t_size	n;
 
 	if (reader->buffer.mem == nullptr || reader->vtable == nullptr
@@ -35,8 +34,8 @@ inline t_result	xft_read_from_reader(t_reader *__restrict__ const reader,
 			return (KO);
 		if (__builtin_expect(reader->valid == 0, 0))
 			break ;
-		step = reader->valid - reader->end;
-		n = xft_tern_s(len - read < step, len - read, step);
+		n = xft_tern_s(len - read < reader->valid - reader->end, len - read,
+				reader->valid - reader->end);
 		xft_memcpy(dst + read, reader->buffer.mem + reader->end, n);
 		read += n;
 		reader->end += n;

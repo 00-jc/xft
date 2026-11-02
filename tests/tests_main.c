@@ -14,8 +14,8 @@
 #include "tests/tests.h"
 #include <xft/rt.h>
 
-__attribute__((__nonnull__(1), used, __always_inline__))
-inline void	run_all_tests(t_test *t)
+__attribute__((__nonnull__(1), __always_inline__))
+static inline void	run_mem_tests(t_test *t)
 {
 	test_memchr(t);
 	test_memcmp(t);
@@ -25,6 +25,12 @@ inline void	run_all_tests(t_test *t)
 	test_bzero(t);
 	test_mload(t);
 	test_streaming_mem(t);
+}
+
+__attribute__((__nonnull__(1), used, __always_inline__))
+inline void	run_all_tests(t_test *t)
+{
+	run_mem_tests(t);
 	test_strlen(t);
 	test_cstr(t);
 	test_vec(t);

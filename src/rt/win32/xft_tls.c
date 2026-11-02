@@ -23,9 +23,22 @@ static char g_tls_start = 0;
 __attribute__((section(".tls$ZZZ")))
 static char g_tls_end = 0;
 
-ULONG						_tls_index = 0;
+# ifdef __i386__
 
-const IMAGE_TLS_DIRECTORY	_tls_used = {(ULONG_PTR) & g_tls_start,
-	(ULONG_PTR) & g_tls_end, (ULONG_PTR) & _tls_index, 0, 0, 0};
+ULONG g_tls_index						__asm__("__tls_index") = 0;
+
+const IMAGE_TLS_DIRECTORY g_tls_used	__asm__("__tls_used") = {
+	(ULONG_PTR) & g_tls_start,
+	(ULONG_PTR) & g_tls_end, (ULONG_PTR) & g_tls_index, 0, 0, 0};
+
+# else
+
+ULONG g_tls_index						__asm__("_tls_index") = 0;
+
+const IMAGE_TLS_DIRECTORY g_tls_used	__asm__("_tls_used") = {
+	(ULONG_PTR) & g_tls_start,
+	(ULONG_PTR) & g_tls_end, (ULONG_PTR) & g_tls_index, 0, 0, 0};
+
+# endif
 
 #endif
