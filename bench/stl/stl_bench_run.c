@@ -115,6 +115,5 @@ void	xft_stl_bench_map_strings_1m(t_tailor *t)
 	};
 
 	(void)xft_get_bench_str_large_keys();
-	(void)xft_tailor_bench_exclusive(t, benches,
-		sizeof(benches) / sizeof(*benches));
+	(void)xft_tailor_bench(t, benches, sizeof(benches) / sizeof(*benches));
 }

@@ -13,9 +13,8 @@
 #include <xft/xft_p_tailor.h>
 #include <xft/vec.h>
 
-__attribute__((__nonnull__(1, 2), __always_inline__))
-static inline t_result	xft__tailor_queue(t_tailor *t,
-	const t_tailor_bench *benches, t_size size, bool exclusive)
+__attribute__((__nonnull__(1, 2)))
+t_result	xft_tailor_bench(t_tailor *t, t_tailor_bench benches[], t_size size)
 {
 	t_tailor_job	job;
 	t_size			i;
@@ -24,7 +23,7 @@ static inline t_result	xft__tailor_queue(t_tailor *t,
 	while (i < size)
 	{
 		job = (t_tailor_job){.t = t, .fn = benches[i].fn, .status = KO,
-			.buffers = t->rand_buffers, .exclusive = exclusive,
+			.buffers = t->rand_buffers,
 			.result = {.name = benches[i].name, .group = benches[i].group}};
 		if (__builtin_expect(!xft_vec_push_back(xft_gpa_allocator(&t->gpa),
 					&t->jobs, (const t_u8 *)&job, sizeof(job)), 0))
@@ -32,17 +31,4 @@ static inline t_result	xft__tailor_queue(t_tailor *t,
 		++i;
 	}
 	return (OK);
-}
-
-__attribute__((__nonnull__(1, 2)))
-t_result	xft_tailor_bench(t_tailor *t, t_tailor_bench benches[], t_size size)
-{
-	return (xft__tailor_queue(t, benches, size, false));
-}
-
-__attribute__((__nonnull__(1, 2)))
-t_result	xft_tailor_bench_exclusive(t_tailor *t, t_tailor_bench benches[],
-	t_size size)
-{
-	return (xft__tailor_queue(t, benches, size, true));
 }

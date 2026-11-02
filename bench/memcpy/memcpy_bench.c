@@ -15,23 +15,10 @@
 #include <xft/rt.h>
 #include "bench.h"
 
-static void	memcpy_bench_exclusive(t_tailor *t)
-{
-	static t_tailor_bench	benches[] = {
-	{xft_memcpy_test_varied, "xft_memcpy_varied", "memcpy_varied"},
-	{xft_memcpy_test_large_aligned, "xft_memcpy_large_aligned",
-		"memcpy_large_aligned"},
-	{xft_memcpy_test_large_unaligned, "xft_memcpy_large_unaligned",
-		"memcpy_large_unaligned"},
-	};
-
-	(void)xft_tailor_bench_exclusive(t, benches,
-		sizeof(benches) / sizeof(*benches));
-}
-
 static void	memcpy_bench_queue(t_tailor *t)
 {
 	static t_tailor_bench	benches[] = {
+	{xft_memcpy_test_varied, "xft_memcpy_varied", "memcpy_varied"},
 	{xft_memcpy_test_short_aligned, "xft_memcpy_short_aligned",
 		"memcpy_short_aligned"},
 	{xft_memcpy_test_short_unaligned, "xft_memcpy_short_unaligned",
@@ -40,10 +27,13 @@ static void	memcpy_bench_queue(t_tailor *t)
 		"memcpy_medium_aligned"},
 	{xft_memcpy_test_medium_unaligned, "xft_memcpy_medium_unaligned",
 		"memcpy_medium_unaligned"},
+	{xft_memcpy_test_large_aligned, "xft_memcpy_large_aligned",
+		"memcpy_large_aligned"},
+	{xft_memcpy_test_large_unaligned, "xft_memcpy_large_unaligned",
+		"memcpy_large_unaligned"},
 	};
 
 	(void)xft_tailor_bench(t, benches, sizeof(benches) / sizeof(*benches));
-	memcpy_bench_exclusive(t);
 }
 
 void	xft_bench_memcpy(t_tailor *t)

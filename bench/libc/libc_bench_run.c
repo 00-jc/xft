@@ -15,23 +15,10 @@
 #include "libc_bench.h"
 #include <xft/rt.h>
 
-static void	libc_memcpy_exclusive(t_tailor *t)
-{
-	static t_tailor_bench	benches[] = {
-	{xft_libc_memcpy_varied, "libc_memcpy_varied", "memcpy_varied"},
-	{xft_libc_memcpy_large_aligned, "libc_memcpy_large_aligned",
-		"memcpy_large_aligned"},
-	{xft_libc_memcpy_large_unaligned, "libc_memcpy_large_unaligned",
-		"memcpy_large_unaligned"},
-	};
-
-	(void)xft_tailor_bench_exclusive(t, benches,
-		sizeof(benches) / sizeof(*benches));
-}
-
 static void	libc_memcpy_queue(t_tailor *t)
 {
 	static t_tailor_bench	benches[] = {
+	{xft_libc_memcpy_varied, "libc_memcpy_varied", "memcpy_varied"},
 	{xft_libc_memcpy_short_aligned, "libc_memcpy_short_aligned",
 		"memcpy_short_aligned"},
 	{xft_libc_memcpy_short_unaligned, "libc_memcpy_short_unaligned",
@@ -40,10 +27,13 @@ static void	libc_memcpy_queue(t_tailor *t)
 		"memcpy_medium_aligned"},
 	{xft_libc_memcpy_medium_unaligned, "libc_memcpy_medium_unaligned",
 		"memcpy_medium_unaligned"},
+	{xft_libc_memcpy_large_aligned, "libc_memcpy_large_aligned",
+		"memcpy_large_aligned"},
+	{xft_libc_memcpy_large_unaligned, "libc_memcpy_large_unaligned",
+		"memcpy_large_unaligned"},
 	};
 
 	(void)xft_tailor_bench(t, benches, sizeof(benches) / sizeof(*benches));
-	libc_memcpy_exclusive(t);
 }
 
 void	xft_libc_bench_memcpy(t_tailor *t)
@@ -62,23 +52,10 @@ void	xft_libc_bench_memcpy(t_tailor *t)
 	libc_memcpy_queue(t);
 }
 
-static void	libc_strlen_exclusive(t_tailor *t)
-{
-	static t_tailor_bench	benches[] = {
-	{xft_libc_strlen_varied, "libc_strlen_varied", "strlen_varied"},
-	{xft_libc_strlen_large_aligned, "libc_strlen_large_aligned",
-		"strlen_large_aligned"},
-	{xft_libc_strlen_large_unaligned, "libc_strlen_large_unaligned",
-		"strlen_large_unaligned"},
-	};
-
-	(void)xft_tailor_bench_exclusive(t, benches,
-		sizeof(benches) / sizeof(*benches));
-}
-
 void	xft_libc_bench_strlen(t_tailor *t)
 {
 	static t_tailor_bench	benches[] = {
+	{xft_libc_strlen_varied, "libc_strlen_varied", "strlen_varied"},
 	{xft_libc_strlen_short_aligned, "libc_strlen_short_aligned",
 		"strlen_short_aligned"},
 	{xft_libc_strlen_short_unaligned, "libc_strlen_short_unaligned",
@@ -87,10 +64,13 @@ void	xft_libc_bench_strlen(t_tailor *t)
 		"strlen_medium_aligned"},
 	{xft_libc_strlen_medium_unaligned, "libc_strlen_medium_unaligned",
 		"strlen_medium_unaligned"},
+	{xft_libc_strlen_large_aligned, "libc_strlen_large_aligned",
+		"strlen_large_aligned"},
+	{xft_libc_strlen_large_unaligned, "libc_strlen_large_unaligned",
+		"strlen_large_unaligned"},
 	};
 
 	if (!xft_strlen_bench_buffers(t))
 		xft_exit_process(1);
 	(void)xft_tailor_bench(t, benches, sizeof(benches) / sizeof(*benches));
-	libc_strlen_exclusive(t);
 }

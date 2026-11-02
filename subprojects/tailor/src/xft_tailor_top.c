@@ -19,17 +19,10 @@ static inline void	xft__tailor_dispatch(t_tailor *t, t_tailor_units *u)
 {
 	t_size	i;
 
-	xft_threadpool_submit_fair(&t->pool, u->tasks, sizeof(*u->tasks),
-		u->n_parallel);
+	xft_threadpool_submit_fair(&t->pool, u->tasks, sizeof(*u->tasks), u->n);
 	i = 0;
-	while (i < u->n_parallel)
-		xft_wait_for_signal(&u->tasks[i++].completion, 0);
 	while (i < u->n)
-	{
-		xft_threadpool_submit_fair(&t->pool, u->tasks + i, sizeof(*u->tasks),
-			1);
 		xft_wait_for_signal(&u->tasks[i++].completion, 0);
-	}
 }
 
 __attribute__((__nonnull__(1), __always_inline__))

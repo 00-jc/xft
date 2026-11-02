@@ -1,11 +1,10 @@
-.Dd November 1, 2026
+.Dd November 2, 2026
 .Dt XFT_TAILOR 3
 .Os xft
 .Sh NAME
 .Nm xft_new_tailor ,
 .Nm xft_tailor_buffers ,
 .Nm xft_tailor_bench ,
-.Nm xft_tailor_bench_exclusive ,
 .Nm xft_tailor_run ,
 .Nm xft_tailor_report ,
 .Nm xft_tailor_compare ,
@@ -24,8 +23,6 @@
 .Fn xft_tailor_buffers "t_tailor *t" "t_size *sizes" "t_u8 *alignment" "t_size n"
 .Ft t_result
 .Fn xft_tailor_bench "t_tailor *t" "t_tailor_bench benches[]" "t_size size"
-.Ft t_result
-.Fn xft_tailor_bench_exclusive "t_tailor *t" "t_tailor_bench benches[]" "t_size size"
 .Ft t_result
 .Fn xft_tailor_run "t_tailor *t"
 .Ft void
@@ -78,9 +75,7 @@ sets up the harness and starts the workers.
 optionally allocates the input buffers for the benchmarks queued after it.
 .It
 .Fn xft_tailor_bench
-and
-.Fn xft_tailor_bench_exclusive
-queue benchmarks; they run nothing.
+queues benchmarks; it runs nothing.
 .It
 .Fn xft_tailor_run
 runs every queued benchmark and stores the results.
@@ -258,30 +253,22 @@ benchmarks of
 .Fa benches
 to the queue, each with the buffer set current at the time of the call.
 .Pp
-.Fn xft_tailor_bench_exclusive
-does the same and marks the benchmarks exclusive: they run with no other
-benchmark beside them.
-It is for memory-bound benchmarks, whose cycles depend on what else uses
-the memory bus and the last-level cache at the same time.
-.Pp
 .Fn xft_tailor_run
 splits the queue into units: the queued benchmarks of one group, found with
 an
 .Xr xft_indexmap 3
 on the group string, form one unit, and a benchmark with no group is a unit
 of its own.
-A unit is exclusive when any of its members is.
-It submits the units that are not exclusive to the pool as one batch with
-.Fn xft_threadpool_submit_fair
-and waits for all of them, then submits each exclusive unit alone and waits
-for it before the next, so the other workers sit idle meanwhile.
+It submits the units to the pool as one batch with
+.Fn xft_threadpool_submit_fair ,
+one task per unit in queue order, and waits for all of them.
 It appends the results to
 .Fa t->results
 in queue order, whatever order they finish in, and empties the queue.
 The calling thread only waits on each task's completion signal, so it needs
 no thread-local storage set up.
 .Pp
-A unit runs as one task on one worker, with its own:
+A unit holds one worker from its first sample to its last, with its own:
 .Bl -bullet -compact
 .It
 arena, for the samples and statistics of its members;
@@ -338,12 +325,12 @@ its cycles per iteration, how it compares to the first member, and its
 nanoseconds per iteration:
 .Bd -literal -offset indent
  ≈ map_strings_1m_lookup_hit
- ├─ xft_map_strings_1m_lookup_hit = 1099.902546 cycles per_call
-    (baseline) [307.190285 ns]
- ├─ std_map_strings_1m_lookup_hit = 1078.422594 cycles per_call
-    (1.019917x faster) [302.939720 ns]
- ├─ absl_map_strings_1m_lookup_hit = 529.411691 cycles per_call
-    (2.077593x faster) [145.357383 ns]
+ ├─ xft_map_strings_1m_lookup_hit = 1580.772363 cycles per_call
+    (baseline) [526.146172 ns]
+ ├─ std_map_strings_1m_lookup_hit = 2018.312141 cycles per_call
+    (1.276788x slower) [659.463086 ns]
+ ├─ absl_map_strings_1m_lookup_hit = 1001.102766 cycles per_call
+    (1.579031x faster) [330.830951 ns]
 .Ed
 .Pp
 Each member is on one line; they are wrapped here to fit the page.
@@ -359,6 +346,8 @@ otherwise, so the factor is never below 1.
 The ratio is on cycles because the clock of a loaded multi-core part moves
 with the load: the nanoseconds of two benchmarks that ran beside different
 neighbours are not comparable, their cycles are.
+The members of a group take turns on one worker, so they see the same load
+and their ratio holds up under it even when their cycles do not.
 It flushes the writer.
 .Pp
 .Fn xft_tailor_destroy
@@ -461,9 +450,7 @@ when an allocation fails; the arena is rewound to where it was and
 is unchanged.
 .Pp
 .Fn xft_tailor_bench
-and
-.Fn xft_tailor_bench_exclusive
-return
+returns
 .Dv OK ,
 or
 .Dv KO
@@ -595,10 +582,8 @@ calling thread before
 Concurrent units share the memory bus and the last-level cache, so
 memory-bound benchmarks slow each other down, by an amount that depends on
 which units run beside them.
-Queue them with
-.Fn xft_tailor_bench_exclusive ;
-each exclusive unit then adds its whole run time to that of
-.Fn xft_tailor_run .
+Their absolute numbers vary from run to run; compare them through the ratios
+of a group, and treat a small ratio as a tie, since load can move it too.
 .It
 The members of a group share one core and run one after the other, so each
 sample starts with the caches as the previous member left them.

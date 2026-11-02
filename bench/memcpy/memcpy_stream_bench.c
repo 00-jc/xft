@@ -37,6 +37,5 @@ void	xft_bench_memcpy_stream(t_tailor *t)
 	if (!xft_tailor_buffers(t, bufsizes, bufalign,
 			sizeof(bufsizes) / sizeof(*bufsizes)))
 		xft_exit_process(1);
-	(void)xft_tailor_bench_exclusive(t, benches,
-		sizeof(benches) / sizeof(*benches));
+	(void)xft_tailor_bench(t, benches, sizeof(benches) / sizeof(*benches));
 }

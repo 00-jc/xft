@@ -82,7 +82,6 @@ typedef struct s_tailor_job
 	t_soa				soa;
 	t_u64a				swap;
 	t_result			status;
-	bool				exclusive;
 	t_tailor_result		result;
 }	t_tailor_job;
 
@@ -92,7 +91,6 @@ typedef struct s_tailor_unit
 	t_size				n;
 	t_arena				arena;
 	t_perf_counters		counters;
-	bool				exclusive;
 }	t_tailor_unit;
 
 typedef struct s_tailor_units
@@ -103,7 +101,6 @@ typedef struct s_tailor_units
 	t_tailor_job		**order;
 	t_size				*uid;
 	t_size				n;
-	t_size				n_parallel;
 }	t_tailor_units;
 
 typedef struct s_tailor_groups

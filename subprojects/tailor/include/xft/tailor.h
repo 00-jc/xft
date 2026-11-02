@@ -25,10 +25,6 @@ t_result	xft_tailor_bench(t_tailor *t, t_tailor_bench benches[],\
 				t_size size)\
 				__attribute__((__nonnull__(1, 2)));
 
-t_result	xft_tailor_bench_exclusive(t_tailor *t, t_tailor_bench benches[],\
-				t_size size)\
-				__attribute__((__nonnull__(1, 2)));
-
 t_size		xft_tailor_getcount(t_cany ptr)\
 				__attribute__((pure, __nonnull__(1)));
 

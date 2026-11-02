@@ -55,7 +55,6 @@ static inline t_result	xft__units_assign(t_tailor *t, t_tailor_units *u,
 		if (u->uid[i] == INDEXMAP_NPOS || u->uid[i] == u->n)
 			u->uid[i] = u->n++;
 		u->units[u->uid[i]].n++;
-		u->units[u->uid[i]].exclusive |= jobs[i].exclusive;
 		++i;
 	}
 	return (OK);
@@ -87,26 +86,16 @@ static inline void	xft__units_fill(t_tailor_units *u, t_tailor_job *jobs,
 __attribute__((__nonnull__(1, 2), __always_inline__))
 static inline void	xft__units_tasks(t_tailor *t, t_tailor_units *u)
 {
-	t_size	pass;
 	t_size	k;
-	t_size	m;
 
-	m = 0;
-	pass = 0;
-	while (pass < 2)
+	k = 0;
+	while (k < u->n)
 	{
-		k = 0;
-		while (k < u->n)
-		{
-			if (u->units[k].exclusive == (pass == 1))
-				u->tasks[m++] = (t_thread_task){.f = xft_tailor_unit,
-					.arg = &u->units[k], .arg_size = sizeof(t_tailor_unit),
-					.allocator = xft_arena_allocator(&t->arena),
-					.arg_model = xft_must_keep_all_alive};
-			++k;
-		}
-		if (pass++ == 0)
-			u->n_parallel = m;
+		u->tasks[k] = (t_thread_task){.f = xft_tailor_unit,
+			.arg = &u->units[k], .arg_size = sizeof(t_tailor_unit),
+			.allocator = xft_arena_allocator(&t->arena),
+			.arg_model = xft_must_keep_all_alive};
+		++k;
 	}
 }
 
