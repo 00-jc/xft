@@ -1,4 +1,4 @@
-.Dd October 14, 2026
+.Dd November 2, 2026
 .Dt XFT_HASH 3
 .Os xft
 .Sh NAME
@@ -11,7 +11,7 @@
 .Ft t_u128a
 .Fn xft_murmur3 "const t_u8 *restrict mem" "t_size size"
 .Ft t_u128a
-.Fn xft_murmur3_with_seed "const t_u8 *restrict mem" "t_size seed" "t_size size"
+.Fn xft_murmur3_with_seed "const t_u8 *restrict mem" "t_u64a seed" "t_size size"
 .Ft t_u64a
 .Fn xft_xxh3_64bits "t_buffer input" "t_u64a seed"
 .Sh DESCRIPTION
