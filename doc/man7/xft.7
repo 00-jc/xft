@@ -1,4 +1,4 @@
-.Dd November 1, 2026
+.Dd November 2, 2026
 .Dt XFT 7
 .Os xft
 .Sh NAME
@@ -11,8 +11,8 @@
 .Sh DESCRIPTION
 .Nm
 is a freestanding C23 library for Linux and Windows.
-The freestanding flavor runs on x86_64 and aarch64 Linux and on x86, x86_64
-and aarch64 Windows; the hosted flavor also covers other Linux architectures,
+The freestanding flavor runs on x86_64 and aarch64 Linux and on x86, x86_64,
+aarch64 and thumb Windows; the hosted flavor also covers other Linux architectures,
 including 32-bit x86 and ARM.
 It replaces the parts of libc a program normally relies on and links with
 .Fl nostdlib .
@@ -34,6 +34,44 @@ the arguments, environment and auxiliary vector, and must end with
 .Fn xft_exit_process ;
 see
 .Xr xft_rt 3 .
+.Ss Platform support
+.Bl -column "Windows" "others, including riscv64, arm" "Freestanding" "-Duse-libc"
+.It Sy OS Ta Sy Arch Ta Sy Freestanding Ta Fl Duse-libc
+.It Linux Ta x86_64 Ta yes Ta yes
+.It Linux Ta aarch64 Ta yes Ta yes
+.It Linux Ta aarch64_be, riscv64, riscv32 Ta no Ta yes
+.It Linux Ta loongarch64, s390x, hexagon Ta no Ta yes
+.It Linux Ta sparc64, sparc, powerpc Ta no Ta yes
+.It Linux Ta mips64, mips64el, mips, mipsel Ta no Ta yes
+.It Linux Ta powerpc64, powerpc64le Ta no Ta yes
+.It Linux Ta x86, arm, armeb, thumb, thumbeb Ta no Ta yes
+.It Linux Ta arc, csky, loongarch32, m68k Ta no Ta no
+.It Windows Ta x86_64 Ta yes Ta yes
+.It Windows Ta aarch64 Ta yes Ta yes
+.It Windows Ta x86, thumb Ta yes Ta yes
+.It Windows Ta others, including riscv64, arm Ta no Ta no
+.It Others Ta any Ta no Ta no
+.El
+.Pp
+Freestanding Linux issues system calls with inline
+.Ql syscall
+or
+.Ql svc
+assembly, which exists for x86_64 and aarch64 only; other architectures go
+through libc's
+.Xr syscall 2 .
+Freestanding Windows calls the win32 API in the system DLLs.
+Zig cannot write COFF objects for the other Windows architectures.
+On Linux, arc and csky are experimental backends in LLVM 23, left out of its
+default builds, Zig's glibc headers for loongarch32 do not compile, and m68k is
+not supported.
+Targets without
+.Dv __SIZEOF_INT128__ ,
+the 32-bit ones apart from the x32 and n32 ABIs, leave out the 128-bit types
+and the functions that take them; see
+.Sx LINKING .
+The x32 ABI of x86_64 and the n32 ABI of mips64 build with
+.Fl Duse-libc .
 .Ss Conventions
 .Bl -bullet
 .It
@@ -202,11 +240,13 @@ Unicode XID_Start and XID_Continue lookup and UTF-8 decoding
 builds with Zig 0.17.0 or later, whose bundled Clang
 compiles the C sources; GCC is not supported:
 .Bd -literal -offset indent
-zig build -Doptimize=fast
+zig build -Doptimize=fast -Dlto=true
 .Ed
 .Pp
 The build installs into
-.Pa zig-out/ :
+.Pa zig-out/ ,
+or the directory given with
+.Fl -prefix :
 .Pa lib/libxft.a
 .Pq Pa lib/xft.lib No on Windows
 and the headers under
@@ -226,7 +266,7 @@ and
 .Nm tailor .
 On Linux every build adds
 .Fl fstack-clash-protection
-where Clang supports it, which excludes arm and mips.
+where Clang supports it, which excludes arm, mips and 32-bit powerpc.
 .Bl -tag -width "-Dfast-math"
 .It Fl Doptimize
 .Ql debug ,
@@ -281,13 +321,12 @@ runtime.
 Requires
 .Fl Duse-libc
 and disables LTO.
-Zig rejects the stack checks on 32-bit x86, so a sanitized build, and with it
-.Fl Dtests ,
-does not build there.
+Zig rejects the stack checks on 32-bit x86 and ARM, so a sanitized build
+leaves them out there.
 Default off.
 .It Fl Dlto
 Full link-time optimization.
-Default off.
+Default on.
 .It Fl Dfast-math
 Compile with
 .Fl ffast-math .
@@ -340,6 +379,72 @@ See
 .El
 .Pp
 Warnings are always errors.
+.Pp
+Run the tests and fuzz targets with:
+.Bd -literal -offset indent
+zig build -Dtests test
+zig build -Dtests freestanding-thread-tests
+zig build -Duse-libc -Dsanitize -Dfuzz fuzz
+.Ed
+.Pp
+Tests always build sanitized and hosted, so the target needs a libc: use
+.Ql aarch64-linux-gnu
+or
+.Ql aarch64-linux-musl ,
+not
+.Ql aarch64-linux-none .
+.Sh LINKING
+Add
+.Nm
+as a dependency in
+.Pa build.zig.zon
+and link its artifact:
+.Bd -literal -offset indent
+const xft = b.dependency("xft", .{
+    .target = target,
+    .optimize = optimize,
+});
+exe.root_module.linkLibrary(xft.artifact("xft"));
+.Ed
+.Pp
+Dependency options use the names under
+.Sx BUILD OPTIONS ,
+such as
+.Ql .@"use-libc" = true .
+In the freestanding flavor, do not link libc, and compile your own sources with
+.Fl ffreestanding Fl fno-builtin Fl fno-stack-protector .
+.Pp
+.Nm
+calls into the system DLLs on Windows even in the freestanding flavor, so
+linking
+.Pa xft.lib
+by hand takes the
+.Pa kernel32 ,
+.Pa shell32 ,
+.Pa bcrypt
+and
+.Pa api-ms-win-core-synch-l1-2-0
+import libraries.
+A freestanding Windows executable uses
+.Ql _start
+as its entry point.
+.Pp
+On targets without
+.Dv __SIZEOF_INT128__ ,
+.Vt t_u128 ,
+.Vt t_i128
+and the functions that take them,
+.Fn xft_murmur3 ,
+.Fn xft_pow_u128 ,
+.Fn xft_maxu128 ,
+.Fn xft_memclz_u128
+and
+.Fn xft_memctz_u128 ,
+are left out.
+Linking the archive by hand on 32-bit targets takes compiler-rt for
+.Fn __udivdi3
+and
+.Fn __umoddi3 .
 .Sh PERF AND TAILOR
 On Linux,
 .Nm
@@ -368,7 +473,7 @@ and are linked by it in the Zig build.
 Linking the archives by hand, they go before
 .Nm :
 .Fl lxft-tailor Fl lxft-perf Fl lxft .
-They are not built for Windows.
+They are built only on Linux.
 .Sh EXAMPLES
 .Bd -literal -offset indent
 #include <xft.h>
