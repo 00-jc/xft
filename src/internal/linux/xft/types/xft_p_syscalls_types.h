@@ -27,6 +27,7 @@
 #  include <sys/syscall.h>
 #  include <syscall.h>
 #  include <sys/stat.h>
+#  include <sys/wait.h>
 #  include <sys/mman.h>
 #  include <fcntl.h>
 #  include <unistd.h>
@@ -35,17 +36,33 @@
 # if defined(XFT_REQUIRE_LIBC) && defined(SYS_mmap2)
 
 // 32-bit: mmap2 takes the offset in pages, every caller passes 0
-typedef enum e_xft_libc_sys : t_u16
+typedef enum e_xft_libc_sys : t_u32
 {
 	xft_libc_sys_mmap = SYS_mmap2,
 }	t_xft_libc_sys;
 
 # elif defined(XFT_REQUIRE_LIBC)
 
-typedef enum e_xft_libc_sys : t_u16
+typedef enum e_xft_libc_sys : t_u32
 {
 	xft_libc_sys_mmap = SYS_mmap,
 }	t_xft_libc_sys;
+
+# endif
+
+# if defined(XFT_REQUIRE_LIBC) && defined(SYS_futex)
+
+typedef enum e_xft_libc_futex : t_u32
+{
+	xft_libc_sys_futex = SYS_futex,
+}	t_xft_libc_futex;
+
+# elif defined(XFT_REQUIRE_LIBC)
+
+typedef enum e_xft_libc_futex : t_u32
+{
+	xft_libc_sys_futex = SYS_futex_time64,
+}	t_xft_libc_futex;
 
 # endif
 

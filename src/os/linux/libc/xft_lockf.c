@@ -16,12 +16,25 @@
 
 # ifdef XFT_REQUIRE_LIBC
 
+#  ifdef SYS_fcntl
+
 __attribute__((__nonnull__(3), __always_inline__, __used__))
 inline t_i32a	xft_fcntl(t_u32a fd, t_u32a cmd,
 	const t_flock *restrict const arg)
 {
 	return ((t_i32a)syscall(SYS_fcntl, fd, cmd, arg));
 }
+
+#  else
+
+__attribute__((__nonnull__(3), __always_inline__, __used__))
+inline t_i32a	xft_fcntl(t_u32a fd, t_u32a cmd,
+	const t_flock *restrict const arg)
+{
+	return ((t_i32a)fcntl((t_i32a)fd, (t_i32a)cmd, arg));
+}
+
+#  endif
 
 t_i32a	xft_lockf(int fd)
 {

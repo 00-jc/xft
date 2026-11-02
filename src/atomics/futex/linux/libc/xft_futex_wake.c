@@ -21,7 +21,7 @@ __attribute__((__nonnull__(1), __always_inline__, __used__))
 inline void	xft_futex_wake(t_atomic32 *__restrict__ const atomic,
 	t_u32a waiters)
 {
-	syscall(SYS_futex, atomic, xft_futex_op_wake,
+	syscall(xft_libc_sys_futex, atomic, xft_futex_op_wake,
 		waiters, (t_any)0, (t_any)0, 0);
 }
 

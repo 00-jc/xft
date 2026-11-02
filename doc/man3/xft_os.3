@@ -1,4 +1,4 @@
-.Dd November 1, 2026
+.Dd November 2, 2026
 .Dt XFT_OS 3
 .Os xft
 .Sh NAME
@@ -107,6 +107,15 @@ the C library's
 has the layout the call writes on every architecture, including 32-bit
 ones with a 64-bit
 .Vt time_t .
+On architectures without the
+.Xr fcntl 2
+or
+.Xr wait4 2
+system call, such as riscv32,
+.Fn xft_fcntl
+and
+.Fn xft_wait4
+call the C library's functions of those names.
 64-bit arguments are cast to
 .Vt long
 before they reach the variadic call, so they take one slot on 32-bit
