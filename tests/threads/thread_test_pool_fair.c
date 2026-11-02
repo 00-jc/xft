@@ -52,8 +52,29 @@ static void	fair_round(t_pool_test *__restrict__ const s, t_sysinfo sysinfo,
 		xft_threadpool_destroy(s->alloc, &s->tp);
 }
 
+static void	fair_wait_all(t_pool_test *__restrict__ const s, t_sysinfo sysinfo)
+{
+	t_u32a	it;
+
+	pool_assert(xft_threadpool_init(s->alloc, sysinfo,
+			xft_threadpool_default(), &s->tp) == OK,
+		"pool fair: init");
+	s->count = 0;
+	s->bad_self = 0;
+	it = 0;
+	while (it < POOL_TEST_TASKS)
+		pool_task_set(&s->inner[it++], fair_leaf, s, s->alloc);
+	xft_threadpool_submit_fair(&s->tp, s->inner, sizeof(s->inner[0]),
+		POOL_TEST_TASKS);
+	xft_threadpool_wait_all(&s->tp);
+	pool_assert(s->count == POOL_TEST_TASKS, "pool fair: wait_all count");
+	pool_check_tasks(s->inner, POOL_TEST_TASKS, false);
+	xft_threadpool_destroy(s->alloc, &s->tp);
+}
+
 void	pool_round_fair(t_pool_test *__restrict__ const s, t_sysinfo sysinfo)
 {
 	fair_round(s, sysinfo, false);
 	fair_round(s, sysinfo, true);
+	fair_wait_all(s, sysinfo);
 }

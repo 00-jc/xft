@@ -73,6 +73,7 @@ typedef enum e_pool_test_conf : t_u32
 	POOL_TEST_BIG_INNER = 600,
 	POOL_TEST_TASKS = 2048,
 	POOL_TEST_OWNED = 64,
+	POOL_TEST_PRODUCERS = 4,
 	POOL_TEST_ROUNDS = 10,
 	POOL_TEST_SPIN = 20000,
 }	t_pool_test_conf;
@@ -89,6 +90,7 @@ typedef struct s_pool_test
 	t_allocator			alloc;
 	t_atomic32			count;
 	t_atomic32			bad_self;
+	t_atomic32			submitted;
 	t_u32a				n_outer;
 	t_u32a				n_inner;
 	t_pool_job			jobs[POOL_TEST_OUTER];
@@ -125,6 +127,10 @@ void	pool_check_tasks(t_thread_task *__restrict__ const t, t_u32a n,\
 void	pool_round_cancel(t_pool_test *__restrict__ const s,\
 			t_sysinfo sysinfo);
 void	pool_round_wait(t_pool_test *__restrict__ const s,\
+			t_sysinfo sysinfo);
+void	pool_round_wait_all(t_pool_test *__restrict__ const s,\
+			t_sysinfo sysinfo);
+void	pool_round_wait_all_mp(t_pool_test *__restrict__ const s,\
 			t_sysinfo sysinfo);
 void	pool_round_fair(t_pool_test *__restrict__ const s,\
 			t_sysinfo sysinfo);

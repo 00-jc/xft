@@ -66,4 +66,7 @@ void			xft_threadpool_submit_fair(t_threadpool *__restrict__ const tp,\
 void			xft_threadpool_wait_task(t_thread_task *__restrict__ const task)\
 				__attribute__((__nonnull__(1)));
 
+void			xft_threadpool_wait_all(t_threadpool *__restrict__ const tp)\
+				__attribute__((__nonnull__(1)));
+
 #endif

@@ -32,6 +32,7 @@ void	xft_threadpool_submit_fair(t_threadpool *__restrict__ const tp,
 	t_size			it;
 	t_size			idx;
 
+	atomic_fetch_add_explicit(&tp->n_pending, (t_u32a)n_tasks, xft_relaxed);
 	it = 0;
 	while (it < n_tasks)
 	{
@@ -54,6 +55,7 @@ void	xft_threadpool_submit(t_threadpool *__restrict__ const tp,
 
 	task->alloc_task = alloc_task;
 	task->completion = 0;
+	atomic_fetch_add_explicit(&tp->n_pending, 1, xft_relaxed);
 	if (self->tp != tp || xft_ring_buffer_submit_1ton(
 			&tp->worker_rings[self->idx], task) == KO)
 		xft__global_push(tp, task);

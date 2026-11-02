@@ -63,8 +63,9 @@ void		xft__global_push(t_threadpool *__restrict__ const tp,\
 t_any		xft__global_pop(t_threadpool *__restrict__ const tp)\
 				__attribute__((__nonnull__(1)));
 
-void		xft__handle_completion(t_thread_task *__restrict__ const t)\
-				__attribute__((__nonnull__(1)));
+void		xft__handle_completion(t_threadpool *__restrict__ const tp,\
+				t_thread_task *__restrict__ const t)\
+				__attribute__((__nonnull__(1, 2)));
 
 bool		xft__work_one(t_threadpool *__restrict__ const tp, t_u32a idx)\
 				__attribute__((__nonnull__(1)));

@@ -26,7 +26,7 @@ static inline void	xft__cancel_pending(t_threadpool *__restrict__ const tp)
 		while (task != nullptr)
 		{
 			task->result = KO;
-			xft__handle_completion(task);
+			xft__handle_completion(tp, task);
 			task = xft_ring_buffer_steal(&tp->worker_rings[it]);
 		}
 		it++;
@@ -35,7 +35,7 @@ static inline void	xft__cancel_pending(t_threadpool *__restrict__ const tp)
 	while (task != nullptr)
 	{
 		task->result = KO;
-		xft__handle_completion(task);
+		xft__handle_completion(tp, task);
 		task = xft__global_pop(tp);
 	}
 }

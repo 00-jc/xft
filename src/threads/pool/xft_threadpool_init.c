@@ -40,6 +40,7 @@ t_result	xft_threadpool_init(t_allocator allocator,
 	tp->global_q_head = nullptr;
 	tp->global_q_tail = nullptr;
 	tp->n_maybe_parked = 0;
+	tp->n_pending = 0;
 	tp->q_len = 0;
 	if (__builtin_expect(xft__init_rings(allocator, tp) == KO, 0))
 		return (KO);

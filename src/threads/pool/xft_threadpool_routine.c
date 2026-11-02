@@ -26,7 +26,7 @@ static inline void	xft__drain_self(t_threadpool *__restrict__ const tp,
 	while (task != nullptr)
 	{
 		task->result = task->f(task->arg);
-		xft__handle_completion(task);
+		xft__handle_completion(tp, task);
 		if (atomic_load_explicit(&tp->shut_down, xft_relaxed) == xft_tp_cancel)
 			return ;
 		task = xft_ring_buffer_steal(rb);
@@ -47,7 +47,7 @@ static inline bool	xft__steal_other(t_threadpool *__restrict__ const tp,
 		if (task != nullptr)
 		{
 			task->result = task->f(task->arg);
-			xft__handle_completion(task);
+			xft__handle_completion(tp, task);
 			return (true);
 		}
 		it = xft_tern_s(it + 1 >= tp->n_workers, 0, it + 1);
@@ -70,7 +70,7 @@ static inline void	xft__work(t_threadpool *__restrict__ const tp,
 		if (task != nullptr)
 		{
 			task->result = task->f(task->arg);
-			xft__handle_completion(task);
+			xft__handle_completion(tp, task);
 		}
 		else if (!xft__steal_other(tp, idx))
 			return ;
@@ -89,7 +89,7 @@ bool	xft__work_one(t_threadpool *__restrict__ const tp, t_u32a idx)
 	if (task == nullptr)
 		return (xft__steal_other(tp, idx));
 	task->result = task->f(task->arg);
-	xft__handle_completion(task);
+	xft__handle_completion(tp, task);
 	return (true);
 }
 

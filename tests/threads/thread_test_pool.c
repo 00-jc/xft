@@ -98,6 +98,8 @@ void	test_thread_pool(t_sysinfo sysinfo)
 		pool_round(&s, sysinfo, false);
 		pool_round_cancel(&s, sysinfo);
 		pool_round_wait(&s, sysinfo);
+		pool_round_wait_all(&s, sysinfo);
+		pool_round_wait_all_mp(&s, sysinfo);
 		pool_round_fair(&s, sysinfo);
 	}
 }

@@ -27,3 +27,16 @@ void	xft_threadpool_wait_task(t_thread_task *__restrict__ const task)
 	}
 	xft_wait_for_signal(&task->completion, 0);
 }
+
+__attribute__((__nonnull__(1), __flatten__))
+void	xft_threadpool_wait_all(t_threadpool *__restrict__ const tp)
+{
+	t_u32a	pending;
+
+	pending = atomic_load_explicit(&tp->n_pending, xft_acquire);
+	while (pending != 0)
+	{
+		xft_futex_wait(&tp->n_pending, pending);
+		pending = atomic_load_explicit(&tp->n_pending, xft_acquire);
+	}
+}

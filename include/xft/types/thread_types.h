@@ -113,6 +113,7 @@ typedef struct s_threadpool
 	t_thread_task		*global_q_head;
 	t_thread_task		*global_q_tail;
 	t_atomic32			q_len;
+	t_atomic32			n_pending;
 	t_mutex				global_lock;
 }	t_threadpool;
 

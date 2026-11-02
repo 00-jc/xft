@@ -1,4 +1,4 @@
-.Dd November 1, 2026
+.Dd November 2, 2026
 .Dt XFT_THREADPOOL 3
 .Os xft
 .Sh NAME
@@ -7,6 +7,7 @@
 .Nm xft_threadpool_submit ,
 .Nm xft_threadpool_submit_fair ,
 .Nm xft_threadpool_wait_task ,
+.Nm xft_threadpool_wait_all ,
 .Nm xft_threadpool_destroy ,
 .Nm xft_threadpool_cancel
 .Nd work-stealing thread pool
@@ -22,6 +23,8 @@
 .Fn xft_threadpool_submit_fair "t_threadpool *tp" "t_thread_task *tasks" "t_size alloc_task" "t_size n_tasks"
 .Ft void
 .Fn xft_threadpool_wait_task "t_thread_task *task"
+.Ft void
+.Fn xft_threadpool_wait_all "t_threadpool *tp"
 .Ft void
 .Fn xft_threadpool_destroy "t_allocator allocator" "t_threadpool *tp"
 .Ft void
@@ -252,6 +255,21 @@ with
 see
 .Xr xft_atomics 3 .
 .Pp
+.Fn xft_threadpool_wait_all
+returns once every task submitted to
+.Fa tp
+is completed, including the tasks those tasks submit and the tasks the pool
+frees on completion, with the
+.Fa result
+of every task it did not free readable.
+It returns at once when no task is pending.
+It sleeps without running tasks; the workers keep running and
+.Fa tp
+takes further submissions after it returns.
+A task
+.Fn xft_threadpool_cancel
+completes without running counts as completed.
+.Pp
 .Fn xft_threadpool_destroy
 runs every queued task, including the tasks those tasks submit, then stops
 the workers, joins them and frees what
@@ -298,6 +316,17 @@ wake call only when
 is not 0.
 A sequentially consistent fence on both sides keeps a worker from sleeping
 past a task submitted while it was going to sleep.
+.Pp
+Every submission adds to
+.Fa n_pending
+before it queues the task, and every completion subtracts from it after it
+signals the task.
+.Fn xft_threadpool_wait_all
+sleeps on
+.Fa n_pending ,
+and the completion that takes it to 0 makes a
+.Xr futex 2
+wake call for all waiters.
 .Sh RETURN VALUES
 .Fn xft_threadpool_default
 returns the default options.
@@ -314,6 +343,7 @@ allocated.
 .Fn xft_threadpool_submit ,
 .Fn xft_threadpool_submit_fair ,
 .Fn xft_threadpool_wait_task ,
+.Fn xft_threadpool_wait_all ,
 .Fn xft_threadpool_destroy
 and
 .Fn xft_threadpool_cancel
@@ -417,6 +447,23 @@ Nothing may wait on the
 of a task the pool frees, with
 .Fn xft_threadpool_wait_task
 or otherwise.
+.It
+A task of
+.Fa tp
+that calls
+.Fn xft_threadpool_wait_all
+on
+.Fa tp
+never returns from it, because that task is itself pending.
+A task waits for the tasks it submits with
+.Fn xft_threadpool_wait_task .
+.It
+.Fn xft_threadpool_wait_all
+returns at a moment when the pending count is 0: every task submitted before
+that moment, from any thread and including while it waits, is completed.
+With several producers the count can reach 0 between one producer's tasks and
+the next one's first submission; to wait for everything they will ever submit,
+join the producers first.
 .It
 A worker that blocks inside a task other than in
 .Fn xft_threadpool_wait_task
