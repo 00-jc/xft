@@ -5,7 +5,7 @@
 .Nm xft_get_nanos
 .Nd monotonic time in nanoseconds
 .Sh SYNOPSIS
-.In timing.h
+.In xft/timing.h
 .Ft t_u64a
 .Fn xft_get_nanos void
 .Sh DESCRIPTION
@@ -16,9 +16,9 @@ The value is monotonic and never decreases within a single process.
 It is not wall-clock time and cannot be compared across processes.
 .Ss Types
 The header
-.In timing.h
+.In xft/timing.h
 includes
-.In types/timing_types.h ,
+.In xft/types/timing_types.h ,
 which defines the time value structure and, on x86_64, a calibration
 record:
 .Bd -literal -offset indent
@@ -88,7 +88,7 @@ The value wraps after roughly 584 years of uptime.
 .Sh EXAMPLES
 Measure the duration of a region in nanoseconds.
 .Bd -literal -offset indent
-#include <xft.h>
+#include <xft/xft.h>
 
 t_u64a	time_region(void (*fn)(void))
 {

@@ -11,8 +11,8 @@
 .Nm xft_main
 .Nd program entry point and runtime helpers
 .Sh SYNOPSIS
-.In rt.h
-.In x86_64.h
+.In xft/rt.h
+.In xft/types/x86_64_types.h
 .Ft t_kernel_ptrs
 .Fn xft_get_kernel_ptrs "const t_any *sp"
 .Ft t_xft_rt
@@ -28,7 +28,7 @@
 .Ft void
 .Fn xft_main "const t_any *restrict sp"
 .Sh DESCRIPTION
-.In rt.h
+.In xft/rt.h
 declares the types that carry the process arguments and the entry points
 that hand them to
 xft
@@ -96,7 +96,7 @@ reports which vector widths the running CPU and operating system support,
 and on x86_64 the psABI microarchitecture level they reach;
 .Vt t_x86_ver ,
 from
-.In x86_64.h ,
+.In xft/types/x86_64_types.h ,
 names those levels in increasing order, so they compare with
 .Ql >= .
 See
@@ -341,7 +341,7 @@ do not return.
 .Sh EXAMPLES
 Print the arguments, one per line, then exit successfully.
 .Bd -literal -offset indent
-#include <xft.h>
+#include <xft/xft.h>
 
 void	xft_main(const t_any *__restrict__ const sp)
 {

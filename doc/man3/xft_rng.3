@@ -6,13 +6,13 @@
 .Nm xft_xoshiro256ss
 .Nd xoshiro256** pseudo-random number generator
 .Sh SYNOPSIS
-.In rng.h
+.In xft/rng.h
 .Ft void
 .Fn xft_xoshiro_init "t_xoshiro xoshiro"
 .Ft t_u64a
 .Fn xft_xoshiro256ss "t_xoshiro xoshiro"
 .Sh DESCRIPTION
-.In rng.h
+.In xft/rng.h
 provides a 256-bit state pseudorandom generator.
 It does not depend on a global seed and has no locking; a
 .Vt t_xoshiro
@@ -73,7 +73,7 @@ returns 64 pseudo-random bits.
 returns nothing.
 .Sh EXAMPLES
 .Bd -literal -offset indent
-#include <xft.h>
+#include <xft/xft.h>
 
 t_u64	roll_die(t_xoshiro state)
 {

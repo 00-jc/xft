@@ -10,7 +10,7 @@
 .Nm xft_fuzzer_destroy
 .Nd random input pool for fuzz targets
 .Sh SYNOPSIS
-.In fuzzer.h
+.In xft/fuzzer.h
 .Fd #define XFT_FUZZ_MIN_INIT 50000
 .Fd #define XFT_FUZZ_MAX_INIT 300000
 .Ft t_fuzzer
@@ -28,9 +28,9 @@
 .Sh DESCRIPTION
 A fuzzer is a pool of randomly sized buffers carved from an arena plus a
 xoshiro256** generator used to pick buffers and produce random numbers.
-.In fuzzer.h
+.In xft/fuzzer.h
 is not included by
-.In xft.h .
+.In xft/xft.h .
 .Ss Types
 .Bl -tag -width Ds
 .It Vt t_fuzzer
@@ -159,8 +159,8 @@ zig build -Duse-libc -Dsanitize -Dfuzz fuzz
 A target, after
 .Pa fuzz/mem_fuzz.c :
 .Bd -literal -offset indent
-#include <xft.h>
-#include <fuzzer.h>
+#include <xft/xft.h>
+#include <xft/fuzzer.h>
 
 void	xft_main(const t_any *__restrict__ const sp)
 {

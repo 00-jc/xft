@@ -6,7 +6,7 @@
 .Nm xft_cstr_to_str
 .Nd NUL-terminated string helpers
 .Sh SYNOPSIS
-.In cstr.h
+.In xft/cstr.h
 .Ft t_size
 .Fn xft_strlen "const char *restrict str"
 .Ft t_str
@@ -72,7 +72,7 @@ set to
 no memory is allocated for an empty string.
 .Sh EXAMPLES
 .Bd -literal -offset indent
-#include <xft.h>
+#include <xft/xft.h>
 
 void	copy_name(void)
 {

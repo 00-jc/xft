@@ -9,7 +9,7 @@
 .Nm xft_thread_destroy
 .Nd threads
 .Sh SYNOPSIS
-.In threads.h
+.In xft/threads.h
 .Ft t_result
 .Fn xft_thread_spawn "t_thread *thread" "t_sysinfo sysinfo" "t_thread_opts opts"
 .Ft void
@@ -95,7 +95,7 @@ reads them to size its pool and pin its workers; see
 .Xr xft_threadpool 3 .
 .Dv XFT_THREAD_STACKSIZE
 is 8388608, 8 MiB, unless it is defined before
-.In threads.h
+.In xft/threads.h
 is included.
 .Pp
 .Vt t_thread_instance ,

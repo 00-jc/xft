@@ -10,7 +10,7 @@
 .Nm xft_arena_rewind_clean
 .Nd bump allocator over large page mappings
 .Sh SYNOPSIS
-.In alloc.h
+.In xft/alloc.h
 .Ft t_arena
 .Fn xft_new_arena void
 .Ft t_any
@@ -183,7 +183,7 @@ and
 return nothing.
 .Sh EXAMPLES
 .Bd -literal -offset indent
-#include <xft.h>
+#include <xft/xft.h>
 
 t_result	scratch_loop(t_arena *arena, t_size rounds)
 {

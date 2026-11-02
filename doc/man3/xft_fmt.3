@@ -5,7 +5,7 @@
 .Nm xft_fmt_writer
 .Nd formatted output to a writer
 .Sh SYNOPSIS
-.In fmt.h
+.In xft/fmt.h
 .Ft t_result
 .Fn xft_fmt_writer "t_writer *writer" "t_buffer fmt" "t_u64 *values"
 .Sh DESCRIPTION
@@ -83,7 +83,7 @@ including
 and
 .Cm %m
 which are listed in a comment in
-.In fmt.h ,
+.In xft/fmt.h ,
 is an error.
 .Sh RETURN VALUES
 .Fn xft_fmt_writer
@@ -99,7 +99,7 @@ Output produced before the failure has already been passed to
 .Fa writer .
 .Sh EXAMPLES
 .Bd -literal -offset indent
-#include <xft.h>
+#include <xft/xft.h>
 
 void	print_particle(t_writer *w, t_u64 id, t_i32 x, t_i32 y)
 {

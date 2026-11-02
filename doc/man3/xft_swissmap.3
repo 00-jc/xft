@@ -11,7 +11,7 @@
 .Nm xft_swissmap_destroy
 .Nd open addressing hash map from byte keys to pointers
 .Sh SYNOPSIS
-.In swissmap.h
+.In xft/swissmap.h
 .Fd #define SWISS_INITIAL_SIZE 435
 .Ft t_swissmap
 .Fn xft_new_swissmap "t_allocator allocator"
@@ -168,7 +168,7 @@ A rebuild may be triggered by an insert that only overwrites an existing
 key.
 .Sh EXAMPLES
 .Bd -literal -offset indent
-#include <xft.h>
+#include <xft/xft.h>
 
 t_result	demo(t_allocator a)
 {

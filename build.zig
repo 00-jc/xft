@@ -881,7 +881,15 @@ const SUBPROJECT_INCLUDES = [_][]const u8{
     "subprojects/tailor/include",
 };
 
-const CFLAGS = [_][]const u8{
+pub const CFLAGS_STD = [_][]const u8{
+    "-std=gnu23",
+};
+
+pub const CXXFLAGS_STD = [_][]const u8{
+    "-std=gnu++23",
+};
+
+pub const CFLAGS = [_][]const u8{
     "-pipe",
     "-ffunction-sections",
     "-fdata-sections",
@@ -893,41 +901,41 @@ const CFLAGS = [_][]const u8{
 };
 
 // elf only; clang ignores them for coff
-const CFLAGS_linux = [_][]const u8{
+pub const CFLAGS_linux = [_][]const u8{
     "-fno-semantic-interposition",
 };
 
-const CFLAGS_x86_64 = [_][]const u8{
+pub const CFLAGS_x86_64 = [_][]const u8{
     "-fcf-protection=full",
 };
 
-const CFLAGS_HOSTED = [_][]const u8{
+pub const CFLAGS_HOSTED = [_][]const u8{
     "-fstack-protector-strong",
 };
 
-const CFLAGS_FREESTANDING = [_][]const u8{
+pub const CFLAGS_FREESTANDING = [_][]const u8{
     "-ffreestanding",
     "-fno-builtin",
     "-fno-stack-protector",
 };
 
-const CFLAGS_FREESTANDING_win32 = CFLAGS_FREESTANDING ++ [_][]const u8{
+pub const CFLAGS_FREESTANDING_win32 = CFLAGS_FREESTANDING ++ [_][]const u8{
     "-mno-stack-arg-probe",
 };
 
-const CFLAGS_STACK_CHECK = [_][]const u8{
+pub const CFLAGS_STACK_CHECK = [_][]const u8{
     "-fstack-protector-all",
     "-fstack-check",
 };
 
 // ubsan comes from sanitize_c; zig ships no asan runtime
-const SAN_FLAGS = [_][]const u8{
+pub const SAN_FLAGS = [_][]const u8{
     "-fsanitize-recover=null",
     "-fno-omit-frame-pointer",
 };
 
 
-const CXX_WARNS = [_][]const u8{
+pub const CXX_WARNS = [_][]const u8{
     "-Wall",
     "-Wextra",
     "-Wpedantic",
@@ -935,7 +943,7 @@ const CXX_WARNS = [_][]const u8{
     "-Werror",
 };
 
-const WARNS = [_][]const u8{
+pub const WARNS = [_][]const u8{
     "-Wall",
     "-Wextra",
     "-Wpedantic",
@@ -1079,7 +1087,7 @@ fn hasStackCheck(x: xft_ctx) bool {
 fn cflags(x: xft_ctx, v: xft_variant, cxx: bool) ![]const []const u8 {
     const a = x.b.allocator;
     var flags: std.ArrayList([]const u8) = .empty;
-    try flags.append(a, if (cxx) "-std=gnu++23" else "-std=gnu23");
+    try flags.appendSlice(a, if (cxx) &CXXFLAGS_STD else &CFLAGS_STD);
     try flags.appendSlice(a, &CFLAGS);
     if (!isWin32(x))
         try flags.appendSlice(a, &CFLAGS_linux);

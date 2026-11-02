@@ -26,7 +26,7 @@
 .Nm xft_ldfence
 .Nd raw memory operations
 .Sh SYNOPSIS
-.In mem.h
+.In xft/mem.h
 .Fd #define LONES_64 0x0101010101010101ULL
 .Fd #define HIGHS_64 0x8080808080808080ULL
 .Fd #define XFT_PAGE_ALIGN 0x1000ULL
@@ -293,7 +293,7 @@ hold 0x01 and 0x80 in every byte lane, for the SWAR test
 which is non-zero when a 64-bit word contains a zero byte.
 .Dv XFT_PAGE_ALIGN
 is 0x1000 unless defined before
-.In mem.h
+.In xft/mem.h
 is included.
 The library does not reference it.
 .Ss Dispatch
@@ -389,7 +389,7 @@ returns the buffer.
 The remaining functions return nothing.
 .Sh EXAMPLES
 .Bd -literal -offset indent
-#include <xft.h>
+#include <xft/xft.h>
 
 /* buf has room for len + 1 bytes */
 void	insert_after_colon(t_u8 *buf, t_size len, t_u8 b)

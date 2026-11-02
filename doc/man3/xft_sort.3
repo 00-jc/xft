@@ -6,13 +6,13 @@
 .Nm xft_cmp_u64
 .Nd in-place quicksort
 .Sh SYNOPSIS
-.In sort.h
+.In xft/sort.h
 .Ft void
 .Fn xft_qsort "t_u8 *arr" "t_qsort_ctx *c" "t_size l" "t_size h"
 .Ft int
 .Fn xft_cmp_u64 "t_cany a" "t_cany b"
 .Sh DESCRIPTION
-.In sort.h
+.In xft/sort.h
 provides an in-place quicksort that operates on untyped bytes and takes the
 element size and the comparator from a caller-supplied context.
 .Bd -literal -offset indent
@@ -74,7 +74,7 @@ Sort an array of
 .Vt t_u64a
 in place.
 .Bd -literal -offset indent
-#include <xft.h>
+#include <xft/xft.h>
 
 void	sort_u64s(t_u64a *data, t_size n)
 {

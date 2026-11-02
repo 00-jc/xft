@@ -20,7 +20,7 @@
 .Nm xft_vec_clear
 .Nd untyped growable array
 .Sh SYNOPSIS
-.In vec.h
+.In xft/vec.h
 .Ft t_vec
 .Fn xft_new_vec "t_allocator allocator" "t_size size" "t_size type_size"
 .Ft void
@@ -258,7 +258,7 @@ The accessors compute the result without branching, by masking the address
 with the bounds check.
 .Sh EXAMPLES
 .Bd -literal -offset indent
-#include <xft.h>
+#include <xft/xft.h>
 
 t_result	demo(t_allocator a)
 {
@@ -324,7 +324,7 @@ Index arithmetic in the accessors is not checked for overflow.
 is declared
 .Ql always_inline
 in
-.In vec.h
+.In xft/vec.h
 without being
 .Ql inline ,
 so GCC warns

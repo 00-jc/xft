@@ -16,7 +16,7 @@
 .Nm xft_unmap_file
 .Nd buffered readers and writers, standard handles and file mapping
 .Sh SYNOPSIS
-.In io.h
+.In xft/io.h
 .Fd #define BUFSIZE 4096
 .Ft t_writer
 .Fn xft_get_fs_writer "t_buffer buffer" "t_i32 fd"
@@ -267,7 +267,7 @@ An empty file cannot be mapped and also yields a zeroed buffer.
 .Sh EXAMPLES
 Copy standard input to standard output:
 .Bd -literal -offset indent
-#include <xft.h>
+#include <xft/xft.h>
 
 void	xft_main(const t_any *__restrict__ const sp)
 {
@@ -338,6 +338,6 @@ to
 is declared
 .Ql always_inline
 in
-.In io.h
+.In xft/io.h
 without a body, so compilers that honor the attribute strictly, such as GCC
 without LTO, reject calls to it from outside the library.

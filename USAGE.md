@@ -14,16 +14,45 @@ exe.root_module.linkLibrary(xft.artifact("xft"));
 
 Dependency options use the same names as in [BUILD.md](BUILD.md#options), e.g. `.@"use-libc" = true`. The headers come with the artifact, and on Linux so do `perf` and `tailor`.
 
-In the freestanding flavor, do not link libc, and compile your own sources with `-ffreestanding -fno-builtin -fno-stack-protector`.
+In the freestanding flavor, do not link libc.
 
 In the hosted flavor, threads go through pthreads. The freestanding flavor creates threads with `clone(2)`. See [INSTALL.md](INSTALL.md#linking-the-archives-by-hand) when linking `libxft.a` by hand.
 
+## Compiler flags
+
+The `build.zig` of `xft` exports its compiler flags as public constants. Import it in your own `build.zig` and pick the lists that fit your target:
+
+```zig
+const xft_build = @import("xft");
+
+exe.root_module.addCSourceFile(.{
+    .file = b.path("main.c"),
+    .flags = &(xft_build.CFLAGS_STD ++ xft_build.CFLAGS_FREESTANDING),
+    .language = .c,
+});
+```
+
+| Constant | Applies to |
+| --- | --- |
+| `CFLAGS_STD` | C sources; the public headers require it |
+| `CXXFLAGS_STD` | C++ sources |
+| `CFLAGS` | Every build |
+| `CFLAGS_linux` | Every target except Windows |
+| `CFLAGS_x86_64` | x86_64 |
+| `CFLAGS_HOSTED` | The hosted flavor |
+| `CFLAGS_FREESTANDING` | The freestanding flavor |
+| `CFLAGS_FREESTANDING_win32` | The freestanding flavor on Windows, in place of `CFLAGS_FREESTANDING` |
+| `CFLAGS_STACK_CHECK`, `SAN_FLAGS` | Sanitized builds |
+| `WARNS`, `CXX_WARNS` | The warning sets for C and C++; both include `-Werror` |
+
+`-fstack-clash-protection`, `-ffast-math` and `-O3` depend on the target and options, and have no constant.
+
 ## Writing a program
 
-Include `<xft.h>` and define `xft_main` in place of `main`. It receives the initial stack pointer and must end with `xft_exit_process`:
+Include `<xft/xft.h>` and define `xft_main` in place of `main`. It receives the initial stack pointer and must end with `xft_exit_process`:
 
 ```c
-#include <xft.h>
+#include <xft/xft.h>
 
 void
 xft_main(const t_any *__restrict__ const sp)
@@ -78,4 +107,4 @@ xft_main(const t_any *__restrict__ const sp)
 | `xft/vec.h` | Untyped growable array |
 | `xft/xid.h` | Unicode XID_Start/XID_Continue lookup and tables |
 
-`<xft.h>` includes every header above except `signals.h`. The full API is documented in section 3 man pages under `doc/man3`.
+`<xft/xft.h>` includes every header above except `signals.h`. The full API is documented in section 3 man pages under `doc/man3`.

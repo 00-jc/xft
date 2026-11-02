@@ -5,7 +5,7 @@
 .Nm xft
 .Nd freestanding C23 systems library
 .Sh SYNOPSIS
-.In xft.h
+.In xft/xft.h
 .Ft void
 .Fn xft_main "const t_any *__restrict__ const sp"
 .Sh DESCRIPTION
@@ -21,9 +21,9 @@ A hosted flavor, selected with
 exposes the same API on a normal toolchain.
 .Pp
 Programs include
-.In xft.h ,
+.In xft/xft.h ,
 which pulls in every public header except
-.In signals.h ,
+.In xft/signals.h ,
 and define
 .Fn xft_main
 instead of
@@ -104,7 +104,7 @@ All primitive typedefs are
 .El
 .Ss Primitive types
 Declared in
-.In primitives.h :
+.In xft/primitives.h :
 .Bl -column "t_u128, t_u128a" "unsigned 128-bit (__uint128_t)"
 .It Vt t_u8 , t_i8 Ta 8-bit integers
 .It Vt t_u16 , t_u16a Ta 16-bit unsigned
@@ -140,7 +140,7 @@ typedef struct s_span {
 } t_span;
 .Ed
 .Pp
-.In macros.h
+.In xft/macros.h
 defines ANSI escape strings:
 .Dv ANSI_RESET ,
 the foreground colors
@@ -154,7 +154,7 @@ variants, and the background colors
 through
 .Dv ANSI_BG_WHITE .
 .Ss Platform checks
-.In primitives.h
+.In xft/primitives.h
 rejects the build with
 .Ic #error
 when compiling freestanding Linux on an architecture other than x86_64 or
@@ -411,8 +411,55 @@ Dependency options use the names under
 .Sx BUILD OPTIONS ,
 such as
 .Ql .@"use-libc" = true .
-In the freestanding flavor, do not link libc, and compile your own sources with
-.Fl ffreestanding Fl fno-builtin Fl fno-stack-protector .
+In the freestanding flavor, do not link libc.
+.Pp
+The
+.Pa build.zig
+of
+.Nm
+exports its compiler flags as public constants.
+Import it in your own
+.Pa build.zig
+and pick the lists that fit your target:
+.Bd -literal -offset indent
+const xft_build = @import("xft");
+
+exe.root_module.addCSourceFile(.{
+    .file = b.path("main.c"),
+    .flags = &(xft_build.CFLAGS_STD ++ xft_build.CFLAGS_FREESTANDING),
+    .language = .c,
+});
+.Ed
+.Bl -tag -width "CFLAGS_FREESTANDING_win32"
+.It Dv CFLAGS_STD
+C sources; the public headers require it.
+.It Dv CXXFLAGS_STD
+C++ sources.
+.It Dv CFLAGS
+Every build.
+.It Dv CFLAGS_linux
+Every target except Windows.
+.It Dv CFLAGS_x86_64
+x86_64.
+.It Dv CFLAGS_HOSTED
+The hosted flavor.
+.It Dv CFLAGS_FREESTANDING
+The freestanding flavor.
+.It Dv CFLAGS_FREESTANDING_win32
+The freestanding flavor on Windows, in place of
+.Dv CFLAGS_FREESTANDING .
+.It Dv CFLAGS_STACK_CHECK , Dv SAN_FLAGS
+Sanitized builds.
+.It Dv WARNS , Dv CXX_WARNS
+The warning sets for C and C++; both include
+.Fl Werror .
+.El
+.Pp
+.Fl fstack-clash-protection ,
+.Fl ffast-math
+and
+.Fl O3
+depend on the target and options, and have no constant.
 .Pp
 .Nm
 calls into the system DLLs on Windows even in the freestanding flavor, so
@@ -476,7 +523,7 @@ Linking the archives by hand, they go before
 They are built only on Linux.
 .Sh EXAMPLES
 .Bd -literal -offset indent
-#include <xft.h>
+#include <xft/xft.h>
 
 void	xft_main(const t_any *__restrict__ const sp)
 {

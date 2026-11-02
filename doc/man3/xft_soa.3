@@ -10,7 +10,7 @@
 .Nm xft_destroy_soa
 .Nd structure of arrays container
 .Sh SYNOPSIS
-.In soa.h
+.In xft/soa.h
 .Ft t_soa
 .Fn xft_new_soa "t_allocator allocator" "t_size initial_element_capacity" "const t_soa_context *restrict ctx"
 .Ft t_result
@@ -173,7 +173,7 @@ Build a context for a five field record, fill a container and update two
 columns in place, as in
 .Pa examples/soa/soa_example.c :
 .Bd -literal -offset indent
-#include <xft.h>
+#include <xft/xft.h>
 
 typedef struct s_particle {
 	t_u64a	id;

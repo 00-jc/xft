@@ -21,7 +21,7 @@
 .Nm xft_ring_buffer_steal
 .Nd mutexes, signals, futexes, ring buffers, spin backoff and memory fences
 .Sh SYNOPSIS
-.In atomics.h
+.In xft/atomics.h
 .Ft void
 .Fn xft_thread_fence "t_xft_atomic_ordering memorder"
 .Ft void
@@ -57,7 +57,7 @@
 .Ft t_any
 .Fn xft_ring_buffer_steal "t_ring_buffer *restrict rb"
 .Sh DESCRIPTION
-.In atomics.h
+.In xft/atomics.h
 provides a single 32-bit mutex primitive, a signal, a futex wait
 and wake pair, a bounded multi-producer multi-consumer ring buffer of
 pointers, a spin backoff and a pair of memory fences.
@@ -69,7 +69,7 @@ it does not depend on
 .Xr pthread 3 .
 .Pp
 The types and state constants are declared in
-.In types/atomic_types.h :
+.In xft/types/atomic_types.h :
 .Bd -literal -offset indent
 typedef volatile _Atomic(t_u32) __attribute__((__aligned__(4))) t_atomic32;
 typedef volatile _Atomic(t_u64) __attribute__((__aligned__(8))) t_atomic64;
@@ -148,7 +148,7 @@ performs on the
 .Dv xft_lock_fast
 path before sleeping.
 It defaults to 32 and can be redefined before
-.In atomics.h
+.In xft/atomics.h
 is included.
 .Ss Futexes
 .Fn xft_futex_wait
@@ -546,7 +546,7 @@ The other functions return nothing.
 blocks until it holds the mutex; it has no failure mode.
 .Sh EXAMPLES
 .Bd -literal -offset indent
-#include <xft.h>
+#include <xft/xft.h>
 
 static t_mutex	g_lock;
 

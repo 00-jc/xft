@@ -7,7 +7,7 @@
 .Nm xft_assume
 .Nd runtime invariants and optimizer hints
 .Sh SYNOPSIS
-.In hint.h
+.In xft/hint.h
 .Ft void
 .Fn xft_pin_invariant "int res"
 .Ft void
@@ -55,7 +55,7 @@ and
 do not return.
 .Sh EXAMPLES
 .Bd -literal -offset indent
-#include <xft.h>
+#include <xft/xft.h>
 
 static const t_u8	g_msg[] = "index out of range\en";
 

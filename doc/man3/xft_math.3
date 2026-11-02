@@ -34,7 +34,7 @@
 .Nm xft_3dunit
 .Nd scalar and 3D math
 .Sh SYNOPSIS
-.In math.h
+.In xft/math.h
 .Ft t_f32
 .Fn xft_q_sqrt "t_f32 x"
 .Ft t_f64
@@ -96,7 +96,7 @@
 .Ft t_3dcoords
 .Fn xft_3dunit "const t_3dcoords *restrict c"
 .Sh DESCRIPTION
-.In math.h
+.In xft/math.h
 provides scalar square roots, powers, rounding and a small set of 3D vector
 operations.
 It also declares the unions
@@ -190,7 +190,7 @@ variants
 and
 .Fn xft_q_sqrt_fround
 are declared in
-.In math.h
+.In xft/math.h
 but their implementations are not part of the same translation units as
 the plain variants.
 .Fn xft_drsqrt_x4
@@ -308,7 +308,7 @@ Each function returns the value described above.
 None of them set an error or have a failure mode.
 .Sh EXAMPLES
 .Bd -literal -offset indent
-#include <xft.h>
+#include <xft/xft.h>
 
 t_f64	length(t_f64 x, t_f64 y, t_f64 z)
 {

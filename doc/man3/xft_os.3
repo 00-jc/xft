@@ -8,7 +8,7 @@
 .Nm xft_pin_thread_to_cpu
 .Nd CPU and core count, CPU pinning, and the private Linux system call layer
 .Sh SYNOPSIS
-.In os.h
+.In xft/os.h
 .Ft t_result
 .Fn xft_get_cpu_count "t_size *count"
 .Ft t_result
@@ -58,7 +58,7 @@ on thread ID 0, the caller; on Windows it calls
 .Ql SetThreadAffinityMask
 on the current thread.
 .Pp
-.In os.h
+.In xft/os.h
 declares only functions that have both a Linux and a Windows
 implementation.
 .Ss Private Linux layer

@@ -10,7 +10,7 @@
 .Nm xft_str_remove
 .Nd growable NUL-terminated byte string
 .Sh SYNOPSIS
-.In str.h
+.In xft/str.h
 .Ft t_str
 .Fn xft_new_str "t_allocator allocator" "t_size size"
 .Ft void
@@ -149,7 +149,7 @@ which builds a
 from a C string.
 .Sh EXAMPLES
 .Bd -literal -offset indent
-#include <xft.h>
+#include <xft/xft.h>
 
 t_result	demo(t_allocator a)
 {

@@ -27,7 +27,7 @@
 .Nm xft_alloc_clone
 .Nd allocator interface
 .Sh SYNOPSIS
-.In alloc.h
+.In xft/alloc.h
 .Ft t_allocator
 .Fn xft_arena_allocator "t_arena *arena"
 .Ft t_allocator
@@ -397,7 +397,7 @@ and
 set to 0.
 .Sh EXAMPLES
 .Bd -literal -offset indent
-#include <xft.h>
+#include <xft/xft.h>
 
 __attribute__((__nonnull__(1), __noreturn__))
 void	xft_main(const t_any *const __restrict__ sp)

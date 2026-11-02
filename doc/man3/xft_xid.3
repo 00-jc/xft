@@ -13,7 +13,7 @@
 .Nm g_xid_continue_len
 .Nd Unicode XID_Start and XID_Continue lookup, codepoint tables and UTF-8 decoding
 .Sh SYNOPSIS
-.In xid.h
+.In xft/xid.h
 .Ft bool
 .Fn xft_xid_is_start "t_u32 cp"
 .Ft bool
@@ -250,7 +250,7 @@ returns 1 for a lead byte in 0x00\(en0x7F, 2 for 0xC0\(en0xDF, 3 for
 0xF8\(en0xFF.
 .Sh EXAMPLES
 .Bd -literal -offset indent
-#include <xft.h>
+#include <xft/xft.h>
 
 t_size	ident_len(const t_u32 *cps, t_size n)
 {
@@ -268,7 +268,7 @@ t_size	ident_len(const t_u32 *cps, t_size n)
 The same scan over UTF-8 bytes; an invalid or truncated sequence decodes to
 0, which is in neither set, so the scan stops there:
 .Bd -literal -offset indent
-#include <xft.h>
+#include <xft/xft.h>
 
 t_size	ident_len_utf8(const t_u8 *s, t_size n)
 {

@@ -49,7 +49,7 @@
 .Nm xft_vmask_load
 .Nd bit manipulation, byte order and SIMD vector helpers
 .Sh SYNOPSIS
-.In bmi.h
+.In xft/bmi.h
 .Ft t_u32a
 .Fn xft_popcount_u32 "t_u32a x"
 .Ft t_u64a
@@ -141,9 +141,9 @@
 .Ft t_nvec
 .Fn xft_vmask_load "t_cany ptr" "t_nmask mask"
 .Sh DESCRIPTION
-.In bmi.h
+.In xft/bmi.h
 includes
-.In asm.h ,
+.In xft/types/asm_types.h ,
 which selects the native vector width and defines the vector and block
 pointer types used across the library.
 All functions on this page are
@@ -152,7 +152,7 @@ or
 .Ql pure
 and have no side effects.
 .Ss Vector width selection
-.In asm.h
+.In xft/types/asm_types.h
 inspects the compiler's target macros and defines
 .Dv XFT_HAS_512_VEC ,
 .Dv XFT_HAS_256_VEC
@@ -498,7 +498,7 @@ and a native-width form on
 and
 .Vt t_nmask ,
 declared in
-.In bmi.h .
+.In xft/bmi.h .
 The functions below operate on byte lanes; see
 .Sx Wider lanes
 for the 16-, 32- and 64-bit forms.
@@ -716,7 +716,7 @@ None of them fail or set an error.
 .Sh EXAMPLES
 Iterate over the set bits of a mask and read a big-endian length:
 .Bd -literal -offset indent
-#include <xft.h>
+#include <xft/xft.h>
 
 t_size	sum_selected(const t_u64 *vals, t_u64 mask)
 {

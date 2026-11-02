@@ -17,7 +17,7 @@
 .Nm xft_indexmap_seed
 .Nd namespaced open addressing hash map from byte keys to indices
 .Sh SYNOPSIS
-.In indexmap.h
+.In xft/indexmap.h
 .Fd #define INDEXMAP_INITIAL_SIZE 435
 .Fd #define INDEXMAP_NPOS __SIZE_MAX__
 .Ft t_indexmap
@@ -266,7 +266,7 @@ A rebuild may be triggered by an insert that only overwrites an existing
 key.
 .Sh EXAMPLES
 .Bd -literal -offset indent
-#include <xft.h>
+#include <xft/xft.h>
 
 t_result	demo(t_allocator a)
 {

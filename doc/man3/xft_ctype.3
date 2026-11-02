@@ -11,7 +11,7 @@
 .Nm xft_isspace
 .Nd ASCII character classification
 .Sh SYNOPSIS
-.In ctype.h
+.In xft/ctype.h
 .Ft int
 .Fn xft_isalpha "int c"
 .Ft int
@@ -87,7 +87,7 @@ Each function returns 1 if
 is in its class and 0 otherwise.
 .Sh EXAMPLES
 .Bd -literal -offset indent
-#include <xft.h>
+#include <xft/xft.h>
 
 t_size	skip_blanks(const char *s, t_size i)
 {

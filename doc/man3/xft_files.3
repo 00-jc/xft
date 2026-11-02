@@ -7,7 +7,7 @@
 .Nm xft_file_info
 .Nd open, close and describe files
 .Sh SYNOPSIS
-.In files.h
+.In xft/files.h
 .Ft t_fd
 .Fn xft_open_file "t_blk8r path" "t_fileopen_mode mode"
 .Ft t_fd
@@ -166,7 +166,7 @@ on failure.
 .Sh EXAMPLES
 Create a file only if it does not exist:
 .Bd -literal -offset indent
-#include <xft.h>
+#include <xft/xft.h>
 
 t_result	create_new(const char *path)
 {
@@ -184,7 +184,7 @@ t_result	create_new(const char *path)
 .Xr xft_os 3 ,
 .Xr xft 7
 .Sh CAVEATS
-.In files.h
+.In xft/files.h
 also declares
 .Vt t_fs_opts ,
 .Vt t_file_lock

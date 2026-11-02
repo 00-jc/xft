@@ -7,7 +7,7 @@
 .Nm xft_xxh3_64bits
 .Nd non-cryptographic hash functions
 .Sh SYNOPSIS
-.In hash.h
+.In xft/hash.h
 .Ft t_u128a
 .Fn xft_murmur3 "const t_u8 *restrict mem" "t_size size"
 .Ft t_u128a
@@ -15,7 +15,7 @@
 .Ft t_u64a
 .Fn xft_xxh3_64bits "t_buffer input" "t_u64a seed"
 .Sh DESCRIPTION
-.In hash.h
+.In xft/hash.h
 provides the two hash functions used by
 .Xr xft_indexmap 3
 and
@@ -106,7 +106,7 @@ Each function returns the hash.
 None of them fail or set an error.
 .Sh EXAMPLES
 .Bd -literal -offset indent
-#include <xft.h>
+#include <xft/xft.h>
 
 t_u64	hash_key(const t_u8 *key, t_size len)
 {
