@@ -41,8 +41,10 @@ inline t_nmask32	xft_vrangemask32(t_nvec32a v, t_u32 lo, t_u32 hi)
 __attribute__((__always_inline__, __flatten__, const, __used__))
 inline t_nmask32	xft_vrangemask32(t_nvec32a v, t_u32 lo, t_u32 hi)
 {
-	return (xft_vmask32((t_nvec32)(v - xft_vsplat32(lo)
-			<= xft_vsplat32(hi - lo))));
+	const t_nvec32	x = v - xft_vsplat32(lo);
+	const t_nvec32	y = xft_vsplat32(hi - lo);
+
+	return (xft_vmask32((~x | y) & ((x ^ y) | ~(y - x))));
 }
 
 #endif

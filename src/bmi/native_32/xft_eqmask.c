@@ -41,7 +41,10 @@ inline t_nmask32	xft_veqmask32(t_nvec32 vec, t_u32 b)
 __attribute__((__always_inline__, __flatten__, const, __used__))
 inline t_nmask32	xft_veqmask32(t_nvec32 vec, t_u32 b)
 {
-	return (xft_vmask32((t_nvec32)(vec == xft_vsplat32(b))));
+	const t_nvec32	z = vec ^ xft_vsplat32(b);
+	const t_nvec32	low = xft_vsplat32(0x7fffffff);
+
+	return (xft_vmask32(~(((z & low) + low) | z)));
 }
 
 #endif

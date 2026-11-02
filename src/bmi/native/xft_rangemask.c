@@ -41,8 +41,10 @@ inline t_nmask	xft_vrangemask(t_nvec v, t_u8 lo, t_u8 hi)
 __attribute__((__always_inline__, __flatten__, const, __used__))
 inline t_nmask	xft_vrangemask(t_nvec v, t_u8 lo, t_u8 hi)
 {
-	return (xft_vmask((t_nvec)(v - xft_vsplat(lo)
-			<= xft_vsplat(hi - lo))));
+	const t_nvec	x = v - xft_vsplat(lo);
+	const t_nvec	y = xft_vsplat(hi - lo);
+
+	return (xft_vmask((~x | y) & ((x ^ y) | ~(y - x))));
 }
 
 #endif

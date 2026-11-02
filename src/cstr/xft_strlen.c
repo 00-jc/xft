@@ -30,13 +30,13 @@ inline t_size	xft_strlen(const char *__restrict__ const str)
 	offst = (t_uptr)wp & ALIGN;
 	m = (t_nmask)(~0ULL >> (64 - xft_tern(offst + sizeof(t_nvec) > SIZE,
 					SIZE - offst, 64)));
-	w = xft_vmask(xft_vmask_load(wp, m) == 0) & m;
+	w = xft_veqmask(xft_vmask_load(wp, m), 0) & m;
 	if (__builtin_expect(w != 0, 1))
 		return (((t_uptr)wp + xft_memctz_u64(w)) - a);
 	wp = (t_blknr)((a & ~(sizeof(t_nvec) - 1)) + sizeof(t_nvec));
 	while (1)
 	{
-		w = xft_vmask(*(t_blknra)wp == 0);
+		w = xft_veqmask(*(t_blknra)wp, 0);
 		if (__builtin_expect(w != 0, 1))
 			return (((t_uptr)wp + xft_memctz_u64(w)) - a);
 		++wp;

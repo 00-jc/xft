@@ -41,7 +41,10 @@ inline t_nmask16	xft_vtestmask16(t_nvec16 vec, t_u16 b)
 __attribute__((__always_inline__, __flatten__, const, __used__))
 inline t_nmask16	xft_vtestmask16(t_nvec16 vec, t_u16 b)
 {
-	return (xft_vmask16((t_nvec16)((vec & xft_vsplat16(b)) != 0)));
+	const t_nvec16	z = vec & xft_vsplat16(b);
+	const t_nvec16	low = xft_vsplat16(0x7fff);
+
+	return (xft_vmask16(((z & low) + low) | z));
 }
 
 #endif

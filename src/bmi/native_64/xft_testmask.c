@@ -41,7 +41,10 @@ inline t_nmask64	xft_vtestmask64(t_nvec64 vec, t_u64 b)
 __attribute__((__always_inline__, __flatten__, const, __used__))
 inline t_nmask64	xft_vtestmask64(t_nvec64 vec, t_u64 b)
 {
-	return (xft_vmask64((t_nvec64)((vec & xft_vsplat64(b)) != 0)));
+	const t_nvec64	z = vec & xft_vsplat64(b);
+	const t_nvec64	low = xft_vsplat64(0x7fffffffffffffffULL);
+
+	return (xft_vmask64(((z & low) + low) | z));
 }
 
 #endif

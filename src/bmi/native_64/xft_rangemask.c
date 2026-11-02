@@ -41,8 +41,10 @@ inline t_nmask64	xft_vrangemask64(t_nvec64a v, t_u64 lo, t_u64 hi)
 __attribute__((__always_inline__, __flatten__, const, __used__))
 inline t_nmask64	xft_vrangemask64(t_nvec64a v, t_u64 lo, t_u64 hi)
 {
-	return (xft_vmask64((t_nvec64)(v - xft_vsplat64(lo)
-			<= xft_vsplat64(hi - lo))));
+	const t_nvec64	x = v - xft_vsplat64(lo);
+	const t_nvec64	y = xft_vsplat64(hi - lo);
+
+	return (xft_vmask64((~x | y) & ((x ^ y) | ~(y - x))));
 }
 
 #endif

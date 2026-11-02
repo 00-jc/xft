@@ -41,8 +41,10 @@ inline t_nmask16	xft_vrangemask16(t_nvec16a v, t_u16 lo, t_u16 hi)
 __attribute__((__always_inline__, __flatten__, const, __used__))
 inline t_nmask16	xft_vrangemask16(t_nvec16a v, t_u16 lo, t_u16 hi)
 {
-	return (xft_vmask16((t_nvec16)(v - xft_vsplat16(lo)
-			<= xft_vsplat16(hi - lo))));
+	const t_nvec16	x = v - xft_vsplat16(lo);
+	const t_nvec16	y = xft_vsplat16(hi - lo);
+
+	return (xft_vmask16((~x | y) & ((x ^ y) | ~(y - x))));
 }
 
 #endif

@@ -1,4 +1,4 @@
-.Dd October 29, 2026
+.Dd November 2, 2026
 .Dt XFT_BMI 3
 .Os xft
 .Sh NAME
@@ -645,7 +645,13 @@ is also defined.
 Without it:
 .Bl -bullet
 .It
-comparisons and splats use vector operators;
+comparisons and splats use vector operators, except in the native-width
+fallback, whose
+.Fn xft_veqmask ,
+.Fn xft_vtestmask
+and
+.Fn xft_vrangemask
+families compute each lane's high bit with bit arithmetic;
 .It
 the 32- and 64-bit masked loads use
 .Ql vpmaskmovd

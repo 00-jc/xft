@@ -41,7 +41,10 @@ inline t_nmask	xft_vtestmask(t_nvec vec, t_u8 b)
 __attribute__((__always_inline__, __flatten__, const, __used__))
 inline t_nmask	xft_vtestmask(t_nvec vec, t_u8 b)
 {
-	return (xft_vmask((t_nvec)((vec & xft_vsplat(b)) != 0)));
+	const t_nvec	z = vec & xft_vsplat(b);
+	const t_nvec	low = xft_vsplat(0x7f);
+
+	return (xft_vmask(((z & low) + low) | z));
 }
 
 #endif
