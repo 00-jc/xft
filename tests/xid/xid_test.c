@@ -31,6 +31,7 @@ static const t_u32	g_utf8[][4] = {
 
 static void	test_xid_utf8(void)
 {
+	const t_u32	safe = 0;
 	t_buffer	page;
 	t_u8		*base;
 	t_u8		*at;
@@ -45,7 +46,7 @@ static void	test_xid_utf8(void)
 		at = base + 4096 - g_utf8[i][1];
 		xft_memcpy(at, &g_utf8[i][0], g_utf8[i][1]);
 		xft_pin_invariant(xft_xid_decode(xft_xid_load_point(at,
-					g_utf8[i][1])) == g_utf8[i][2]);
+					g_utf8[i][1], &safe)) == g_utf8[i][2]);
 		xft_pin_invariant(g_utf8[i][1] == 0
 			|| xft_xid_codepoint_len(*at) == g_utf8[i][3]);
 		i++;

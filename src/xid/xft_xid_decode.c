@@ -55,15 +55,15 @@ inline t_u32	xft_xid_decode(t_u32 w)
 	return (cp & -ok);
 }
 
-__attribute__((__nonnull__(1), pure, __always_inline__, __used__))
+__attribute__((__nonnull__(1, 3), pure, __always_inline__, __used__))
 inline t_u32a	xft_xid_load_point(const t_u8 *__restrict__ const bytes,
-	t_size cap)
+	t_size cap, const t_u32 *__restrict__ const safe)
 {
 	t_u32a		codepoint;
 
-	codepoint = xft_mload_rel_u32(xft_fatptr(bytes, cap), 0);
-	codepoint |= xft_mload_rel_u24(xft_fatptr(bytes, cap), 0);
-	codepoint |= xft_mload_rel_u16(xft_fatptr(bytes, cap), 0);
-	codepoint |= xft_mload_rel_u8(xft_fatptr(bytes, cap), 0);
+	codepoint = xft_mload_rel_u32(xft_fatptr(bytes, cap), 0, safe);
+	codepoint |= xft_mload_rel_u24(xft_fatptr(bytes, cap), 0, safe);
+	codepoint |= xft_mload_rel_u16(xft_fatptr(bytes, cap), 0, (t_blk16r)safe);
+	codepoint |= xft_mload_rel_u8(xft_fatptr(bytes, cap), 0, (t_blk8r)safe);
 	return (codepoint);
 }

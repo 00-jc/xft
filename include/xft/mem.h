@@ -85,15 +85,15 @@ t_any			xft_align_bkw(t_any ptr, const t_size align)\
 void			xft_stfence(void);
 void			xft_ldfence(void);
 
-t_u8			xft_mload_rel_u8(t_buffer mem, t_size rel)\
-					__attribute__((__hot__, __pure__));
-t_u16			xft_mload_rel_u16(t_buffer mem, t_size rel)\
-					__attribute__((__hot__, __pure__));
-t_u32			xft_mload_rel_u24(t_buffer mem, t_size rel)\
-					__attribute__((__hot__, __pure__));
-t_u32			xft_mload_rel_u32(t_buffer mem, t_size rel)\
-					__attribute__((__hot__, __pure__));
-t_u64			xft_mload_rel_u64(t_buffer mem, t_size rel)\
-					__attribute__((__hot__, __pure__));
+t_u8			xft_mload_rel_u8(t_buffer mem, t_size rel, t_blk8r safe)\
+					__attribute__((__hot__, __pure__, __nonnull__(3)));
+t_u16			xft_mload_rel_u16(t_buffer mem, t_size rel, t_blk16r safe)\
+					__attribute__((__hot__, __pure__, __nonnull__(3)));
+t_u32			xft_mload_rel_u24(t_buffer mem, t_size rel, t_blk32r safe)\
+					__attribute__((__hot__, __pure__, __nonnull__(3)));
+t_u32			xft_mload_rel_u32(t_buffer mem, t_size rel, t_blk32r safe)\
+					__attribute__((__hot__, __pure__, __nonnull__(3)));
+t_u64			xft_mload_rel_u64(t_buffer mem, t_size rel, t_blk64r safe)\
+					__attribute__((__hot__, __pure__, __nonnull__(3)));
 
 #endif

@@ -19,7 +19,7 @@
 .Ft bool
 .Fn xft_xid_is_continue "t_u32 cp"
 .Ft t_u32a
-.Fn xft_xid_load_point "const t_u8 *restrict bytes" "t_size cap"
+.Fn xft_xid_load_point "const t_u8 *restrict bytes" "t_size cap" "const t_u32 *restrict safe"
 .Ft t_u32
 .Fn xft_xid_decode "t_u32 w"
 .Ft t_u8
@@ -95,10 +95,18 @@ lands in bits 0\(en7,
 in bits 8\(en15, and so on.
 Only bytes below
 .Fa cap
-are read, and the bytes past it read as 0, so it never reads at or past
+are read, and the loads that would pass it read
+.Fa safe
+instead, so it never reads at or past
 .Fa bytes No + Fa cap
 and a sequence that ends flush against an unmapped page is safe to load.
+.Fa safe
+must point to a
+.Vt t_u32
+holding 0, and one such value serves every call.
 .Fa bytes
+and
+.Fa safe
 must not be
 .Dv NULL ,
 even when
@@ -272,13 +280,14 @@ The same scan over UTF-8 bytes; an invalid or truncated sequence decodes to
 
 t_size	ident_len_utf8(const t_u8 *s, t_size n)
 {
-	t_size	i;
+	static const t_u32	safe = 0;
+	t_size				i;
 
-	if (!xft_xid_is_start(xft_xid_decode(xft_xid_load_point(s, n))))
+	if (!xft_xid_is_start(xft_xid_decode(xft_xid_load_point(s, n, &safe))))
 		return (0);
 	i = xft_xid_codepoint_len(s[0]);
 	while (i < n && xft_xid_is_continue(xft_xid_decode(
-				xft_xid_load_point(s + i, n - i))))
+				xft_xid_load_point(s + i, n - i, &safe))))
 		i += xft_xid_codepoint_len(s[i]);
 	return (i);
 }

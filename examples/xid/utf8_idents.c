@@ -23,7 +23,9 @@
 __attribute__((__always_inline__))
 static inline t_u32	decode_at(t_buffer f, t_size at)
 {
-	return (xft_xid_decode(xft_xid_load_point(f.mem + at, f.size - at)));
+	static const t_u32	safe = 0;
+
+	return (xft_xid_decode(xft_xid_load_point(f.mem + at, f.size - at, &safe)));
 }
 
 static void	report_invalid(t_writer *w, t_buffer f, t_size at)
@@ -97,7 +99,7 @@ void	xft_main(const t_any *__restrict__ const sp)
 		xft_exit_process(1);
 	if ((t_any)kp.argv == nullptr || kp.argv[1] == nullptr)
 		__builtin_unreachable();
-	f = xft_map_file((const t_u8 *)kp.argv[1], xft_o_rdonly);
+	f = xft_map_file((const t_u8 *)kp.argv[1], 0);
 	xft_kernel_ptrs_destroy(&kp);
 	if (f.mem == nullptr)
 		xft_exit_process(1);
