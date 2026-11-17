@@ -267,7 +267,11 @@ const SRCS = [_][]const u8{
     "src/io/file/win64/xft_map_file.c",
     "src/io/file/win64/xft_open_file.c",
     "src/io/reader/linux/xft_fs_reader.c",
+    "src/io/reader/linux/xft_tcp_reader.c",
+    "src/io/reader/linux/xft_udp_reader.c",
     "src/io/reader/win64/xft_fs_reader.c",
+    "src/io/reader/win64/xft_tcp_reader.c",
+    "src/io/reader/win64/xft_udp_reader.c",
     "src/io/reader/xft_fs_reader.c",
     "src/io/reader/xft_growable_reader.c",
     "src/io/reader/xft_mem_reader.c",
@@ -275,13 +279,21 @@ const SRCS = [_][]const u8{
     "src/io/reader/xft_reader_discard.c",
     "src/io/reader/xft_reader_read.c",
     "src/io/reader/xft_reader_stream.c",
+    "src/io/reader/xft_tcp_reader.c",
+    "src/io/reader/xft_udp_reader.c",
     "src/io/std/linux/xft_get_fixed_fd.c",
     "src/io/std/win64/xft_get_fixed_fd.c",
     "src/io/writer/linux/xft_fs_writer.c",
+    "src/io/writer/linux/xft_tcp_writer.c",
+    "src/io/writer/linux/xft_udp_writer.c",
     "src/io/writer/win64/xft_fs_writer.c",
+    "src/io/writer/win64/xft_tcp_writer.c",
+    "src/io/writer/win64/xft_udp_writer.c",
     "src/io/writer/xft_fs_writer.c",
     "src/io/writer/xft_growable_writer.c",
     "src/io/writer/xft_mem_writer.c",
+    "src/io/writer/xft_tcp_writer.c",
+    "src/io/writer/xft_udp_writer.c",
     "src/io/writer/xft_writer_drain_all.c",
     "src/io/writer/xft_writer_flush.c",
     "src/math/3d/xft_3dadd.c",
@@ -329,6 +341,12 @@ const SRCS = [_][]const u8{
     "src/mem/vec256/xft_memset_vec256.c",
     "src/mem/vec512/xft_memcpy_vec512.c",
     "src/mem/vec512/xft_memset_vec512.c",
+    "src/net/linux/xft_net_addr.c",
+    "src/net/linux/xft_net_connect.c",
+    "src/net/linux/xft_net_socket.c",
+    "src/net/win64/xft_net_addr.c",
+    "src/net/win64/xft_net_connect.c",
+    "src/net/win64/xft_net_socket.c",
     "src/rng/xft_xoshiro256ss.c",
     "src/rt/xft_dyn_cpu_select.c",
     "src/rt/xft_exit_process.c",
@@ -362,6 +380,7 @@ const SRCS_RT_linux = [_][]const u8{
     "src/rt/linux/xft_get_kernel_ptrs.c",
     "src/rt/linux/xft_get_rt.c",
     "src/rt/linux/xft_get_sysinfo.c",
+    "src/rt/linux/xft_init_sockets.c",
     "src/rt/linux/xft_start_tls_for_main_thread.c",
 };
 
@@ -425,6 +444,7 @@ const SRCS_RT_win32 = [_][]const u8{
     "src/rt/win32/xft_get_kernel_ptrs.c",
     "src/rt/win32/xft_get_rt.c",
     "src/rt/win32/xft_get_sysinfo.c",
+    "src/rt/win32/xft_init_sockets.c",
     "src/rt/win32/xft_start_tls_for_main_thread.c",
 };
 
@@ -465,9 +485,13 @@ const SRCS_RT_TLS_win32 = [_][]const u8{
 };
 
 const XFT_SYSCALLS = [_][]const u8{
+    "accept",
+    "bind",
     "clock_gettime",
     "clone",
     "close",
+    "connect",
+    "epoll",
     "exit",
     "exit_group",
     "fmap",
@@ -475,6 +499,7 @@ const XFT_SYSCALLS = [_][]const u8{
     "fstatx",
     "getpid",
     "ioctl",
+    "listen",
     "lockf",
     "madvise",
     "mkdir",
@@ -485,9 +510,14 @@ const XFT_SYSCALLS = [_][]const u8{
     "perf_events",
     "prlimit64",
     "read",
+    "recvfrom",
     "sched_getaffinity",
     "sched_setaffinity",
+    "sendfile",
+    "sendto",
     "set_tid_address",
+    "setsockopt",
+    "socket",
     "statx",
     "wait4",
     "write",
@@ -664,6 +694,22 @@ const SRCS_TEST = [_][]const u8{
     "tests/mem/streaming/streaming_test.c",
     "tests/mem/streaming/streaming_test_memcpy.c",
     "tests/mem/streaming/streaming_test_memset.c",
+    "tests/net/net_test.c",
+    "tests/net/net_test_sockets.c",
+    "tests/net/net_test_tcp_bound_client.c",
+    "tests/net/net_test_tcp_peer.c",
+    "tests/net/net_test_tcp_reader.c",
+    "tests/net/net_test_tcp_refused.c",
+    "tests/net/net_test_tcp_relay.c",
+    "tests/net/net_test_tcp_roundtrip.c",
+    "tests/net/net_test_tcp_sendfile.c",
+    "tests/net/net_test_tcp_v6.c",
+    "tests/net/net_test_udp_connected.c",
+    "tests/net/net_test_udp_datagrams.c",
+    "tests/net/net_test_udp_discard_stream.c",
+    "tests/net/net_test_udp_file.c",
+    "tests/net/net_test_udp_oversized.c",
+    "tests/net/net_test_utils.c",
     "tests/rng/xoshiro/xoshiro_test.c",
     "tests/rng/xoshiro/xoshiro_test_basic.c",
     "tests/rng/xoshiro/xoshiro_test_init_diff.c",
@@ -1151,6 +1197,7 @@ fn xftModule(x: xft_ctx, v: xft_variant) *std.Build.Module {
         mod.linkSystemLibrary("kernel32", .{});
         mod.linkSystemLibrary("shell32", .{});
         mod.linkSystemLibrary("bcrypt", .{});
+        mod.linkSystemLibrary("ws2_32", .{});
         mod.linkSystemLibrary("api-ms-win-core-synch-l1-2-0", .{});
     }
     return mod;
@@ -1331,6 +1378,7 @@ pub fn build(b: *std.Build) !void {
         if (cfg.tests) {
             const tests = try addHarness(x, "tests", san, &SRCS_TEST, &.{"tests/include"}, &.{});
             const run = b.addRunArtifact(tests);
+            run.setCwd(b.path("."));
             const test_step = b.step("test", "Run the unit tests");
             test_step.dependOn(&run.step);
             if (hasFreestandingThreads(x)) {

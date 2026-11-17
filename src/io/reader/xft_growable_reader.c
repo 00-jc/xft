@@ -19,17 +19,17 @@ static t_result	growable_reader_stream(t_reader *r, t_writer *w, t_size limit,
 	t_size *size)
 {
 	t_reader_ctx_growable *const	ctx = r->reader_ctx;
+	const t_buffer_with_capacity	buf = ctx->vec.buf;
 	t_size							hoist;
-	t_buffer						chunk;
 
-	if (ctx->vec.buf.mem == nullptr || w->vtable.drain_all == nullptr)
+	if (buf.mem == nullptr || w->vtable.drain_all == nullptr)
 		__builtin_unreachable();
-	hoist = xft_tern_s(limit < ctx->vec.buf.size, limit, ctx->vec.buf.size);
-	chunk = xft_fatptr(ctx->vec.buf.mem, hoist);
-	if (__builtin_expect(!w->vtable.drain_all(w, chunk), 0))
+	hoist = xft_tern_s(limit < buf.size, limit, buf.size);
+	if (__builtin_expect(!w->vtable.drain_all(w, xft_fatptr(buf.mem, hoist)),
+			0))
 		return (KO);
-	ctx->vec.buf.size -= hoist;
-	xft_memmove(ctx->vec.buf.mem, ctx->vec.buf.mem + hoist, ctx->vec.buf.size);
+	ctx->vec.buf.size = buf.size - hoist;
+	xft_memmove(buf.mem, buf.mem + hoist, buf.size - hoist);
 	*size = hoist;
 	return (OK);
 }
@@ -39,13 +39,14 @@ static t_result	growable_reader_discard(t_reader *r, t_size limit,
 	t_size *size)
 {
 	t_reader_ctx_growable *const	ctx = r->reader_ctx;
+	const t_buffer_with_capacity	buf = ctx->vec.buf;
 	t_size							hoist;
 
-	if (ctx->vec.buf.mem == nullptr)
+	if (buf.mem == nullptr)
 		__builtin_unreachable();
-	hoist = xft_tern_s(limit < ctx->vec.buf.size, limit, ctx->vec.buf.size);
-	ctx->vec.buf.size -= hoist;
-	xft_memmove(ctx->vec.buf.mem, ctx->vec.buf.mem + hoist, ctx->vec.buf.size);
+	hoist = xft_tern_s(limit < buf.size, limit, buf.size);
+	ctx->vec.buf.size = buf.size - hoist;
+	xft_memmove(buf.mem, buf.mem + hoist, buf.size - hoist);
 	*size = hoist;
 	return (OK);
 }
@@ -54,14 +55,16 @@ __attribute__((__nonnull__(1, 3)))
 static t_result	growable_reader_read(t_reader *r, t_buffer dst, t_size *size)
 {
 	t_reader_ctx_growable *const	ctx = r->reader_ctx;
+	const t_buffer_with_capacity	buf = ctx->vec.buf;
+	t_size							hoist;
 
-	if (ctx->vec.buf.mem == nullptr)
+	if (buf.mem == nullptr)
 		__builtin_unreachable();
-	*size = xft_tern_s(dst.size < ctx->vec.buf.size, dst.size,
-			ctx->vec.buf.size);
-	xft_memcpy(dst.mem, ctx->vec.buf.mem, *size);
-	ctx->vec.buf.size -= *size;
-	xft_memmove(ctx->vec.buf.mem, ctx->vec.buf.mem + *size, ctx->vec.buf.size);
+	hoist = xft_tern_s(dst.size < buf.size, dst.size, buf.size);
+	xft_memcpy(dst.mem, buf.mem, hoist);
+	ctx->vec.buf.size = buf.size - hoist;
+	xft_memmove(buf.mem, buf.mem + hoist, buf.size - hoist);
+	*size = hoist;
 	return (OK);
 }
 

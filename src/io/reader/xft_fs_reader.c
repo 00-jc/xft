@@ -12,6 +12,17 @@
 
 #include <xft/xft_p_io.h>
 
+__attribute__((__nonnull__(1, 2, 4)))
+t_result	xft__fs_reader_stream(t_reader *r, t_writer *w, t_size limit,
+	t_size *size)
+{
+	t_reader_fs *const	ctx = r->reader_ctx;
+
+	if (w->vtable.drain_fd == nullptr)
+		__builtin_unreachable();
+	return (w->vtable.drain_fd(w, ctx->fd, limit, size));
+}
+
 __attribute__((__nonnull__(1), __always_inline__, __used__))
 inline t_reader	xft_fs_reader(t_reader_fs *ctx, t_fd fd, t_buffer buffer)
 {

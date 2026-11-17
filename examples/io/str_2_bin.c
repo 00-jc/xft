@@ -12,7 +12,6 @@
 
 #include <xft/fmt.h>
 #include <xft/xft.h>
-#include <xft/xft_p_rt.h>
 
 static t_u8	g_out[1024];
 

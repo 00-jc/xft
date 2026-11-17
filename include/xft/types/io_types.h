@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/03 18:01:29 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/11/17 02:27:17 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/11/17 16:36:24 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 # include <xft/primitives.h>
 # include <xft/files.h>
+# include <xft/net.h>
 # include <xft/alloc.h>
 # include <xft/types/vec_types.h>
 
@@ -28,6 +29,10 @@ typedef struct s_reader	t_reader;
 typedef struct s_writer	t_writer;
 
 typedef t_result		(*t_writer_drain_all)(t_writer *w, t_buffer data)\
+						__attribute__((__nonnull__));
+
+typedef t_result		(*t_writer_drain_fd)(t_writer *w, t_fd fd,\
+						t_size limit, t_size *size)\
 						__attribute__((__nonnull__));
 
 typedef t_result		(*t_writer_flush)(t_writer *w)\
@@ -57,6 +62,7 @@ typedef t_result		(*t_reader_read_all)(t_reader *r, t_buffer dst)\
 typedef struct s_writer_vtable
 {
 	t_writer_drain_all	drain_all;
+	t_writer_drain_fd	drain_fd;
 	t_writer_flush		flush;
 }	t_writer_vtable;
 
@@ -86,6 +92,19 @@ typedef struct s_reader_ctx_growable
 	t_vec				vec;
 }	t_reader_ctx_growable;
 
+typedef struct s_reader_ctx_tcp
+{
+	t_buffer			buf;
+	t_fd				socket;
+}	t_reader_ctx_tcp;
+
+typedef struct s_reader_ctx_udp
+{
+	t_buffer			buf;
+	t_fd				socket;
+	t_ip_addr			ip;
+}	t_reader_ctx_udp;
+
 typedef struct s_reader
 {
 	t_any			reader_ctx;
@@ -108,6 +127,19 @@ typedef struct s_writer_ctx_growable
 	t_allocator				allocator;
 	t_vec					vec;
 }	t_writer_ctx_growable;
+
+typedef struct s_writer_ctx_tcp
+{
+	t_buffer_with_capacity	buf;
+	t_fd					socket;
+}	t_writer_ctx_tcp;
+
+typedef struct s_writer_ctx_udp
+{
+	t_buffer_with_capacity	buf;
+	t_fd					socket;
+	t_ip_addr				ip;
+}	t_writer_ctx_udp;
 
 typedef struct s_writer
 {

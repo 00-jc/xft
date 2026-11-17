@@ -5,6 +5,8 @@
 .Nm xft_fs_reader ,
 .Nm xft_mem_reader ,
 .Nm xft_growable_reader ,
+.Nm xft_tcp_reader ,
+.Nm xft_udp_reader ,
 .Nm xft_reader_stream ,
 .Nm xft_reader_stream_all ,
 .Nm xft_reader_discard ,
@@ -14,6 +16,8 @@
 .Nm xft_fs_writer ,
 .Nm xft_mem_writer ,
 .Nm xft_growable_writer ,
+.Nm xft_tcp_writer ,
+.Nm xft_udp_writer ,
 .Nm xft_writer_drain_all ,
 .Nm xft_writer_flush ,
 .Nm xft_get_stdin ,
@@ -32,6 +36,10 @@
 .Fn xft_mem_reader "t_reader_ctx_memory *ctx" "t_buffer src"
 .Ft t_reader
 .Fn xft_growable_reader "t_reader_ctx_growable *ctx" "t_vec vec"
+.Ft t_reader
+.Fn xft_tcp_reader "t_reader_ctx_tcp *ctx" "t_fd fd" "t_buffer buffer"
+.Ft t_reader
+.Fn xft_udp_reader "t_reader_ctx_udp *ctx" "t_fd fd" "t_buffer buffer"
 .Ft t_result
 .Fn xft_reader_stream "t_reader *r" "t_writer *w" "t_size limit" "t_size *size"
 .Ft t_result
@@ -50,6 +58,10 @@
 .Fn xft_mem_writer "t_writer_ctx_memory *ctx" "t_buffer dst"
 .Ft t_writer
 .Fn xft_growable_writer "t_writer_ctx_growable *ctx" "t_allocator allocator" "t_vec vec"
+.Ft t_writer
+.Fn xft_tcp_writer "t_writer_ctx_tcp *ctx" "t_fd fd" "t_buffer buffer"
+.Ft t_writer
+.Fn xft_udp_writer "t_writer_ctx_udp *ctx" "t_fd fd" "t_buffer buffer" "const t_ip_addr *dest"
 .Ft t_result
 .Fn xft_writer_drain_all "t_writer *w" "t_buffer data"
 .Ft t_result
@@ -90,7 +102,13 @@ on Windows,
 a caller-owned memory region, and
 .Dq growable ,
 a
-.Vt t_vec .
+.Vt t_vec ,
+.Dq tcp ,
+a connected stream socket, and
+.Dq udp ,
+a datagram socket.
+Sockets are created with
+.Xr xft_net 3 .
 .Ss Types
 .Bd -literal -offset indent
 typedef struct s_reader {
@@ -101,7 +119,7 @@ typedef struct s_reader {
 
 typedef struct s_writer {
 	t_any			writer_ctx;
-	t_writer_vtable	vtable;	/* drain_all, flush */
+	t_writer_vtable	vtable;	/* drain_all, drain_fd, flush */
 } t_writer;
 
 typedef struct s_reader_ctx_fs {
@@ -130,7 +148,44 @@ typedef struct s_writer_ctx_growable {
 	t_allocator	allocator;
 	t_vec		vec;	/* bytes written */
 } t_writer_ctx_growable;
+
+typedef struct s_reader_ctx_tcp {
+	t_buffer	buf;	/* scratch for discard on Windows */
+	t_fd		socket;
+} t_reader_ctx_tcp;
+
+typedef struct s_reader_ctx_udp {
+	t_buffer	buf;	/* staging for stream and discard */
+	t_fd		socket;
+	t_ip_addr	ip;	/* sender of the last datagram */
+} t_reader_ctx_udp;
+
+typedef struct s_writer_ctx_tcp {
+	t_buffer_with_capacity	buf;	/* staged bytes */
+	t_fd					socket;
+} t_writer_ctx_tcp;
+
+typedef struct s_writer_ctx_udp {
+	t_buffer_with_capacity	buf;	/* the next datagram */
+	t_fd					socket;
+	t_ip_addr				ip;	/* destination */
+} t_writer_ctx_udp;
 .Ed
+.Pp
+.Vt t_writer_vtable Ns .drain_fd
+has the type
+.Bd -literal -offset indent
+t_result	(*)(t_writer *w, t_fd fd, t_size limit, t_size *size)
+.Ed
+.Pp
+and moves up to
+.Fa limit
+bytes from the handle
+.Fa fd
+into the writer, storing the count in
+.Pf * Fa size .
+The fs and tcp readers stream through it; see
+.Sx Writers .
 .Pp
 .Vt t_iovec
 holds
@@ -147,8 +202,6 @@ bytes from
 .Fa r
 into
 .Fa w
-through
-.Fn xft_writer_drain_all
 and stores the count in
 .Pf * Fa size .
 It stops at
@@ -177,15 +230,60 @@ or
 bytes were transferred.
 Bytes transferred before the input ended are still delivered and consumed.
 .Pp
-The fs reader reads at most
+.Fn xft_reader_stream
+on an fs reader passes its handle to the writer's
+.Fa drain_fd ,
+which reads straight into the writer's own buffer or memory, so the bytes
+are not staged twice.
+.Fn xft_reader_discard
+reads at most
 .Fa buffer Ns .size
-bytes into its staging buffer per call and drains each chunk to the writer.
+bytes into the staging buffer per call.
 .Fn xft_reader_read
 on an fs reader reads straight into
 .Fa dst .
 A read that returns no bytes is the end of the input.
 On Linux interrupted calls are retried; on Windows a broken pipe is the end
 of the input.
+.Pp
+The tcp reader streams through the writer's
+.Fa drain_fd
+like the fs reader.
+.Fn xft_reader_read
+on it receives with
+.Dv MSG_WAITALL ,
+so the kernel fills
+.Fa dst
+in one call unless a signal or the end of the stream cuts it short.
+.Fn xft_reader_discard
+on Linux receives with
+.Dv MSG_TRUNC ,
+which drops the bytes in the kernel without copying them; on Windows it
+receives into
+.Fa buffer .
+The end of the stream is the peer closing its side.
+.Pp
+The udp reader handles exactly one datagram per call.
+.Fn xft_reader_read
+receives the next datagram into
+.Fa dst
+and drops whatever does not fit.
+.Fn xft_reader_stream
+receives one datagram of at most
+.Fa limit
+bytes into
+.Fa buffer
+and passes it to
+.Fn xft_writer_drain_all .
+.Fn xft_reader_discard
+drops the next datagram and reports its length, capped at
+.Fa limit ;
+on Linux it receives with
+.Dv MSG_TRUNC
+and copies nothing, on Windows it receives into
+.Fa buffer .
+Each call stores the sender's address in
+.Fa ctx Ns ->ip .
 .Pp
 The mem reader takes bytes from the front of
 .Fa src
@@ -227,6 +325,52 @@ Nothing is flushed implicitly; staged bytes are lost unless
 .Fn xft_writer_flush
 is called.
 .Pp
+The fs writer's
+.Fa drain_fd
+flushes the staged bytes, then repeatedly reads up to the staging capacity
+from the handle into the staging buffer and flushes the previous chunk; the
+last chunk stays staged until the next flush.
+.Pp
+The tcp writer stages bytes like the fs writer.
+When the staged bytes and
+.Fa data
+do not fit, they are sent together, the staged bytes with
+.Dv MSG_MORE
+on Linux so that they share a segment with
+.Fa data .
+.Fn xft_writer_flush
+sends the staged bytes.
+Its
+.Fa drain_fd
+flushes, then on Linux moves the bytes with
+.Xr sendfile 2 ,
+without copying them through user space.
+When the first
+.Xr sendfile 2
+call fails before anything was sent, as it does for a pipe, a terminal or a
+socket, it falls back to reading into the staging buffer and sending each
+chunk.
+On Windows it always reads and sends chunks.
+.Pp
+The udp writer sends one datagram to
+.Fa dest
+per flush.
+.Fn xft_writer_drain_all
+appends to the staged bytes when
+.Fa data
+fits.
+Otherwise the staged bytes go out as one datagram first, and
+.Fa data
+is then staged, or sent as a datagram of its own when it is larger than the
+staging capacity.
+.Fn xft_writer_flush
+sends the staged bytes as one datagram and sends nothing when none are
+staged.
+Its
+.Fa drain_fd
+reads the handle in chunks of the staging capacity and sends each chunk as
+one datagram; the last chunk stays staged until the next flush.
+.Pp
 The mem writer copies into
 .Fa dst
 and advances
@@ -242,6 +386,19 @@ with
 For both,
 .Fn xft_writer_flush
 does nothing.
+The mem writer's
+.Fa drain_fd
+reads straight into the room left.
+The growable writer's
+.Fa drain_fd
+asks
+.Fn xft_fileinfo_from_fd
+for the size of the handle, reserves the smaller of that and
+.Fa limit ,
+and reads into the reserved space.
+For a handle that reports a size of 0, such as a pipe, a terminal or a
+socket, it reads into the spare capacity and grows the vector each
+time it fills up.
 The caller still owns the vector and frees it with
 .Fn xft_vec_destroy
 and
@@ -294,6 +451,8 @@ A mem writer fails, without copying anything, when
 .Fa data
 is larger than the room left.
 A growable writer fails when the vector cannot grow.
+A tcp or udp handle fails when a send or receive fails; a udp writer also
+fails when a datagram is sent short.
 Mem and growable readers never fail.
 .Pp
 The constructors return the handle and cannot fail.
@@ -358,6 +517,7 @@ t_result	slurp(t_allocator a, t_reader *r, t_writer_ctx_growable *ctx)
 .Xr xft_async 3 ,
 .Xr xft_files 3 ,
 .Xr xft_fmt 3 ,
+.Xr xft_net 3 ,
 .Xr xft_vec 3 ,
 .Xr xft 7
 .Sh CAVEATS
@@ -370,11 +530,11 @@ must not be
 and an fs reader's or fs writer's buffer must not be empty; this is assumed,
 not checked.
 .Pp
-On a pipe or terminal,
+On a pipe, a terminal or a socket,
 .Fn xft_reader_stream
 and
 .Fn xft_reader_read
-on an fs reader keep reading until
+on an fs or tcp reader keep reading until
 .Fa limit
 or
 .Fa dst
@@ -385,6 +545,18 @@ already written, so flushing again can write them twice.
 .Pp
 Every read from a growable reader moves the remaining bytes, so its cost
 grows with the bytes left.
+.Pp
+The growable writer's
+.Fa drain_fd
+on a regular file reads at most the size reported when it starts, so bytes
+appended to the file after that are left for the next call.
+.Pp
+The tcp writer's
+.Fa drain_fd
+tries
+.Xr sendfile 2
+first on every call, so draining a socket or a pipe into it costs one
+failed system call before the copy starts.
 .Pp
 Do not pass the zeroed result of a failed
 .Fn xft_map_file_into_memory

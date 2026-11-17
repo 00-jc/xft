@@ -42,6 +42,7 @@ void	test_mutex(t_test *t);
 void	test_ring_buffer(t_test *t);
 void	test_xoshiro(t_test *t);
 void	test_xid(t_test *t);
+void	test_net(t_test *t);
 void	test_threads(t_test *t, t_sysinfo sysinfo);
 
 #endif

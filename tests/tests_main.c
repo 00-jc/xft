@@ -49,6 +49,7 @@ inline void	run_all_tests(t_test *t)
 	test_ring_buffer(t);
 	test_xoshiro(t);
 	test_xid(t);
+	test_net(t);
 }
 
 __attribute__((__always_inline__, __used__))

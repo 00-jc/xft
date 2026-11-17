@@ -22,6 +22,7 @@
 # include <xft/ctype.h>
 # include <xft/io.h>
 # include <xft/files.h>
+# include <xft/net.h>
 # include <xft/vec.h>
 # include <xft/soa.h>
 # include <xft/swissmap.h>

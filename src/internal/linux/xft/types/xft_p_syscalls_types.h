@@ -67,6 +67,22 @@ typedef enum e_xft_libc_futex : t_u32
 
 # endif
 
+# if defined(XFT_REQUIRE_LIBC) && defined(SYS_sendfile64)
+
+typedef enum e_xft_libc_sendfile : t_u32
+{
+	xft_libc_sys_sendfile = SYS_sendfile64,
+}	t_xft_libc_sendfile;
+
+# elif defined(XFT_REQUIRE_LIBC)
+
+typedef enum e_xft_libc_sendfile : t_u32
+{
+	xft_libc_sys_sendfile = SYS_sendfile,
+}	t_xft_libc_sendfile;
+
+# endif
+
 # if defined(XFT_REQUIRE_LIBC)
 
 typedef struct statx	t_statx;
@@ -133,6 +149,7 @@ typedef enum e_xft_errno : t_u16
 {
 	xft_eintr = 4,
 	xft_eagain = 11,
+	xft_einprogress = 115,
 	xft_max_errno = 4095,
 }	t_xft_errno;
 
@@ -141,6 +158,7 @@ typedef enum e_xft_sysres : t_u8
 	xft_sys_ko = 0,
 	xft_sys_ok = 1,
 	xft_sys_repeat = 2,
+	xft_sys_pending = 3,
 }	t_xft_sysres;
 
 typedef enum e_xft_prot : t_u8
@@ -287,6 +305,168 @@ typedef enum e_xft_clone_flag : t_u32
 	xft_clone_child_cleartid = 0x00200000,
 	xft_clone_child_settid = 0x01000000,
 }	t_xft_clone_flag;
+
+typedef enum e_xft_af : t_u8
+{
+	xft_af_unspec = 0,
+	xft_af_unix = 1,
+	xft_af_inet = 2,
+	xft_af_inet6 = 10,
+	xft_af_netlink = 16,
+	xft_af_packet = 17,
+}	t_xft_af;
+
+typedef enum e_xft_sock_type : t_u8
+{
+	xft_sock_stream = 1,
+	xft_sock_dgram = 2,
+	xft_sock_raw = 3,
+	xft_sock_rdm = 4,
+	xft_sock_seqpacket = 5,
+}	t_xft_sock_type;
+
+typedef enum e_xft_sock_flag : t_u32
+{
+	xft_sock_nonblock = 04000,
+	xft_sock_cloexec = 02000000,
+}	t_xft_sock_flag;
+
+typedef enum e_xft_ipproto : t_u8
+{
+	xft_ipproto_ip = 0,
+	xft_ipproto_icmp = 1,
+	xft_ipproto_tcp = 6,
+	xft_ipproto_udp = 17,
+	xft_ipproto_ipv6 = 41,
+	xft_ipproto_raw = 255,
+}	t_xft_ipproto;
+
+typedef enum e_xft_msg_flag : t_u16
+{
+	xft_msg_oob = 0x1,
+	xft_msg_peek = 0x2,
+	xft_msg_dontroute = 0x4,
+	xft_msg_trunc = 0x20,
+	xft_msg_dontwait = 0x40,
+	xft_msg_waitall = 0x100,
+	xft_msg_nosignal = 0x4000,
+}	t_xft_msg_flag;
+
+typedef union u_xft_msg_opts
+{
+	struct
+	{
+		t_u16	oob			: 1;
+		t_u16	peek		: 1;
+		t_u16	_1			: 3;
+		t_u16	trunc		: 1;
+		t_u16	dontwait	: 1;
+		t_u16	_2			: 1;
+		t_u16	waitall		: 1;
+		t_u16	_3			: 6;
+		t_u16	more		: 1;
+	};
+	t_u16	flags;
+}	t_xft_msg_opts;
+
+typedef enum e_xft_somaxconn : t_u16
+{
+	xft_somaxconn = 4096,
+}	t_xft_somaxconn;
+
+typedef enum e_xft_sol : t_u8
+{
+	xft_sol_socket = 1,
+}	t_xft_sol;
+
+typedef enum e_xft_sockopt : t_u8
+{
+	xft_so_reuseaddr = 2,
+	xft_so_error = 4,
+	xft_so_broadcast = 6,
+	xft_so_reuseport = 15,
+	xft_ipv6_v6only = 26,
+	xft_so_sndtimeo_new = 67,
+}	t_xft_sockopt;
+
+typedef enum e_xft_epoll_flag : t_u32
+{
+	xft_epoll_cloexec = 02000000,
+}	t_xft_epoll_flag;
+
+typedef enum e_xft_epoll_op : t_u8
+{
+	xft_epoll_ctl_add = 1,
+	xft_epoll_ctl_del = 2,
+	xft_epoll_ctl_mod = 3,
+}	t_xft_epoll_op;
+
+typedef enum e_xft_epoll_events : t_u32
+{
+	xft_epollin = 0x001,
+	xft_epollpri = 0x002,
+	xft_epollout = 0x004,
+	xft_epollerr = 0x008,
+	xft_epollhup = 0x010,
+	xft_epollrdhup = 0x2000,
+	xft_epollexclusive = 0x10000000,
+	xft_epollwakeup = 0x20000000,
+	xft_epolloneshot = 0x40000000,
+	xft_epollet = 0x80000000,
+}	t_xft_epoll_events;
+
+typedef struct s_sockaddr
+{
+	t_u16a	sa_family;
+	t_u8	sa_data[14];
+}	t_sockaddr;
+
+typedef struct s_sockaddr_in
+{
+	t_u16a	sin_family;
+	t_u16a	sin_port;
+	t_u32a	sin_addr;
+	t_u8	sin_zero[8];
+}	t_sockaddr_in;
+
+typedef struct s_sockaddr_in6
+{
+	t_u16a	sin6_family;
+	t_u16a	sin6_port;
+	t_u32a	sin6_flowinfo;
+	t_u8	sin6_addr[16];
+	t_u32a	sin6_scope_id;
+}	t_sockaddr_in6;
+
+typedef struct s_sock_timeval
+{
+	t_i64a	tv_sec;
+	t_i64a	tv_usec;
+}	t_sock_timeval;
+
+typedef struct s_sockaddr_un
+{
+	t_u16a	sun_family;
+	char	sun_path[108];
+}	t_sockaddr_un;
+
+# if defined(__x86_64__) || defined(__i386__)
+
+typedef struct s_epoll_event
+{
+	t_u32a	events;
+	t_u64	data;
+}	t_epoll_event;
+
+# else
+
+typedef struct s_epoll_event
+{
+	t_u32a	events;
+	t_u64a	data;
+}	t_epoll_event;
+
+# endif
 
 /* numbers from musl's arch/<arch>/bits/syscall.h.in */
 # if defined(__x86_64__)

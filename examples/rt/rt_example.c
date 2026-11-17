@@ -17,6 +17,8 @@ void	xft_main(const t_any *__restrict__ const sp)
 {
 	t_kernel_ptrs	kp;
 
+	if (!xft_init_sockets())
+		xft_exit_process(1);
 	kp = xft_get_kernel_ptrs(sp);
 	__asm__("":: "m"(kp) :"memory");
 	xft_kernel_ptrs_destroy(&kp);

@@ -104,6 +104,47 @@ t_xft_sysres	xft_perf_event_open(const t_perf_event_attr *restrict attr,\
 					int group_fd, int *restrict const fd)\
 					__attribute__((__nonnull__(1, 3)));
 
+t_xft_sysres	xft_socket(int domain, int type, int protocol,\
+					int *restrict const fd)\
+					__attribute__((__nonnull__(4)));
+
+t_xft_sysres	xft_bind(int fd, const t_sockaddr *addr, t_u32a addrlen)\
+					__attribute__((__nonnull__(2)));
+
+t_xft_sysres	xft_listen(int fd, int backlog);
+
+t_xft_sysres	xft_connect(int fd, const t_sockaddr *addr, t_u32a addrlen)\
+					__attribute__((__nonnull__(2)));
+
+t_xft_sysres	xft_setsockopt(int fd, int level, int name, t_iovec value);
+
+t_xft_sysres	xft_sendto(int fd, t_iovec *restrict buf, t_xft_msg_opts opts,\
+					const t_sockaddr_in6 *restrict dest)\
+					__attribute__((__nonnull__(2)));
+
+t_xft_sysres	xft_accept(int fd, int flags, t_sockaddr_in6 *restrict addr,\
+					int *restrict const conn)\
+					__attribute__((__nonnull__(4)));
+
+t_xft_sysres	xft_recvfrom(int fd, t_iovec *restrict buf, t_xft_msg_opts opts,\
+					t_sockaddr_in6 *restrict from)\
+					__attribute__((__nonnull__(2)));
+
+t_xft_sysres	xft_sendfile(int out_fd, int in_fd, t_i64a *restrict offset,\
+					t_size *restrict const count)\
+					__attribute__((__nonnull__(4)));
+
+t_xft_sysres	xft_epoll_create(int flags, int *restrict const epfd)\
+					__attribute__((__nonnull__(2)));
+
+t_xft_sysres	xft_epoll_ctl(int epfd, int op, int fd, t_epoll_event *event);
+
+t_xft_sysres	xft_epoll_wait(int epfd, t_epoll_event *restrict events,\
+					int timeout, int *restrict const ready)\
+					__attribute__((__nonnull__(2, 4)));
+
+t_xft_sysres	xft_epoll_close(int epfd);
+
 # ifndef XFT_REQUIRE_LIBC
 
 t_xft_sysres	xft_set_thread_pointer(t_uptr tp);

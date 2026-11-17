@@ -16,18 +16,19 @@
 __attribute__((__nonnull__(1)))
 static t_result	fs_writer_drain_all(t_writer *w, t_buffer data)
 {
-	t_writer_fs *const	ctx = w->writer_ctx;
-	t_iovec				iov[2];
+	t_writer_fs *const				ctx = w->writer_ctx;
+	const t_buffer_with_capacity	buf = ctx->buffer;
+	t_iovec							iov[2];
 
-	if (ctx->buffer.mem == nullptr || data.mem == nullptr)
+	if (buf.mem == nullptr || data.mem == nullptr)
 		__builtin_unreachable();
-	if (data.size <= ctx->buffer.capacity - ctx->buffer.size)
+	if (data.size <= buf.capacity - buf.size)
 	{
-		xft_memcpy(ctx->buffer.mem + ctx->buffer.size, data.mem, data.size);
-		ctx->buffer.size += data.size;
+		xft_memcpy(buf.mem + buf.size, data.mem, data.size);
+		ctx->buffer.size = buf.size + data.size;
 		return (OK);
 	}
-	iov[0] = (t_iovec){.mem = ctx->buffer.mem, .size = ctx->buffer.size};
+	iov[0] = (t_iovec){.mem = buf.mem, .size = buf.size};
 	iov[1] = (t_iovec){.mem = data.mem, .size = data.size};
 	if (__builtin_expect(!xft__fs_writer_writev(ctx, iov, 2), 0))
 		return (KO);
@@ -40,6 +41,7 @@ inline t_writer	xft_fs_writer(t_writer_fs *ctx, t_fd fd, t_buffer buffer)
 {
 	static t_writer_vtable const	vtable = {
 		.drain_all = fs_writer_drain_all,
+		.drain_fd = xft__fs_writer_drain_fd,
 		.flush = xft__fs_writer_flush,
 	};
 

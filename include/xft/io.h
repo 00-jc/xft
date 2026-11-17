@@ -40,6 +40,12 @@ void		xft_unmap_file_from_memory(t_buffer buffer);
 t_reader	xft_fs_reader(t_reader_fs *ctx, t_fd fd, t_buffer buffer)\
 			__attribute__((__warn_unused_result__, __nonnull__(1)));
 
+t_reader	xft_tcp_reader(t_reader_ctx_tcp *ctx, t_fd fd, t_buffer buffer)\
+			__attribute__((__warn_unused_result__, __nonnull__(1)));
+
+t_reader	xft_udp_reader(t_reader_ctx_udp *ctx, t_fd fd, t_buffer buffer)\
+			__attribute__((__warn_unused_result__, __nonnull__(1)));
+
 t_reader	xft_mem_reader(t_reader_ctx_memory *ctx, t_buffer src)\
 			__attribute__((__warn_unused_result__, __nonnull__(1)));
 
@@ -48,6 +54,13 @@ t_reader	xft_growable_reader(t_reader_ctx_growable *ctx, t_vec vec)\
 
 t_writer	xft_fs_writer(t_writer_fs *ctx, t_fd fd, t_buffer buffer)\
 			__attribute__((__warn_unused_result__, __nonnull__(1)));
+
+t_writer	xft_tcp_writer(t_writer_ctx_tcp *ctx, t_fd fd, t_buffer buffer)\
+			__attribute__((__warn_unused_result__, __nonnull__(1)));
+
+t_writer	xft_udp_writer(t_writer_ctx_udp *ctx, t_fd fd, t_buffer buffer,\
+			const t_ip_addr *dest)\
+			__attribute__((__warn_unused_result__, __nonnull__(1, 4)));
 
 t_writer	xft_mem_writer(t_writer_ctx_memory *ctx, t_buffer dst)\
 			__attribute__((__warn_unused_result__, __nonnull__(1)));

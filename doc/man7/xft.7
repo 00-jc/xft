@@ -209,11 +209,14 @@ runtime invariants and optimizer hints
 .It Xr xft_indexmap 3
 insertion-ordered hash map
 .It Xr xft_io 3
-readers, writers, standard handles, file information and mapping
+readers and writers over files, memory and sockets, standard handles, file
+information and mapping
 .It Xr xft_math 3
 math functions
 .It Xr xft_mem 3
 memory copy, move, set and compare
+.It Xr xft_net 3
+TCP and UDP sockets
 .It Xr xft_os 3
 CPU count and other operating system queries
 .It Xr xft_palloc 3
@@ -542,5 +545,6 @@ void	xft_main(const t_any *__restrict__ const sp)
 .Sh SEE ALSO
 .Xr xft_alloc 3 ,
 .Xr xft_io 3 ,
+.Xr xft_net 3 ,
 .Xr xft_rt 3 ,
 .Xr xft_xid 3

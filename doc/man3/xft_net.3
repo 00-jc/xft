@@ -1,0 +1,308 @@
+.Dd November 17, 2026
+.Dt XFT_NET 3
+.Os xft
+.Sh NAME
+.Nm xft_open_socket ,
+.Nm xft_bind_socket ,
+.Nm xft_listen_socket ,
+.Nm xft_connect_socket ,
+.Nm xft_accept_socket ,
+.Nm xft_close_socket
+.Nd TCP and UDP sockets over IPv4 and IPv6
+.Sh SYNOPSIS
+.In xft/net.h
+.Ft t_result
+.Fn xft_open_socket "t_ip_family family" "t_socket_type type" "t_fd *sock"
+.Ft t_result
+.Fn xft_bind_socket "t_fd sock" "const t_ip_addr *addr" "t_ip_bind_opts opts"
+.Ft t_result
+.Fn xft_listen_socket "t_fd sock" "t_u32a backlog"
+.Ft t_result
+.Fn xft_connect_socket "t_fd sock" "const t_ip_addr *addr" "t_connect_options opts"
+.Ft t_result
+.Fn xft_accept_socket "t_fd server" "t_ip_addr *peer" "t_fd *conn"
+.Ft t_result
+.Fn xft_close_socket "t_fd sock"
+.Sh DESCRIPTION
+These functions create, bind, connect and close blocking TCP and UDP
+sockets.
+A socket is a
+.Vt t_fd :
+a file descriptor on Linux and a
+.Vt SOCKET
+on Windows.
+Data moves through the readers and writers of
+.Xr xft_io 3 :
+.Fn xft_tcp_reader ,
+.Fn xft_tcp_writer ,
+.Fn xft_udp_reader
+and
+.Fn xft_udp_writer .
+.Pp
+On Windows,
+.Fn xft_init_sockets
+from
+.Xr xft_rt 3
+must have succeeded before the first socket is opened.
+.Ss Types
+.Bd -literal -offset indent
+typedef enum e_ip_family : t_u8 {
+	xft_ipv4,
+	xft_ipv6,
+} t_ip_family;
+
+typedef enum e_socket_type : t_u8 {
+	xft_socket_tcp,
+	xft_socket_udp,
+} t_socket_type;
+
+typedef struct s_ip4 { t_u8 bytes[4]; } t_ip4;
+typedef struct s_ip6 { t_u8 bytes[16]; } t_ip6;
+
+typedef struct s_ipv4 {
+	t_ip4		address;
+	t_u16a		port;
+} t_ipv4;
+
+typedef struct s_ipv6 {
+	t_ip6		address;
+	t_u16a		port;
+} t_ipv6;
+
+typedef struct s_ip_addr {
+	t_ip_family	family;	/* selects v4 or v6 */
+	union {
+		t_ipv4	v4;
+		t_ipv6	v6;
+	};
+} t_ip_addr;
+
+typedef struct s_ip_bind_opts {
+	bool	allow_broadcast	: 1;
+	bool	ipv6_only		: 1;
+} t_ip_bind_opts;
+
+typedef struct s_connect_options {
+	bool	has_timeout;
+	t_u64a	timeout_ms;
+} t_connect_options;
+.Ed
+.Pp
+An address's bytes are in network order, first octet first, so
+127.0.0.1 is
+.Ql {{127, 0, 0, 1}}
+and ::1 is
+.Ql {{[15] = 1}} .
+The port is in host order; the conversion happens inside these functions.
+The all-zero address of a family, 0.0.0.0 or ::, means every local
+address.
+.Ss Opening and binding
+.Fn xft_open_socket
+creates a socket of
+.Fa family
+and
+.Fa type ,
+a stream socket for
+.Dv xft_socket_tcp
+and a datagram socket for
+.Dv xft_socket_udp ,
+and stores it in
+.Pf * Fa sock .
+It is close-on-exec on Linux and not inheritable on Windows.
+.Pp
+.Fn xft_bind_socket
+binds
+.Fa sock
+to
+.Fa addr ,
+whose family must match the socket's.
+It always sets
+.Dv SO_REUSEADDR
+first, so a port whose previous connections are in TIME_WAIT can be bound
+again at once.
+.Fa opts Ns .allow_broadcast
+sets
+.Dv SO_BROADCAST .
+For an IPv6 address,
+.Dv IPV6_V6ONLY
+is set to
+.Fa opts Ns .ipv6_only ,
+so a socket bound to :: also serves IPv4 unless
+.Fa ipv6_only
+is set.
+A socket can be bound before
+.Fn xft_connect_socket
+to choose its local address and port.
+.Ss TCP
+.Fn xft_listen_socket
+makes a bound stream socket accept connections.
+A
+.Fa backlog
+of 0 asks for the system maximum: 4096 on Linux, where the kernel caps it
+again at
+.Pa /proc/sys/net/core/somaxconn ,
+and
+.Dv SOMAXCONN
+on Windows.
+.Pp
+.Fn xft_accept_socket
+waits for the next connection on
+.Fa server
+and stores the connected socket in
+.Pf * Fa conn ,
+close-on-exec on Linux.
+When
+.Fa peer
+is not
+.Dv nullptr ,
+it receives the client's address.
+A client of an IPv6 listener that is not
+.Fa ipv6_only
+reports an IPv4-mapped IPv6 address.
+.Ss Connecting
+.Fn xft_connect_socket
+connects
+.Fa sock
+to
+.Fa addr .
+For a stream socket it opens the connection.
+For a datagram socket it fixes the default destination and makes the
+socket receive only from
+.Fa addr ;
+no packet is sent.
+.Pp
+Without
+.Fa opts Ns .has_timeout
+it blocks until the system gives up.
+With it, the attempt fails after
+.Fa timeout_ms
+milliseconds.
+On Linux the timeout is the socket's
+.Dv SO_SNDTIMEO ,
+set before the connection and cleared after it succeeds, so later sends do
+not time out.
+On Windows the socket is made non-blocking for the attempt, waited on with
+.Ql select ,
+and made blocking again.
+.Ss Closing
+.Fn xft_close_socket
+closes
+.Fa sock ,
+with
+.Xr close 2
+on Linux and
+.Ql closesocket
+on Windows.
+.Sh RETURN VALUES
+Every function returns
+.Dv OK
+on success and
+.Dv KO
+on failure.
+None of them closes
+.Fa sock
+on failure; the caller closes it.
+.Fn xft_connect_socket
+fails when the connection is refused, unreachable or times out, and a
+stream socket that failed to connect is only good for
+.Fn xft_close_socket .
+.Sh EXAMPLES
+An echo server on port 7777 that serves one client at a time:
+.Bd -literal -offset indent
+#include <xft/xft.h>
+
+void	xft_main(const t_any *__restrict__ const sp)
+{
+	const t_ip_addr		any = {.family = xft_ipv4, .v4 = {.port = 7777}};
+	t_u8				rbuf[4096];
+	t_u8				wbuf[4096];
+	t_reader_ctx_tcp	rctx;
+	t_writer_ctx_tcp	wctx;
+	t_reader			r;
+	t_writer			w;
+	t_fd				server;
+	t_fd				conn;
+	t_size				n;
+
+	(void)sp;
+	if (!xft_init_sockets()
+		|| !xft_open_socket(xft_ipv4, xft_socket_tcp, &server))
+		xft_exit_process(1);
+	if (!xft_bind_socket(server, &any, (t_ip_bind_opts){0})
+		|| !xft_listen_socket(server, 0))
+		xft_exit_process(1);
+	while (xft_accept_socket(server, nullptr, &conn))
+	{
+		r = xft_tcp_reader(&rctx, conn, xft_fatptr(rbuf, sizeof(rbuf)));
+		w = xft_tcp_writer(&wctx, conn, xft_fatptr(wbuf, sizeof(wbuf)));
+		xft_reader_stream(&r, &w, (t_size)-1, &n);
+		xft_writer_flush(&w);
+		xft_close_socket(conn);
+	}
+	xft_exit_process(1);
+}
+.Ed
+.Pp
+Bind a UDP socket to a fixed local port, connect it to a server, send one
+datagram and wait for the reply:
+.Bd -literal -offset indent
+t_result	ping(const t_ip_addr *local, const t_ip_addr *server,
+	t_buffer msg, t_buffer reply)
+{
+	t_u8				buf[1472];
+	t_writer_ctx_udp	wctx;
+	t_reader_ctx_udp	rctx;
+	t_writer			w;
+	t_reader			r;
+	t_fd				sock;
+	t_size				n;
+
+	if (!xft_open_socket(server->family, xft_socket_udp, &sock))
+		return (KO);
+	if (!xft_bind_socket(sock, local, (t_ip_bind_opts){0})
+		|| !xft_connect_socket(sock, server, (t_connect_options){0}))
+		return (xft_close_socket(sock), KO);
+	w = xft_udp_writer(&wctx, sock, xft_fatptr(buf, sizeof(buf)), server);
+	r = xft_udp_reader(&rctx, sock, reply);
+	if (!xft_writer_drain_all(&w, msg) || !xft_writer_flush(&w)
+		|| !xft_reader_read(&r, reply, &n))
+		return (xft_close_socket(sock), KO);
+	return (xft_close_socket(sock));
+}
+.Ed
+.Sh SEE ALSO
+.Xr xft_io 3 ,
+.Xr xft_rt 3 ,
+.Xr xft 7
+.Sh CAVEATS
+Every socket blocks.
+On Linux, a call that reports
+.Er EAGAIN
+is repeated, so a socket switched to non-blocking mode by other means makes
+the readers, writers and
+.Fn xft_accept_socket
+spin rather than block.
+.Pp
+On Linux a signal that interrupts a blocking
+.Fn xft_connect_socket
+makes it return
+.Dv KO
+while the kernel finishes the connection in the background.
+.Pp
+A
+.Fa timeout_ms
+of 0 with
+.Fa has_timeout
+set means no limit on Linux, where a zero
+.Dv SO_SNDTIMEO
+disables the timeout, and an immediate check on Windows.
+.Pp
+On Windows
+.Dv SO_REUSEADDR
+also lets a socket bind a port another socket is actively listening on,
+which Linux does not allow, and
+.Fn xft_bind_socket
+always sets it.
+.Pp
+There is no way to read back the port the system picked when binding to
+port 0, and no name resolution; addresses are given as bytes.

@@ -1,4 +1,4 @@
-.Dd October 22, 2026
+.Dd November 17, 2026
 .Dt XFT_RT 3
 .Os xft
 .Sh NAME
@@ -8,6 +8,7 @@
 .Nm xft_dyn_cpu_select ,
 .Nm xft_exit_process ,
 .Nm xft_start_tls_for_main_thread ,
+.Nm xft_init_sockets ,
 .Nm xft_main
 .Nd program entry point and runtime helpers
 .Sh SYNOPSIS
@@ -25,6 +26,8 @@
 .Fn xft_exit_process "t_i32a code"
 .Ft t_result
 .Fn xft_start_tls_for_main_thread "t_sysinfo sysinfo"
+.Ft t_result
+.Fn xft_init_sockets void
 .Ft void
 .Fn xft_main "const t_any *restrict sp"
 .Sh DESCRIPTION
@@ -248,6 +251,20 @@ and on Windows the C library or the loader sets up the main thread, and
 returns
 .Dv OK
 without doing anything.
+.Ss Sockets
+.Fn xft_init_sockets
+prepares the process for the socket functions of
+.Xr xft_net 3 .
+On Windows it calls
+.Ql WSAStartup
+for Winsock 2.2, which must succeed before the first socket is created;
+call it once, early in
+.Fn xft_main .
+On Linux sockets need no setup and it returns
+.Dv OK
+without doing anything.
+The library never calls it on its own, so a program that only uses files
+pays nothing for it.
 .Ss CPU detection
 .Fn xft_dyn_cpu_select
 queries the running CPU and returns which vector widths are usable:
@@ -334,6 +351,14 @@ returns
 or
 .Dv KO
 when the block cannot be mapped or the thread pointer cannot be set.
+.Fn xft_init_sockets
+returns
+.Dv OK ,
+or
+.Dv KO
+when
+.Ql WSAStartup
+fails.
 .Fn xft_main
 and
 .Fn xft_exit_process
@@ -368,6 +393,7 @@ void	xft_main(const t_any *__restrict__ const sp)
 .Ed
 .Sh SEE ALSO
 .Xr xft_io 3 ,
+.Xr xft_net 3 ,
 .Xr xft_os 3 ,
 .Xr xft_threads 3 ,
 .Xr xft 7

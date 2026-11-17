@@ -19,16 +19,16 @@ static t_result	mem_reader_stream(t_reader *r, t_writer *w, t_size limit,
 	t_size *size)
 {
 	t_reader_ctx_memory *const	ctx = r->reader_ctx;
-	t_buffer					chunk;
+	const t_buffer				src = ctx->buffer;
+	t_size						n;
 
 	if (w->vtable.drain_all == nullptr)
 		__builtin_unreachable();
-	*size = xft_tern_s(limit < ctx->buffer.size, limit, ctx->buffer.size);
-	chunk = xft_fatptr(ctx->buffer.mem, *size);
-	if (__builtin_expect(!w->vtable.drain_all(w, chunk), 0))
+	n = xft_tern_s(limit < src.size, limit, src.size);
+	if (__builtin_expect(!w->vtable.drain_all(w, xft_fatptr(src.mem, n)), 0))
 		return (KO);
-	ctx->buffer.mem += *size;
-	ctx->buffer.size -= *size;
+	ctx->buffer = xft_fatptr(src.mem + n, src.size - n);
+	*size = n;
 	return (OK);
 }
 
@@ -36,10 +36,12 @@ __attribute__((__nonnull__(1, 3)))
 static t_result	mem_reader_discard(t_reader *r, t_size limit, t_size *size)
 {
 	t_reader_ctx_memory *const	ctx = r->reader_ctx;
+	const t_buffer				src = ctx->buffer;
+	t_size						n;
 
-	*size = xft_tern_s(limit < ctx->buffer.size, limit, ctx->buffer.size);
-	ctx->buffer.mem += *size;
-	ctx->buffer.size -= *size;
+	n = xft_tern_s(limit < src.size, limit, src.size);
+	ctx->buffer = xft_fatptr(src.mem + n, src.size - n);
+	*size = n;
 	return (OK);
 }
 
@@ -47,11 +49,13 @@ __attribute__((__nonnull__(1, 3)))
 static t_result	mem_reader_read(t_reader *r, t_buffer dst, t_size *size)
 {
 	t_reader_ctx_memory *const	ctx = r->reader_ctx;
+	const t_buffer				src = ctx->buffer;
+	t_size						n;
 
-	*size = xft_tern_s(dst.size < ctx->buffer.size, dst.size, ctx->buffer.size);
-	xft_memcpy(dst.mem, ctx->buffer.mem, *size);
-	ctx->buffer.mem += *size;
-	ctx->buffer.size -= *size;
+	n = xft_tern_s(dst.size < src.size, dst.size, src.size);
+	xft_memcpy(dst.mem, src.mem, n);
+	ctx->buffer = xft_fatptr(src.mem + n, src.size - n);
+	*size = n;
 	return (OK);
 }
 

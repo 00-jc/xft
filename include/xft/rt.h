@@ -45,6 +45,8 @@ t_sysinfo		xft_get_sysinfo(const t_any *sp)\
 
 t_result		xft_start_tls_for_main_thread(t_sysinfo sysinfo);
 
+t_result		xft_init_sockets(void);
+
 void			xft_kernel_ptrs_destroy(t_kernel_ptrs *kp)\
 					__attribute__((__nonnull__(1)));
 
