@@ -45,6 +45,23 @@ __attribute__((__nonnull__(1, 3)))
 t_result	xft__tcp_reader_read(t_reader *r, t_buffer dst, t_size *size)
 {
 	const t_reader_ctx_tcp	ctx = *(t_reader_ctx_tcp *)r->reader_ctx;
+	t_size					len;
+	int						n;
+
+	if (dst.mem == nullptr)
+		__builtin_unreachable();
+	len = xft_tern_s(dst.size < MAXLONG, dst.size, MAXLONG);
+	n = recv((SOCKET)ctx.socket, (char *)dst.mem, (int)len, 0);
+	if (__builtin_expect(n < 0, 0))
+		return (KO);
+	*size = (t_size)n;
+	return (OK);
+}
+
+__attribute__((__nonnull__(1)))
+t_result	xft__tcp_reader_read_all(t_reader *r, t_buffer dst)
+{
+	const t_reader_ctx_tcp	ctx = *(t_reader_ctx_tcp *)r->reader_ctx;
 	t_size					done;
 	t_size					len;
 	int						n;
@@ -52,18 +69,16 @@ t_result	xft__tcp_reader_read(t_reader *r, t_buffer dst, t_size *size)
 	if (dst.mem == nullptr)
 		__builtin_unreachable();
 	done = 0;
-	n = 1;
-	while (done != dst.size && n != 0)
+	while (done != dst.size)
 	{
 		len = dst.size - done;
 		len = xft_tern_s(len < MAXLONG, len, MAXLONG);
 		n = recv((SOCKET)ctx.socket, (char *)dst.mem + done, (int)len,
 				MSG_WAITALL);
-		if (__builtin_expect(n < 0, 0))
+		if (__builtin_expect(n <= 0, 0))
 			return (KO);
 		done += (t_size)n;
 	}
-	*size = done;
 	return (OK);
 }
 

@@ -13,7 +13,7 @@
 #include <xft/xft_p_io.h>
 
 __attribute__((__nonnull__(1, 2, 4)))
-static t_result	tcp_reader_stream(t_reader *r, t_writer *w, t_size limit,
+static t_result	xft__tcp_reader_stream(t_reader *r, t_writer *w, t_size limit,
 	t_size *size)
 {
 	t_reader_ctx_tcp *const	ctx = r->reader_ctx;
@@ -27,12 +27,12 @@ __attribute__((__nonnull__(1), __flatten__, __always_inline__, __used__))
 inline t_reader	xft_tcp_reader(t_reader_ctx_tcp *ctx, t_fd fd, t_buffer buffer)
 {
 	static t_reader_vtable const	vtable = {
-		.stream = tcp_reader_stream,
+		.stream = xft__tcp_reader_stream,
 		.discard = xft__tcp_reader_discard,
 		.stream_all = xft__reader_stream_all,
 		.discard_all = xft__reader_discard_all,
 		.read = xft__tcp_reader_read,
-		.read_all = xft__reader_read_all,
+		.read_all = xft__tcp_reader_read_all,
 	};
 
 	if (buffer.mem == nullptr || buffer.size == 0)

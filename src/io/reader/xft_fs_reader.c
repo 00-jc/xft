@@ -32,7 +32,7 @@ inline t_reader	xft_fs_reader(t_reader_fs *ctx, t_fd fd, t_buffer buffer)
 		.stream_all = xft__reader_stream_all,
 		.discard_all = xft__reader_discard_all,
 		.read = xft__fs_reader_read,
-		.read_all = xft__reader_read_all,
+		.read_all = xft__fs_reader_read_all,
 	};
 
 	if (buffer.mem == nullptr || buffer.size == 0)

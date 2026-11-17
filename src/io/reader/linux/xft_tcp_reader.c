@@ -44,6 +44,28 @@ __attribute__((__nonnull__(1, 3)))
 t_result	xft__tcp_reader_read(t_reader *r, t_buffer dst, t_size *size)
 {
 	const t_reader_ctx_tcp	ctx = *(t_reader_ctx_tcp *)r->reader_ctx;
+	t_iovec					iov;
+	t_xft_sysres			ret;
+
+	if (dst.mem == nullptr)
+		__builtin_unreachable();
+	ret = xft_sys_repeat;
+	while (ret == xft_sys_repeat)
+	{
+		iov = (t_iovec){.mem = dst.mem, .size = dst.size};
+		ret = xft_recvfrom((int)ctx.socket, &iov, (t_xft_msg_opts){0},
+				nullptr);
+	}
+	if (__builtin_expect(ret == xft_sys_ko, 0))
+		return (KO);
+	*size = iov.size;
+	return (OK);
+}
+
+__attribute__((__nonnull__(1)))
+t_result	xft__tcp_reader_read_all(t_reader *r, t_buffer dst)
+{
+	const t_reader_ctx_tcp	ctx = *(t_reader_ctx_tcp *)r->reader_ctx;
 	t_size					done;
 	t_iovec					iov;
 	t_xft_sysres			ret;
@@ -51,18 +73,15 @@ t_result	xft__tcp_reader_read(t_reader *r, t_buffer dst, t_size *size)
 	if (dst.mem == nullptr)
 		__builtin_unreachable();
 	done = 0;
-	iov = (t_iovec){.mem = dst.mem};
-	ret = xft_sys_repeat;
-	while (done != dst.size && (ret == xft_sys_repeat || iov.size != 0))
+	while (done != dst.size)
 	{
 		iov = (t_iovec){.mem = dst.mem + done, .size = dst.size - done};
 		ret = xft_recvfrom((int)ctx.socket, &iov,
 				(t_xft_msg_opts){.waitall = 1}, nullptr);
-		if (__builtin_expect(ret == xft_sys_ko, 0))
+		if (__builtin_expect(ret != xft_sys_repeat && iov.size == 0, 0))
 			return (KO);
 		done += iov.size;
 	}
-	*size = done;
 	return (OK);
 }
 

@@ -14,7 +14,7 @@
 #include <xft/mem.h>
 
 __attribute__((__nonnull__(1)))
-static t_result	tcp_writer_drain_all(t_writer *w, t_buffer data)
+static t_result	xft__tcp_writer_drain_all(t_writer *w, t_buffer data)
 {
 	t_writer_ctx_tcp *const			ctx = w->writer_ctx;
 	const t_buffer_with_capacity	buf = ctx->buf;
@@ -41,7 +41,7 @@ inline t_writer	xft_tcp_writer(t_writer_ctx_tcp *ctx,
 	t_fd fd, t_buffer buffer)
 {
 	static t_writer_vtable const	vtable = {
-		.drain_all = tcp_writer_drain_all,
+		.drain_all = xft__tcp_writer_drain_all,
 		.drain_fd = xft__tcp_writer_drain_fd,
 		.flush = xft__tcp_writer_flush,
 	};

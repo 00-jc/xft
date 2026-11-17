@@ -15,7 +15,7 @@
 #include <xft/mem.h>
 
 __attribute__((__nonnull__(1, 2, 4)))
-static t_result	udp_reader_stream(t_reader *r, t_writer *w, t_size limit,
+static t_result	xft__udp_reader_stream(t_reader *r, t_writer *w, t_size limit,
 	t_size *size)
 {
 	t_reader_ctx_udp *const	ctx = r->reader_ctx;
@@ -38,7 +38,7 @@ __attribute__((__nonnull__(1), __flatten__, __always_inline__, __used__))
 inline t_reader	xft_udp_reader(t_reader_ctx_udp *ctx, t_fd fd, t_buffer buffer)
 {
 	static t_reader_vtable const	vtable = {
-		.stream = udp_reader_stream,
+		.stream = xft__udp_reader_stream,
 		.discard = xft__udp_reader_discard,
 		.stream_all = xft__reader_stream_all,
 		.discard_all = xft__reader_discard_all,

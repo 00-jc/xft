@@ -209,15 +209,24 @@ It stops at
 or at the end of the input, so a count below
 .Fa limit
 means the input is exhausted.
+Into a mem writer, or a growable writer from a handle that reports a size,
+it fails instead when the input ends first; see
+.Sx Writers .
 .Fn xft_reader_discard
 consumes up to
 .Fa limit
 bytes the same way and drops them.
 .Fn xft_reader_read
-copies into
+copies up to
+.Fa dst Ns .size
+bytes into
 .Fa dst
-until it is full or the input ends and stores the count in
+and stores the count in
 .Pf * Fa size .
+On an fs or tcp reader it is a single read from the handle, so the count can
+be below
+.Fa dst Ns .size
+while more input follows.
 .Pp
 .Fn xft_reader_stream_all ,
 .Fn xft_reader_discard_all
@@ -241,7 +250,12 @@ reads at most
 bytes into the staging buffer per call.
 .Fn xft_reader_read
 on an fs reader reads straight into
-.Fa dst .
+.Fa dst ,
+and
+.Fn xft_reader_read_all
+repeats the read until
+.Fa dst
+is full.
 A read that returns no bytes is the end of the input.
 On Linux interrupted calls are retried; on Windows a broken pipe is the end
 of the input.
@@ -250,11 +264,14 @@ The tcp reader streams through the writer's
 .Fa drain_fd
 like the fs reader.
 .Fn xft_reader_read
-on it receives with
+on it is a single receive.
+.Fn xft_reader_read_all
+receives with
 .Dv MSG_WAITALL ,
 so the kernel fills
 .Fa dst
-in one call unless a signal or the end of the stream cuts it short.
+in one call unless a signal or the end of the stream cuts it short, and
+receives again after a signal.
 .Fn xft_reader_discard
 on Linux receives with
 .Dv MSG_TRUNC ,
@@ -388,14 +405,22 @@ For both,
 does nothing.
 The mem writer's
 .Fa drain_fd
-reads straight into the room left.
+fills the smaller of
+.Fa limit
+and the room left with
+.Fn xft_reader_read_all ,
+reading straight into
+.Fa dst ,
+so it fails when the handle ends first.
 The growable writer's
 .Fa drain_fd
 asks
 .Fn xft_fileinfo_from_fd
 for the size of the handle, reserves the smaller of that and
 .Fa limit ,
-and reads into the reserved space.
+and fills the reserved space with
+.Fn xft_reader_read_all ,
+so it fails when the handle ends first.
 For a handle that reports a size of 0, such as a pipe, a terminal or a
 socket, it reads into the spare capacity and grows the vector each
 time it fills up.
@@ -449,7 +474,11 @@ on failure.
 An fs handle fails when a read or write fails or a write makes no progress.
 A mem writer fails, without copying anything, when
 .Fa data
-is larger than the room left.
+is larger than the room left; its
+.Fa drain_fd
+fails when the handle ends before the smaller of
+.Fa limit
+and the room left is filled.
 A growable writer fails when the vector cannot grow.
 A tcp or udp handle fails when a send or receive fails; a udp writer also
 fails when a datagram is sent short.
@@ -533,7 +562,7 @@ not checked.
 On a pipe, a terminal or a socket,
 .Fn xft_reader_stream
 and
-.Fn xft_reader_read
+.Fn xft_reader_read_all
 on an fs or tcp reader keep reading until
 .Fa limit
 or

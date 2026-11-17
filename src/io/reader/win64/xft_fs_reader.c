@@ -48,6 +48,24 @@ __attribute__((__nonnull__(1, 3)))
 t_result	xft__fs_reader_read(t_reader *r, t_buffer dst, t_size *size)
 {
 	const t_reader_fs	ctx = *(t_reader_fs *)r->reader_ctx;
+	t_size				len;
+	DWORD				n;
+	BOOL				ok;
+
+	if (dst.mem == nullptr)
+		__builtin_unreachable();
+	len = xft_tern_s(dst.size < MAXDWORD, dst.size, MAXDWORD);
+	ok = ReadFile((HANDLE)ctx.fd, dst.mem, (DWORD)len, &n, nullptr);
+	if (__builtin_expect(!ok && GetLastError() != ERROR_BROKEN_PIPE, 0))
+		return (KO);
+	*size = n;
+	return (OK);
+}
+
+__attribute__((__nonnull__(1)))
+t_result	xft__fs_reader_read_all(t_reader *r, t_buffer dst)
+{
+	const t_reader_fs	ctx = *(t_reader_fs *)r->reader_ctx;
 	t_size				done;
 	t_size				len;
 	DWORD				n;
@@ -56,17 +74,15 @@ t_result	xft__fs_reader_read(t_reader *r, t_buffer dst, t_size *size)
 	if (dst.mem == nullptr)
 		__builtin_unreachable();
 	done = 0;
-	n = 1;
-	while (done != dst.size && n != 0)
+	while (done != dst.size)
 	{
 		len = dst.size - done;
 		len = xft_tern_s(len < MAXDWORD, len, MAXDWORD);
 		ok = ReadFile((HANDLE)ctx.fd, dst.mem + done, (DWORD)len, &n, nullptr);
-		if (__builtin_expect(!ok && GetLastError() != ERROR_BROKEN_PIPE, 0))
+		if (__builtin_expect(!ok || n == 0, 0))
 			return (KO);
 		done += n;
 	}
-	*size = done;
 	return (OK);
 }
 

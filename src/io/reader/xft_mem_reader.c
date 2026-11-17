@@ -15,7 +15,7 @@
 #include <xft/mem.h>
 
 __attribute__((__nonnull__(1, 2, 4)))
-static t_result	mem_reader_stream(t_reader *r, t_writer *w, t_size limit,
+static t_result	xft__mem_reader_stream(t_reader *r, t_writer *w, t_size limit,
 	t_size *size)
 {
 	t_reader_ctx_memory *const	ctx = r->reader_ctx;
@@ -33,7 +33,7 @@ static t_result	mem_reader_stream(t_reader *r, t_writer *w, t_size limit,
 }
 
 __attribute__((__nonnull__(1, 3)))
-static t_result	mem_reader_discard(t_reader *r, t_size limit, t_size *size)
+static t_result	xft__mem_reader_discard(t_reader *r, t_size limit, t_size *size)
 {
 	t_reader_ctx_memory *const	ctx = r->reader_ctx;
 	const t_buffer				src = ctx->buffer;
@@ -46,7 +46,7 @@ static t_result	mem_reader_discard(t_reader *r, t_size limit, t_size *size)
 }
 
 __attribute__((__nonnull__(1, 3)))
-static t_result	mem_reader_read(t_reader *r, t_buffer dst, t_size *size)
+static t_result	xft__mem_reader_read(t_reader *r, t_buffer dst, t_size *size)
 {
 	t_reader_ctx_memory *const	ctx = r->reader_ctx;
 	const t_buffer				src = ctx->buffer;
@@ -63,11 +63,11 @@ __attribute__((__nonnull__(1), __always_inline__, __used__))
 inline t_reader	xft_mem_reader(t_reader_ctx_memory *ctx, t_buffer src)
 {
 	static t_reader_vtable const	vtable = {
-		.stream = mem_reader_stream,
-		.discard = mem_reader_discard,
+		.stream = xft__mem_reader_stream,
+		.discard = xft__mem_reader_discard,
 		.stream_all = xft__reader_stream_all,
 		.discard_all = xft__reader_discard_all,
-		.read = mem_reader_read,
+		.read = xft__mem_reader_read,
 		.read_all = xft__reader_read_all,
 	};
 

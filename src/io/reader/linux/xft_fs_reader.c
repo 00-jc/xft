@@ -46,6 +46,25 @@ __attribute__((__nonnull__(1, 3)))
 t_result	xft__fs_reader_read(t_reader *r, t_buffer dst, t_size *size)
 {
 	const t_reader_fs	ctx = *(t_reader_fs *)r->reader_ctx;
+	t_size				n;
+	t_xft_sysres		ret;
+
+	if (dst.mem == nullptr)
+		__builtin_unreachable();
+	n = 0;
+	ret = xft_sys_repeat;
+	while (ret == xft_sys_repeat)
+		ret = xft_read((int)ctx.fd, dst.mem, dst.size, &n);
+	if (__builtin_expect(ret == xft_sys_ko, 0))
+		return (KO);
+	*size = n;
+	return (OK);
+}
+
+__attribute__((__nonnull__(1)))
+t_result	xft__fs_reader_read_all(t_reader *r, t_buffer dst)
+{
+	const t_reader_fs	ctx = *(t_reader_fs *)r->reader_ctx;
 	t_size				done;
 	t_size				n;
 	t_xft_sysres		ret;
@@ -53,16 +72,13 @@ t_result	xft__fs_reader_read(t_reader *r, t_buffer dst, t_size *size)
 	if (dst.mem == nullptr)
 		__builtin_unreachable();
 	done = 0;
-	n = 0;
-	ret = xft_sys_repeat;
-	while (done != dst.size && (ret == xft_sys_repeat || n != 0))
+	while (done != dst.size)
 	{
 		ret = xft_read((int)ctx.fd, dst.mem + done, dst.size - done, &n);
-		if (__builtin_expect(ret == xft_sys_ko, 0))
+		if (__builtin_expect(ret != xft_sys_repeat && n == 0, 0))
 			return (KO);
 		done += n;
 	}
-	*size = done;
 	return (OK);
 }
 

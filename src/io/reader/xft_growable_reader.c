@@ -15,8 +15,8 @@
 #include <xft/mem.h>
 
 __attribute__((__nonnull__(1, 2, 4)))
-static t_result	growable_reader_stream(t_reader *r, t_writer *w, t_size limit,
-	t_size *size)
+static t_result	xft__growable_reader_stream(t_reader *r, t_writer *w,
+	t_size limit, t_size *size)
 {
 	t_reader_ctx_growable *const	ctx = r->reader_ctx;
 	const t_buffer_with_capacity	buf = ctx->vec.buf;
@@ -35,7 +35,7 @@ static t_result	growable_reader_stream(t_reader *r, t_writer *w, t_size limit,
 }
 
 __attribute__((__nonnull__(1, 3)))
-static t_result	growable_reader_discard(t_reader *r, t_size limit,
+static t_result	xft__growable_reader_discard(t_reader *r, t_size limit,
 	t_size *size)
 {
 	t_reader_ctx_growable *const	ctx = r->reader_ctx;
@@ -52,7 +52,8 @@ static t_result	growable_reader_discard(t_reader *r, t_size limit,
 }
 
 __attribute__((__nonnull__(1, 3)))
-static t_result	growable_reader_read(t_reader *r, t_buffer dst, t_size *size)
+static t_result	xft__growable_reader_read(t_reader *r, t_buffer dst,
+	t_size *size)
 {
 	t_reader_ctx_growable *const	ctx = r->reader_ctx;
 	const t_buffer_with_capacity	buf = ctx->vec.buf;
@@ -72,11 +73,11 @@ __attribute__((__nonnull__(1), __always_inline__, __used__))
 inline t_reader	xft_growable_reader(t_reader_ctx_growable *ctx, t_vec vec)
 {
 	static t_reader_vtable const	vtable = {
-		.stream = growable_reader_stream,
-		.discard = growable_reader_discard,
+		.stream = xft__growable_reader_stream,
+		.discard = xft__growable_reader_discard,
 		.stream_all = xft__reader_stream_all,
 		.discard_all = xft__reader_discard_all,
-		.read = growable_reader_read,
+		.read = xft__growable_reader_read,
 		.read_all = xft__reader_read_all,
 	};
 

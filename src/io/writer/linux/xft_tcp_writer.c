@@ -71,7 +71,7 @@ t_result	xft__tcp_writer_flush(t_writer *w)
 }
 
 __attribute__((__nonnull__(1, 4)))
-static t_result	tcp_writer_copy_fd(t_writer *w, t_fd fd, t_size limit,
+static t_result	xft__tcp_writer_copy_fd(t_writer *w, t_fd fd, t_size limit,
 	t_size *size)
 {
 	t_writer_ctx_tcp *const	ctx = w->writer_ctx;
@@ -120,7 +120,7 @@ t_result	xft__tcp_writer_drain_fd(t_writer *w, t_fd fd, t_size limit,
 		if (__builtin_expect(ret == xft_sys_ko && left != limit, 0))
 			return (KO);
 		if (ret == xft_sys_ko)
-			return (tcp_writer_copy_fd(w, fd, limit, size));
+			return (xft__tcp_writer_copy_fd(w, fd, limit, size));
 		left -= n;
 	}
 	*size = limit - left;

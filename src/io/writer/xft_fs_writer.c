@@ -14,7 +14,7 @@
 #include <xft/mem.h>
 
 __attribute__((__nonnull__(1)))
-static t_result	fs_writer_drain_all(t_writer *w, t_buffer data)
+static t_result	xft__fs_writer_drain_all(t_writer *w, t_buffer data)
 {
 	t_writer_fs *const				ctx = w->writer_ctx;
 	const t_buffer_with_capacity	buf = ctx->buffer;
@@ -40,7 +40,7 @@ __attribute__((__nonnull__(1), __always_inline__, __used__))
 inline t_writer	xft_fs_writer(t_writer_fs *ctx, t_fd fd, t_buffer buffer)
 {
 	static t_writer_vtable const	vtable = {
-		.drain_all = fs_writer_drain_all,
+		.drain_all = xft__fs_writer_drain_all,
 		.drain_fd = xft__fs_writer_drain_fd,
 		.flush = xft__fs_writer_flush,
 	};

@@ -16,7 +16,7 @@
 #include <xft/bmi.h>
 
 __attribute__((__nonnull__(1)))
-static t_result	growable_writer_drain_all(t_writer *w, t_buffer data)
+static t_result	xft__growable_writer_drain_all(t_writer *w, t_buffer data)
 {
 	t_writer_ctx_growable *const	ctx = w->writer_ctx;
 
@@ -24,7 +24,7 @@ static t_result	growable_writer_drain_all(t_writer *w, t_buffer data)
 }
 
 __attribute__((__nonnull__(1, 2, 4)))
-static t_result	growable_writer_drain_pipe(t_writer *w, t_reader *r,
+static t_result	xft__growable_writer_drain_pipe(t_writer *w, t_reader *r,
 	t_size limit, t_size *size)
 {
 	t_writer_ctx_growable *const	ctx = w->writer_ctx;
@@ -55,8 +55,8 @@ static t_result	growable_writer_drain_pipe(t_writer *w, t_reader *r,
 }
 
 __attribute__((__nonnull__(1, 4)))
-static t_result	growable_writer_drain_fd(t_writer *w, t_fd fd, t_size limit,
-	t_size *size)
+static t_result	xft__growable_writer_drain_fd(t_writer *w, t_fd fd,
+	t_size limit, t_size *size)
 {
 	t_writer_ctx_growable *const	ctx = w->writer_ctx;
 	const t_buffer_with_capacity	buf = ctx->vec.buf;
@@ -68,20 +68,21 @@ static t_result	growable_writer_drain_fd(t_writer *w, t_fd fd, t_size limit,
 		return (KO);
 	r = xft_fs_reader(&fs, fd, xft_fatptr(buf.mem, buf.capacity));
 	if (info.size == 0)
-		return (growable_writer_drain_pipe(w, &r, limit, size));
+		return (xft__growable_writer_drain_pipe(w, &r, limit, size));
 	info.size = xft_tern_s(info.size < limit, (t_size)info.size, limit);
 	if (__builtin_expect(!xft_vec_reserve(ctx->allocator, &ctx->vec,
 				(t_size)info.size), 0))
 		return (KO);
-	if (__builtin_expect(!xft_reader_read(&r, xft_fatptr(ctx->vec.buf.mem
-					+ buf.size, (t_size)info.size), size), 0))
+	if (__builtin_expect(!xft_reader_read_all(&r, xft_fatptr(ctx->vec.buf.mem
+					+ buf.size, (t_size)info.size)), 0))
 		return (KO);
-	ctx->vec.buf.size = buf.size + *size;
+	ctx->vec.buf.size = buf.size + (t_size)info.size;
+	*size = (t_size)info.size;
 	return (OK);
 }
 
 __attribute__((__nonnull__(1)))
-static t_result	growable_writer_flush(t_writer *w)
+static t_result	xft__growable_writer_flush(t_writer *w)
 {
 	(void)w;
 	return (OK);
@@ -92,9 +93,9 @@ inline t_writer	xft_growable_writer(t_writer_ctx_growable *ctx,
 	t_allocator allocator, t_vec vec)
 {
 	static t_writer_vtable const	vtable = {
-		.drain_all = growable_writer_drain_all,
-		.drain_fd = growable_writer_drain_fd,
-		.flush = growable_writer_flush,
+		.drain_all = xft__growable_writer_drain_all,
+		.drain_fd = xft__growable_writer_drain_fd,
+		.flush = xft__growable_writer_flush,
 	};
 
 	if (vec.buf.mem == nullptr)

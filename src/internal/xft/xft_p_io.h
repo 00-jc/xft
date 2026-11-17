@@ -26,12 +26,18 @@ t_result		xft__fs_reader_discard(t_reader *r, t_size limit,\
 t_result		xft__fs_reader_read(t_reader *r, t_buffer dst, t_size *size)\
 				__attribute__((__nonnull__(1, 3)));
 
+t_result		xft__fs_reader_read_all(t_reader *r, t_buffer dst)\
+				__attribute__((__nonnull__(1)));
+
 t_result		xft__tcp_reader_discard(t_reader *r, t_size limit,\
 				t_size *size)\
 				__attribute__((__nonnull__(1, 3)));
 
 t_result		xft__tcp_reader_read(t_reader *r, t_buffer dst, t_size *size)\
 				__attribute__((__nonnull__(1, 3)));
+
+t_result		xft__tcp_reader_read_all(t_reader *r, t_buffer dst)\
+				__attribute__((__nonnull__(1)));
 
 t_result		xft__udp_reader_discard(t_reader *r, t_size limit,\
 				t_size *size)\

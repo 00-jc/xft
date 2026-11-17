@@ -19,7 +19,7 @@
 # include <ws2tcpip.h>
 
 __attribute__((__nonnull__(2)))
-static bool	connect_timeout(SOCKET s, const SOCKADDR *sa, int len,
+static bool	xft__connect_timeout(SOCKET s, const SOCKADDR *sa, int len,
 	t_u64a ms)
 {
 	u_long	mode;
@@ -52,7 +52,7 @@ t_result	xft_connect_socket(t_fd sock, const t_ip_addr *addr,
 
 	len = (int)xft__sockaddr_from_ip(addr, &sa);
 	if (opts.has_timeout)
-		return ((t_result)connect_timeout(s, (SOCKADDR *)&sa, len,
+		return ((t_result)xft__connect_timeout(s, (SOCKADDR *)&sa, len,
 				opts.timeout_ms));
 	return ((t_result)(connect(s, (SOCKADDR *)&sa, len) == 0));
 }

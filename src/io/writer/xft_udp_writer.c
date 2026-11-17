@@ -29,7 +29,7 @@ t_result	xft__udp_writer_flush(t_writer *w)
 }
 
 __attribute__((__nonnull__(1)))
-static t_result	udp_writer_drain_all(t_writer *w, t_buffer data)
+static t_result	xft__udp_writer_drain_all(t_writer *w, t_buffer data)
 {
 	t_writer_ctx_udp *const			ctx = w->writer_ctx;
 	const t_buffer_with_capacity	buf = ctx->buf;
@@ -56,7 +56,7 @@ inline t_writer	xft_udp_writer(t_writer_ctx_udp *ctx, t_fd fd,
 	t_buffer buffer, const t_ip_addr *dest)
 {
 	static t_writer_vtable const	vtable = {
-		.drain_all = udp_writer_drain_all,
+		.drain_all = xft__udp_writer_drain_all,
 		.drain_fd = xft__udp_writer_drain_fd,
 		.flush = xft__udp_writer_flush,
 	};

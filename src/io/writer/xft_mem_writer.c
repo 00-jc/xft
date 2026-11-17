@@ -15,7 +15,7 @@
 #include <xft/bmi.h>
 
 __attribute__((__nonnull__(1)))
-static t_result	mem_writer_drain_all(t_writer *w, t_buffer data)
+static t_result	xft__mem_writer_drain_all(t_writer *w, t_buffer data)
 {
 	t_writer_ctx_memory *const	ctx = w->writer_ctx;
 
@@ -28,7 +28,7 @@ static t_result	mem_writer_drain_all(t_writer *w, t_buffer data)
 }
 
 __attribute__((__nonnull__(1, 4)))
-static t_result	mem_writer_drain_fd(t_writer *w, t_fd fd, t_size limit,
+static t_result	xft__mem_writer_drain_fd(t_writer *w, t_fd fd, t_size limit,
 	t_size *size)
 {
 	t_writer_ctx_memory *const	ctx = w->writer_ctx;
@@ -42,7 +42,7 @@ static t_result	mem_writer_drain_fd(t_writer *w, t_fd fd, t_size limit,
 	{
 		n = xft_tern_s(limit < dst.size, limit, dst.size);
 		r = xft_fs_reader(&fs, fd, xft_fatptr(dst.mem, n));
-		if (__builtin_expect(!xft_reader_read(&r, fs.buffer, &n), 0))
+		if (__builtin_expect(!xft_reader_read_all(&r, fs.buffer), 0))
 			return (KO);
 	}
 	ctx->buffer = xft_fatptr(dst.mem + n, dst.size - n);
@@ -51,7 +51,7 @@ static t_result	mem_writer_drain_fd(t_writer *w, t_fd fd, t_size limit,
 }
 
 __attribute__((__nonnull__(1)))
-static t_result	mem_writer_flush(t_writer *w)
+static t_result	xft__mem_writer_flush(t_writer *w)
 {
 	(void)w;
 	return (OK);
@@ -61,9 +61,9 @@ __attribute__((__nonnull__(1), __always_inline__, __used__))
 inline t_writer	xft_mem_writer(t_writer_ctx_memory *ctx, t_buffer dst)
 {
 	static t_writer_vtable const	vtable = {
-		.drain_all = mem_writer_drain_all,
-		.drain_fd = mem_writer_drain_fd,
-		.flush = mem_writer_flush,
+		.drain_all = xft__mem_writer_drain_all,
+		.drain_fd = xft__mem_writer_drain_fd,
+		.flush = xft__mem_writer_flush,
 	};
 
 	if (dst.mem == nullptr)
