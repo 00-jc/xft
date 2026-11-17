@@ -17,7 +17,7 @@ void	test_map_delete(t_allocator a)
 	t_swissmap	m;
 	int			val;
 
-	m = xft_new_swissmap(a);
+	xft_pin_invariant(xft_new_swissmap(a, &m));
 	val = 10;
 	xft_swissmap_insert(a, &m, xft_fatptr((t_u8 *)"del", 3), (t_u8 *)&val);
 	xft_pin_invariant(xft_swissmap_lookup(&m,

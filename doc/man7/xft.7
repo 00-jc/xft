@@ -132,6 +132,12 @@ typedef struct s_buffer {
 	t_u8	*mem;	/* counted_by(size) under clang */
 } t_buffer;
 
+typedef struct s_buffer_with_capacity {
+	t_size	size;		/* bytes in use */
+	t_size	capacity;	/* bytes allocated */
+	t_u8	*mem;		/* counted_by(capacity) under clang */
+} t_buffer_with_capacity;
+
 typedef enum e_result { OK = 1, KO = 0 } t_result;
 
 typedef struct s_span {
@@ -178,6 +184,8 @@ is set.
 .It Xr xft_alloc 3
 allocator interface, arena, general purpose, page and reporting allocators,
 and their mutex-locked variants
+.It Xr xft_async 3
+running tasks in place or on a thread pool
 .It Xr xft_atomics 3
 mutexes, futexes, signals, ring buffers and atomic types
 .It Xr xft_bmi 3
@@ -201,7 +209,7 @@ runtime invariants and optimizer hints
 .It Xr xft_indexmap 3
 insertion-ordered hash map
 .It Xr xft_io 3
-file descriptors and buffered input/output
+readers, writers, standard handles, file information and mapping
 .It Xr xft_math 3
 math functions
 .It Xr xft_mem 3

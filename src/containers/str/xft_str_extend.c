@@ -19,17 +19,17 @@ t_result	xft_str_reserve(t_allocator allocator,
 	t_buffer	new_buf;
 	t_size		new_cap;
 
-	if (str->mem == nullptr || allocator.allocator == nullptr
+	if (str->buf.mem == nullptr || allocator.allocator == nullptr
 		|| allocator.vtable == nullptr || allocator.vtable->realloc == nullptr)
 		__builtin_unreachable();
-	new_cap = n + str->capacity + 1;
+	new_cap = n + str->buf.capacity + 1;
 	new_buf = allocator.vtable->realloc(allocator.allocator,
-			xft_fatptr(str->mem, str->capacity), new_cap,
+			xft_fatptr(str->buf.mem, str->buf.capacity), new_cap,
 			__GCC_CONSTRUCTIVE_SIZE);
 	if (__builtin_expect(new_buf.mem == nullptr, 0))
 		return (KO);
-	str->mem = new_buf.mem;
-	str->capacity = new_buf.size;
+	str->buf.mem = new_buf.mem;
+	str->buf.capacity = new_buf.size;
 	return (OK);
 }
 
@@ -39,13 +39,13 @@ t_result	xft_str_extend(t_allocator allocator, t_str *restrict const str,
 {
 	t_u8	should_extend;
 
-	if (str->mem == nullptr)
+	if (str->buf.mem == nullptr)
 		__builtin_unreachable();
-	should_extend = str->capacity < str->size + n + 1;
+	should_extend = str->buf.capacity < str->buf.size + n + 1;
 	if (__builtin_expect(should_extend
 			&& !xft_str_reserve(allocator, str, n), 0))
 		return (KO);
-	xft_memcpy(str->mem + str->size, mem, n + 1);
-	str->size += n;
+	xft_memcpy(str->buf.mem + str->buf.size, mem, n + 1);
+	str->buf.size += n;
 	return (OK);
 }

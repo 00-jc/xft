@@ -20,7 +20,8 @@ void	xft_main(const t_any *const __restrict__ sp)
 	t_buffer		memory;
 
 	(void)sp;
-	gpa = xft_new_gpa();
+	if (__builtin_expect(!xft_new_gpa(&gpa), 0))
+		xft_exit_process(1);
 	allocator = xft_gpa_allocator(&gpa);
 	if (allocator.vtable == nullptr || allocator.vtable->allocate == nullptr
 		|| allocator.vtable->destroy == nullptr

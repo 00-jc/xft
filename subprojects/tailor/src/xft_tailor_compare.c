@@ -16,6 +16,7 @@
 #include <xft/fmt.h>
 #include <xft/math.h>
 #include <xft/vec.h>
+#include <xft/cstr.h>
 
 #define C0		" ≈ %s\n"
 #define C1		" ├─ %s = %f cycles per_call (baseline) [%f ns]\n"
@@ -59,8 +60,8 @@ static inline t_result	xft__tailor_groups(t_tailor *t, t_tailor_groups *g,
 		return (KO);
 	g->head = g->next + n;
 	g->tail = g->head + n;
-	g->map = xft_new_indexmap_with(xft_arena_allocator(&t->arena), n);
-	if (__builtin_expect(g->map.soa.ptr == nullptr, 0))
+	if (__builtin_expect(!xft_new_indexmap_with(xft_arena_allocator(&t->arena),
+				&g->map, n), 0))
 		return (KO);
 	i = 0;
 	while (i < n)
@@ -117,7 +118,7 @@ static inline void	xft__tailor_print_group(t_tailor *t,
 			xft_vec_get(&t->results, i, sizeof(t_tailor_result)));
 		i = g->next[i];
 	}
-	xft_writer_write(&t->writer, xft_fatptr((t_u8 *)"\n", 1));
+	xft_writer_drain_all(&t->writer, xft_fatptr((t_u8 *)"\n", 1));
 }
 
 __attribute__((__nonnull__(1)))

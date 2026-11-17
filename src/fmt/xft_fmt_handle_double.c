@@ -80,15 +80,15 @@ inline t_result	xft_fmt_handle_double(t_writer *__restrict__ const writer,
 			== 0x7FF0000000000000ULL, 0))
 	{
 		if (bits & 0x000FFFFFFFFFFFFFULL)
-			return (xft_writer_write(writer, xft_fatptr((t_u8 *)"nan", 3)));
-		return (xft_writer_write(writer, xft_fatptr((t_u8 *)"inf", 3)));
+			return (xft_writer_drain_all(writer, xft_fatptr((t_u8 *)"nan", 3)));
+		return (xft_writer_drain_all(writer, xft_fatptr((t_u8 *)"inf", 3)));
 	}
 	if (d >= 18446744073709551616.0)
-		return (xft_writer_write(writer, xft_fatptr((t_u8 *)"ovf", 3)));
+		return (xft_writer_drain_all(writer, xft_fatptr((t_u8 *)"ovf", 3)));
 	neg = d < 0.0;
 	if (neg)
 		d = -d;
 	i = xft_fmt_double_int(buf, d, neg);
 	i += xft_fmt_double_frac(buf + i, d - (t_f64)(t_u64)d);
-	return (xft_writer_write(writer, xft_fatptr(buf, i)));
+	return (xft_writer_drain_all(writer, xft_fatptr(buf, i)));
 }

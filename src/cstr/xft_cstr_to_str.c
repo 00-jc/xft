@@ -12,20 +12,15 @@
 
 #include <xft/cstr.h>
 
-__attribute__((__nonnull__(2)))
-t_str	xft_cstr_to_str(t_allocator allocator, const char *cstr)
+__attribute__((__nonnull__(2, 3)))
+t_result	xft_cstr_to_str(t_allocator allocator, t_str *str, const char *cstr)
 {
-	t_str	str;
 	t_size	n;
 
 	n = xft_strlen(cstr);
-	str = xft_new_str(allocator, n);
-	if (__builtin_expect(str.mem == nullptr, 0))
-		return ((t_str){0});
-	if (__builtin_expect(!xft_str_extend(allocator, &str, (t_any)cstr, n), 0))
-	{
-		xft_str_destroy(allocator, &str);
-		return ((t_str){0});
-	}
-	return (str);
+	if (__builtin_expect(!xft_new_str(allocator, str, n), 0))
+		return (KO);
+	if (__builtin_expect(!xft_str_extend(allocator, str, (t_any)cstr, n), 0))
+		return (xft_str_destroy(allocator, str), KO);
+	return (OK);
 }

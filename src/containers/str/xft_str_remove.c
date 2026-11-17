@@ -18,11 +18,13 @@ t_result	xft_str_remove(t_str *restrict const v, t_size i)
 	t_u8	*start;
 	t_size	len;
 
-	if (!v->mem || v->size <= i)
+	if (v->buf.mem == nullptr)
+		__builtin_unreachable();
+	if (v->buf.size <= i)
 		return (KO);
-	start = v->mem + i;
-	len = v->size - i;
+	start = v->buf.mem + i;
+	len = v->buf.size - i;
 	xft_memmove(start, start + 1, len);
-	--v->size;
+	--v->buf.size;
 	return (OK);
 }

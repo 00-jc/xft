@@ -17,15 +17,13 @@ __attribute__((__nonnull__(1, 2), __always_inline__, __flatten__))
 inline static bool	gt__init_state(t_gentable_state *__restrict__ const state,
 				const char *__restrict__ const path)
 {
-	state->gpa = xft_new_gpa();
-	if (__builtin_expect(state->gpa.slab == nullptr, 0))
+	if (__builtin_expect(!xft_new_gpa(&state->gpa), 0))
 		return (false);
 	state->allocator = xft_gpa_allocator(&state->gpa);
-	state->set = xft_new_vec(state->allocator, 512,
-			sizeof(t_gentable_entry));
-	if (__builtin_expect(state->set.buf.mem == nullptr, 0))
+	if (__builtin_expect(!xft_new_vec(state->allocator, &state->set, 512,
+				sizeof(t_gentable_entry)), 0))
 		return (xft_gpa_destroy(&state->gpa), false);
-	state->database = xft_map_file((t_any)path, xft_o_rdonly);
+	state->database = xft_map_file_into_memory(path);
 	if (__builtin_expect(state->database.mem == nullptr, 0))
 		return (xft_vec_destroy(state->allocator, &state->set),
 			xft_gpa_destroy(&state->gpa), false);
@@ -47,7 +45,7 @@ void	xft_main(const t_any *__restrict__ const sp)
 	if (__builtin_expect(ret == OK, 1))
 		ret = gt_emit(state.database, &state.set, GT_XID_PATH);
 	xft_vec_destroy(state.allocator, &state.set);
-	xft_unmap_file(state.database);
+	xft_unmap_file_from_memory(state.database);
 	xft_gpa_destroy(&state.gpa);
 	xft_exit((int)xft_tern(ret == KO, 1, 0));
 }

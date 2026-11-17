@@ -1,4 +1,4 @@
-.Dd November 1, 2026
+.Dd November 17, 2026
 .Dt XFT_GPA 3
 .Os xft
 .Sh NAME
@@ -15,8 +15,8 @@
 .Nd general-purpose and reporting allocators
 .Sh SYNOPSIS
 .In xft/alloc.h
-.Ft t_gpa
-.Fn xft_new_gpa void
+.Ft t_result
+.Fn xft_new_gpa "t_gpa *gpa"
 .Ft void
 .Fn xft_gpa_destroy "t_gpa *gpa"
 .Ft t_buffer
@@ -25,8 +25,8 @@
 .Fn xft_gpa_realloc "t_any alloc" "t_buffer buf" "t_size newsize" "t_size align"
 .Ft void
 .Fn xft_gpa_free "t_any allocator" "t_buffer buf"
-.Ft t_reporta
-.Fn xft_new_reporta void
+.Ft t_result
+.Fn xft_new_reporta "t_reporta *gpa"
 .Ft void
 .Fn xft_reporta_destroy "t_reporta *gpa"
 .Ft t_buffer
@@ -59,7 +59,9 @@ vtables that wrap these functions.
 reserves the first slab of
 .Dv GPA_SLABSIZE
 (131072) bytes with
-.Xr xft_palloc 3 .
+.Xr xft_palloc 3
+and writes the allocator to
+.Fa *gpa .
 Every slab starts with a pointer to the previous one.
 .Fn xft_gpa_destroy
 releases every slab and every large block on a free list.
@@ -200,11 +202,13 @@ member, so it needs no allocation.
 .Fn xft_new_gpa
 and
 .Fn xft_new_reporta
-return an allocator whose
-.Fa slab
-is
-.Dv nullptr
-if the first slab cannot be reserved.
+return
+.Dv OK
+on success and
+.Dv KO ,
+leaving
+.Fa *gpa
+untouched, if the first slab cannot be reserved.
 .Pp
 .Fn xft_gpa_alloc ,
 .Fn xft_gpa_realloc
@@ -225,8 +229,7 @@ valid.
 t_gpa		gpa;
 t_buffer	b;
 
-gpa = xft_new_gpa();
-if (gpa.slab == nullptr)
+if (!xft_new_gpa(&gpa))
 	xft_exit_process(1);
 b = xft_gpa_alloc(&gpa, 100, 8);
 if (b.mem != nullptr)

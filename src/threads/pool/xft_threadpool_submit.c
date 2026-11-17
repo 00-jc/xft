@@ -25,7 +25,7 @@ static inline void	xft__notify(t_threadpool *__restrict__ const tp)
 
 __attribute__((__nonnull__(1, 2), __flatten__))
 void	xft_threadpool_submit_fair(t_threadpool *__restrict__ const tp,
-	t_thread_task *__restrict__ const tasks, t_size alloc_task,
+	t_task *__restrict__ const tasks, t_size alloc_task,
 	t_size n_tasks)
 {
 	const t_size	workers = tp->n_workers;
@@ -49,7 +49,7 @@ void	xft_threadpool_submit_fair(t_threadpool *__restrict__ const tp,
 
 __attribute__((__nonnull__(1, 2), __flatten__))
 void	xft_threadpool_submit(t_threadpool *__restrict__ const tp,
-	t_thread_task *__restrict__ const task, t_size alloc_task)
+	t_task *__restrict__ const task, t_size alloc_task)
 {
 	const t_tp_self *__restrict__ const	self = xft__self();
 

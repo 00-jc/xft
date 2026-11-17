@@ -18,11 +18,11 @@
 .Ft t_result
 .Fn xft_threadpool_init "t_allocator allocator" "const t_sysinfo info" "t_thread_opts opts" "t_threadpool *tp"
 .Ft void
-.Fn xft_threadpool_submit "t_threadpool *tp" "t_thread_task *task" "t_size alloc_task"
+.Fn xft_threadpool_submit "t_threadpool *tp" "t_task *task" "t_size alloc_task"
 .Ft void
-.Fn xft_threadpool_submit_fair "t_threadpool *tp" "t_thread_task *tasks" "t_size alloc_task" "t_size n_tasks"
+.Fn xft_threadpool_submit_fair "t_threadpool *tp" "t_task *tasks" "t_size alloc_task" "t_size n_tasks"
 .Ft void
-.Fn xft_threadpool_wait_task "t_thread_task *task"
+.Fn xft_threadpool_wait_task "t_task *task"
 .Ft void
 .Fn xft_threadpool_wait_all "t_threadpool *tp"
 .Ft void
@@ -61,24 +61,24 @@ With
 and on Windows the C library or the loader sets it up.
 .Ss Types
 .Bd -literal -offset indent
-typedef enum e_thread_task_model : t_u8 {
+typedef enum e_task_model : t_u8 {
 	xft_must_keep_all_alive,
 	xft_must_free_arg_on_completion,
 	xft_must_free_task_on_completion,
 	xft_must_free_task_and_arg_on_completion,
-} t_thread_task_model;
+} t_task_model;
 
-typedef struct s_thread_task {
-	t_result               (*f)(t_any);
-	t_any                  arg;
-	struct s_thread_task   *next;
-	t_allocator            allocator;
-	t_size                 alloc_task;
-	t_atomic32             completion;
-	t_u32a                 arg_size;
-	t_result               result;
-	t_thread_task_model    arg_model;
-} t_thread_task;
+typedef struct s_task {
+	t_result        (*f)(t_any);
+	t_any           arg;
+	struct s_task   *next;
+	t_allocator     allocator;
+	t_size          alloc_task;
+	t_atomic32      completion;
+	t_u32a          arg_size;
+	t_result        result;
+	t_task_model    arg_model;
+} t_task;
 .Ed
 .Pp
 The caller fills
@@ -362,14 +362,14 @@ void	xft_main(const t_any *__restrict__ const sp)
 	const t_sysinfo		info = xft_get_sysinfo(sp);
 	const t_allocator	alloc = xft_page_allocator();
 	t_threadpool		tp;
-	t_thread_task		task;
+	t_task		task;
 	t_u64				value;
 
 	if (xft_start_tls_for_main_thread(info) == KO
 		|| xft_threadpool_init(alloc, info, xft_threadpool_default(),
 			&tp) == KO)
 		xft_exit_process(1);
-	task = (t_thread_task){.f = work, .arg = &value, .allocator = alloc,
+	task = (t_task){.f = work, .arg = &value, .allocator = alloc,
 		.arg_model = xft_must_keep_all_alive};
 	xft_threadpool_submit(&tp, &task, sizeof(task));
 	xft_threadpool_wait_task(&task);
@@ -379,6 +379,7 @@ void	xft_main(const t_any *__restrict__ const sp)
 .Ed
 .Sh SEE ALSO
 .Xr xft_alloc 3 ,
+.Xr xft_async 3 ,
 .Xr xft_atomics 3 ,
 .Xr xft_os 3 ,
 .Xr xft_rt 3 ,

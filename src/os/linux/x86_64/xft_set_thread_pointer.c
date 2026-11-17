@@ -18,9 +18,10 @@
 # if defined(__x86_64__) && !defined(XFT_REQUIRE_LIBC)
 
 __attribute__((__always_inline__, __used__))
-inline int	xft_set_thread_pointer(t_uptr tp)
+inline t_xft_sysres	xft_set_thread_pointer(t_uptr tp)
 {
-	int	ret;
+	int		ret;
+	t_u64a	r;
 
 	__asm__ volatile (
 		"syscall"
@@ -29,7 +30,9 @@ inline int	xft_set_thread_pointer(t_uptr tp)
 		"S"(tp)
 		: "rcx", "r11", "memory"
 	);
-	return ((int)xft_tern(ret < 0, (t_u64a)-1, (t_u64a)ret));
+	r = xft_tern(ret < 0, xft_sys_ko, xft_sys_ok);
+	r = xft_tern(ret == -xft_eintr || ret == -xft_eagain, xft_sys_repeat, r);
+	return ((t_xft_sysres)r);
 }
 
 # endif

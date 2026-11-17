@@ -58,7 +58,7 @@ void	test_imap_seeded(t_allocator a)
 	t_buffer	k;
 	t_size		i;
 
-	m = xft_new_indexmap(a);
+	xft_pin_invariant(xft_new_indexmap(a, &m));
 	i = 0;
 	while (i < IMAP_TEST_SEEDED)
 	{

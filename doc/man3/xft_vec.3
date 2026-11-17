@@ -1,4 +1,4 @@
-.Dd October 29, 2026
+.Dd November 17, 2026
 .Dt XFT_VEC 3
 .Os xft
 .Sh NAME
@@ -21,8 +21,8 @@
 .Nd untyped growable array
 .Sh SYNOPSIS
 .In xft/vec.h
-.Ft t_vec
-.Fn xft_new_vec "t_allocator allocator" "t_size size" "t_size type_size"
+.Ft t_result
+.Fn xft_new_vec "t_allocator allocator" "t_vec *v" "t_size size" "t_size type_size"
 .Ft void
 .Fn xft_vec_destroy "t_allocator allocator" "t_vec *v"
 .Ft t_size
@@ -66,37 +66,32 @@ explicitly, and the caller must pass the same values for the lifetime of
 the vector.
 .Bd -literal -offset indent
 typedef struct s_vec {
-	size_t		size;	/* bytes in use */
-	t_buffer	buf;	/* buf.size is the capacity in bytes */
+	t_buffer_with_capacity	buf;
 } t_vec;
 .Ed
 .Pp
-Both
-.Fa size
-and
 .Fa buf Ns .size
-count bytes, not elements.
+is the number of bytes in use and
+.Fa buf Ns .capacity
+the number of bytes allocated.
+Both count bytes, not elements.
 .Pp
 .Fn xft_new_vec
 allocates room for
 .Fa size
 elements of
 .Fa type_size
-bytes each and returns an empty vector.
-The capacity is the
-.Fa size
-of the buffer returned by the allocator, which may exceed the request.
+bytes each and writes an empty vector to
+.Fa *v .
+The capacity is the size of the buffer returned by the allocator, which
+may exceed the request.
 If
 .Fa size
 or
 .Fa type_size
-is zero, if their product overflows, or if the allocation fails, it returns
-a zeroed
-.Vt t_vec
-whose
-.Fa buf Ns .mem
-is
-.Dv nullptr .
+is zero, if their product overflows, or if the allocation fails, it leaves
+.Fa *v
+untouched.
 .Pp
 .Fn xft_vec_destroy
 frees the buffer through
@@ -107,7 +102,7 @@ It does not free anything the elements point to.
 .Pp
 .Fn xft_vec_len
 returns the number of elements,
-.Fa v Ns ->size
+.Fa v Ns ->buf.size
 divided by
 .Fa type_size .
 .Pp
@@ -141,7 +136,7 @@ The byte count need not be a multiple of the element size.
 asks
 .Fa allocator
 to reallocate the buffer to
-.Fa vec Ns ->buf.size
+.Fa vec Ns ->buf.capacity
 +
 .Fa n
 bytes.
@@ -213,7 +208,11 @@ and
 invalidate pointers to the removed element and to those after it.
 .Sh RETURN VALUES
 .Fn xft_new_vec
-returns the new vector, or a zeroed one on failure.
+returns
+.Dv OK
+on success and
+.Dv KO
+on failure.
 .Pp
 .Fn xft_vec_push_back ,
 .Fn xft_vec_extend
@@ -267,8 +266,7 @@ t_result	demo(t_allocator a)
 	int			out;
 	const int	*got;
 
-	v = xft_new_vec(a, 4, sizeof(int));
-	if (v.buf.mem == nullptr)
+	if (!xft_new_vec(a, &v, 4, sizeof(int)))
 		return (KO);
 	val = 42;
 	if (!xft_vec_push_back(a, &v, (t_u8 *)&val, sizeof(int)))
@@ -299,14 +297,12 @@ or a
 .Dv nullptr
 .Fa allocator Ns .allocator ,
 as unreachable rather than checking it.
-In particular, calling
-.Fn xft_vec_destroy ,
-.Fn xft_vec_push_back ,
-.Fn xft_vec_extend ,
-.Fn xft_vec_popmv
-or
-.Fn xft_vec_remove
-on a vector whose creation failed is undefined behavior.
+A vector only exists once
+.Fn xft_new_vec
+returned
+.Dv OK ,
+so calling any other function on one whose creation failed, or on one
+already destroyed, is undefined behavior.
 .Pp
 .Fn xft_vec_push_back
 assumes the capacity is at least

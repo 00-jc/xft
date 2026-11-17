@@ -21,12 +21,14 @@ inline t_result	xft_vec_reserve(t_allocator allocator,
 
 	if (allocator.vtable == nullptr || allocator.vtable->realloc == nullptr)
 		__builtin_unreachable();
-	new_cap = n + vec->buf.size;
+	new_cap = n + vec->buf.capacity;
 	new_buf = allocator.vtable->realloc(allocator.allocator,
-			vec->buf, new_cap, __GCC_CONSTRUCTIVE_SIZE);
+			xft_fatptr(vec->buf.mem, vec->buf.capacity), new_cap,
+			__GCC_CONSTRUCTIVE_SIZE);
 	if (__builtin_expect(new_buf.mem != nullptr, 1))
 	{
-		vec->buf = new_buf;
+		vec->buf.mem = new_buf.mem;
+		vec->buf.capacity = new_buf.size;
 		return (OK);
 	}
 	return (KO);
@@ -41,12 +43,12 @@ t_result	xft_vec_extend(t_allocator allocator,
 	if (vec->buf.mem == nullptr)
 		__builtin_unreachable();
 	{
-		should_extend = vec->buf.size < vec->size + data.size;
+		should_extend = vec->buf.capacity < vec->buf.size + data.size;
 		if (__builtin_expect(should_extend
 				&& !xft_vec_reserve(allocator, vec, data.size), 0))
 			return (KO);
-		xft_memcpy(vec->buf.mem + vec->size, data.mem, data.size);
-		vec->size += data.size;
+		xft_memcpy(vec->buf.mem + vec->buf.size, data.mem, data.size);
+		vec->buf.size += data.size;
 	}
 	return (OK);
 }

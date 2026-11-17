@@ -75,46 +75,4 @@ typedef struct s_thread
 
 # endif
 
-typedef enum s_thread_task_model : t_u8
-{
-	xft_must_keep_all_alive,
-	xft_must_free_arg_on_completion,
-	xft_must_free_task_on_completion,
-	xft_must_free_task_and_arg_on_completion,
-}	t_thread_task_model;
-
-typedef struct s_thread_task
-{
-	t_result				(*f)(t_any);
-	t_any					arg;
-	struct s_thread_task	*next;
-	t_allocator				allocator;
-	t_size					alloc_task;
-	t_atomic32				completion;
-	t_u32a					arg_size;
-	t_result				result;
-	t_thread_task_model		arg_model;
-}	t_thread_task;
-
-typedef struct s_threadpool
-{
-	t_thread			*worker_handles;
-	t_ring_buffer		*worker_rings;
-	t_size				n_workers;
-	t_size				handle_alloc_size;
-	t_size				rings_alloc_size;
-
-	_Alignas(XFT_DESTRUCTIVE_ALIGN)
-	t_atomic32			wake_up;
-	t_atomic32			shut_down;
-	t_atomic32			n_maybe_parked;
-
-	_Alignas(XFT_DESTRUCTIVE_ALIGN)
-	t_thread_task		*global_q_head;
-	t_thread_task		*global_q_tail;
-	t_atomic32			q_len;
-	t_atomic32			n_pending;
-	t_mutex				global_lock;
-}	t_threadpool;
-
 #endif

@@ -1,0 +1,148 @@
+.Dd November 17, 2026
+.Dt XFT_ASYNC 3
+.Os xft
+.Sh NAME
+.Nm xft_blocking_async ,
+.Nm xft_threaded_async ,
+.Nm xft_threaded_async_destroy ,
+.Nm xft_async ,
+.Nm xft_await
+.Nd run tasks in place or on a thread pool
+.Sh SYNOPSIS
+.In xft/async.h
+.Ft t_async
+.Fn xft_blocking_async void
+.Ft t_result
+.Fn xft_threaded_async "t_async *self" "t_allocator allocator" "t_sysinfo sysinfo" "t_thread_opts opts"
+.Ft void
+.Fn xft_threaded_async_destroy "t_allocator allocator" "t_async *self"
+.Ft void
+.Fn xft_async "t_async *self" "t_task *task"
+.Ft void
+.Fn xft_await "t_async *self" "t_task *task"
+.Sh DESCRIPTION
+A
+.Vt t_async
+starts tasks and waits for them.
+It holds its vtable and the state of its backend:
+.Bd -literal -offset indent
+typedef struct s_async_vtable {
+	t_async_submit	async;
+	t_async_await	await;
+} t_async_vtable;
+
+typedef union u_async_ctx {
+	t_threadpool	threaded;
+} t_async_ctx;
+
+typedef struct s_async {
+	t_async_vtable	vtable;
+	t_async_ctx		as;
+} t_async;
+.Ed
+.Pp
+.Vt t_task
+and
+.Vt t_task_model
+are described in
+.Xr xft_threadpool 3 .
+.Fn xft_async
+starts
+.Fa task
+and
+.Fn xft_await
+waits until it has finished; both call through
+.Fa self Ns ->vtable .
+.Ss Blocking
+.Fn xft_blocking_async
+returns a
+.Vt t_async
+that runs each task in place.
+.Fn xft_async
+calls
+.Fa task Ns ->f
+on
+.Fa task Ns ->arg ,
+stores the result in
+.Fa task Ns ->result ,
+and then frees the argument and the task as
+.Fa task Ns ->arg_model
+asks, with
+.Fa task Ns ->allocator .
+.Fn xft_await
+does nothing, since the task has already finished.
+.Ss Threaded
+.Fn xft_threaded_async
+starts a thread pool in
+.Fa self Ns ->as.threaded
+with
+.Fn xft_threadpool_init
+and sets the vtable.
+.Fn xft_async
+submits the task with
+.Fn xft_threadpool_submit ,
+passing
+.Fa task Ns ->alloc_task ,
+and
+.Fn xft_await
+calls
+.Fn xft_threadpool_wait_task .
+.Fn xft_threaded_async_destroy
+stops the pool with
+.Fn xft_threadpool_destroy .
+.Sh RETURN VALUES
+.Fn xft_threaded_async
+returns the result of
+.Fn xft_threadpool_init .
+.Sh EXAMPLES
+.Bd -literal -offset indent
+#include <xft/xft.h>
+
+static t_result	work(t_any arg)
+{
+	*(t_u64 *)arg *= 2;
+	return (OK);
+}
+
+void	double_it(t_async *as, t_allocator a, t_u64 *value)
+{
+	t_task	task;
+
+	task = (t_task){.f = work, .arg = value, .allocator = a,
+		.arg_model = xft_must_keep_all_alive};
+	xft_async(as, &task);
+	xft_await(as, &task);
+}
+.Ed
+.Pp
+.Fa as
+comes from
+.Fn xft_blocking_async
+or from a successful
+.Fn xft_threaded_async .
+.Sh SEE ALSO
+.Xr xft_io 3 ,
+.Xr xft_threadpool 3 ,
+.Xr xft_threads 3 ,
+.Xr xft 7
+.Sh CAVEATS
+The module is planned to host an
+.Xr io_uring 7
+backend for evented input and output.
+.Pp
+Every task needs an allocator with a
+.Fa free
+function, even with
+.Dv xft_must_keep_all_alive .
+.Pp
+A task whose model frees the task cannot be awaited: the blocking backend
+frees it before
+.Fn xft_async
+returns, and the thread pool frees it without signaling completion.
+.Pp
+The pool's workers keep a pointer to
+.Fa self Ns ->as.threaded ,
+so a threaded
+.Vt t_async
+must not be moved or copied after
+.Fn xft_threaded_async .

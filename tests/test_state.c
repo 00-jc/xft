@@ -14,8 +14,8 @@
 
 void	xft_test_init(t_test *t)
 {
-	t->writer = xft_get_fs_writer(xft_fatptr(t->buffer, BUFSIZE),
-			xft_get_stdout());
+	t->writer = xft_fs_writer(&t->writer_fs, xft_get_stdout(),
+			xft_fatptr(t->buffer, TEST_BUFFER_SIZE));
 }
 
 void	xft_test_print(t_test *t, const char *msg)

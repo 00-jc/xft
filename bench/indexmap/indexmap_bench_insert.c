@@ -32,8 +32,7 @@ void	xft_imap_bench_insert_grow(t_any ptr)
 	const t_allocator	a = xft_gpa_allocator(xft_get_bench_imap_gpa());
 	t_indexmap			map;
 
-	map = xft_new_indexmap(a);
-	xft_pin_invariant(map.soa.ptr != nullptr);
+	xft_pin_invariant(xft_new_indexmap(a, &map));
 	imap_bench_insert(ptr, a, &map);
 	xft_indexmap_destroy(a, &map);
 }
@@ -48,8 +47,7 @@ void	xft_imap_bench_insert_reserved(t_any ptr)
 	cap = xft_tailor_getcount(ptr);
 	if (cap > IMAP_BENCH_KEYS)
 		cap = IMAP_BENCH_KEYS;
-	map = xft_new_indexmap_with(a, cap);
-	xft_pin_invariant(map.soa.ptr != nullptr);
+	xft_pin_invariant(xft_new_indexmap_with(a, &map, cap));
 	imap_bench_insert(ptr, a, &map);
 	xft_indexmap_destroy(a, &map);
 }

@@ -13,9 +13,13 @@
 #include <xft/alloc.h>
 #include <xft/atomics.h>
 
-t_ts_gpa	xft_new_ts_gpa(void)
+__attribute__((__nonnull__(1)))
+t_result	xft_new_ts_gpa(t_ts_gpa *gpa)
 {
-	return ((t_ts_gpa){.mutex = xft_unlocked, .gpa = xft_new_gpa()});
+	if (__builtin_expect(xft_new_gpa(&gpa->gpa) == KO, 0))
+		return (KO);
+	xft_mutex_init(&gpa->mutex);
+	return (OK);
 }
 
 __attribute__((__flatten__, __nonnull__(1)))

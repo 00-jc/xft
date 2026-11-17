@@ -17,9 +17,9 @@
 
 __attribute__((__nonnull__(1, 2), __always_inline__, __used__))
 inline void	xft__handle_completion(t_threadpool *__restrict__ const tp,
-	t_thread_task *__restrict__ const t)
+	t_task *__restrict__ const t)
 {
-	const t_thread_task_model	model = t->arg_model;
+	const t_task_model	model = t->arg_model;
 
 	if (t->allocator.vtable == nullptr || t->allocator.vtable->free == nullptr)
 		__builtin_unreachable();

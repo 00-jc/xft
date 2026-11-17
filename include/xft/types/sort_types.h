@@ -20,7 +20,8 @@ typedef struct s_qsort_ctx
 {
 	t_u8		*buf;
 	t_size		size;
-	int			(*cmp)(t_cany, t_cany);
+	t_i32		(*cmp)(t_cany, t_cany)\
+				__attribute__((__nonnull__));
 }	t_qsort_ctx;
 
 #endif

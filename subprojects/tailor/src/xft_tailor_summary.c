@@ -16,6 +16,7 @@
 #include <xft/fmt.h>
 #include <xft/math.h>
 #include <xft/vec.h>
+#include <xft/cstr.h>
 
 #define H0		" * %s\n"
 #define H1		" ├─ time         = %f ns per_call\n"

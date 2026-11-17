@@ -18,12 +18,13 @@
 # if defined(__aarch64__) && !defined(XFT_REQUIRE_LIBC)
 
 __attribute__((__nonnull__(1)))
-int	xft_mprotect(t_any addr, t_size size, int prot)
+t_xft_sysres	xft_mprotect(t_any addr, t_size size, int prot)
 {
 	register long x8	__asm__("x8");
 	register long x0	__asm__("x0");
 	register long x1	__asm__("x1");
 	register long x2	__asm__("x2");
+	t_u64a				r;
 
 	x8 = xft_sys_mprotect;
 	x1 = (long)size;
@@ -35,7 +36,9 @@ int	xft_mprotect(t_any addr, t_size size, int prot)
 		: "r"(x8), "r"(x1), "r"(x2)
 		: "memory", "cc"
 	);
-	return ((int)xft_tern(x0 < 0, (t_u64a)-1, (t_u64a)x0));
+	r = xft_tern(x0 < 0, xft_sys_ko, xft_sys_ok);
+	r = xft_tern(x0 == -xft_eintr || x0 == -xft_eagain, xft_sys_repeat, r);
+	return ((t_xft_sysres)r);
 }
 
 # endif

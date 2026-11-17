@@ -97,7 +97,7 @@ typedef struct s_tailor_units
 {
 	t_indexmap			map;
 	t_tailor_unit		*units;
-	t_thread_task		*tasks;
+	t_task				*tasks;
 	t_tailor_job		**order;
 	t_size				*uid;
 	t_size				n;

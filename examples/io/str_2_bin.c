@@ -14,6 +14,8 @@
 #include <xft/xft.h>
 #include <xft/xft_p_rt.h>
 
+static t_u8	g_out[1024];
+
 __attribute__((hot, __nonnull__(1), __always_inline__))
 inline void	xft_fillb(t_u8 *__restrict__ const bytereprs, t_u8 const c)
 {
@@ -32,9 +34,9 @@ inline void	xft_main(const t_any *__restrict__ const sp)
 {
 	t_kernel_ptrs	kp;
 	const t_nat_str	*s;
+	t_writer_fs		ctx;
 	t_writer		w;
 	t_u8			bytereprs[8];
-	t_u8			x[1024];
 
 	kp = xft_get_kernel_ptrs(sp);
 	if (__builtin_expect(kp.argc != 2, 0))
@@ -42,14 +44,15 @@ inline void	xft_main(const t_any *__restrict__ const sp)
 	if ((t_any)kp.argv == nullptr || kp.argv[1] == nullptr)
 		__builtin_unreachable();
 	s = kp.argv[1];
-	w = xft_get_fs_writer(xft_fatptr(x, 1024), xft_get_stdout());
+	w = xft_fs_writer(&ctx, xft_get_stdout(),
+			xft_fatptr(g_out, sizeof(g_out)));
 	while (*s != '\0')
 	{
 		xft_fillb(bytereprs, (t_u8)(*s));
 		s++;
-		xft_writer_write(&w, xft_fatptr(bytereprs, 8));
+		xft_writer_drain_all(&w, xft_fatptr(bytereprs, 8));
 	}
-	xft_writer_write(&w, xft_fatptr((t_u8 *)"\n", 1));
+	xft_writer_drain_all(&w, xft_fatptr((t_u8 *)"\n", 1));
 	(void)xft_writer_flush(&w);
 	xft_kernel_ptrs_destroy(&kp);
 	xft_exit_process(0);

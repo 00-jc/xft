@@ -13,7 +13,7 @@
 #include <vector>
 #include "stl_bench.hpp"
 
-/* xft_new_vec(a, 64, sizeof(t_u64)) takes bytes: 8 elements */
+/* xft_new_vec(a, &v, 64, sizeof(t_u64)) takes bytes: 8 elements */
 #define STL_VEC_INITIAL	(64 / sizeof(uint64_t))
 
 void	xft_std_vector_bench_push_back(void *ptr)

@@ -22,7 +22,7 @@ void	xft_vec_bench_push_back(t_any ptr)
 	t_u64		val;
 
 	a = xft_gpa_allocator(xft_get_bench_vec_gpa());
-	vec = xft_new_vec(a, 64, sizeof(t_u64));
+	xft_pin_invariant(xft_new_vec(a, &vec, 64, sizeof(t_u64)));
 	n = xft_tailor_getcount(ptr);
 	bytes = 0;
 	val = 0;
@@ -45,7 +45,7 @@ void	xft_vec_bench_push_back_reserved(t_any ptr)
 
 	a = xft_gpa_allocator(xft_get_bench_vec_gpa());
 	n = xft_tailor_getcount(ptr);
-	vec = xft_new_vec(a, n, sizeof(t_u64));
+	xft_pin_invariant(xft_new_vec(a, &vec, n, sizeof(t_u64)));
 	val = 0;
 	while (n-- > 0)
 	{
@@ -66,7 +66,7 @@ void	xft_vec_bench_push_pop(t_any ptr)
 	t_u64		val;
 
 	a = xft_gpa_allocator(xft_get_bench_vec_gpa());
-	vec = xft_new_vec(a, 64, sizeof(t_u64));
+	xft_pin_invariant(xft_new_vec(a, &vec, 64, sizeof(t_u64)));
 	n = xft_tailor_getcount(ptr);
 	val = 0;
 	while (n-- > 0)

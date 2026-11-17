@@ -15,9 +15,13 @@
 #include <xft/mem.h>
 #include <xft/xft_p_arena.h>
 
-t_ts_arena	xft_new_ts_arena(void)
+__attribute__((__nonnull__(1)))
+t_result	xft_new_ts_arena(t_ts_arena *arena)
 {
-	return ((t_ts_arena){.mutex = xft_unlocked, .arena = xft_new_arena()});
+	if (__builtin_expect(xft_new_arena(&arena->arena) == KO, 0))
+		return (KO);
+	xft_mutex_init(&arena->mutex);
+	return (OK);
 }
 
 __attribute__((__flatten__, __nonnull__(1)))

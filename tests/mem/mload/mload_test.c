@@ -42,10 +42,10 @@ static void	test_mload_case(const t_u64 *c, t_u8 *end)
 
 	mem = xft_fatptr(end - c[0], (t_size)c[0]);
 	rel = (t_size)c[1];
-	xft_pin_invariant(xft_mload_rel_u8(mem, rel, (t_blk8r)&safe) == c[2]);
-	xft_pin_invariant(xft_mload_rel_u16(mem, rel, (t_blk16r)&safe) == c[3]);
-	xft_pin_invariant(xft_mload_rel_u24(mem, rel, (t_blk32r)&safe) == c[4]);
-	xft_pin_invariant(xft_mload_rel_u32(mem, rel, (t_blk32r)&safe) == c[5]);
+	xft_pin_invariant(xft_mload_rel_u8(mem, rel, (t_blk8r)(&safe)) == c[2]);
+	xft_pin_invariant(xft_mload_rel_u16(mem, rel, (t_blk16r)(&safe)) == c[3]);
+	xft_pin_invariant(xft_mload_rel_u24(mem, rel, (t_blk32r)(&safe)) == c[4]);
+	xft_pin_invariant(xft_mload_rel_u32(mem, rel, (t_blk32r)(&safe)) == c[5]);
 	xft_pin_invariant(xft_mload_rel_u64(mem, rel, &safe) == c[6]);
 }
 

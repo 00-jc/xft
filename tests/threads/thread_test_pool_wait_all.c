@@ -24,7 +24,7 @@ static t_result	wait_all_outer(t_any arg)
 {
 	const t_pool_job *__restrict__ const	job = arg;
 	t_pool_test *__restrict__ const			s = job->s;
-	t_thread_task							*t;
+	t_task									*t;
 	t_u32a									it;
 
 	it = 0;
@@ -41,16 +41,16 @@ static t_result	wait_all_outer(t_any arg)
 static void	wait_all_owned(t_pool_test *__restrict__ const s)
 {
 	t_buffer		b;
-	t_thread_task	*t;
+	t_task			*t;
 	t_u32a			it;
 
 	it = 0;
 	while (it++ < POOL_TEST_OWNED)
 	{
 		b = s->alloc.vtable->allocate(s->alloc.allocator,
-				sizeof(t_thread_task), _Alignof(t_thread_task));
+				sizeof(t_task), _Alignof(t_task));
 		pool_assert(b.mem != nullptr, "pool wait_all: owned alloc");
-		t = (t_thread_task *)b.mem;
+		t = (t_task *)b.mem;
 		pool_task_set(t, wait_all_leaf, s, s->alloc);
 		t->arg_model = xft_must_free_task_on_completion;
 		xft_threadpool_submit(&s->tp, t, b.size);

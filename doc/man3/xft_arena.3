@@ -1,4 +1,4 @@
-.Dd October 29, 2026
+.Dd November 17, 2026
 .Dt XFT_ARENA 3
 .Os xft
 .Sh NAME
@@ -11,8 +11,8 @@
 .Nd bump allocator over large page mappings
 .Sh SYNOPSIS
 .In xft/alloc.h
-.Ft t_arena
-.Fn xft_new_arena void
+.Ft t_result
+.Fn xft_new_arena "t_arena *arena"
 .Ft t_any
 .Fn xft_arena_alloc "t_arena *allocator" "t_size size" "t_size align"
 .Ft void
@@ -69,7 +69,8 @@ are left over from a rewind and are kept for reuse.
 .Fn xft_new_arena
 maps a first page of
 .Dv HUGEPAGE_256MB
-bytes and commits only its header.
+bytes, commits only its header and writes the arena to
+.Fa *arena .
 .Pp
 .Fn xft_arena_alloc
 returns
@@ -162,11 +163,14 @@ in
 .Xr xft_alloc 3 .
 .Sh RETURN VALUES
 .Fn xft_new_arena
-returns the new arena.
-If the first mapping fails it returns an arena whose
-.Fa current
-is
-.Dv nullptr .
+returns
+.Dv OK
+on success.
+If the first mapping fails it returns
+.Dv KO
+and leaves
+.Fa *arena
+untouched.
 .Pp
 .Fn xft_arena_alloc
 returns a pointer to the block, or
@@ -207,8 +211,7 @@ t_result	run(void)
 	t_arena		arena;
 	t_result	res;
 
-	arena = xft_new_arena();
-	if (arena.current == nullptr)
+	if (!xft_new_arena(&arena))
 		return (KO);
 	res = scratch_loop(&arena, 100);
 	xft_destroy_arena(&arena);
@@ -223,12 +226,8 @@ t_result	run(void)
 .Xr xft 7
 .Sh CAVEATS
 An arena whose
-.Fa current
-is
-.Dv nullptr ,
-as returned by a failed
-.Fn xft_new_arena ,
-must not be passed to
+.Fn xft_new_arena
+failed must not be passed to
 .Fn xft_arena_alloc ,
 .Fn xft_arena_checkpoint
 or the rewind functions; they dereference it without checking.

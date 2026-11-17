@@ -94,8 +94,8 @@ typedef struct s_pool_test
 	t_u32a				n_outer;
 	t_u32a				n_inner;
 	t_pool_job			jobs[POOL_TEST_OUTER];
-	t_thread_task		outer[POOL_TEST_OUTER];
-	t_thread_task		inner[POOL_TEST_TASKS];
+	t_task				outer[POOL_TEST_OUTER];
+	t_task				inner[POOL_TEST_TASKS];
 }	t_pool_test;
 
 void	test_thread_join(t_sysinfo sysinfo);
@@ -119,10 +119,10 @@ void	thread_detach_spawn(t_thread *__restrict__ const thread,\
 			t_sysinfo sysinfo, t_u32a *__restrict__ const flags);
 void	test_thread_pool(t_sysinfo sysinfo);
 void	pool_assert(bool ok, const char *msg);
-void	pool_task_set(t_thread_task *__restrict__ const t,\
+void	pool_task_set(t_task *__restrict__ const t,\
 			t_result (*f)(t_any), t_any arg, t_allocator alloc);
 void	pool_spin(void);
-void	pool_check_tasks(t_thread_task *__restrict__ const t, t_u32a n,\
+void	pool_check_tasks(t_task *__restrict__ const t, t_u32a n,\
 			bool wait);
 void	pool_round_cancel(t_pool_test *__restrict__ const s,\
 			t_sysinfo sysinfo);

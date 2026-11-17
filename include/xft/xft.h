@@ -38,6 +38,7 @@
 # include <xft/fmt.h>
 # include <xft/atomics.h>
 # include <xft/threads.h>
+# include <xft/async.h>
 # include <xft/xid.h>
 
 #endif

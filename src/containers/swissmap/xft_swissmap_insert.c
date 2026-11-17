@@ -33,9 +33,8 @@ static t_result	xft__swiss_rehash(t_allocator allocator,
 	t_swiss_slot	slot;
 	t_size			i;
 
-	new = xft_new_swissmap_with(allocator,
-			(cap << (map->count * 40 >= cap * 17)) * 17 / 20);
-	if (__builtin_expect(new.soa.ptr == nullptr, 0))
+	if (__builtin_expect(!xft_new_swissmap_with(allocator, &new,
+				(cap << (map->count * 40 >= cap * 17)) * 17 / 20), 0))
 		return (KO);
 	i = 0;
 	while (i < cap)

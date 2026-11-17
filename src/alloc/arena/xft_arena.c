@@ -13,14 +13,16 @@
 #include <xft/xft_p_arena.h>
 #include <xft/xft_p_hugepage.h>
 
-t_arena	xft_new_arena(void)
+__attribute__((__nonnull__(1)))
+t_result	xft_new_arena(t_arena *arena)
 {
 	t_hugepage		*initial_page;
 
 	initial_page = new_hugepage(nullptr, xft_match_paging(1ULL << 25));
 	if (__builtin_expect(initial_page == nullptr, 0))
-		return ((t_arena){0});
-	return ((t_arena){.current = initial_page});
+		return (KO);
+	*arena = (t_arena){.current = initial_page};
+	return (OK);
 }
 
 __attribute__((__nonnull__(1)))

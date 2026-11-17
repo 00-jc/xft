@@ -18,8 +18,7 @@ void	test_arena_basic(void)
 	t_u8	*buf;
 	int		i;
 
-	a = xft_new_arena();
-	xft_pin_invariant_msg(a.current != nullptr,
+	xft_pin_invariant_msg(xft_new_arena(&a),
 		xft_fatptr((t_u8 *)"init", sizeof("init") - 1));
 	buf = xft_arena_alloc(&a, 4096, 16);
 	xft_pin_invariant_msg(buf != nullptr,

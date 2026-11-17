@@ -15,5 +15,5 @@
 __attribute__((__nonnull__(1), __always_inline__, __used__))
 inline void	xft_vec_clear(t_vec *restrict const v)
 {
-	v->size = 0;
+	v->buf.size = 0;
 }

@@ -15,5 +15,5 @@
 __attribute__((__nonnull__(1), __always_inline__, pure, __used__))
 inline t_size	xft_vec_len(const t_vec *restrict const v, t_size type_size)
 {
-	return (v->size / type_size);
+	return (v->buf.size / type_size);
 }

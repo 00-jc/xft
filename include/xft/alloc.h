@@ -26,7 +26,8 @@ t_result			xft_palloc_discard(t_any ptr, t_size size)\
 t_buffer			xft_palloc_resize(t_buffer b, t_size new_size);
 void				xft_palloc_free(t_buffer b);
 
-t_arena				xft_new_arena(void);
+t_result			xft_new_arena(t_arena *arena)\
+						__attribute__((__warn_unused_result__, __nonnull__(1)));
 t_any				xft_arena_alloc(t_arena *__restrict__ const allocator,
 						t_size size, t_size align)\
 						__attribute__((__nonnull__(1), __alloc_align__(3)));
@@ -39,7 +40,8 @@ void				xft_arena_rewind_clean(t_arena *__restrict__ const arena,
 void				xft_arena_rewind(t_arena *__restrict__ const arena,
 						t_arena_checkpoint checkpoint);
 
-t_gpa				xft_new_gpa(void);
+t_result			xft_new_gpa(t_gpa *gpa)\
+						__attribute__((__warn_unused_result__, __nonnull__(1)));
 void				xft_gpa_destroy(t_gpa *gpa);
 t_buffer			xft_gpa_alloc(t_any alloc, t_size size, t_size align);
 t_buffer			xft_gpa_realloc(t_any alloc, t_buffer buf, t_size newsize,
@@ -47,7 +49,8 @@ t_buffer			xft_gpa_realloc(t_any alloc, t_buffer buf, t_size newsize,
 void				xft_gpa_free(t_any allocator, t_buffer buf);
 t_buffer			xft_alloc_clone(t_allocator self, t_buffer buffer);
 
-t_reporta			xft_new_reporta(void);
+t_result			xft_new_reporta(t_reporta *gpa)\
+						__attribute__((__warn_unused_result__, __nonnull__(1)));
 void				xft_reporta_destroy(t_reporta *gpa)\
 						__attribute__((__nonnull__(1)));
 t_buffer			xft_reporta_alloc(t_any alloc, t_size size, t_size align)\
@@ -58,7 +61,8 @@ t_buffer			xft_reporta_realloc(t_any alloc, t_buffer buf,
 void				xft_reporta_free(t_any allocator, t_buffer buf)\
 						__attribute__((__nonnull__(1)));
 
-t_ts_gpa			xft_new_ts_gpa(void);
+t_result			xft_new_ts_gpa(t_ts_gpa *gpa)\
+						__attribute__((__warn_unused_result__, __nonnull__(1)));
 t_buffer			xft_ts_gpa_alloc(t_any alloc, t_size size, t_size align)\
 						__attribute__((__nonnull__(1)));
 t_buffer			xft_ts_gpa_realloc(t_any alloc, t_buffer buf,
@@ -69,7 +73,8 @@ void				xft_ts_gpa_free(t_any alloc, t_buffer buf)\
 void				xft_ts_gpa_destroy(t_any alloc)\
 						__attribute__((__nonnull__(1)));
 
-t_ts_reporta		xft_new_ts_reporta(void);
+t_result			xft_new_ts_reporta(t_ts_reporta *gpa)\
+						__attribute__((__warn_unused_result__, __nonnull__(1)));
 t_buffer			xft_ts_reporta_alloc(t_any alloc, t_size size, t_size align)\
 						__attribute__((__nonnull__(1)));
 t_buffer			xft_ts_reporta_realloc(t_any alloc, t_buffer buf,
@@ -80,7 +85,8 @@ void				xft_ts_reporta_free(t_any alloc, t_buffer buf)\
 void				xft_ts_reporta_destroy(t_any alloc)\
 						__attribute__((__nonnull__(1)));
 
-t_ts_arena			xft_new_ts_arena(void);
+t_result			xft_new_ts_arena(t_ts_arena *arena)\
+						__attribute__((__warn_unused_result__, __nonnull__(1)));
 t_buffer			xft_ts_arena_alloc(t_any alloc, t_size size, t_size align)\
 						__attribute__((__nonnull__(1)));
 t_buffer			xft_ts_arena_realloc(t_any alloc, t_buffer buf,
@@ -92,18 +98,24 @@ void				xft_ts_arena_destroy(t_any alloc)\
 						__attribute__((__nonnull__(1)));
 
 t_allocator			xft_arena_allocator(t_arena *arena)\
-						__attribute__((__nonnull__(1), __const__));
+						__attribute__((__warn_unused_result__,\
+							__nonnull__(1), __const__));
 t_allocator			xft_gpa_allocator(t_gpa *gpa)\
-						__attribute__((__nonnull__(1), __const__));
+						__attribute__((__warn_unused_result__,\
+							__nonnull__(1), __const__));
 t_allocator			xft_reporta_allocator(t_reporta *gpa)\
-						__attribute__((__nonnull__(1), __const__));
+						__attribute__((__warn_unused_result__,\
+							__nonnull__(1), __const__));
 t_allocator			xft_page_allocator(void)\
-						__attribute__((__const__));
+						__attribute__((__warn_unused_result__, __const__));
 t_allocator			xft_ts_gpa_allocator(t_ts_gpa *gpa)\
-						__attribute__((__nonnull__(1), __const__));
+						__attribute__((__warn_unused_result__,\
+							__nonnull__(1), __const__));
 t_allocator			xft_ts_reporta_allocator(t_ts_reporta *gpa)\
-						__attribute__((__nonnull__(1), __const__));
+						__attribute__((__warn_unused_result__,\
+							__nonnull__(1), __const__));
 t_allocator			xft_ts_arena_allocator(t_ts_arena *arena)\
-						__attribute__((__nonnull__(1), __const__));
+						__attribute__((__warn_unused_result__,\
+							__nonnull__(1), __const__));
 
 #endif

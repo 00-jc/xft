@@ -16,9 +16,8 @@ __attribute__((__nonnull__(1)))
 t_result	xft_tailor_prepare(t_tailor_job *j)
 {
 	j->plan = xft_get_kb(j);
-	j->soa = xft_new_soa(xft_arena_allocator(j->arena), j->plan.k_runs,
-			xft__tailor_ctx());
-	if (__builtin_expect(j->soa.ptr == nullptr, 0))
+	if (__builtin_expect(!xft_new_soa(xft_arena_allocator(j->arena), &j->soa,
+				j->plan.k_runs, xft__tailor_ctx()), 0))
 		return (KO);
 	j->arg = (t_tailor_arg){.iters = j->plan.dp.iters, .buffers = j->buffers};
 	xft_xoshiro_init(j->arg.xoshiro);

@@ -51,13 +51,17 @@ static inline t_size	xft__cpu_count(const t_u64a *__restrict__ const s,
 __attribute__((__always_inline__, __nonnull__(1), __used__))
 inline t_result	xft_get_cpu_count(t_size *__restrict__ const count)
 {
-	t_u64a		set[128 / sizeof(t_u64a)];
-	int			res;
+	t_u64a			set[128 / sizeof(t_u64a)];
+	t_size			n;
+	t_xft_sysres	res;
 
-	res = xft_sched_getaffinity(xft_getpid(), sizeof(set), set);
-	if (__builtin_expect(res < 0, 0))
+	n = 0;
+	res = xft_sys_repeat;
+	while (res == xft_sys_repeat)
+		res = xft_sched_getaffinity(xft_getpid(), sizeof(set), set, &n);
+	if (__builtin_expect(res != xft_sys_ok, 0))
 		return (KO);
-	*count = xft__cpu_count(set, (t_size)res);
+	*count = xft__cpu_count(set, n);
 	return (OK);
 }
 

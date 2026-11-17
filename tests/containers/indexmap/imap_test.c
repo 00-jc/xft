@@ -17,7 +17,7 @@ void	test_indexmap(t_test *t)
 	t_gpa		gpa;
 	t_allocator	a;
 
-	gpa = xft_new_gpa();
+	xft_pin_invariant(xft_new_gpa(&gpa));
 	a = xft_gpa_allocator(&gpa);
 	xft_test_print(t, "Testing t_indexmap...\n");
 	test_imap_insert_lookup(a);

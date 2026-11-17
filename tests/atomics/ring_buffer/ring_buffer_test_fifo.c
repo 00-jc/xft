@@ -66,7 +66,7 @@ void	test_ring_buffer_fifo(void)
 	t_u32a				in;
 	t_u32a				out;
 
-	rb = xft_new_ring_buffer(alloc, 5);
+	xft_pin_invariant(xft_new_ring_buffer(alloc, &rb, 5));
 	ring_buffer_empty(&rb);
 	in = 0;
 	out = 0;

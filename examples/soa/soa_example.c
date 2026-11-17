@@ -12,6 +12,8 @@
 
 #include "soa_example.h"
 
+static t_u8	g_out[1024];
+
 //	describes every member of t_particle as a soa column. columns are laid
 //	out back to back, so size_of_prev_fields is the running sum of sizes
 static t_soa_context	*particle_ctx_new(t_allocator a, t_buffer *buf)
@@ -85,12 +87,13 @@ static void	particles_step(t_soa *soa, const t_soa_context *ctx,
 static void	particles_print(const t_soa *soa, const t_soa_context *ctx)
 {
 	static const char	fmt[] = "particle %q at (%d, %d)\n";
-	t_u8				out[1024];
+	t_writer_fs			wctx;
 	t_writer			w;
 	t_u64				values[3];
 	t_size				i;
 
-	w = xft_get_fs_writer(xft_fatptr(out, sizeof(out)), xft_get_stdout());
+	w = xft_fs_writer(&wctx, xft_get_stdout(),
+			xft_fatptr(g_out, sizeof(g_out)));
 	i = 0;
 	while (i < soa->occupied_elements)
 	{
@@ -113,7 +116,8 @@ void	xft_main(const t_any *const __restrict__ sp)
 	t_soa_context	*ctx;
 
 	(void)sp;
-	gpa = xft_new_gpa();
+	if (__builtin_expect(!xft_new_gpa(&gpa), 0))
+		xft_exit_process(1);
 	a = xft_gpa_allocator(&gpa);
 	if (a.vtable == nullptr || a.vtable->free == nullptr
 		|| a.vtable->destroy == nullptr)
@@ -121,8 +125,7 @@ void	xft_main(const t_any *const __restrict__ sp)
 	ctx = particle_ctx_new(a, &ctx_buf);
 	if (__builtin_expect(ctx == nullptr, 0))
 		xft_exit_process(1);
-	soa = xft_new_soa(a, 4, ctx);
-	if (__builtin_expect(soa.ptr == nullptr
+	if (__builtin_expect(!xft_new_soa(a, &soa, 4, ctx)
 			|| !particles_fill(a, &soa, ctx), 0))
 		xft_exit_process(1);
 	particles_step(&soa, ctx, STEPS);

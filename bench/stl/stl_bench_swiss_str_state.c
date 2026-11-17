@@ -18,8 +18,7 @@ static void	swiss_str_fill(t_swissmap *map, t_stl_str *keys, t_size n)
 	const t_allocator	a = xft_gpa_allocator(xft_get_bench_swiss_gpa());
 	t_size				i;
 
-	*map = xft_new_swissmap_with(a, n);
-	xft_pin_invariant(map->soa.ptr != nullptr);
+	xft_pin_invariant(xft_new_swissmap_with(a, map, n));
 	i = 0;
 	while (i < n)
 	{

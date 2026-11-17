@@ -16,7 +16,8 @@
 # include <xft/primitives.h>
 # include <xft/types/str_types.h>
 
-t_str		xft_new_str(t_allocator allocator, t_size size);
+t_result	xft_new_str(t_allocator allocator, t_str *str, t_size size)\
+				__attribute__((__warn_unused_result__, __nonnull__(2)));
 void		xft_str_destroy(t_allocator allocator, t_str *str)\
 				__attribute__((__nonnull__(2)));
 t_result	xft_str_extend(t_allocator allocator,\

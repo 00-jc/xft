@@ -89,8 +89,7 @@ void	test_thread_ring_buffer(t_sysinfo sysinfo)
 	t_u32a						i;
 
 	xft_bzero(&s, sizeof(s));
-	s.rb = xft_new_ring_buffer(alloc, RB_TEST_SIZE);
-	xft_pin_invariant_msg(s.rb.memory != nullptr,
+	xft_pin_invariant_msg(xft_new_ring_buffer(alloc, &s.rb, RB_TEST_SIZE),
 		xft_fatptr((t_u8 *)"ring buffer: new", sizeof("ring buffer: new") - 1));
 	i = 0;
 	while (i < RB_TEST_THREADS)

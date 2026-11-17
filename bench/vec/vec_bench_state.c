@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <xft/hint.h>
 #include "vec_bench.h"
 
 t_gpa	*xft_get_bench_vec_gpa(void)
@@ -17,6 +18,6 @@ t_gpa	*xft_get_bench_vec_gpa(void)
 	static _Thread_local t_gpa	gpa = {0};
 
 	if (gpa.slab == nullptr)
-		gpa = xft_new_gpa();
+		xft_pin_invariant(xft_new_gpa(&gpa));
 	return (&gpa);
 }

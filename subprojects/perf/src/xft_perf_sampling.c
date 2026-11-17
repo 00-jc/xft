@@ -29,11 +29,11 @@ static inline t_result	xft__get_sample_plexed(t_perf_counters c, t_u64 *v)
 	t_u8			adjust;
 	t_f64			scale;
 
-	i = 0;
-	if (__builtin_expect(xft_read((int)c[i],
-				(t_u8 *)&t, sizeof(t)) != sizeof(t)
-			|| t.running == 0, 0))
+	while (xft_read((int)c[0], (t_u8 *)&t, sizeof(t), &i) == xft_sys_repeat)
+		;
+	if (__builtin_expect(i != sizeof(t) || t.running == 0, 0))
 		return (KO);
+	i = 0;
 	adjust = t.running != t.enabled;
 	if (adjust)
 	{

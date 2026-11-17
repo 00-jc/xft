@@ -1,4 +1,4 @@
-.Dd October 14, 2026
+.Dd November 17, 2026
 .Dt XFT_CSTR 3
 .Os xft
 .Sh NAME
@@ -9,8 +9,8 @@
 .In xft/cstr.h
 .Ft t_size
 .Fn xft_strlen "const char *restrict str"
-.Ft t_str
-.Fn xft_cstr_to_str "t_allocator allocator" "const char *cstr"
+.Ft t_result
+.Fn xft_cstr_to_str "t_allocator allocator" "t_str *str" "const char *cstr"
 .Sh DESCRIPTION
 .Fn xft_strlen
 returns the number of bytes in
@@ -34,12 +34,14 @@ copies the NUL-terminated string
 into a new
 .Vt t_str
 allocated through
-.Fa allocator .
+.Fa allocator
+and writes it to
+.Fa *str .
 The allocation requests
 .Fn xft_strlen cstr
 + 1 bytes, aligned to the next power of two of that size.
 The copy includes the terminating NUL, so
-.Fa .mem
+.Fa .buf.mem
 of the result is itself NUL-terminated.
 The result is owned by the caller and is released with
 .Fn xft_str_destroy
@@ -50,25 +52,25 @@ returns the length of
 .Fa str .
 .Pp
 .Fn xft_cstr_to_str
-returns a
+returns
+.Dv OK
+and leaves in
+.Fa *str
+a
 .Vt t_str
 whose
-.Fa .size
+.Fa .buf.size
 is the length of
 .Fa cstr ,
 whose
-.Fa .capacity
+.Fa .buf.capacity
 is the size of the block returned by the allocator, and whose
-.Fa .mem
+.Fa .buf.mem
 holds the copy.
 If the allocation fails, or if
 .Fa cstr
-is empty, it returns a zeroed
-.Vt t_str
-with
-.Fa .mem
-set to
-.Dv nullptr ;
+is empty, it returns
+.Dv KO ;
 no memory is allocated for an empty string.
 .Sh EXAMPLES
 .Bd -literal -offset indent
@@ -80,12 +82,11 @@ void	copy_name(void)
 	t_allocator	a;
 	t_str		s;
 
-	gpa = xft_new_gpa();
+	xft_new_gpa(&gpa);
 	a = xft_gpa_allocator(&gpa);
-	s = xft_cstr_to_str(a, "hello");
-	xft_pin_invariant(s.mem != nullptr);
-	xft_pin_invariant(s.size == xft_strlen("hello"));
-	xft_pin_invariant(xft_memcmp(s.mem, "hello", 6) == 0);
+	xft_pin_invariant(xft_cstr_to_str(a, &s, "hello"));
+	xft_pin_invariant(s.buf.size == xft_strlen("hello"));
+	xft_pin_invariant(xft_memcmp(s.buf.mem, "hello", 6) == 0);
 	xft_str_destroy(a, &s);
 	xft_gpa_destroy(&gpa);
 }

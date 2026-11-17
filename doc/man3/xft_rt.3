@@ -346,18 +346,19 @@ Print the arguments, one per line, then exit successfully.
 void	xft_main(const t_any *__restrict__ const sp)
 {
 	t_kernel_ptrs	kp;
+	t_writer_fs		ctx;
 	t_writer		w;
-	t_u8			buf[BUFSIZE];
+	t_u8			buf[4096];
 	t_size			i;
 
 	kp = xft_get_kernel_ptrs(sp);
-	w = xft_get_fs_writer(xft_fatptr(buf, sizeof(buf)), xft_get_stdout());
+	w = xft_fs_writer(&ctx, xft_get_stdout(), xft_fatptr(buf, sizeof(buf)));
 	i = 0;
 	while (i < kp.argc)
 	{
-		xft_writer_write(&w, xft_fatptr((t_u8 *)kp.argv[i],
+		xft_writer_drain_all(&w, xft_fatptr((t_u8 *)kp.argv[i],
 				xft_strlen((const char *)kp.argv[i])));
-		xft_writer_write(&w, xft_fatptr((t_u8 *)"\en", 1));
+		xft_writer_drain_all(&w, xft_fatptr((t_u8 *)"\en", 1));
 		++i;
 	}
 	xft_writer_flush(&w);

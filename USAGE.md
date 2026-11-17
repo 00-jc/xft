@@ -81,6 +81,7 @@ xft_main(const t_any *__restrict__ const sp)
 | Header | Contents |
 | --- | --- |
 | `xft/alloc.h` | Allocator interface; arena, general-purpose, page, and reporting allocators, and mutex-locked variants of the arena, general-purpose, and reporting allocators |
+| `xft/async.h` | Running tasks in place or on a thread pool |
 | `xft/atomics.h` | Mutexes, futexes, signals, ring buffers, and atomic types |
 | `xft/bmi.h` | Bit manipulation, byte order, SIMD mask primitives |
 | `xft/cstr.h` | NUL-terminated string helpers |
@@ -91,7 +92,7 @@ xft_main(const t_any *__restrict__ const sp)
 | `xft/hash.h` | XXH3 and Murmur3 |
 | `xft/hint.h` | Runtime invariants and optimizer hints |
 | `xft/indexmap.h` | Open-addressing hash map from byte keys to indices |
-| `xft/io.h` | Buffered readers and writers, standard handles, file mapping |
+| `xft/io.h` | Readers and writers over files, memory and vectors; standard handles, file information, file mapping |
 | `xft/math.h` | Math functions |
 | `xft/mem.h` | `memcpy`, `memmove`, `memset`, `memchr`, `memcmp`, and friends |
 | `xft/os.h` | CPU count and other operating system queries |

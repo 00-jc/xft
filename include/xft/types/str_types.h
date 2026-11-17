@@ -18,9 +18,7 @@
 
 typedef struct s_str
 {
-	t_size	size;
-	t_size	capacity;
-	t_u8	*mem;
+	t_buffer_with_capacity	buf;
 }	t_str;
 
 #endif

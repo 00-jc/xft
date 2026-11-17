@@ -99,7 +99,7 @@ inline static t_result	gt__emit_table(t_writer *__restrict__ const w,
 	ret = xft_fmt_writer(w, xft_fatptr((t_u8 *)GT_HEADER_FMT,
 				sizeof(GT_HEADER_FMT) - 1), args);
 	i = 0;
-	while (ret == OK && i < set->size)
+	while (ret == OK && i < set->buf.size)
 	{
 		e = (const t_gentable_entry *)(set->buf.mem + i);
 		if (e->type & tbl->tag)
@@ -113,6 +113,8 @@ inline static t_result	gt__emit_table(t_writer *__restrict__ const w,
 				sizeof(GT_EPILOGUE_FMT) - 1), args));
 }
 
+static t_u8				g_buf[GT_BUFFER_SIZE];
+
 __attribute__((__nonnull__(1, 3), __always_inline__))
 inline static t_result	gt__emit_body(t_writer *__restrict__ const w,
 				t_buffer src, const t_vec *__restrict__ const set)
@@ -120,7 +122,7 @@ inline static t_result	gt__emit_body(t_writer *__restrict__ const w,
 	t_result	ret;
 	t_u64		i;
 
-	ret = xft_writer_write(w, xft_fatptr((t_u8 *)g_prologue,
+	ret = xft_writer_drain_all(w, xft_fatptr((t_u8 *)g_prologue,
 				sizeof(g_prologue) - 1));
 	i = 0;
 	while (ret == OK && i < sizeof(g_tables) / sizeof(*g_tables))
@@ -132,15 +134,20 @@ __attribute__((__nonnull__(2, 3)))
 t_result	gt_emit(t_buffer src, const t_vec *__restrict__ const set,
 				const char *__restrict__ const path)
 {
-	const int	fd = xft_open(path, xft_o_wronly | xft_o_creat
-			| xft_o_trunc, 0644);
-	static t_u8	buf[BUFSIZE];
-	t_writer	w;
-	t_result	ret;
+	int				fd;
+	t_writer_fs		ctx;
+	t_writer		w;
+	t_result		ret;
+	t_xft_sysres	res;
 
-	if (__builtin_expect(fd < 0, 0))
+	fd = -1;
+	res = xft_sys_repeat;
+	while (res == xft_sys_repeat)
+		res = xft_open(path, xft_o_wronly | xft_o_creat | xft_o_trunc, 0644,
+				&fd);
+	if (__builtin_expect(res != xft_sys_ok, 0))
 		return (KO);
-	w = xft_get_fs_writer(xft_fatptr(buf, BUFSIZE), fd);
+	w = xft_fs_writer(&ctx, (t_fd)fd, xft_fatptr(g_buf, GT_BUFFER_SIZE));
 	ret = gt__emit_body(&w, src, set);
 	if (__builtin_expect(ret == OK, 1))
 		ret = xft_writer_flush(&w);

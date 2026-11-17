@@ -93,8 +93,7 @@ t_result	xft_tailor_unit(t_any unit)
 	t_result				r;
 	t_size					m;
 
-	u->arena = xft_new_arena();
-	if (__builtin_expect(u->arena.current == nullptr, 0))
+	if (__builtin_expect(!xft_new_arena(&u->arena), 0))
 		return (KO);
 	if (__builtin_expect(!xft_perf_create_counters(u->counters), 0))
 		return (xft_destroy_arena(&u->arena), KO);

@@ -32,8 +32,7 @@ void	xft_swiss_bench_insert_grow(t_any ptr)
 	const t_allocator	a = xft_gpa_allocator(xft_get_bench_swiss_gpa());
 	t_swissmap			map;
 
-	map = xft_new_swissmap(a);
-	xft_pin_invariant(map.soa.ptr != nullptr);
+	xft_pin_invariant(xft_new_swissmap(a, &map));
 	swiss_bench_insert(ptr, a, &map);
 	xft_swissmap_destroy(a, &map);
 }
@@ -48,8 +47,7 @@ void	xft_swiss_bench_insert_reserved(t_any ptr)
 	cap = xft_tailor_getcount(ptr);
 	if (cap > SWISS_BENCH_KEYS)
 		cap = SWISS_BENCH_KEYS;
-	map = xft_new_swissmap_with(a, cap);
-	xft_pin_invariant(map.soa.ptr != nullptr);
+	xft_pin_invariant(xft_new_swissmap_with(a, &map, cap));
 	swiss_bench_insert(ptr, a, &map);
 	xft_swissmap_destroy(a, &map);
 }

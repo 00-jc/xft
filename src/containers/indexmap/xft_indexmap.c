@@ -13,30 +13,33 @@
 #include <xft/xft_p_indexmap.h>
 
 /* the fewest slots that take capacity inserts under the 85% rehash check */
-t_indexmap	xft_new_indexmap_with(t_allocator allocator, t_size capacity)
+__attribute__((__nonnull__(2)))
+t_result	xft_new_indexmap_with(t_allocator allocator,
+	t_indexmap *__restrict__ const map, t_size capacity)
 {
-	t_indexmap	map;
-
 	if (__builtin_expect(capacity == 0, 0))
-		return ((t_indexmap){0});
-	map = (t_indexmap){.soa = xft_new_soa(allocator,
-			xft_next_pow2((capacity - 1) * 20 / 17 + 1), xft__imap_ctx())};
-	if (__builtin_expect(map.soa.ptr == nullptr, 0))
-		return (map);
-	xft_memset(xft__imap_meta(&map), IMAP_EMPTY, map.soa.capacity_elements);
-	return (map);
+		return (KO);
+	*map = (t_indexmap){0};
+	if (__builtin_expect(!xft_new_soa(allocator, &map->soa,
+				xft_next_pow2((capacity - 1) * 20 / 17 + 1),
+				xft__imap_ctx()), 0))
+		return (KO);
+	xft_memset(xft__imap_meta(map), IMAP_EMPTY, map->soa.capacity_elements);
+	return (OK);
 }
 
-t_indexmap	xft_new_indexmap(t_allocator allocator)
+__attribute__((__nonnull__(2)))
+t_result	xft_new_indexmap(t_allocator allocator,
+	t_indexmap *__restrict__ const map)
 {
-	return (xft_new_indexmap_with(allocator, INDEXMAP_INITIAL_SIZE));
+	return (xft_new_indexmap_with(allocator, map, INDEXMAP_INITIAL_SIZE));
 }
 
 __attribute__((__nonnull__(1)))
 void	xft_indexmap_clear(t_indexmap *__restrict__ const map)
 {
 	if (map->soa.ptr == nullptr)
-		return ;
+		__builtin_unreachable();
 	xft_memset(xft__imap_meta(map), IMAP_EMPTY, map->soa.capacity_elements);
 	map->count = 0;
 	map->tombstones = 0;

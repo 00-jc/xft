@@ -16,7 +16,7 @@ void	test_imap_overwrite(t_allocator a)
 {
 	t_indexmap	m;
 
-	m = xft_new_indexmap(a);
+	xft_pin_invariant(xft_new_indexmap(a, &m));
 	xft_indexmap_insert(a, &m, xft_fatptr((t_u8 *)"ow", 2), 100);
 	xft_indexmap_insert(a, &m, xft_fatptr((t_u8 *)"ow", 2), 200);
 	xft_pin_invariant(xft_indexmap_lookup(&m,

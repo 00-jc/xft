@@ -20,15 +20,14 @@ static inline t_result	xft__tailor_alloc(t_tailor *t, t_sysinfo sysinfo)
 	const t_thread_opts	opts = {.stack_size = XFT_THREAD_STACKSIZE,
 		.cpu_pinning = true, .use_only_physical = true};
 
-	t->gpa = xft_new_gpa();
-	t->arena = xft_new_arena();
-	if (t->gpa.slab == nullptr || t->arena.current == nullptr)
-		return (xft_destroy_arena(&t->arena), xft_gpa_destroy(&t->gpa), KO);
-	t->jobs = xft_new_vec(xft_gpa_allocator(&t->gpa), 32,
-			sizeof(t_tailor_job));
-	t->results = xft_new_vec(xft_gpa_allocator(&t->gpa), 32,
-			sizeof(t_tailor_result));
-	if (t->jobs.buf.mem == nullptr || t->results.buf.mem == nullptr
+	if (!xft_new_gpa(&t->gpa))
+		return (KO);
+	if (!xft_new_arena(&t->arena))
+		return (xft_gpa_destroy(&t->gpa), KO);
+	if (!xft_new_vec(xft_gpa_allocator(&t->gpa), &t->jobs, 32,
+			sizeof(t_tailor_job))
+		|| !xft_new_vec(xft_gpa_allocator(&t->gpa), &t->results, 32,
+			sizeof(t_tailor_result))
 		|| !xft_threadpool_init(xft_gpa_allocator(&t->gpa), sysinfo, opts,
 			&t->pool))
 		return (xft_destroy_arena(&t->arena), xft_gpa_destroy(&t->gpa), KO);
@@ -48,8 +47,8 @@ t_result	xft_new_tailor(t_tailor *t, t_sysinfo sysinfo, t_f64 warmup_sec,
 	t->phase2_ns = actualtime - t->phase1_ns;
 	t->rand_buffers = xft_fatptr(nullptr, 0);
 	t->min_samples = xft_tern(min_samples < 150, 150, min_samples);
-	t->writer = xft_get_fs_writer(xft_fatptr(t->buffer, TAILOR_BUFFER_SIZE),
-			xft_get_stdout());
+	t->writer = xft_fs_writer(&t->writer_fs, xft_get_stdout(),
+			xft_fatptr(t->buffer, TAILOR_BUFFER_SIZE));
 	return (OK);
 }
 

@@ -59,9 +59,9 @@ static void	clone_ts(void)
 	t_ts_reporta	rep;
 	t_ts_arena		arena;
 
-	gpa = xft_new_ts_gpa();
-	rep = xft_new_ts_reporta();
-	arena = xft_new_ts_arena();
+	xft_pin_invariant(xft_new_ts_gpa(&gpa));
+	xft_pin_invariant(xft_new_ts_reporta(&rep));
+	xft_pin_invariant(xft_new_ts_arena(&arena));
 	clone_sizes(xft_ts_gpa_allocator(&gpa));
 	clone_sizes(xft_ts_reporta_allocator(&rep));
 	clone_sizes(xft_ts_arena_allocator(&arena));
@@ -73,9 +73,9 @@ void	test_clone_vtable(void)
 	t_reporta	rep;
 	t_arena		arena;
 
-	gpa = xft_new_gpa();
-	rep = xft_new_reporta();
-	arena = xft_new_arena();
+	xft_pin_invariant(xft_new_gpa(&gpa));
+	xft_pin_invariant(xft_new_reporta(&rep));
+	xft_pin_invariant(xft_new_arena(&arena));
 	clone_sizes(xft_gpa_allocator(&gpa));
 	clone_sizes(xft_reporta_allocator(&rep));
 	clone_sizes(xft_arena_allocator(&arena));

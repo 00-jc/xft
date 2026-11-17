@@ -36,7 +36,7 @@ static inline t_result	xft_fmt_manage(t_writer *__restrict__ const writer,
 	else if (c == 'i' || c == 'd' || c == 'o' || c == 'y')
 		return (xft_fmt_handle_signed(writer, *(*value)++, c));
 	else if (c == '%')
-		return (xft_writer_write(writer, xft_fatptr((t_u8 *)"%", 1)));
+		return (xft_writer_drain_all(writer, xft_fatptr((t_u8 *)"%", 1)));
 	else
 		return (KO);
 }
@@ -48,6 +48,7 @@ t_result	xft_fmt_writer(t_writer *writer,
 	t_size								maxptr;
 	const t_u8	*restrict				subst;
 	const t_u8	*restrict				start;
+	t_buffer							chunk;
 
 	if (fmt.mem == nullptr)
 		__builtin_unreachable();
@@ -56,8 +57,8 @@ t_result	xft_fmt_writer(t_writer *writer,
 	subst = xft_memchr(fmt.mem, '%', fmt.size);
 	while (subst && (t_uptr)subst < maxptr)
 	{
-		if (__builtin_expect(xft_writer_write(writer, xft_fatptr(start,
-						(t_uptr)subst++ - (t_uptr)start)) == KO, 0))
+		chunk = xft_fatptr(start, (t_uptr)subst++ - (t_uptr)start);
+		if (__builtin_expect(xft_writer_drain_all(writer, chunk) == KO, 0))
 			return (KO);
 		if (__builtin_expect((t_uptr)subst == maxptr, 0))
 			break ;
@@ -66,6 +67,6 @@ t_result	xft_fmt_writer(t_writer *writer,
 		start = ++subst;
 		subst = xft_memchr(start, '%', maxptr - (t_uptr)start);
 	}
-	return (xft_writer_write(writer,
-			xft_fatptr(start, maxptr - (t_uptr)start)));
+	chunk = xft_fatptr(start, maxptr - (t_uptr)start);
+	return (xft_writer_drain_all(writer, chunk));
 }

@@ -25,9 +25,12 @@
 __attribute__((__noreturn__, __cold__, __noinline__))
 void	xft_hardcrash_with_message(t_buffer msg)
 {
+	t_size	n;
+
 	if (msg.mem == nullptr)
 		__builtin_unreachable();
-	xft_write(xft_get_stderr(), msg.mem, msg.size);
+	while (xft_write(xft_get_stderr(), msg.mem, msg.size, &n) == xft_sys_repeat)
+		;
 	xft_exit_group(1);
 }
 

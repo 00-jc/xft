@@ -30,8 +30,7 @@ void	test_soa_reserve(t_allocator a, const t_soa_context *ctx)
 	t_any	first_ptr;
 	t_size	i;
 
-	soa = xft_new_soa(a, 8, ctx);
-	xft_pin_invariant(soa.ptr != nullptr);
+	xft_pin_invariant(xft_new_soa(a, &soa, 8, ctx));
 	soa_test_fill(&soa, ctx, 0, 3);
 	first_ptr = soa.ptr;
 	xft_pin_invariant(xft_soa_reserve(a, &soa, ctx, 5));

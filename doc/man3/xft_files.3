@@ -1,19 +1,16 @@
-.Dd October 27, 2026
+.Dd November 17, 2026
 .Dt XFT_FILES 3
 .Os xft
 .Sh NAME
 .Nm xft_open_file ,
-.Nm xft_close_file ,
-.Nm xft_file_info
-.Nd open, close and describe files
+.Nm xft_close_file
+.Nd open and close files
 .Sh SYNOPSIS
 .In xft/files.h
-.Ft t_fd
-.Fn xft_open_file "t_blk8r path" "t_fileopen_mode mode"
-.Ft t_fd
+.Ft t_result
+.Fn xft_open_file "t_blk8r path" "t_fileopen_mode mode" "t_fd *fd"
+.Ft t_result
 .Fn xft_close_file "t_fd fd"
-.Ft t_file_info
-.Fn xft_file_info "t_blk8r path"
 .Sh DESCRIPTION
 The functions work the same way on Linux and Windows: Linux uses
 .Xr open 2 ,
@@ -82,7 +79,10 @@ or
 .Ss Opening
 .Fn xft_open_file
 opens
-.Fa path .
+.Fa path
+and stores the new handle in
+.Pf * Fa fd .
+On Linux an interrupted call is retried.
 .Fa append
 implies
 .Fa write ,
@@ -102,13 +102,15 @@ so every write lands at the end of the file as with
 .Fn xft_close_file
 closes
 .Fa fd .
-.Ss Describing
-.Fn xft_file_info
-describes
-.Fa path
-without following a final symbolic link, like
-.Xr lstat 2 .
-On Linux it asks
+.Ss File information
+.Fn xft_fileinfo_from_name
+and
+.Fn xft_fileinfo_from_fd ,
+described in
+.Xr xft_io 3 ,
+fill a
+.Vt t_file_info .
+On Linux they ask
 .Xr statx 2
 for the basic fields and the birth time;
 .Fa bth_time
@@ -149,20 +151,17 @@ the volume serial number.
 .El
 .Sh RETURN VALUES
 .Fn xft_open_file
-returns the new descriptor, and
+and
 .Fn xft_close_file
-returns 0.
-Both return
-.Ql (t_fd)-1
-on failure, which on Windows is
-.Dv INVALID_HANDLE_VALUE .
-.Pp
-.Fn xft_file_info
-returns the description, or a zeroed one whose
-.Fa type
-is
-.Dv F_T_UNKNOWN
+return
+.Dv OK
+on success and
+.Dv KO
 on failure.
+.Fn xft_open_file
+leaves
+.Pf * Fa fd
+untouched when it fails.
 .Sh EXAMPLES
 Create a file only if it does not exist:
 .Bd -literal -offset indent
@@ -172,11 +171,10 @@ t_result	create_new(const char *path)
 {
 	t_fd	fd;
 
-	fd = xft_open_file((t_blk8r)path,
-			(t_fileopen_mode){.write = 1, .exclusive = 1});
-	if (fd == (t_fd)-1)
+	if (!xft_open_file((t_blk8r)path,
+			(t_fileopen_mode){.write = 1, .exclusive = 1}, &fd))
 		return (KO);
-	return (xft_close_file(fd) == 0);
+	return (xft_close_file(fd));
 }
 .Ed
 .Sh SEE ALSO
@@ -191,10 +189,6 @@ also declares
 and
 .Vt t_seek ,
 which no function takes.
-.Pp
-.Fn xft_file_info
-cannot tell a failure apart from a real file of type
-.Dv F_T_UNKNOWN .
 .Pp
 On Windows,
 .Fa append

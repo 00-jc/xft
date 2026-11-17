@@ -17,8 +17,9 @@
 # include <xft/types/vec_types.h>
 # include <stddef.h>
 
-t_vec			xft_new_vec(t_allocator allocator, t_size size,\
-				t_size type_size);
+t_result		xft_new_vec(t_allocator allocator, t_vec *v, t_size size,\
+					t_size type_size)\
+					__attribute__((__warn_unused_result__, __nonnull__(2)));
 void			xft_vec_destroy(t_allocator allocator, t_vec *v)\
 					__attribute__((__nonnull__(2)));
 

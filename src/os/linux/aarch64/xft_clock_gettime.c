@@ -18,11 +18,12 @@
 # if defined(__aarch64__) && !defined(XFT_REQUIRE_LIBC)
 
 __attribute__((__always_inline__, __nonnull__(1), __used__))
-inline t_i64a	xft_clock_gettime(t_timespec *__restrict__ const ts)
+inline t_xft_sysres	xft_clock_gettime(t_timespec *__restrict__ const ts)
 {
 	register long x8	__asm__("x8");
 	register long x0	__asm__("x0");
 	register long x1	__asm__("x1");
+	t_u64a				r;
 
 	x8 = xft_sys_clock_gettime;
 	x1 = (long)ts;
@@ -33,7 +34,9 @@ inline t_i64a	xft_clock_gettime(t_timespec *__restrict__ const ts)
 		: "r"(x8), "r"(x1)
 		: "memory", "cc"
 	);
-	return ((t_i64a)xft_tern(x0 < 0, (t_u64a)-1, (t_u64a)x0));
+	r = xft_tern(x0 < 0, xft_sys_ko, xft_sys_ok);
+	r = xft_tern(x0 == -xft_eintr || x0 == -xft_eagain, xft_sys_repeat, r);
+	return ((t_xft_sysres)r);
 }
 
 # endif

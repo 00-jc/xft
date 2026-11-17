@@ -20,12 +20,13 @@ inline t_result	xft_vec_push_back(t_allocator allocator,
 	if (vec->buf.mem == nullptr || allocator.allocator == nullptr)
 		__builtin_unreachable();
 	{
-		if (__builtin_expect(vec->size + type_size > vec->buf.size
+		if (__builtin_expect(vec->buf.size + type_size > vec->buf.capacity
 				&& !xft_vec_reserve(allocator, vec,
-					xft_tern_s(vec->buf.size, vec->buf.size << 1, 4)), 0))
+					xft_tern_s(vec->buf.capacity,
+						vec->buf.capacity << 1, 4)), 0))
 			return (KO);
-		__builtin_memcpy(vec->buf.mem + vec->size, data, type_size);
-		vec->size += type_size;
+		__builtin_memcpy(vec->buf.mem + vec->buf.size, data, type_size);
+		vec->buf.size += type_size;
 		return (OK);
 	}
 }

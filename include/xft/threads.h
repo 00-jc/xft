@@ -17,6 +17,7 @@
 # include <xft/alloc.h>
 # include <xft/rt.h>
 # include <xft/types/thread_types.h>
+# include <xft/types/async_types.h>
 
 # if !defined(_WIN32) && !defined(XFT_REQUIRE_LIBC)
 
@@ -39,12 +40,13 @@ void			xft_thread_detach(t_thread *__restrict__ const thread)\
 t_thread_id		xft_thread_id(const t_thread *__restrict__ const thread)\
 				__attribute__((__nonnull__(1)));
 
-t_thread_opts	xft_threadpool_default(void);
+t_thread_opts	xft_threadpool_default(void)\
+				__attribute__((__warn_unused_result__));
 
 t_result		xft_threadpool_init(t_allocator allocator,\
 				const t_sysinfo info, t_thread_opts opts,\
 				t_threadpool *__restrict__ const tp)\
-				__attribute__((__nonnull__(4)));
+				__attribute__((__warn_unused_result__, __nonnull__(4)));
 
 void			xft_threadpool_destroy(t_allocator allocator,\
 				t_threadpool *__restrict__ const tp)\
@@ -55,15 +57,15 @@ void			xft_threadpool_cancel(t_allocator allocator,\
 				__attribute__((__nonnull__(2)));
 
 void			xft_threadpool_submit(t_threadpool *__restrict__ const tp,\
-				t_thread_task *__restrict__ const task, t_size alloc_task)\
+				t_task *__restrict__ const task, t_size alloc_task)\
 				__attribute__((__nonnull__(1, 2)));
 
 void			xft_threadpool_submit_fair(t_threadpool *__restrict__ const tp,\
-				t_thread_task *__restrict__ const tasks, t_size alloc_task,\
+				t_task *__restrict__ const tasks, t_size alloc_task,\
 				t_size n_tasks)\
 				__attribute__((__nonnull__(1, 2)));
 
-void			xft_threadpool_wait_task(t_thread_task *__restrict__ const task)\
+void			xft_threadpool_wait_task(t_task *__restrict__ const task)\
 				__attribute__((__nonnull__(1)));
 
 void			xft_threadpool_wait_all(t_threadpool *__restrict__ const tp)\

@@ -47,5 +47,5 @@ inline t_result	xft_fmt_handle_unsigned(t_writer *__restrict__ const writer,
 		inner_buffer[--i] = (char)((value - ((tmp << 3) + (tmp << 1))) + '0');
 		value = tmp;
 	}
-	return (xft_writer_write(writer, xft_fatptr(inner_buffer + i, 20 - i)));
+	return (xft_writer_drain_all(writer, xft_fatptr(inner_buffer + i, 20 - i)));
 }

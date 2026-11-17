@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   xft_p_io.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
+/*   By: jaicastr <jaicastr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/10/03 18:01:29 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/10/03 18:01:32 by jaicastr         ###   ########.fr       */
+/*   Created: 2026/11/17 12:00:00 by jaicastr          #+#    #+#             */
+/*   Updated: 2026/11/17 12:00:00 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,46 +15,32 @@
 
 # include <xft/io.h>
 
-t_result		xft_stream_flush(t_any __restrict__ const writer)\
-					__attribute__((__nonnull__(1)));
+t_result		xft__fs_reader_stream(t_reader *r, t_writer *w, t_size limit,\
+				t_size *size)\
+				__attribute__((__nonnull__(1, 2, 4)));
 
-t_result		xft_stream_drain(t_any __restrict__ const writer,\
-					t_iovec *__restrict__ bufs, t_size nbufs)\
-					__attribute__((__nonnull__(1, 2)));
+t_result		xft__fs_reader_discard(t_reader *r, t_size limit,\
+				t_size *size)\
+				__attribute__((__nonnull__(1, 3)));
 
-t_result		xft_stream_fill(t_any __restrict__ const reader)\
-					__attribute__((__nonnull__(1)));
+t_result		xft__fs_reader_read(t_reader *r, t_buffer dst, t_size *size)\
+				__attribute__((__nonnull__(1, 3)));
 
-t_result		xft_stream_unbuffered_fill(t_any reader, t_u8 *dst,\
-					const t_size len, t_size *total)\
-					__attribute__((__nonnull__(1, 2, 4)));
+t_result		xft__reader_read_all(t_reader *r, t_buffer dst)\
+				__attribute__((__nonnull__(1)));
 
-t_result		xft_raw_flush(t_any __restrict__ const writer)\
-					__attribute__((__nonnull__(1)));
+t_result		xft__reader_stream_all(t_reader *r, t_writer *w,\
+				t_size limit)\
+				__attribute__((__nonnull__(1, 2)));
 
-t_result		xft_raw_drain(t_any __restrict__ const writer,\
-					t_iovec *__restrict__ bufs, t_size nbufs)\
-					__attribute__((__nonnull__(1, 2)));
+t_result		xft__reader_discard_all(t_reader *r, t_size limit)\
+				__attribute__((__nonnull__(1)));
 
-t_result		xft_raw_fill(t_any __restrict__ const reader)\
-					__attribute__((__nonnull__(1)));
+t_result		xft__fs_writer_flush(t_writer *w)\
+				__attribute__((__nonnull__(1)));
 
-t_result		xft_raw_unbuffered_fill(t_any reader, t_u8 *dst,\
-					const t_size len, t_size *total)\
-					__attribute__((__nonnull__(1, 2, 4)));
-
-t_result		xft_ts_stream_flush(t_any __restrict__ const writer)\
-					__attribute__((__nonnull__(1)));
-
-t_result		xft_ts_stream_drain(t_any __restrict__ const writer,\
-					t_iovec *__restrict__ bufs, t_size nbufs)\
-					__attribute__((__nonnull__(1, 2)));
-
-t_result		xft_ts_stream_fill(t_any __restrict__ const reader)\
-					__attribute__((__nonnull__(1)));
-
-t_result		xft_ts_stream_unbuffered_fill(t_any reader, t_u8 *dst,\
-					const t_size len, t_size *total)\
-					__attribute__((__nonnull__(1, 2, 4)));
+t_result		xft__fs_writer_writev(t_writer_fs *ctx, t_iovec *iov,\
+				t_size count)\
+				__attribute__((__nonnull__(1, 2)));
 
 #endif

@@ -19,7 +19,7 @@ inline t_cany	xft_vec_get(const t_vec *restrict const vec,
 	t_size		byte_idx;
 
 	byte_idx = idx * type_size;
-	return ((t_any)(-(byte_idx < vec->size)
+	return ((t_any)(-(byte_idx < vec->buf.size)
 		& ((t_uptr)vec->buf.mem + byte_idx)));
 }
 
@@ -30,7 +30,7 @@ inline t_any	xft_vec_get_mut(const t_vec *restrict const vec,
 	t_size	byte_idx;
 
 	byte_idx = idx * type_size;
-	return ((t_any)(-(byte_idx < vec->size)
+	return ((t_any)(-(byte_idx < vec->buf.size)
 		& ((t_uptr)vec->buf.mem + byte_idx)));
 }
 
@@ -38,14 +38,14 @@ __attribute__((__nonnull__(1), __always_inline__, pure, __used__))
 inline t_cany	xft_vec_peek_last(const t_vec *restrict const vec,
 	t_size type_size)
 {
-	return ((t_cany)(-((t_uptr)vec->size != 0)
-		& ((t_uptr)vec->buf.mem + (vec->size - type_size))));
+	return ((t_cany)(-((t_uptr)vec->buf.size != 0)
+		& ((t_uptr)vec->buf.mem + (vec->buf.size - type_size))));
 }
 
 __attribute__((__nonnull__(1), __always_inline__, pure, __used__))
 inline t_any	xft_vec_get_last(const t_vec *restrict const vec,
 	t_size type_size)
 {
-	return ((t_any)(-((t_uptr)vec->size != 0)
-		& ((t_uptr)vec->buf.mem + (vec->size - type_size))));
+	return ((t_any)(-((t_uptr)vec->buf.size != 0)
+		& ((t_uptr)vec->buf.mem + (vec->buf.size - type_size))));
 }

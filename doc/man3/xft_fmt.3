@@ -25,9 +25,9 @@ slots of
 consumed in order.
 .Pp
 Literal text and each converted value are passed to
-.Fn xft_writer_write
-separately, so they are staged in the writer and only reach the destination
-when its buffer drains or
+.Fn xft_writer_drain_all
+separately, so a buffered writer stages them and they only reach the
+destination when its buffer drains or
 .Fn xft_writer_flush
 is called.
 .Pp

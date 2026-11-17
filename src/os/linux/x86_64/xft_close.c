@@ -18,7 +18,7 @@
 # if defined(__x86_64__) && !defined(XFT_REQUIRE_LIBC)
 
 __attribute__((__always_inline__, __used__))
-inline int	xft_close(int fd)
+inline t_xft_sysres	xft_close(int fd)
 {
 	int	ret;
 
@@ -29,7 +29,7 @@ inline int	xft_close(int fd)
 		"D"(fd)
 		: "rcx", "r11", "memory"
 	);
-	return ((int)xft_tern(ret < 0, (t_u64a)-1, (t_u64a)ret));
+	return ((t_xft_sysres)(ret >= 0 || ret == -xft_eintr));
 }
 
 # endif

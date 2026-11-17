@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <xft/bmi.h>
 #include <xft/xft_p_syscalls.h>
 
 #ifdef __linux__
@@ -17,9 +18,15 @@
 # ifdef XFT_REQUIRE_LIBC
 
 __attribute__((__nonnull__(1), __always_inline__, __used__))
-inline int	xft_mkdir(const char *restrict path, t_u32a mode)
+inline t_xft_sysres	xft_mkdir(const char *restrict path, t_u32a mode)
 {
-	return ((int)syscall(SYS_mkdirat, xft_at_fdcwd, path, mode));
+	t_ssize	ret;
+	t_u64a	r;
+
+	ret = syscall(SYS_mkdirat, xft_at_fdcwd, path, mode);
+	r = xft_tern(errno == EINTR || errno == EAGAIN, xft_sys_repeat, xft_sys_ko);
+	r = xft_tern(ret < 0, r, xft_sys_ok);
+	return ((t_xft_sysres)r);
 }
 
 # endif

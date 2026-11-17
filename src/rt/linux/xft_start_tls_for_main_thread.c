@@ -42,7 +42,8 @@ t_result	xft_start_tls_for_main_thread(t_sysinfo sysinfo)
 	if (__builtin_expect(xft_map_failed(area), 0))
 		return (KO);
 	area = xft_align_fwd(area, l->tls_align);
-	return ((t_result)(xft_set_thread_pointer(xft_tls_fill(area, l)) == 0));
+	return ((t_result)(xft_set_thread_pointer(xft_tls_fill(area, l))
+		== xft_sys_ok));
 }
 
 #elif defined(__linux__)

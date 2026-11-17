@@ -26,7 +26,8 @@ inline t_buffer	xft_palloc_reserve(t_size size)
 	mem = xft_mmap(snapped, xft_prot_read | xft_prot_write,
 			xft_map_private | xft_map_anonymous);
 	if (!xft_map_failed(mem) && xft_is_hugepage(snapped))
-		xft_madvise(mem, snapped, xft_madv_hugepage);
+		while (xft_madvise(mem, snapped, xft_madv_hugepage) == xft_sys_repeat)
+			;
 	return ((t_buffer){
 		.size = snapped,
 		.mem = (t_any)xft_tern(!xft_map_failed(mem), (t_u64a)mem, 0),
@@ -44,7 +45,12 @@ inline t_result	xft_palloc_commit(t_any ptr, t_size size)
 __attribute__((__nonnull__(1), __always_inline__, __used__))
 inline t_result	xft_palloc_guard(t_any ptr, t_size size)
 {
-	return ((t_result)(xft_mprotect(ptr, size, xft_prot_none) == 0));
+	t_xft_sysres	res;
+
+	res = xft_sys_repeat;
+	while (res == xft_sys_repeat)
+		res = xft_mprotect(ptr, size, xft_prot_none);
+	return ((t_result)(res == xft_sys_ok));
 }
 
 __attribute__((__always_inline__, __used__))

@@ -23,7 +23,7 @@ void	test_map_many(t_allocator a)
 	int			i;
 
 	xft_xoshiro_init(rng);
-	m = xft_new_swissmap(a);
+	xft_pin_invariant(xft_new_swissmap(a, &m));
 	i = -1;
 	while (++i < MAP_TEST_MANY)
 	{

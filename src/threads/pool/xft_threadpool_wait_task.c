@@ -15,7 +15,7 @@
 #include <stdatomic.h>
 
 __attribute__((__nonnull__(1), __flatten__))
-void	xft_threadpool_wait_task(t_thread_task *__restrict__ const task)
+void	xft_threadpool_wait_task(t_task *__restrict__ const task)
 {
 	const t_tp_self *__restrict__ const	self = xft__self();
 

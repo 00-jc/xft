@@ -16,17 +16,23 @@
 __attribute__((__nonnull__(1), __always_inline__))
 inline void	xft_perf_counters_start(t_perf_counters c)
 {
-	xft_ioctl((int)c[0], xft_perf_event_ioc_enable, xft_perf_ioc_flag_group);
+	while (xft_ioctl((int)c[0], xft_perf_event_ioc_enable,
+			xft_perf_ioc_flag_group) == xft_sys_repeat)
+		;
 }
 
 __attribute__((__nonnull__(1), __always_inline__))
 inline void	xft_perf_counters_stop(t_perf_counters c)
 {
-	xft_ioctl((int)c[0], xft_perf_event_ioc_disable, xft_perf_ioc_flag_group);
+	while (xft_ioctl((int)c[0], xft_perf_event_ioc_disable,
+			xft_perf_ioc_flag_group) == xft_sys_repeat)
+		;
 }
 
 __attribute__((__nonnull__(1), __always_inline__))
 inline void	xft_perf_counters_reset(t_perf_counters c)
 {
-	xft_ioctl((int)c[0], xft_perf_event_ioc_reset, xft_perf_ioc_flag_group);
+	while (xft_ioctl((int)c[0], xft_perf_event_ioc_reset,
+			xft_perf_ioc_flag_group) == xft_sys_repeat)
+		;
 }

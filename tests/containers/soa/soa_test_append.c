@@ -19,8 +19,7 @@ void	test_soa_append(t_allocator a, const t_soa_context *ctx)
 	t_any			first_ptr;
 	t_size			i;
 
-	soa = xft_new_soa(a, 8, ctx);
-	xft_pin_invariant(soa.ptr != nullptr);
+	xft_pin_invariant(xft_new_soa(a, &soa, 8, ctx));
 	first_ptr = soa.ptr;
 	i = 0;
 	while (i < 8)

@@ -16,7 +16,7 @@
 __attribute__((__nonnull__(1)))
 static inline void	xft__cancel_pending(t_threadpool *__restrict__ const tp)
 {
-	t_thread_task	*task;
+	t_task			*task;
 	t_size			it;
 
 	it = 0;

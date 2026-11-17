@@ -15,7 +15,7 @@
 __attribute__((__always_inline__, __nonnull__(1), __used__))
 inline void	xft_vec_pop(t_vec *restrict const v, t_size type_size)
 {
-	v->size -= -(v->size != 0) & type_size;
+	v->buf.size -= -(v->buf.size != 0) & type_size;
 }
 
 __attribute__((__always_inline__, __nonnull__(1), __used__))

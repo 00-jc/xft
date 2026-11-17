@@ -1,268 +1,316 @@
-.Dd October 14, 2026
+.Dd November 17, 2026
 .Dt XFT_IO 3
 .Os xft
 .Sh NAME
-.Nm xft_get_fs_writer ,
-.Nm xft_get_raw_writer ,
-.Nm xft_writer_write ,
+.Nm xft_fs_reader ,
+.Nm xft_mem_reader ,
+.Nm xft_growable_reader ,
+.Nm xft_reader_stream ,
+.Nm xft_reader_stream_all ,
+.Nm xft_reader_discard ,
+.Nm xft_reader_discard_all ,
+.Nm xft_reader_read ,
+.Nm xft_reader_read_all ,
+.Nm xft_fs_writer ,
+.Nm xft_mem_writer ,
+.Nm xft_growable_writer ,
+.Nm xft_writer_drain_all ,
 .Nm xft_writer_flush ,
-.Nm xft_get_fs_reader ,
-.Nm xft_get_raw_reader ,
-.Nm xft_read_from_reader ,
 .Nm xft_get_stdin ,
 .Nm xft_get_stdout ,
 .Nm xft_get_stderr ,
-.Nm xft_map_file ,
-.Nm xft_unmap_file
-.Nd buffered readers and writers, standard handles and file mapping
+.Nm xft_fileinfo_from_name ,
+.Nm xft_fileinfo_from_fd ,
+.Nm xft_map_file_into_memory ,
+.Nm xft_unmap_file_from_memory
+.Nd readers, writers, standard handles, file information and file mapping
 .Sh SYNOPSIS
 .In xft/io.h
-.Fd #define BUFSIZE 4096
-.Ft t_writer
-.Fn xft_get_fs_writer "t_buffer buffer" "t_i32 fd"
-.Ft t_writer
-.Fn xft_get_raw_writer "t_buffer buffer" "t_u8 *external" "t_size external_valid"
-.Ft t_result
-.Fn xft_writer_write "t_writer *writer" "t_buffer buf"
-.Ft t_result
-.Fn xft_writer_flush "t_writer *writer"
 .Ft t_reader
-.Fn xft_get_fs_reader "t_buffer buffer" "t_i32 fd"
+.Fn xft_fs_reader "t_reader_fs *ctx" "t_fd fd" "t_buffer buffer"
 .Ft t_reader
-.Fn xft_get_raw_reader "t_buffer buffer" "t_buffer external"
+.Fn xft_mem_reader "t_reader_ctx_memory *ctx" "t_buffer src"
+.Ft t_reader
+.Fn xft_growable_reader "t_reader_ctx_growable *ctx" "t_vec vec"
 .Ft t_result
-.Fn xft_read_from_reader "t_reader *reader" "t_u8 *dst" "t_size len" "t_size *total"
-.Ft t_i32
+.Fn xft_reader_stream "t_reader *r" "t_writer *w" "t_size limit" "t_size *size"
+.Ft t_result
+.Fn xft_reader_stream_all "t_reader *r" "t_writer *w" "t_size limit"
+.Ft t_result
+.Fn xft_reader_discard "t_reader *r" "t_size limit" "t_size *size"
+.Ft t_result
+.Fn xft_reader_discard_all "t_reader *r" "t_size limit"
+.Ft t_result
+.Fn xft_reader_read "t_reader *r" "t_buffer dst" "t_size *size"
+.Ft t_result
+.Fn xft_reader_read_all "t_reader *r" "t_buffer dst"
+.Ft t_writer
+.Fn xft_fs_writer "t_writer_fs *ctx" "t_fd fd" "t_buffer buffer"
+.Ft t_writer
+.Fn xft_mem_writer "t_writer_ctx_memory *ctx" "t_buffer dst"
+.Ft t_writer
+.Fn xft_growable_writer "t_writer_ctx_growable *ctx" "t_allocator allocator" "t_vec vec"
+.Ft t_result
+.Fn xft_writer_drain_all "t_writer *w" "t_buffer data"
+.Ft t_result
+.Fn xft_writer_flush "t_writer *w"
+.Ft t_fd
 .Fn xft_get_stdin void
-.Ft t_i32
+.Ft t_fd
 .Fn xft_get_stdout void
-.Ft t_i32
+.Ft t_fd
 .Fn xft_get_stderr void
+.Ft t_result
+.Fn xft_fileinfo_from_name "const char *name" "t_file_info *fileinfo"
+.Ft t_result
+.Fn xft_fileinfo_from_fd "t_fd fd" "t_file_info *fileinfo"
 .Ft t_buffer
-.Fn xft_map_file "const t_u8 *name" "t_u32 flags"
+.Fn xft_map_file_into_memory "const char *name"
 .Ft void
-.Fn xft_unmap_file "t_buffer file"
+.Fn xft_unmap_file_from_memory "t_buffer buffer"
 .Sh DESCRIPTION
-Readers and writers stage data in a caller-supplied
-.Vt t_buffer .
-They never allocate and have no destructor;
-the staging buffer must outlive the handle.
-Each handle carries a pointer to a static vtable selecting its backend:
-a file descriptor
-.Pq Dq fs
-or a caller-owned memory region
-.Pq Dq raw .
+A reader or writer is a backend context owned by the caller and a handle
+that points to it.
+Each constructor fills
+.Fa *ctx
+and returns the handle, which holds
+.Fa ctx
+and a copy of the backend's vtable.
+The context, and any buffer given to the constructor, must outlive the
+handle and must not move while it is in use.
+Nothing allocates except the growable writer, which grows its vector through
+the allocator it was given.
 .Pp
-.Dv BUFSIZE
-is a suggested staging buffer size.
-It is defined only if not already defined.
+The backends are
+.Dq fs ,
+a file descriptor on Linux or a
+.Vt HANDLE
+on Windows,
+.Dq mem ,
+a caller-owned memory region, and
+.Dq growable ,
+a
+.Vt t_vec .
 .Ss Types
-.Bl -tag -width Ds
-.It Vt t_iovec
+.Bd -literal -offset indent
+typedef struct s_reader {
+	t_any			reader_ctx;
+	t_reader_vtable	vtable;	/* stream, discard, stream_all,
+				   discard_all, read, read_all */
+} t_reader;
+
+typedef struct s_writer {
+	t_any			writer_ctx;
+	t_writer_vtable	vtable;	/* drain_all, flush */
+} t_writer;
+
+typedef struct s_reader_ctx_fs {
+	t_buffer	buffer;	/* staging for stream and discard */
+	t_fd		fd;
+} t_reader_fs;
+
+typedef struct s_reader_ctx_memory {
+	t_buffer	buffer;	/* bytes not yet read */
+} t_reader_ctx_memory;
+
+typedef struct s_reader_ctx_growable {
+	t_vec		vec;	/* bytes not yet read */
+} t_reader_ctx_growable;
+
+typedef struct s_writer_ctx_fs {
+	t_buffer_with_capacity	buffer;	/* staged bytes */
+	t_fd					fd;
+} t_writer_fs;
+
+typedef struct s_writer_ctx_memory {
+	t_buffer	buffer;	/* room not yet written */
+} t_writer_ctx_memory;
+
+typedef struct s_writer_ctx_growable {
+	t_allocator	allocator;
+	t_vec		vec;	/* bytes written */
+} t_writer_ctx_growable;
+.Ed
+.Pp
+.Vt t_iovec
+holds
 .Fa mem
 and
-.Fa size ;
-the element type passed to
+.Fa size
+and is the element type of
 .Fn xft_writev .
-.It Vt t_writer
-.Fa vtable ,
-the staging
-.Fa buffer ,
-.Fa end
-(bytes currently staged) and the backend union
-.Fa as .
-.Fa as Ns .fs_writer
-holds
-.Fa fd .
-.Fa as Ns .mem_writer
-holds
-.Fa external ,
-its capacity
-.Fa external_valid ,
-and
-.Fa external_size ,
-the number of bytes stored in it so far.
-.It Vt t_reader
-.Fa vtable ,
-the staging
-.Fa buffer ,
-.Fa end
-(read offset into the staged data),
-.Fa valid
-(bytes staged) and the backend union
-.Fa as .
-.Fa as Ns .fs_reader
-holds
-.Fa fd .
-.Fa as Ns .mem_reader
-holds the source buffer
-.Fa external
-and
-.Fa drained ,
-the number of source bytes consumed.
-.It Vt t_writer_vtable
-Function pointers
-.Fa flush
-and
-.Fa drain .
-.It Vt t_reader_vtable
-Function pointers
-.Fa unbufered_fill
-(sic) and
-.Fa fill .
-.El
-.Ss Writers
-.Fn xft_get_fs_writer
-returns a writer that stages into
-.Fa buffer
-and drains to file descriptor
-.Fa fd .
-.Pp
-.Fn xft_get_raw_writer
-returns a writer that stages into
-.Fa buffer
-and drains into
-.Fa external ,
-which has room for
-.Fa external_valid
-bytes.
-The number of bytes delivered so far is
-.Fa writer Ns .as.mem_writer.external_size .
-.Pp
-.Fn xft_writer_write
-appends
-.Fa buf
-to the writer.
-If it fits in the free space of the staging buffer it is only copied there.
-Otherwise the staged bytes and a leading part of
-.Fa buf
-are drained in one vectored operation, and the remaining tail of
-.Fa buf ,
-.Pq end + buf.size
-modulo
-.Fa buffer Ns .size
-bytes, is copied to the start of the staging buffer.
-The fs backend calls
-.Fn xft_writev
-until everything is written.
-The raw backend first checks that
-.Fa external
-has room for the whole drain.
-.Pp
-.Fn xft_writer_flush
-writes out the staged bytes and empties the staging buffer.
-The fs backend calls
-.Fn xft_write
-until all staged bytes are written.
-The raw backend fails without copying anything if
-.Fa external
-lacks room for them.
-Nothing is flushed implicitly; staged data is lost unless
-.Fn xft_writer_flush
-is called before the program exits.
 .Ss Readers
-.Fn xft_get_fs_reader
-returns a reader that fills
-.Fa buffer
-from file descriptor
-.Fa fd .
-.Fn xft_get_raw_reader
-returns a reader that fills
-.Fa buffer
-from the memory in
-.Fa external .
-.Pp
-.Fn xft_read_from_reader
-copies up to
-.Fa len
-bytes into
-.Fa dst
+.Fn xft_reader_stream
+moves up to
+.Fa limit
+bytes from
+.Fa r
+into
+.Fa w
+through
+.Fn xft_writer_drain_all
 and stores the count in
-.Pf * Fa total .
-It keeps reading until
-.Fa len
-bytes have been copied or the source reaches end of file,
-so a short count means end of file;
-.Pf * Fa total
-is 0 once the source is exhausted.
-If
-.Fa len
-is at least
-.Fa buffer Ns .size ,
-the staged bytes are copied out and the rest is read directly into
-.Fa dst ,
-bypassing the staging buffer.
-Otherwise the staging buffer is refilled with one
-.Fn xft_read
-call
-(or one copy from
-.Fa external )
-whenever it runs empty.
+.Pf * Fa size .
+It stops at
+.Fa limit
+or at the end of the input, so a count below
+.Fa limit
+means the input is exhausted.
+.Fn xft_reader_discard
+consumes up to
+.Fa limit
+bytes the same way and drops them.
+.Fn xft_reader_read
+copies into
+.Fa dst
+until it is full or the input ends and stores the count in
+.Pf * Fa size .
+.Pp
+.Fn xft_reader_stream_all ,
+.Fn xft_reader_discard_all
+and
+.Fn xft_reader_read_all
+fail unless exactly
+.Fa limit ,
+or
+.Fa dst Ns .size ,
+bytes were transferred.
+Bytes transferred before the input ended are still delivered and consumed.
+.Pp
+The fs reader reads at most
+.Fa buffer Ns .size
+bytes into its staging buffer per call and drains each chunk to the writer.
+.Fn xft_reader_read
+on an fs reader reads straight into
+.Fa dst .
+A read that returns no bytes is the end of the input.
+On Linux interrupted calls are retried; on Windows a broken pipe is the end
+of the input.
+.Pp
+The mem reader takes bytes from the front of
+.Fa src
+and advances
+.Fa ctx Ns ->buffer
+past them.
+The growable reader takes bytes from the front of
+.Fa vec
+and moves the remaining bytes down, shrinking
+.Fa ctx Ns ->vec.buf.size .
+.Ss Writers
+.Fn xft_writer_drain_all
+writes all of
+.Fa data
+to
+.Fa w .
+.Fn xft_writer_flush
+pushes out anything the writer has staged.
+.Pp
+The fs writer stages bytes in
+.Fa buffer ,
+whose size becomes the staging capacity.
+Data that fits in the free space is only copied there.
+Otherwise the staged bytes and
+.Fa data
+are written together, with one
+.Fn xft_writev
+call on Linux and one
+.Ql WriteFile
+call per piece on Windows, repeated until everything is written, and the
+staging buffer is left empty.
+.Fn xft_writer_flush
+writes the staged bytes with
+.Fn xft_write
+or
+.Ql WriteFile
+until none are left.
+Nothing is flushed implicitly; staged bytes are lost unless
+.Fn xft_writer_flush
+is called.
+.Pp
+The mem writer copies into
+.Fa dst
+and advances
+.Fa ctx Ns ->buffer
+past the bytes written, so the bytes written so far are
+.Fa dst Ns .size
+minus
+.Fa ctx Ns ->buffer.size .
+The growable writer appends to
+.Fa ctx Ns ->vec
+with
+.Fn xft_vec_extend .
+For both,
+.Fn xft_writer_flush
+does nothing.
+The caller still owns the vector and frees it with
+.Fn xft_vec_destroy
+and
+.Fa ctx Ns ->allocator .
 .Ss Standard handles
 .Fn xft_get_stdin ,
 .Fn xft_get_stdout
 and
 .Fn xft_get_stderr
-return the handle for the standard streams, suitable as the
-.Fa fd
-argument above.
-On Linux these are 0, 1 and 2.
-On Windows they are the results of
-.Fn GetStdHandle
-truncated to
-.Vt t_i32 .
+return the handles of the standard streams: 0, 1 and 2 on Linux, and the
+results of
+.Ql GetStdHandle
+on Windows.
+.Ss File information
+.Fn xft_fileinfo_from_name
+fills
+.Pf * Fa fileinfo
+for the file
+.Fa name
+without following a final symbolic link, so a link reports
+.Dv F_T_SYML .
+.Fn xft_fileinfo_from_fd
+does the same for an open handle.
+On Linux both use
+.Xr statx 2 .
+On Windows a handle that is not a disk file, such as a pipe or a console,
+only gets its
+.Fa type
+filled in.
+Times are nanoseconds since the Unix epoch.
+.Vt t_file_info
+is described in
+.Xr xft_files 3 .
 .Ss File mapping
-.Fn xft_map_file
+.Fn xft_map_file_into_memory
 maps the file
 .Fa name
-read-only and private.
-On Linux
-.Fa flags
-is passed to
-.Xr open 2
-and should be 0, the value of
-.Dv O_RDONLY ;
-the size comes from
-.Xr statx 2 .
-On Windows
-.Fa flags
-is ignored.
-The descriptor is closed before returning; the mapping stays valid.
-.Pp
-.Fn xft_unmap_file
-unmaps a buffer returned by
-.Fn xft_map_file .
+read-only and private and closes the descriptor before returning; the
+mapping stays valid.
+.Fn xft_unmap_file_from_memory
+unmaps a buffer it returned.
 .Sh RETURN VALUES
-.Fn xft_writer_write ,
-.Fn xft_writer_flush
-and
-.Fn xft_read_from_reader
-return
+The reader and writer functions return
 .Dv OK
 on success and
 .Dv KO
 on failure.
-For fs handles, failure means a
-.Fn xft_read
-returned a negative value, or a
-.Fn xft_write
+An fs handle fails when a read or write fails or a write makes no progress.
+A mem writer fails, without copying anything, when
+.Fa data
+is larger than the room left.
+A growable writer fails when the vector cannot grow.
+Mem and growable readers never fail.
+.Pp
+The constructors return the handle and cannot fail.
+.Pp
+.Fn xft_fileinfo_from_name
+and
+.Fn xft_fileinfo_from_fd
+return
+.Dv OK ,
 or
-.Fn xft_writev
-returned zero or a negative value.
-For raw writers, failure means
-.Fa external
-is too small.
-Raw readers never fail.
+.Dv KO
+if the file or handle cannot be queried.
 .Pp
-The constructors return the handle by value and cannot fail.
-.Pp
-.Fn xft_map_file
+.Fn xft_map_file_into_memory
 returns the mapped bytes and the file size, or a zeroed
 .Vt t_buffer
-if
-.Fn xft_statx ,
-.Fn xft_open
-or the mapping fails.
+if opening, querying or mapping the file fails.
 An empty file cannot be mapped and also yields a zeroed buffer.
 .Sh EXAMPLES
 Copy standard input to standard output:
@@ -271,73 +319,74 @@ Copy standard input to standard output:
 
 void	xft_main(const t_any *__restrict__ const sp)
 {
-	t_u8		inbuf[BUFSIZE];
-	t_u8		outbuf[BUFSIZE];
-	t_u8		chunk[512];
+	t_u8		inbuf[4096];
+	t_u8		outbuf[4096];
+	t_reader_fs	rctx;
+	t_writer_fs	wctx;
 	t_reader	r;
 	t_writer	w;
 	t_size		n;
 
 	(void)sp;
-	r = xft_get_fs_reader(xft_fatptr(inbuf, BUFSIZE), xft_get_stdin());
-	w = xft_get_fs_writer(xft_fatptr(outbuf, BUFSIZE), xft_get_stdout());
-	while (xft_read_from_reader(&r, chunk, sizeof(chunk), &n) && n != 0)
-		if (!xft_writer_write(&w, xft_fatptr(chunk, n)))
-			xft_exit_process(1);
+	r = xft_fs_reader(&rctx, xft_get_stdin(),
+			xft_fatptr(inbuf, sizeof(inbuf)));
+	w = xft_fs_writer(&wctx, xft_get_stdout(),
+			xft_fatptr(outbuf, sizeof(outbuf)));
+	if (!xft_reader_stream(&r, &w, (t_size)-1, &n))
+		xft_exit_process(1);
 	xft_exit_process(!xft_writer_flush(&w));
 }
 .Ed
+.Pp
+Collect a reader's whole input in memory:
+.Bd -literal -offset indent
+t_result	slurp(t_allocator a, t_reader *r, t_writer_ctx_growable *ctx)
+{
+	t_vec		vec;
+	t_writer	w;
+	t_size		n;
+
+	if (!xft_new_vec(a, &vec, 4096, 1))
+		return (KO);
+	w = xft_growable_writer(ctx, a, vec);
+	if (!xft_reader_stream(r, &w, (t_size)-1, &n))
+		return (xft_vec_destroy(a, &ctx->vec), KO);
+	return (OK);
+}
+.Ed
 .Sh SEE ALSO
+.Xr xft_async 3 ,
+.Xr xft_files 3 ,
 .Xr xft_fmt 3 ,
-.Xr xft_mem 3 ,
-.Xr xft_os 3 ,
-.Xr xft_rt 3 ,
+.Xr xft_vec 3 ,
 .Xr xft 7
 .Sh CAVEATS
-The staging buffer of every handle and
-.Fa buf Ns .mem
+Every buffer given to a constructor, and
+.Fa data Ns .mem
+and
+.Fa dst Ns .mem ,
 must not be
 .Dv nullptr ,
-even for zero-length writes; this is assumed, not checked.
-A writer's
-.Fa buffer Ns .size
-must not be zero.
+and an fs reader's or fs writer's buffer must not be empty; this is assumed,
+not checked.
 .Pp
-Interrupted or failed system calls are not retried.
-After an fs writer fails, some bytes may already have been written while
-.Fa end
-is unchanged, so flushing again can write them twice.
-After
-.Fn xft_read_from_reader
-fails,
-.Pf * Fa total
-is not set and bytes already copied to
+On a pipe or terminal,
+.Fn xft_reader_stream
+and
+.Fn xft_reader_read
+on an fs reader keep reading until
+.Fa limit
+or
 .Fa dst
-are consumed from the reader.
+is reached or the input ends, so they block until then.
 .Pp
-The raw drain path tests its capacity check with the wrong sense:
-when a write overflows the staging buffer,
-.Fn xft_writer_write
-on a raw writer returns
-.Dv KO
-if
-.Fa external
-has room, and copies past the end of
-.Fa external
-if it does not.
-Writes that fit in the staging buffer and
-.Fn xft_writer_flush
-are not affected.
+After an fs writer fails, the staged bytes are kept even if some were
+already written, so flushing again can write them twice.
+.Pp
+Every read from a growable reader moves the remaining bytes, so its cost
+grows with the bytes left.
 .Pp
 Do not pass the zeroed result of a failed
-.Fn xft_map_file
+.Fn xft_map_file_into_memory
 to
-.Fn xft_unmap_file .
-.Pp
-.Fn xft_get_fs_reader
-is declared
-.Ql always_inline
-in
-.In xft/io.h
-without a body, so compilers that honor the attribute strictly, such as GCC
-without LTO, reject calls to it from outside the library.
+.Fn xft_unmap_file_from_memory .

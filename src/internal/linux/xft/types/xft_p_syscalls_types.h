@@ -31,6 +31,7 @@
 #  include <sys/mman.h>
 #  include <fcntl.h>
 #  include <unistd.h>
+#  include <errno.h>
 # endif
 
 # if defined(XFT_REQUIRE_LIBC) && defined(SYS_mmap2)
@@ -123,14 +124,24 @@ typedef struct s_clone_arg
 	t_i32a	*ptid;
 	t_i32a	*ctid;
 	t_uptr	tls;
-	t_i32	(*fn)(t_any);
+	t_i32	(*fn)(t_any)\
+			__attribute__((__nonnull__));
 	t_any	arg;
 }	t_clone_arg;
 
 typedef enum e_xft_errno : t_u16
 {
+	xft_eintr = 4,
+	xft_eagain = 11,
 	xft_max_errno = 4095,
 }	t_xft_errno;
+
+typedef enum e_xft_sysres : t_u8
+{
+	xft_sys_ko = 0,
+	xft_sys_ok = 1,
+	xft_sys_repeat = 2,
+}	t_xft_sysres;
 
 typedef enum e_xft_prot : t_u8
 {
@@ -214,6 +225,7 @@ typedef enum e_xft_at : t_i8
 typedef enum e_xft_at_flag : t_u16
 {
 	xft_at_symlink_nofollow = 0x100,
+	xft_at_empty_path = 0x1000,
 }	t_xft_at_flag;
 
 typedef enum e_xft_statx_mask : t_u16

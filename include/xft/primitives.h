@@ -78,6 +78,13 @@ typedef struct s_buffer
 	t_u8 __attribute__	((counted_by(size)))	*mem;
 }	t_buffer;
 
+typedef struct s_buffer_with_capacity
+{
+	t_size											size;
+	t_size											capacity;
+	t_u8 __attribute__	((counted_by(capacity)))	*mem;
+}	t_buffer_with_capacity;
+
 # else
 
 typedef struct s_buffer
@@ -85,6 +92,13 @@ typedef struct s_buffer
 	t_size		size;
 	t_u8		*mem;
 }	t_buffer;
+
+typedef struct s_buffer_with_capacity
+{
+	t_size		size;
+	t_size		capacity;
+	t_u8		*mem;
+}	t_buffer_with_capacity;
 
 # endif
 

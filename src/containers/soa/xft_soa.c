@@ -12,8 +12,9 @@
 
 #include <xft/soa.h>
 
-__attribute__((__nonnull__(3)))
-t_soa	xft_new_soa(t_allocator allocator, t_size element_size_capacity,
+__attribute__((__nonnull__(2, 4)))
+t_result	xft_new_soa(t_allocator allocator, t_soa *__restrict__ const soa,
+	t_size element_size_capacity,
 	const t_soa_context *__restrict__ const context)
 {
 	t_buffer		buf;
@@ -26,7 +27,7 @@ t_soa	xft_new_soa(t_allocator allocator, t_size element_size_capacity,
 			|| context->max_alignment == 0
 			|| (context->max_alignment
 				& (context->max_alignment - 1)) != 0, 0))
-		return ((t_soa){0});
+		return (KO);
 	element_size_capacity = (element_size_capacity
 			+ context->max_alignment - 1)
 		& ~(context->max_alignment - 1);
@@ -34,21 +35,21 @@ t_soa	xft_new_soa(t_allocator allocator, t_size element_size_capacity,
 			element_size_capacity * context->total_struct_size,
 			xft_max_s(context->max_alignment, __GCC_CONSTRUCTIVE_SIZE));
 	if (__builtin_expect(buf.mem == nullptr, 0))
-		return ((t_soa){0});
-	return ((t_soa){.ptr = buf.mem,
+		return (KO);
+	*soa = (t_soa){.ptr = buf.mem,
 		.allocator_bytes_given = buf.size,
 		.capacity_elements = element_size_capacity,
-		.occupied_elements = 0});
+		.occupied_elements = 0};
+	return (OK);
 }
 
 __attribute__((__nonnull__(2)))
 void	xft_destroy_soa(t_allocator allocator, t_soa *soa)
 {
 	if (allocator.allocator == nullptr || allocator.vtable == nullptr
-		|| allocator.vtable->free == nullptr)
+		|| allocator.vtable->free == nullptr || soa->ptr == nullptr)
 		__builtin_unreachable();
-	if (soa->ptr)
-		allocator.vtable->free(allocator.allocator,
-			xft_fatptr(soa->ptr, soa->allocator_bytes_given));
+	allocator.vtable->free(allocator.allocator,
+		xft_fatptr(soa->ptr, soa->allocator_bytes_given));
 	*soa = (t_soa){0};
 }

@@ -47,7 +47,7 @@ void	test_imap_dense(t_allocator a)
 	t_size		i;
 
 	xft_xoshiro_init(rng);
-	m = xft_new_indexmap(a);
+	xft_pin_invariant(xft_new_indexmap(a, &m));
 	n = 0;
 	while (n < IMAP_TEST_DENSE)
 	{

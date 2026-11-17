@@ -25,7 +25,7 @@ t_result	xft_vec_remove(t_vec *restrict const v, t_size i, t_size type_size)
 	if (elem == nullptr || last == nullptr)
 		return (KO);
 	xft_memmove(elem, elem + type_size, (t_uptr)last - (t_uptr)elem);
-	v->size -= type_size;
+	v->buf.size -= type_size;
 	return (OK);
 }
 
@@ -45,6 +45,6 @@ t_result	xft_vec_remove_managed(t_allocator allocator,
 		return (KO);
 	allocator.vtable->free(allocator.allocator, *(t_buffer *)elem);
 	xft_memmove(elem, elem + type_size, (t_uptr)last - (t_uptr)elem);
-	v->size -= type_size;
+	v->buf.size -= type_size;
 	return (OK);
 }

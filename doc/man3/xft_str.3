@@ -1,4 +1,4 @@
-.Dd October 29, 2026
+.Dd November 17, 2026
 .Dt XFT_STR 3
 .Os xft
 .Sh NAME
@@ -11,8 +11,8 @@
 .Nd growable NUL-terminated byte string
 .Sh SYNOPSIS
 .In xft/str.h
-.Ft t_str
-.Fn xft_new_str "t_allocator allocator" "t_size size"
+.Ft t_result
+.Fn xft_new_str "t_allocator allocator" "t_str *str" "t_size size"
 .Ft void
 .Fn xft_str_destroy "t_allocator allocator" "t_str *str"
 .Ft t_result
@@ -31,24 +31,28 @@ The allocator is not stored; the caller passes the same one to every call
 that may allocate or free.
 .Bd -literal -offset indent
 typedef struct s_str {
-	t_size	size;		/* bytes in use, excluding the NUL */
-	t_size	capacity;	/* bytes allocated, including the NUL */
-	t_u8	*mem;
+	t_buffer_with_capacity	buf;
 } t_str;
 .Ed
+.Pp
+.Fa buf Ns .size
+is the number of bytes in use, excluding the NUL, and
+.Fa buf Ns .capacity
+the number of bytes allocated, including the NUL.
 .Pp
 .Fn xft_new_str
 allocates
 .Fa size
 + 1 bytes, stores a NUL at
-.Fa mem Ns [0]
-and returns an empty string.
-.Fa capacity
+.Fa buf Ns .mem Ns [0]
+and writes the empty string to
+.Fa *str .
+.Fa buf Ns .capacity
 is the size of the buffer returned by the allocator, which may exceed the
 request.
 .Pp
 .Fn xft_str_destroy
-frees the buffer, if any, and zeroes
+frees the buffer and zeroes
 .Fa *str .
 .Pp
 .Fn xft_str_extend
@@ -68,7 +72,7 @@ with
 .Pp
 .Fn xft_str_reserve
 asks the allocator to reallocate the buffer to
-.Fa capacity
+.Fa buf Ns .capacity
 +
 .Fa n
 + 1 bytes.
@@ -81,9 +85,9 @@ appends
 .Fa byte
 and writes a new terminator after it.
 When
-.Fa size
+.Fa buf Ns .size
 + 1 reaches
-.Fa capacity ,
+.Fa buf Ns .capacity ,
 it first calls
 .Fn xft_str_reserve
 with twice the capacity, or 4 if the capacity is zero, which requests
@@ -97,19 +101,20 @@ It never reallocates.
 .Pp
 No function shrinks the buffer.
 Any call that may grow it can move
-.Fa mem ,
+.Fa buf Ns .mem ,
 invalidating pointers into the string.
 .Sh RETURN VALUES
 .Fn xft_new_str
-returns the new string.
+returns
+.Dv OK
+on success.
 If
 .Fa size
-is zero or the allocation fails it returns a zeroed
-.Vt t_str
-whose
-.Fa mem
-is
-.Dv nullptr .
+is zero or the allocation fails it returns
+.Dv KO
+and leaves
+.Fa *str
+untouched.
 .Pp
 .Fn xft_str_extend ,
 .Fn xft_str_reserve
@@ -126,13 +131,9 @@ unchanged.
 returns
 .Dv KO
 if
-.Fa v Ns ->mem
-is
-.Dv nullptr
-or
 .Fa i
 is not less than
-.Fa size ,
+.Fa buf Ns .size ,
 and
 .Dv OK
 otherwise.
@@ -155,14 +156,13 @@ t_result	demo(t_allocator a)
 {
 	t_str	s;
 
-	s = xft_new_str(a, 1);
-	if (s.mem == nullptr)
+	if (!xft_new_str(a, &s, 1))
 		return (KO);
 	if (!xft_str_extend(a, &s, (const t_u8 *)"abc", 3)
 		|| !xft_str_push_back(a, &s, 'd'))
 		return (xft_str_destroy(a, &s), KO);
 	xft_pin_invariant(xft_str_remove(&s, 1));
-	/* s.mem is "acd", s.size is 3 */
+	/* s.buf.mem is "acd", s.buf.size is 3 */
 	xft_pin_invariant(!xft_str_remove(&s, 5));
 	xft_str_destroy(a, &s);
 	return (OK);
@@ -175,15 +175,13 @@ t_result	demo(t_allocator a)
 .Xr xft_vec 3 ,
 .Xr xft 7
 .Sh CAVEATS
-.Fn xft_str_extend ,
-.Fn xft_str_reserve
-and
-.Fn xft_str_push_back
-treat a
+Every function other than
+.Fn xft_new_str
+treats a
 .Dv nullptr
-.Fa mem
-as unreachable, so they must not be called on a string whose creation
-failed.
+.Fa buf Ns .mem
+as unreachable, so none may be called on a string whose creation failed
+or that was already destroyed.
 .Fn xft_str_destroy ,
 .Fn xft_str_reserve
 and

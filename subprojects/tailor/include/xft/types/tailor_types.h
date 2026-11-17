@@ -19,9 +19,11 @@
 # include <xft/primitives.h>
 # include <xft/threads.h>
 # include <xft/types/io_types.h>
+# include <xft/types/async_types.h>
 # include <xft/types/vec_types.h>
 
-typedef void	(*t_tailor_fn)(t_any);
+typedef void	(*t_tailor_fn)(t_any)\
+				__attribute__((__nonnull__));
 
 typedef struct s_tailor_bench
 {
@@ -80,6 +82,7 @@ typedef struct s_tailor
 	t_u64				min_samples;
 	t_buffer			rand_buffers;
 	t_u8				buffer[TAILOR_BUFFER_SIZE];
+	t_writer_fs			writer_fs;
 	t_writer			writer;
 }	t_tailor;
 

@@ -1,4 +1,4 @@
-.Dd November 1, 2026
+.Dd November 17, 2026
 .Dt XFT_SWISSMAP 3
 .Os xft
 .Sh NAME
@@ -13,10 +13,10 @@
 .Sh SYNOPSIS
 .In xft/swissmap.h
 .Fd #define SWISS_INITIAL_SIZE 435
-.Ft t_swissmap
-.Fn xft_new_swissmap "t_allocator allocator"
-.Ft t_swissmap
-.Fn xft_new_swissmap_with "t_allocator allocator" "t_size capacity"
+.Ft t_result
+.Fn xft_new_swissmap "t_allocator allocator" "t_swissmap *restrict map"
+.Ft t_result
+.Fn xft_new_swissmap_with "t_allocator allocator" "t_swissmap *restrict map" "t_size capacity"
 .Ft t_result
 .Fn xft_swissmap_insert "t_allocator allocator" "t_swissmap *restrict map" "t_buffer key" "t_u8 *restrict value"
 .Ft t_any
@@ -65,7 +65,9 @@ It does not copy or free the key bytes or the value; both must stay valid,
 and the key bytes unchanged, while the entry is in the map.
 .Pp
 .Fn xft_new_swissmap_with
-creates an empty map that holds
+writes an empty map to
+.Fa *map
+that holds
 .Fa capacity
 entries before its first rebuild.
 Its slot count is the smallest power of two, no less than the group width,
@@ -118,7 +120,6 @@ marks every slot empty and resets
 and
 .Fa tombstones ,
 keeping the allocation.
-It does nothing on a map with no storage.
 .Pp
 .Fn xft_swissmap_destroy
 frees the storage and zeroes
@@ -132,14 +133,16 @@ are the caller's own pointers and are not affected by rehashing.
 .Fn xft_new_swissmap
 and
 .Fn xft_new_swissmap_with
-return the new map.
+return
+.Dv OK
+on success.
 If
 .Fa capacity
-is zero or the allocation fails, they
-return a zeroed map whose
-.Fa soa Ns .ptr
-is
-.Dv nullptr .
+is zero or the allocation fails, they return
+.Dv KO ;
+the contents of
+.Fa *map
+are then unspecified.
 .Pp
 .Fn xft_swissmap_insert
 returns
@@ -176,8 +179,7 @@ t_result	demo(t_allocator a)
 	int			val;
 	int			*got;
 
-	m = xft_new_swissmap(a);
-	if (m.soa.ptr == nullptr)
+	if (!xft_new_swissmap(a, &m))
 		return (KO);
 	val = 42;
 	if (!xft_swissmap_insert(a, &m,
@@ -199,14 +201,14 @@ t_result	demo(t_allocator a)
 .Xr xft_soa 3 ,
 .Xr xft 7
 .Sh CAVEATS
-.Fn xft_swissmap_lookup
-and
-.Fn xft_swissmap_delete
-read the control array without checking it, so calling them on a map whose
-creation failed is undefined behavior.
-.Fn xft_swissmap_insert
-on such a map returns
-.Dv KO .
+A map only exists once
+.Fn xft_new_swissmap
+or
+.Fn xft_new_swissmap_with
+returned
+.Dv OK ;
+calling any other function on a map whose creation failed, or on one
+already destroyed, is undefined behavior.
 .Pp
 .Fn xft_swissmap_destroy
 treats a

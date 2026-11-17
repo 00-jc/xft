@@ -38,20 +38,23 @@ static inline t_result	xft__init_hw(t_perf_counters c)
 {
 	t_size					i;
 	t_perf_event_attr		attr;
+	int						fd;
+	t_xft_sysres			res;
 
 	i = SW_COUNTERS_N;
 	while (i < HW_COUNTERS_N + SW_COUNTERS_N)
 	{
 		attr = xft__getattr(xft_perf_type_hardware,
 				get_hw_counters()[i - SW_COUNTERS_N]);
-		c[i] = xft_perf_event_open(&attr, (int)c[0]);
-		if (__builtin_expect(c[i] == -1, 0))
+		res = xft_perf_event_open(&attr, (int)c[0], &fd);
+		if (__builtin_expect(res == xft_sys_ko, 0))
 		{
 			while (i)
 				xft_close((int)c[--i]);
 			return (KO);
 		}
-		++i;
+		c[i] = fd;
+		i += (res == xft_sys_ok);
 	}
 	return (OK);
 }
@@ -61,23 +64,23 @@ static inline t_result	xft__init_sw(t_perf_counters c)
 {
 	t_size					i;
 	t_perf_event_attr		attr;
+	int						fd;
+	t_xft_sysres			res;
 
-	attr = xft__getattr(xft_perf_type_software, get_sw_counters()[0]);
-	c[0] = xft_perf_event_open(&attr, -1);
-	if (c[0] == -1)
-		return (KO);
-	i = 1;
+	c[0] = -1;
+	i = 0;
 	while (i < SW_COUNTERS_N)
 	{
 		attr = xft__getattr(xft_perf_type_software, get_sw_counters()[i]);
-		c[i] = xft_perf_event_open(&attr, (int)c[0]);
-		if (__builtin_expect(c[i] == -1, 0))
+		res = xft_perf_event_open(&attr, (int)c[0], &fd);
+		if (__builtin_expect(res == xft_sys_ko, 0))
 		{
 			while (i)
 				xft_close((int)c[--i]);
 			return (KO);
 		}
-		++i;
+		c[i] = fd;
+		i += (res == xft_sys_ok);
 	}
 	return (OK);
 }

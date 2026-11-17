@@ -16,10 +16,12 @@
 # include <xft/primitives.h>
 # include <xft/types/soa_types.h>
 
-t_soa					xft_new_soa(t_allocator allocator,\
+t_result				xft_new_soa(t_allocator allocator,\
+							t_soa *__restrict__ const soa,\
 							t_size initial_element_capacity,\
 							const t_soa_context *__restrict__ const ctx)\
-							__attribute__((__nonnull__(3)));
+							__attribute__((__warn_unused_result__,\
+								__nonnull__(2, 4)));
 
 t_result				xft_soa_reserve(t_allocator allocator,\
 							t_soa *__restrict__ const soa,\

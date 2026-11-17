@@ -26,7 +26,7 @@ void	pool_spin(void)
 		i++;
 }
 
-void	pool_task_set(t_thread_task *__restrict__ const t,
+void	pool_task_set(t_task *__restrict__ const t,
 	t_result (*f)(t_any), t_any arg, t_allocator alloc)
 {
 	t->f = f;
@@ -38,7 +38,7 @@ void	pool_task_set(t_thread_task *__restrict__ const t,
 	t->completion = 0;
 }
 
-void	pool_check_tasks(t_thread_task *__restrict__ const t, t_u32a n,
+void	pool_check_tasks(t_task *__restrict__ const t, t_u32a n,
 	bool wait)
 {
 	t_u32a	it;

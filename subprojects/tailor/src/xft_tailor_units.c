@@ -20,7 +20,7 @@ static inline t_result	xft__units_alloc(t_tailor *t, t_tailor_units *u,
 	t_size size)
 {
 	u->units = xft_arena_alloc(&t->arena, sizeof(t_tailor_unit) * size, 64);
-	u->tasks = xft_arena_alloc(&t->arena, sizeof(t_thread_task) * size, 64);
+	u->tasks = xft_arena_alloc(&t->arena, sizeof(t_task) * size, 64);
 	u->order = xft_arena_alloc(&t->arena, sizeof(t_tailor_job *) * size, 64);
 	u->uid = xft_arena_alloc(&t->arena, sizeof(t_size) * size, 64);
 	if (__builtin_expect(u->units == nullptr || u->tasks == nullptr
@@ -28,8 +28,8 @@ static inline t_result	xft__units_alloc(t_tailor *t, t_tailor_units *u,
 		return (KO);
 	xft_memset(u->units, 0, sizeof(t_tailor_unit) * size);
 	u->n = 0;
-	u->map = xft_new_indexmap_with(xft_arena_allocator(&t->arena), size);
-	return ((t_result)(u->map.soa.ptr != nullptr));
+	return (xft_new_indexmap_with(xft_arena_allocator(&t->arena), &u->map,
+			size));
 }
 
 __attribute__((__nonnull__(1, 2, 3), __always_inline__))
@@ -91,7 +91,7 @@ static inline void	xft__units_tasks(t_tailor *t, t_tailor_units *u)
 	k = 0;
 	while (k < u->n)
 	{
-		u->tasks[k] = (t_thread_task){.f = xft_tailor_unit,
+		u->tasks[k] = (t_task){.f = xft_tailor_unit,
 			.arg = &u->units[k], .arg_size = sizeof(t_tailor_unit),
 			.allocator = xft_arena_allocator(&t->arena),
 			.arg_model = xft_must_keep_all_alive};

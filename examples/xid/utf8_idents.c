@@ -91,21 +91,22 @@ void	xft_main(const t_any *__restrict__ const sp)
 {
 	t_kernel_ptrs	kp;
 	t_buffer		f;
+	t_writer_fs		ctx;
 	t_writer		w;
-	t_u8			x[BUFSIZE];
+	t_u8			x[4096];
 
 	kp = xft_get_kernel_ptrs(sp);
 	if (__builtin_expect(kp.argc != 2, 0))
 		xft_exit_process(1);
 	if ((t_any)kp.argv == nullptr || kp.argv[1] == nullptr)
 		__builtin_unreachable();
-	f = xft_map_file((const t_u8 *)kp.argv[1], 0);
+	f = xft_map_file_into_memory((const char *)kp.argv[1]);
 	xft_kernel_ptrs_destroy(&kp);
 	if (f.mem == nullptr)
 		xft_exit_process(1);
-	w = xft_get_fs_writer(xft_fatptr(x, BUFSIZE), xft_get_stdout());
+	w = xft_fs_writer(&ctx, xft_get_stdout(), xft_fatptr(x, sizeof(x)));
 	scan(&w, f);
 	(void)xft_writer_flush(&w);
-	xft_unmap_file(f);
+	xft_unmap_file_from_memory(f);
 	xft_exit_process(0);
 }

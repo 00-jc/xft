@@ -38,7 +38,12 @@ inline t_buffer	xft_palloc(t_size size)
 __attribute__((__nonnull__(1), __always_inline__, __used__))
 inline t_result	xft_palloc_discard(t_any ptr, t_size size)
 {
-	return ((t_result)(xft_madvise(ptr, size, xft_madv_free) == 0));
+	t_xft_sysres	res;
+
+	res = xft_sys_repeat;
+	while (res == xft_sys_repeat)
+		res = xft_madvise(ptr, size, xft_madv_free);
+	return ((t_result)(res == xft_sys_ok));
 }
 
 #elif defined(_WIN32)

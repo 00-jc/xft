@@ -15,8 +15,12 @@
 
 # include <xft/types/swissmap_types.h>
 
-t_swissmap	xft_new_swissmap_with(t_allocator allocator, t_size capacity);
-t_swissmap	xft_new_swissmap(t_allocator allocator);
+t_result	xft_new_swissmap_with(t_allocator allocator,\
+				t_swissmap *__restrict__ const map, t_size capacity)\
+				__attribute__((__warn_unused_result__, __nonnull__(2)));
+t_result	xft_new_swissmap(t_allocator allocator,\
+				t_swissmap *__restrict__ const map)\
+				__attribute__((__warn_unused_result__, __nonnull__(2)));
 t_any		xft_swissmap_lookup(const t_swissmap *__restrict__ const map,\
 				t_buffer key)\
 				__attribute__((pure, __nonnull__(1)));

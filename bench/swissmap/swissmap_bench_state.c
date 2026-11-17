@@ -18,7 +18,7 @@ t_gpa	*xft_get_bench_swiss_gpa(void)
 	static _Thread_local t_gpa	gpa = {0};
 
 	if (gpa.slab == nullptr)
-		gpa = xft_new_gpa();
+		xft_pin_invariant(xft_new_gpa(&gpa));
 	return (&gpa);
 }
 
@@ -54,8 +54,7 @@ t_swissmap	*xft_get_bench_swiss_filled(void)
 	if (map.soa.ptr != nullptr)
 		return (&map);
 	a = xft_gpa_allocator(xft_get_bench_swiss_gpa());
-	map = xft_new_swissmap_with(a, SWISS_BENCH_FILL);
-	xft_pin_invariant(map.soa.ptr != nullptr);
+	xft_pin_invariant(xft_new_swissmap_with(a, &map, SWISS_BENCH_FILL));
 	i = 0;
 	while (i < SWISS_BENCH_FILL)
 	{

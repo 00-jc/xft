@@ -15,13 +15,17 @@
 
 t_result	xft_bind_process_to_cpu(t_u32 cpu)
 {
-	int			pid;
-	t_u64a		mask[128 / sizeof(t_u64a)];
+	int				pid;
+	t_u64a			mask[128 / sizeof(t_u64a)];
+	t_xft_sysres	res;
 
 	pid = xft_getpid();
 	xft_memset(mask, 0, sizeof(mask));
 	mask[cpu >> 6] |= (t_u64a)1 << (cpu & 63);
-	if (xft_sched_setaffinity(pid, sizeof(mask), mask) == -1)
+	res = xft_sys_repeat;
+	while (res == xft_sys_repeat)
+		res = xft_sched_setaffinity(pid, sizeof(mask), mask);
+	if (res != xft_sys_ok)
 		return (KO);
 	return (OK);
 }

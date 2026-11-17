@@ -20,10 +20,11 @@ inline void	xft_main(const t_any *__restrict__ const sp)
 {
 	const t_sysinfo	sysinfo = xft_get_sysinfo(sp);
 	t_u8			buffer[64];
+	t_writer_fs		ctx;
 	t_writer		writer;
 
-	writer = xft_get_fs_writer(xft_fatptr(buffer, sizeof(buffer)),
-			xft_get_stdout());
+	writer = xft_fs_writer(&ctx, xft_get_stdout(),
+			xft_fatptr(buffer, sizeof(buffer)));
 	xft_pin_invariant_msg(xft_start_tls_for_main_thread(sysinfo) == OK,
 		xft_fatptr((t_u8 *)"tls start", sizeof("tls start") - 1));
 	test_thread_join(sysinfo);
@@ -33,7 +34,7 @@ inline void	xft_main(const t_any *__restrict__ const sp)
 	test_thread_ring_buffer(sysinfo);
 	test_thread_ring_buffer_backoff(sysinfo);
 	test_thread_pool(sysinfo);
-	xft_writer_write(&writer, xft_fatptr((t_u8 *)"xft_thread: OK\n",
+	xft_writer_drain_all(&writer, xft_fatptr((t_u8 *)"xft_thread: OK\n",
 			sizeof("xft_thread: OK\n") - 1));
 	xft_writer_flush(&writer);
 	xft_exit_process(0);

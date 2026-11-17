@@ -1,4 +1,4 @@
-.Dd November 2, 2026
+.Dd November 17, 2026
 .Dt XFT_ATOMICS 3
 .Os xft
 .Sh NAME
@@ -46,8 +46,8 @@
 .Fn xft_mutex_unlock "t_mutex *restrict mutex"
 .Ft void
 .Fn xft_backoff "t_u64 n"
-.Ft t_ring_buffer
-.Fn xft_new_ring_buffer "t_allocator allocator" "t_u32a min_size"
+.Ft t_result
+.Fn xft_new_ring_buffer "t_allocator allocator" "t_ring_buffer *restrict rb" "t_u32a min_size"
 .Ft void
 .Fn xft_destroy_ring_buffer "t_allocator allocator" "t_ring_buffer *restrict rb"
 .Ft t_result
@@ -375,13 +375,12 @@ up to the next power of two, allocates that many slots through
 .Fa allocator
 with an alignment of
 .Dv __GCC_CONSTRUCTIVE_SIZE ,
-zeroes the whole allocation and returns the ring buffer with both counters
-at 0.
-It returns a zeroed
-.Vt t_ring_buffer ,
-whose
-.Fa memory
-is a null pointer, when
+zeroes the whole allocation and writes the ring buffer to
+.Fa *rb
+with both counters at 0.
+It leaves
+.Fa *rb
+untouched when
 .Fa min_size
 is 0 or above 2^31, when the slot array does not fit in a
 .Vt t_size ,
@@ -523,8 +522,10 @@ and grows by one on every retry on an in-flight slot, so the pause grows
 linearly for as long as the slot stays in flight.
 .Sh RETURN VALUES
 .Fn xft_new_ring_buffer
-returns the new ring buffer, or a zeroed
-.Vt t_ring_buffer
+returns
+.Dv OK
+on success and
+.Dv KO
 on failure.
 .Pp
 .Fn xft_ring_buffer_submit
@@ -568,8 +569,7 @@ void	queue(t_any job)
 	t_ring_buffer		rb;
 	t_any				out;
 
-	rb = xft_new_ring_buffer(alloc, 64);
-	if (rb.memory == nullptr)
+	if (!xft_new_ring_buffer(alloc, &rb, 64))
 		return ;
 	while (xft_ring_buffer_submit(&rb, job) == KO)
 		xft_backoff(1);
@@ -633,7 +633,8 @@ or
 .Fn xft_ring_buffer_submit_1ton ,
 or a ring buffer whose
 .Fa memory
-is a null pointer to any of the three,
+is a null pointer to any of the three or to
+.Fn xft_destroy_ring_buffer ,
 reaches
 .Ql __builtin_unreachable .
 So does an

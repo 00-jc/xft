@@ -41,7 +41,7 @@ void	test_map_churn(t_allocator a)
 	t_size		i;
 
 	xft_xoshiro_init(rng);
-	m = xft_new_swissmap(a);
+	xft_pin_invariant(xft_new_swissmap(a, &m));
 	i = 0;
 	while (i < MAP_TEST_CHURN)
 	{

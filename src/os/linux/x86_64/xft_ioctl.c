@@ -18,9 +18,10 @@
 # if defined(__x86_64__) && !defined(XFT_REQUIRE_LIBC)
 
 __attribute__((__always_inline__, __used__))
-inline int	xft_ioctl(int fd, t_u64a request, t_u64a arg)
+inline t_xft_sysres	xft_ioctl(int fd, t_u64a request, t_u64a arg)
 {
-	int	ret;
+	int		ret;
+	t_u64a	r;
 
 	__asm__ volatile (
 		"syscall"
@@ -31,7 +32,9 @@ inline int	xft_ioctl(int fd, t_u64a request, t_u64a arg)
 		"d"(arg)
 		: "rcx", "r11", "memory"
 	);
-	return ((int)xft_tern(ret < 0, (t_u64a)-1, (t_u64a)ret));
+	r = xft_tern(ret < 0, xft_sys_ko, xft_sys_ok);
+	r = xft_tern(ret == -xft_eintr || ret == -xft_eagain, xft_sys_repeat, r);
+	return ((t_xft_sysres)r);
 }
 
 # endif

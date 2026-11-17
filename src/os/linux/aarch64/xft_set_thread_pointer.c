@@ -17,7 +17,7 @@
 # if defined(__aarch64__) && !defined(XFT_REQUIRE_LIBC)
 
 __attribute__((__always_inline__, __used__))
-inline int	xft_set_thread_pointer(t_uptr tp)
+inline t_xft_sysres	xft_set_thread_pointer(t_uptr tp)
 {
 	register long x0	__asm__("x0");
 
@@ -28,7 +28,7 @@ inline int	xft_set_thread_pointer(t_uptr tp)
 		: [tp] "r"(x0)
 		: "memory"
 	);
-	return (0);
+	return (xft_sys_ok);
 }
 
 # endif

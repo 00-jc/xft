@@ -27,7 +27,7 @@ static t_result	pool_outer(t_any arg)
 {
 	const t_pool_job *__restrict__ const	job = arg;
 	t_pool_test *__restrict__ const			s = job->s;
-	t_thread_task							*t;
+	t_task									*t;
 	t_u32a									it;
 
 	if (xft__self()->tp != &s->tp)

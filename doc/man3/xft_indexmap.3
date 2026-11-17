@@ -1,4 +1,4 @@
-.Dd November 1, 2026
+.Dd November 17, 2026
 .Dt XFT_INDEXMAP 3
 .Os xft
 .Sh NAME
@@ -20,10 +20,10 @@
 .In xft/indexmap.h
 .Fd #define INDEXMAP_INITIAL_SIZE 435
 .Fd #define INDEXMAP_NPOS __SIZE_MAX__
-.Ft t_indexmap
-.Fn xft_new_indexmap "t_allocator allocator"
-.Ft t_indexmap
-.Fn xft_new_indexmap_with "t_allocator allocator" "t_size capacity"
+.Ft t_result
+.Fn xft_new_indexmap "t_allocator allocator" "t_indexmap *restrict map"
+.Ft t_result
+.Fn xft_new_indexmap_with "t_allocator allocator" "t_indexmap *restrict map" "t_size capacity"
 .Ft t_result
 .Fn xft_indexmap_insert "t_allocator allocator" "t_indexmap *restrict map" "t_buffer key" "t_size value"
 .Ft t_result
@@ -107,7 +107,9 @@ It does not copy or free the key bytes; they must stay valid and unchanged
 while the entry is in the map.
 .Pp
 .Fn xft_new_indexmap_with
-creates an empty map that holds
+writes an empty map to
+.Fa *map
+that holds
 .Fa capacity
 entries before its first rebuild.
 Its slot count is the smallest power of two, no less than the group width,
@@ -185,7 +187,6 @@ marks every slot empty and resets
 and
 .Fa tombstones ,
 keeping the allocation.
-It does nothing on a map with no storage.
 .Pp
 .Fn xft_indexmap_destroy
 frees the storage and zeroes
@@ -214,14 +215,16 @@ invalidates them.
 .Fn xft_new_indexmap
 and
 .Fn xft_new_indexmap_with
-return the new map.
+return
+.Dv OK
+on success.
 If
 .Fa capacity
-is zero or the allocation fails, they
-return a zeroed map whose
-.Fa soa Ns .ptr
-is
-.Dv nullptr .
+is zero or the allocation fails, they return
+.Dv KO ;
+the contents of
+.Fa *map
+are then unspecified.
 .Pp
 .Fn xft_indexmap_insert
 and
@@ -272,8 +275,7 @@ t_result	demo(t_allocator a)
 {
 	t_indexmap	m;
 
-	m = xft_new_indexmap(a);
-	if (m.soa.ptr == nullptr)
+	if (!xft_new_indexmap(a, &m))
 		return (KO);
 	if (!xft_indexmap_insert(a, &m, xft_fatptr((t_u8 *)"del", 3), 10)
 		|| !xft_indexmap_insert(a, &m, xft_fatptr((t_u8 *)"keep", 4), 11))
@@ -301,18 +303,14 @@ A stored value equal to
 .Dv INDEXMAP_NPOS
 cannot be told apart from a missing key.
 .Pp
-.Fn xft_indexmap_lookup ,
-.Fn xft_indexmap_lookup_seeded ,
-.Fn xft_indexmap_delete
-and
-.Fn xft_indexmap_delete_seeded
-read the control array without checking it, so calling them on a map whose
-creation failed is undefined behavior.
-.Fn xft_indexmap_insert
-and
-.Fn xft_indexmap_insert_seeded
-on such a map return
-.Dv KO .
+A map only exists once
+.Fn xft_new_indexmap
+or
+.Fn xft_new_indexmap_with
+returned
+.Dv OK ;
+calling any other function on a map whose creation failed, or on one
+already destroyed, is undefined behavior.
 .Pp
 .Fn xft_indexmap_destroy
 treats a

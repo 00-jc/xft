@@ -1,4 +1,4 @@
-.Dd October 31, 2026
+.Dd November 17, 2026
 .Dt XFT_ALLOC 3
 .Os xft
 .Sh NAME
@@ -42,12 +42,12 @@
 .Fn xft_ts_reporta_allocator "t_ts_reporta *gpa"
 .Ft t_allocator
 .Fn xft_ts_arena_allocator "t_ts_arena *arena"
-.Ft t_ts_gpa
-.Fn xft_new_ts_gpa void
-.Ft t_ts_reporta
-.Fn xft_new_ts_reporta void
-.Ft t_ts_arena
-.Fn xft_new_ts_arena void
+.Ft t_result
+.Fn xft_new_ts_gpa "t_ts_gpa *gpa"
+.Ft t_result
+.Fn xft_new_ts_reporta "t_ts_reporta *gpa"
+.Ft t_result
+.Fn xft_new_ts_arena "t_ts_arena *arena"
 .Ft t_buffer
 .Fn xft_ts_gpa_alloc "t_any alloc" "t_size size" "t_size align"
 .Ft t_buffer
@@ -314,12 +314,17 @@ typedef struct s_ts_arena {
 .Fn xft_new_ts_reporta
 and
 .Fn xft_new_ts_arena
-return the backend built by
+build the backend in place with
 .Fn xft_new_gpa ,
 .Fn xft_new_reporta
 or
 .Fn xft_new_arena
-with the mutex unlocked.
+and unlock the mutex only once it succeeds.
+They return
+.Dv OK ,
+or
+.Dv KO
+with the whole struct untouched if the backend cannot be built.
 .Pp
 Each
 .Fn xft_ts_*_alloc ,
@@ -408,8 +413,7 @@ void	xft_main(const t_any *const __restrict__ sp)
 	t_buffer	copy;
 
 	(void)sp;
-	gpa = xft_new_gpa();
-	if (gpa.slab == nullptr)
+	if (!xft_new_gpa(&gpa))
 		xft_exit_process(1);
 	allocator = xft_gpa_allocator(&gpa);
 	memory = allocator.vtable->allocate(allocator.allocator, 1000, 64);

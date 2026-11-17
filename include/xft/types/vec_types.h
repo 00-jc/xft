@@ -17,8 +17,7 @@
 
 typedef struct s_vec
 {
-	size_t		size;
-	t_buffer	buf;
+	t_buffer_with_capacity	buf;
 }	t_vec;
 
 #endif

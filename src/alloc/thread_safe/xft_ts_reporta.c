@@ -13,10 +13,13 @@
 #include <xft/alloc.h>
 #include <xft/atomics.h>
 
-t_ts_reporta	xft_new_ts_reporta(void)
+__attribute__((__nonnull__(1)))
+t_result	xft_new_ts_reporta(t_ts_reporta *gpa)
 {
-	return ((t_ts_reporta){.mutex = xft_unlocked,
-		.reporta = xft_new_reporta()});
+	if (__builtin_expect(xft_new_reporta(&gpa->reporta) == KO, 0))
+		return (KO);
+	xft_mutex_init(&gpa->mutex);
+	return (OK);
 }
 
 __attribute__((__flatten__, __nonnull__(1)))

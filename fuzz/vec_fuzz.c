@@ -32,8 +32,7 @@ static void	fuzz_vec_case(t_fuzzer *fz, t_allocator alloc)
 
 	b = xft_fuzz_get_rand(fz);
 	n = fuzz_vec_len(b);
-	v = xft_new_vec(alloc, 1, sizeof(int));
-	xft_pin_invariant(v.buf.mem != nullptr);
+	xft_pin_invariant(xft_new_vec(alloc, &v, 1, sizeof(int)));
 	xft_pin_invariant(xft_vec_extend(alloc, &v,
 			(t_buffer){.mem = b->mem, .size = n * sizeof(int)}));
 	xft_pin_invariant(xft_vec_len(&v, sizeof(int)) == n);
@@ -54,8 +53,8 @@ void	xft_main(const t_any *__restrict__ const sp)
 	t_size		n;
 
 	(void)sp;
-	fz = xft_new_fuzzer(xft_new_arena());
-	xft_pin_invariant(fz.arena.current != nullptr);
+	xft_pin_invariant(xft_new_arena(&fz.arena));
+	fz = xft_new_fuzzer(fz.arena);
 	xft_pin_invariant(xft_fuzzer_add_rand(&fz));
 	alloc = xft_page_allocator();
 	n = fz.buf_n * 2;

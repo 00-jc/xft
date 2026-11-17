@@ -56,7 +56,9 @@ void			xft_mutex_unlock(t_mutex *__restrict__ const mutex)\
 void			xft_mutex_init(t_mutex *__restrict__ const mutex)\
 					__attribute__((__nonnull__(1)));
 
-t_ring_buffer	xft_new_ring_buffer(t_allocator allocator, t_u32a min_size);
+t_result		xft_new_ring_buffer(t_allocator allocator,\
+					t_ring_buffer *__restrict__ const rb, t_u32a min_size)\
+					__attribute__((__warn_unused_result__, __nonnull__(2)));
 
 void			xft_destroy_ring_buffer(t_allocator allocator,\
 					t_ring_buffer *__restrict__ const rb)\

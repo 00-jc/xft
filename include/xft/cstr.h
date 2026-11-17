@@ -18,7 +18,8 @@
 t_size			xft_strlen(const char *__restrict__ str)\
 					__attribute__((__nonnull__(1)));
 
-t_str			xft_cstr_to_str(t_allocator allocator, const char *cstr)\
-					__attribute__((__nonnull__(2)));
+t_result		xft_cstr_to_str(t_allocator allocator, t_str *str,\
+					const char *cstr)\
+					__attribute__((__nonnull__(2, 3)));
 
 #endif

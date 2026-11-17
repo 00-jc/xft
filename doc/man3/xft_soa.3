@@ -1,4 +1,4 @@
-.Dd October 31, 2026
+.Dd November 17, 2026
 .Dt XFT_SOA 3
 .Os xft
 .Sh NAME
@@ -11,8 +11,8 @@
 .Nd structure of arrays container
 .Sh SYNOPSIS
 .In xft/soa.h
-.Ft t_soa
-.Fn xft_new_soa "t_allocator allocator" "t_size initial_element_capacity" "const t_soa_context *restrict ctx"
+.Ft t_result
+.Fn xft_new_soa "t_allocator allocator" "t_soa *restrict soa" "t_size initial_element_capacity" "const t_soa_context *restrict ctx"
 .Ft t_result
 .Fn xft_soa_reserve "t_allocator allocator" "t_soa *restrict soa" "const t_soa_context *restrict ctx" "t_size elements_to_reserve"
 .Ft t_result
@@ -90,8 +90,9 @@ boundary.
 rounds
 .Fa initial_element_capacity
 up to a multiple of
-.Fa ctx Ns ->max_alignment
-and allocates that many records.
+.Fa ctx Ns ->max_alignment ,
+allocates that many records and writes the empty container to
+.Fa *soa .
 .Pp
 .Fn xft_soa_reserve
 ensures there is room for
@@ -127,7 +128,7 @@ The column holds
 valid entries.
 .Pp
 .Fn xft_destroy_soa
-frees the buffer, if any, and zeroes
+frees the buffer and zeroes
 .Fa *soa .
 .Pp
 Reallocation by
@@ -140,7 +141,9 @@ pointers returned by
 must be fetched again afterwards.
 .Sh RETURN VALUES
 .Fn xft_new_soa
-returns the new container.
+returns
+.Dv OK
+on success.
 If
 .Fa initial_element_capacity ,
 .Fa total_struct_size
@@ -148,12 +151,11 @@ or
 .Fa max_alignment
 is zero,
 .Fa max_alignment
-is not a power of two, or the allocation fails, it returns a zeroed
-.Vt t_soa
-whose
-.Fa ptr
-is
-.Dv nullptr .
+is not a power of two, or the allocation fails, it returns
+.Dv KO
+and leaves
+.Fa *soa
+untouched.
 .Pp
 .Fn xft_soa_reserve
 and
@@ -225,8 +227,7 @@ static t_result	step(t_allocator a, const t_soa_context *ctx)
 	const t_i32a	*vx;
 	t_size		i;
 
-	soa = xft_new_soa(a, 4, ctx);
-	if (soa.ptr == nullptr)
+	if (!xft_new_soa(a, &soa, 4, ctx))
 		return (KO);
 	while (soa.occupied_elements < 16)
 	{
@@ -260,7 +261,13 @@ A
 a
 .Dv nullptr
 .Fa allocator Ns .vtable
-or a missing vtable entry is treated as unreachable.
+or a missing vtable entry is treated as unreachable, and so is a
+.Dv nullptr
+.Fa ptr :
+a container only exists once
+.Fn xft_new_soa
+returned
+.Dv OK .
 .Fn xft_soa_fields
 treats
 .Fa field_idx

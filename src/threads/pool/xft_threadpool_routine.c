@@ -20,7 +20,7 @@ static inline void	xft__drain_self(t_threadpool *__restrict__ const tp,
 	t_u32a idx)
 {
 	t_ring_buffer *__restrict__ const	rb = &tp->worker_rings[idx];
-	t_thread_task *__restrict__			task;
+	t_task *__restrict__				task;
 
 	task = xft_ring_buffer_steal(rb);
 	while (task != nullptr)
@@ -37,7 +37,7 @@ __attribute__((__nonnull__(1)))
 static inline bool	xft__steal_other(t_threadpool *__restrict__ const tp,
 	t_u32a idx)
 {
-	t_thread_task *__restrict__	task;
+	t_task *__restrict__		task;
 	t_size						it;
 
 	it = xft_tern_s(idx + 1 >= tp->n_workers, 0, idx + 1);
@@ -59,7 +59,7 @@ __attribute__((__nonnull__(1)))
 static inline void	xft__work(t_threadpool *__restrict__ const tp,
 	t_u32a idx)
 {
-	t_thread_task *__restrict__	task;
+	t_task *__restrict__	task;
 
 	xft__drain_self(tp, idx);
 	while (true)
@@ -81,7 +81,7 @@ static inline void	xft__work(t_threadpool *__restrict__ const tp,
 __attribute__((__nonnull__(1)))
 bool	xft__work_one(t_threadpool *__restrict__ const tp, t_u32a idx)
 {
-	t_thread_task *__restrict__	task;
+	t_task *__restrict__	task;
 
 	task = xft_ring_buffer_steal(&tp->worker_rings[idx]);
 	if (task == nullptr)

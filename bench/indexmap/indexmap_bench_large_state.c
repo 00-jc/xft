@@ -45,8 +45,7 @@ t_indexmap	*xft_get_bench_imap_large_filled(void)
 	if (map.soa.ptr != nullptr)
 		return (&map);
 	a = xft_gpa_allocator(xft_get_bench_imap_gpa());
-	map = xft_new_indexmap_with(a, IMAP_BENCH_LARGE_FILL);
-	xft_pin_invariant(map.soa.ptr != nullptr);
+	xft_pin_invariant(xft_new_indexmap_with(a, &map, IMAP_BENCH_LARGE_FILL));
 	i = 0;
 	while (i < IMAP_BENCH_LARGE_FILL)
 	{

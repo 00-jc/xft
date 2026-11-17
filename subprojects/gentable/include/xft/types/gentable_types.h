@@ -45,6 +45,11 @@ typedef enum e_gt_state
 	JMPLINE,
 }	t_gt_state;
 
+typedef enum e_gt_buf : t_u16
+{
+	GT_BUFFER_SIZE = 4096,
+}	t_gt_buf;
+
 typedef struct s_gentable_state
 {
 	t_gpa					gpa;

@@ -104,9 +104,8 @@ typedef struct s_file_info
 	t_file_type			type;
 }	t_file_info;
 
-t_fd		xft_open_file(t_blk8r path, t_fileopen_mode mode)\
-				__attribute__((__nonnull__(1)));
-t_fd		xft_close_file(t_fd fd);
-t_file_info	xft_file_info(t_blk8r path);
+t_result	xft_open_file(t_blk8r path, t_fileopen_mode mode, t_fd *fd)\
+				__attribute__((__nonnull__(1, 3)));
+t_result	xft_close_file(t_fd fd);
 
 #endif

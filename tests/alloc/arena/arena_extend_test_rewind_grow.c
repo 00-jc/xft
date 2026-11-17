@@ -20,7 +20,7 @@ void	test_extend_rewind_grow(void)
 	t_any				p;
 	t_size				big;
 
-	a = xft_new_arena();
+	xft_pin_invariant(xft_new_arena(&a));
 	pages[0] = a.current;
 	big = pages[0]->total - pages[0]->used - 128;
 	xft_arena_alloc(&a, big, 16);

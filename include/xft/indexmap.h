@@ -15,8 +15,12 @@
 
 # include <xft/types/indexmap_types.h>
 
-t_indexmap	xft_new_indexmap_with(t_allocator allocator, t_size capacity);
-t_indexmap	xft_new_indexmap(t_allocator allocator);
+t_result	xft_new_indexmap_with(t_allocator allocator,\
+				t_indexmap *__restrict__ const map, t_size capacity)\
+				__attribute__((__warn_unused_result__, __nonnull__(2)));
+t_result	xft_new_indexmap(t_allocator allocator,\
+				t_indexmap *__restrict__ const map)\
+				__attribute__((__warn_unused_result__, __nonnull__(2)));
 t_size		xft_indexmap_lookup(const t_indexmap *__restrict__ const map,\
 				t_buffer key)\
 				__attribute__((pure, __nonnull__(1)));

@@ -83,14 +83,18 @@ t_result	xft_thread_spawn(t_thread *__restrict__ const thread,
 	t_u8				*map;
 	t_thread_instance	*instance;
 	const t_ts_offsets	offsets = xft__thread_layout(sysinfo, opts);
+	t_xft_sysres		res;
 
 	map = xft_mmap(offsets.bytes,
 			xft_prot_none, xft_map_private | xft_map_anonymous);
 	if (__builtin_expect(xft_map_failed(map), 0))
 		return (KO);
-	if (__builtin_expect(xft_mprotect(map + offsets.guard_offset,
-				offsets.bytes - offsets.guard_offset, xft_prot_read
-				| xft_prot_write) < 0, 0))
+	res = xft_sys_repeat;
+	while (res == xft_sys_repeat)
+		res = xft_mprotect(map + offsets.guard_offset,
+				offsets.bytes - offsets.guard_offset,
+				xft_prot_read | xft_prot_write);
+	if (__builtin_expect(res != xft_sys_ok, 0))
 		return ((void)(xft_munmap(map, offsets.bytes)), KO);
 	instance = (t_thread_instance *)(map + offsets.instance_offset);
 	*instance = (t_thread_instance){.size = offsets.bytes, .fn = opts.fn,

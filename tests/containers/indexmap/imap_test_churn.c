@@ -41,7 +41,7 @@ void	test_imap_churn(t_allocator a)
 	t_size		i;
 
 	xft_xoshiro_init(rng);
-	m = xft_new_indexmap(a);
+	xft_pin_invariant(xft_new_indexmap(a, &m));
 	i = 0;
 	while (i < IMAP_TEST_CHURN)
 	{

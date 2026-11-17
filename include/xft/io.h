@@ -3,67 +3,82 @@
 /*                                                        :::      ::::::::   */
 /*   io.h                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
+/*   By: jaicastr <jaicastr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/10/03 18:01:29 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/10/03 18:01:32 by jaicastr         ###   ########.fr       */
+/*   Created: 2026/11/17 00:03:54 by jaicastr          #+#    #+#             */
+/*   Updated: 2026/11/17 00:58:18 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef IO_H
 # define IO_H
 
-# include <stdbool.h>
-# include <xft/cstr.h>
+# include <xft/primitives.h>
+# include <xft/files.h>
 # include <xft/types/io_types.h>
 
-# ifndef BUFSIZE
-#  define BUFSIZE 4096
-# endif
+t_result	xft_fileinfo_from_name(const char *name, t_file_info *fileinfo)\
+			__attribute__((__nonnull__(1, 2)));
 
-t_result		xft_writer_write(t_writer *__restrict__ const writer,\
-					t_buffer buf)\
-					__attribute__((__nonnull__(1)));
+t_result	xft_fileinfo_from_fd(t_fd fd, t_file_info *fileinfo)\
+			__attribute__((__nonnull__(2)));
 
-t_writer		xft_get_fs_writer(t_buffer buffer, t_i32 fd)\
-					__attribute__((const));
+t_fd		xft_get_stdin(void)\
+			__attribute__((__const__));
 
-t_reader		xft_get_fs_reader(t_buffer buffer, t_i32 fd)\
-					__attribute__((const, __always_inline__));
+t_fd		xft_get_stdout(void)\
+			__attribute__((__const__));
 
-t_result		xft_read_from_reader(t_reader *reader,
-					t_u8 *dst, const t_size len, t_size *total)\
-					__attribute__((__nonnull__(1, 2, 4)));
+t_fd		xft_get_stderr(void)\
+			__attribute__((__const__));
 
-t_result		xft_writer_flush(t_writer *__restrict__ const writer)\
-					__attribute__((__nonnull__(1)));
+t_buffer	xft_map_file_into_memory(const char *name)\
+			__attribute__((__nonnull__(1)));
 
-t_writer		xft_get_raw_writer(t_buffer buffer,\
-					t_u8 *__restrict__ const external, t_size external_valid)\
-					__attribute__((const));
+void		xft_unmap_file_from_memory(t_buffer buffer);
 
-t_reader		xft_get_raw_reader(t_buffer buffer, t_buffer external)\
-					__attribute__((const));
+t_reader	xft_fs_reader(t_reader_fs *ctx, t_fd fd, t_buffer buffer)\
+			__attribute__((__warn_unused_result__, __nonnull__(1)));
 
-t_writer		xft_get_ts_fs_writer(t_buffer buffer, t_i32 fd,\
-					t_mutex *__restrict__ const mutex)\
-					__attribute__((const));
+t_reader	xft_mem_reader(t_reader_ctx_memory *ctx, t_buffer src)\
+			__attribute__((__warn_unused_result__, __nonnull__(1)));
 
-t_reader		xft_get_ts_fs_reader(t_buffer buffer, t_i32 fd,\
-					t_mutex *__restrict__ const mutex)\
-					__attribute__((const));
+t_reader	xft_growable_reader(t_reader_ctx_growable *ctx, t_vec vec)\
+			__attribute__((__warn_unused_result__, __nonnull__(1)));
 
-t_i32			xft_get_stderr(void)\
-					__attribute__((const));
-t_i32			xft_get_stdin(void)\
-					__attribute__((const));
-t_i32			xft_get_stdout(void)\
-					__attribute__((const));
+t_writer	xft_fs_writer(t_writer_fs *ctx, t_fd fd, t_buffer buffer)\
+			__attribute__((__warn_unused_result__, __nonnull__(1)));
 
-t_buffer		xft_map_file(const t_u8 *__restrict__ const name,\
-					t_u32 flags)\
-					__attribute__((__nonnull__(1)));
+t_writer	xft_mem_writer(t_writer_ctx_memory *ctx, t_buffer dst)\
+			__attribute__((__warn_unused_result__, __nonnull__(1)));
 
-void			xft_unmap_file(t_buffer file);
+t_writer	xft_growable_writer(t_writer_ctx_growable *ctx,\
+			t_allocator allocator, t_vec vec)\
+			__attribute__((__warn_unused_result__, __nonnull__(1)));
+
+t_result	xft_reader_stream(t_reader *r, t_writer *w, t_size limit,\
+			t_size *size)\
+			__attribute__((__nonnull__(1, 2, 4)));
+
+t_result	xft_reader_stream_all(t_reader *r, t_writer *w, t_size limit)\
+			__attribute__((__nonnull__(1, 2)));
+
+t_result	xft_reader_discard(t_reader *r, t_size limit, t_size *size)\
+			__attribute__((__nonnull__(1, 3)));
+
+t_result	xft_reader_discard_all(t_reader *r, t_size limit)\
+			__attribute__((__nonnull__(1)));
+
+t_result	xft_reader_read(t_reader *r, t_buffer dst, t_size *size)\
+			__attribute__((__nonnull__(1, 3)));
+
+t_result	xft_reader_read_all(t_reader *r, t_buffer dst)\
+			__attribute__((__nonnull__(1)));
+
+t_result	xft_writer_drain_all(t_writer *w, t_buffer data)\
+			__attribute__((__nonnull__(1)));
+
+t_result	xft_writer_flush(t_writer *w)\
+			__attribute__((__nonnull__(1)));
 
 #endif

@@ -17,28 +17,25 @@
 
 # if defined(__aarch64__) && !defined(XFT_REQUIRE_LIBC)
 
-__attribute__((__always_inline__, __used__))
-inline t_i32	xft_fork(void)
+__attribute__((__nonnull__(1), __always_inline__, __used__))
+inline t_xft_sysres	xft_fork(t_i32 *restrict const pid)
 {
 	register long x0	__asm__("x0");
-	register long x1	__asm__("x1");
-	register long x2	__asm__("x2");
-	register long x3	__asm__("x3");
-	register long x4	__asm__("x4");
+	t_u64a				r;
 
-	x1 = 0;
-	x2 = 0;
-	x3 = 0;
-	x4 = 0;
 	x0 = XFT_SIGCHLD;
 	__asm__ volatile (
+		"mov x1, xzr\n\tmov x2, xzr\n\tmov x3, xzr\n\tmov x4, xzr\n\t"
 		"mov x8, %[nr]\n\t"
 		"svc #0"
 		: "+r"(x0)
-		: "r"(x1), "r"(x2), "r"(x3), "r"(x4), [nr] "i"(xft_sys_clone)
-		: "memory", "cc", "x8"
+		: [nr] "i"(xft_sys_clone)
+		: "memory", "cc", "x1", "x2", "x3", "x4", "x8"
 	);
-	return ((t_i32)xft_tern(x0 < 0, (t_u64a)-1, (t_u64a)x0));
+	*pid = (t_i32)xft_tern(x0 < 0, (t_u64a)-1, (t_u64a)x0);
+	r = xft_tern(x0 < 0, xft_sys_ko, xft_sys_ok);
+	r = xft_tern(x0 == -xft_eintr || x0 == -xft_eagain, xft_sys_repeat, r);
+	return ((t_xft_sysres)r);
 }
 
 # endif

@@ -30,5 +30,5 @@ inline t_result	xft_fmt_handle_hex(t_writer *__restrict__ const writer,
 				| is_lowercase << 5);
 		value >>= 4;
 	}
-	return (xft_writer_write(writer, xft_fatptr(inner_buffer + i, 20 - i)));
+	return (xft_writer_drain_all(writer, xft_fatptr(inner_buffer + i, 20 - i)));
 }

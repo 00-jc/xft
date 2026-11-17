@@ -30,16 +30,16 @@ static t_result	cancel_owned(t_any arg)
 static void	cancel_submit_owned(t_pool_test *__restrict__ const s)
 {
 	t_buffer		b;
-	t_thread_task	*t;
+	t_task			*t;
 	t_u32a			it;
 
 	it = 0;
 	while (it++ < POOL_TEST_OWNED)
 	{
 		b = s->alloc.vtable->allocate(s->alloc.allocator,
-				sizeof(t_thread_task), _Alignof(t_thread_task));
+				sizeof(t_task), _Alignof(t_task));
 		pool_assert(b.mem != nullptr, "pool: owned alloc");
-		t = (t_thread_task *)b.mem;
+		t = (t_task *)b.mem;
 		pool_task_set(t, cancel_owned, nullptr, s->alloc);
 		t->arg_model = xft_must_free_task_on_completion;
 		xft_threadpool_submit(&s->tp, t, b.size);

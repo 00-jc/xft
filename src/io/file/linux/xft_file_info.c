@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   xft_file_info.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
+/*   By: jaicastr <jaicastr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/10/27 22:42:03 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/10/27 22:42:03 by jaicastr         ###   ########.fr       */
+/*   Created: 2026/11/17 12:00:00 by jaicastr          #+#    #+#             */
+/*   Updated: 2026/11/17 12:00:00 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <xft/files.h>
+#include <xft/io.h>
 
 #if defined(__linux__)
 
@@ -36,31 +36,55 @@ static inline t_file_type	xft__file_type(t_u16 mode)
 	return (types[mode >> 12]);
 }
 
-__attribute__((__always_inline__, __nonnull__(1), __used__))
-inline t_file_info	xft_file_info(t_blk8r path)
+__attribute__((__always_inline__, __nonnull__(1, 2)))
+static inline void	xft__from_statx(const t_statx *st, t_file_info *info)
 {
-	t_statx		st;
-	t_file_info	info;
-
-	if (__builtin_expect(xft_statx((const char *)path,
-				xft_at_symlink_nofollow,
-				xft_statx_basic_stats | xft_statx_btime, &st), 0))
-		return ((t_file_info){.type = F_T_UNKNOWN});
-	info = (t_file_info){
-		.size = st.stx_size,
-		.blk_size = st.stx_blksize,
-		.n_blks = st.stx_blocks,
-		.acc_time = xft__nanos(st.stx_atime.tv_sec, st.stx_atime.tv_nsec),
-		.mod_time = xft__nanos(st.stx_mtime.tv_sec, st.stx_mtime.tv_nsec),
-		.chg_time = xft__nanos(st.stx_ctime.tv_sec, st.stx_ctime.tv_nsec),
-		.bth_time = xft__nanos(st.stx_btime.tv_sec, st.stx_btime.tv_nsec),
-		.inode = st.stx_ino,
-		.dev_id = (t_u64a)st.stx_dev_major << 32 | st.stx_dev_minor,
-		.lnk_cnt = st.stx_nlink,
-		.type = xft__file_type(st.stx_mode),
+	*info = (t_file_info){
+		.size = st->stx_size,
+		.blk_size = st->stx_blksize,
+		.n_blks = st->stx_blocks,
+		.acc_time = xft__nanos(st->stx_atime.tv_sec, st->stx_atime.tv_nsec),
+		.mod_time = xft__nanos(st->stx_mtime.tv_sec, st->stx_mtime.tv_nsec),
+		.chg_time = xft__nanos(st->stx_ctime.tv_sec, st->stx_ctime.tv_nsec),
+		.bth_time = xft__nanos(st->stx_btime.tv_sec, st->stx_btime.tv_nsec),
+		.inode = st->stx_ino,
+		.dev_id = (t_u64a)st->stx_dev_major << 32 | st->stx_dev_minor,
+		.lnk_cnt = st->stx_nlink,
+		.type = xft__file_type(st->stx_mode),
 	};
-	*(t_u16a *)&info.perms = st.stx_mode & xft_mode_perms;
-	return (info);
+	*(t_u16a *)&info->perms = st->stx_mode & xft_mode_perms;
+}
+
+__attribute__((__nonnull__(1, 2)))
+t_result	xft_fileinfo_from_name(const char *name, t_file_info *fileinfo)
+{
+	const t_u32a	mask = xft_statx_basic_stats | xft_statx_btime;
+	t_statx			st;
+	t_xft_sysres	ret;
+
+	ret = xft_sys_repeat;
+	while (ret == xft_sys_repeat)
+		ret = xft_statx(name, xft_at_symlink_nofollow, mask, &st);
+	if (__builtin_expect(ret != xft_sys_ok, 0))
+		return (KO);
+	xft__from_statx(&st, fileinfo);
+	return (OK);
+}
+
+__attribute__((__nonnull__(2)))
+t_result	xft_fileinfo_from_fd(t_fd fd, t_file_info *fileinfo)
+{
+	const t_u32a	mask = xft_statx_basic_stats | xft_statx_btime;
+	t_statx			st;
+	t_xft_sysres	ret;
+
+	ret = xft_sys_repeat;
+	while (ret == xft_sys_repeat)
+		ret = xft_fstatx((int)fd, mask, &st);
+	if (__builtin_expect(ret != xft_sys_ok, 0))
+		return (KO);
+	xft__from_statx(&st, fileinfo);
+	return (OK);
 }
 
 #endif

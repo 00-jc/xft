@@ -19,7 +19,7 @@ void	test_map_overwrite(t_allocator a)
 	int			v2;
 	int			*got;
 
-	m = xft_new_swissmap(a);
+	xft_pin_invariant(xft_new_swissmap(a, &m));
 	v1 = 100;
 	v2 = 200;
 	xft_swissmap_insert(a, &m, xft_fatptr((t_u8 *)"ow", 2), (t_u8 *)&v1);

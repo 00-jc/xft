@@ -15,7 +15,8 @@
 
 # include <xft/types/fuzzer_types.h>
 
-t_fuzzer	xft_new_fuzzer(t_arena arena);
+t_fuzzer	xft_new_fuzzer(t_arena arena)\
+			__attribute__((__warn_unused_result__));
 t_result	xft_fuzzer_add_rand(t_fuzzer *fuzz)\
 				__attribute__((__nonnull__(1)));
 

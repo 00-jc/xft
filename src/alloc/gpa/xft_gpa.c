@@ -12,23 +12,23 @@
 
 #include <xft/xft_p_gpa.h>
 
-t_gpa	xft_new_gpa(void)
+__attribute__((__nonnull__(1)))
+t_result	xft_new_gpa(t_gpa *gpa)
 {
-	t_gpa		gpa;
 	t_buffer	buf;
 
 	buf = xft_palloc_reserve(GPA_SLABSIZE);
 	if (__builtin_expect(!buf.mem, 0))
-		return ((t_gpa){0});
+		return (KO);
 	if (__builtin_expect(!xft_palloc_commit(buf.mem, sizeof(t_any *)), 0))
-		return (xft_palloc_free(buf), (t_gpa){0});
-	xft_memset((t_any)gpa.free, 0, sizeof(t_uptr) * GPA_FREELISTS);
-	gpa.slab = buf.mem;
-	*(t_any *)gpa.slab = nullptr;
-	gpa.bmp = (t_blk8w)gpa.slab + sizeof(t_any *);
-	gpa.slabsize = buf.size;
-	gpa.bigpages = 0;
-	return (gpa);
+		return (xft_palloc_free(buf), KO);
+	xft_memset((t_any)gpa->free, 0, sizeof(t_uptr) * GPA_FREELISTS);
+	gpa->slab = buf.mem;
+	*(t_any *)gpa->slab = nullptr;
+	gpa->bmp = (t_blk8w)gpa->slab + sizeof(t_any *);
+	gpa->slabsize = buf.size;
+	gpa->bigpages = 0;
+	return (OK);
 }
 
 __attribute__((__nonnull__(1)))

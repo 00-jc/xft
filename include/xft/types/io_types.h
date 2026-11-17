@@ -6,7 +6,7 @@
 /*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/03 18:01:29 by jaicastr          #+#    #+#             */
-/*   Updated: 2026/11/01 21:17:01 by jaicastr         ###   ########.fr       */
+/*   Updated: 2026/11/17 02:27:17 by jaicastr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,9 @@
 # define IO_TYPES_H
 
 # include <xft/primitives.h>
-# include <xft/atomics.h>
+# include <xft/files.h>
+# include <xft/alloc.h>
+# include <xft/types/vec_types.h>
 
 typedef struct s_iovec
 {
@@ -22,102 +24,95 @@ typedef struct s_iovec
 	t_size		size;
 }	t_iovec;
 
-union	u_writer;
+typedef struct s_reader	t_reader;
+typedef struct s_writer	t_writer;
+
+typedef t_result		(*t_writer_drain_all)(t_writer *w, t_buffer data)\
+						__attribute__((__nonnull__));
+
+typedef t_result		(*t_writer_flush)(t_writer *w)\
+						__attribute__((__nonnull__));
+
+typedef t_result		(*t_reader_stream)(t_reader *r, t_writer *w,\
+						t_size limit, t_size *size)\
+						__attribute__((__nonnull__));
+
+typedef t_result		(*t_reader_discard)(t_reader *r, t_size limit,\
+						t_size *size)\
+						__attribute__((__nonnull__));
+
+typedef t_result		(*t_reader_stream_all)(t_reader *r, t_writer *w,\
+						t_size limit)\
+						__attribute__((__nonnull__));
+
+typedef t_result		(*t_reader_discard_all)(t_reader *r, t_size limit)\
+						__attribute__((__nonnull__));
+
+typedef t_result		(*t_reader_read)(t_reader *r, t_buffer dst, t_size *size)\
+						__attribute__((__nonnull__));
+
+typedef t_result		(*t_reader_read_all)(t_reader *r, t_buffer dst)\
+						__attribute__((__nonnull__));
 
 typedef struct s_writer_vtable
 {
-	t_result	(*flush)(t_any __restrict__ const writer);
-	t_result	(*drain)(t_any __restrict__ const writer,\
-					t_iovec * __restrict__ const bufs, t_size nbufs);
-} __attribute__((__aligned__(__GCC_CONSTRUCTIVE_SIZE)))	t_writer_vtable;
-
-typedef struct s_fs_writer
-{
-	t_i32											fd;
-}	t_fs_writer;
-
-# ifdef __clang__
-
-typedef struct s_mem_writer
-{
-	t_size													external_valid;
-	t_size													external_size;
-	t_u8 __attribute__	((counted_by(external_valid)))		*external;
-}	t_mem_writer;
-
-# else
-
-typedef struct s_mem_writer
-{
-	t_size							external_valid;
-	t_size							external_size;
-	t_u8							*external;
-}	t_mem_writer;
-
-# endif
-
-typedef struct s_ts_fs_writer
-{
-	t_i32		fd;
-	t_mutex		*mutex;
-}	t_ts_fs_writer;
-
-typedef union u_writer_union
-{
-	t_fs_writer		fs_writer;
-	t_mem_writer	mem_writer;
-	t_ts_fs_writer	ts_fs_writer;
-}	t_writer_union;
-
-typedef struct s_writer
-{
-	_Alignas(__GCC_CONSTRUCTIVE_SIZE)
-	const t_writer_vtable	*__restrict__ vtable;
-	t_buffer				buffer;
-	t_size					end;
-	t_writer_union			as;
-}	t_writer;
+	t_writer_drain_all	drain_all;
+	t_writer_flush		flush;
+}	t_writer_vtable;
 
 typedef struct s_reader_vtable
 {
-	t_result	(*unbufered_fill)(t_any __restrict__ const reader,\
-					t_u8 * __restrict__ const dst, const t_size len,\
-					t_size * __restrict__ const total);
-	t_result	(*fill)(t_any __restrict__ const reader);
-} __attribute__((__aligned__(__GCC_CONSTRUCTIVE_SIZE)))	t_reader_vtable;
+	t_reader_stream			stream;
+	t_reader_discard		discard;
+	t_reader_stream_all		stream_all;
+	t_reader_discard_all	discard_all;
+	t_reader_read			read;
+	t_reader_read_all		read_all;
+}	t_reader_vtable;
 
-typedef struct s_fs_reader
+typedef struct s_reader_ctx_fs
 {
-	t_i32											fd;
-}	t_fs_reader;
+	t_buffer			buffer;
+	t_fd				fd;
+}	t_reader_fs;
 
-typedef struct s_mem_reader
+typedef struct s_reader_ctx_memory
 {
-	t_buffer				external;
-	t_size					drained;
-}	t_mem_reader;
+	t_buffer			buffer;
+}	t_reader_ctx_memory;
 
-typedef struct s_ts_fs_reader
+typedef struct s_reader_ctx_growable
 {
-	t_i32		fd;
-	t_mutex		*mutex;
-}	t_ts_fs_reader;
-
-typedef union u_reader_union
-{
-	t_fs_reader		fs_reader;
-	t_mem_reader	mem_reader;
-	t_ts_fs_reader	ts_fs_reader;
-}	t_reader_union;
+	t_vec				vec;
+}	t_reader_ctx_growable;
 
 typedef struct s_reader
 {
-	_Alignas(__GCC_CONSTRUCTIVE_SIZE)
-	const t_reader_vtable	*__restrict__ vtable;
-	t_buffer				buffer;
-	t_size					end;
-	t_size					valid;
-	t_reader_union			as;
+	t_any			reader_ctx;
+	t_reader_vtable	vtable;
 }	t_reader;
+
+typedef struct s_writer_ctx_fs
+{
+	t_buffer_with_capacity	buffer;
+	t_fd					fd;
+}	t_writer_fs;
+
+typedef struct s_writer_ctx_memory
+{
+	t_buffer			buffer;
+}	t_writer_ctx_memory;
+
+typedef struct s_writer_ctx_growable
+{
+	t_allocator				allocator;
+	t_vec					vec;
+}	t_writer_ctx_growable;
+
+typedef struct s_writer
+{
+	t_any					writer_ctx;
+	t_writer_vtable			vtable;
+}	t_writer;
 
 #endif
