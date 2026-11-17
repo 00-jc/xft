@@ -14,6 +14,36 @@ exe.root_module.linkLibrary(xft.artifact("xft"));
 
 Dependency options use the same names as in [BUILD.md](BUILD.md#options), e.g. `.@"use-libc" = true`. The headers come with the artifact, and on Linux so do `perf` and `tailor`.
 
+## Building like xft
+
+The `build.zig` of `xft` exports its option set, so a consumer takes the same `-D` flags and compiles its sources with the same flags, warnings and macros as `xft`:
+
+```zig
+const std = @import("std");
+const xft = @import("xft");
+
+pub fn build(b: *std.Build) !void {
+    const x = try xft.options(b);
+    const lib = xft.dependency(x);
+    _ = try xft.addHarness(x, "app", lib, &.{"main.c"}, &.{"include"}, &.{});
+}
+```
+
+```sh
+zig build -Doptimize=fast -Dcpu=native -Duse-libc -Dsanitize
+```
+
+| Function | Effect |
+| --- | --- |
+| `options(b)` | Declares `-Dtarget`, `-Dcpu`, `-Doptimize`, `-Duse-libc`, `-Dsanitize`, `-Dlto`, `-Dfast-math`, `-Dllc`, `-Dtests`, `-Dfuzz` and `-Dbenches`, applies the same checks as `xft`, and returns the build context; `x.cfg` holds the values |
+| `dependency(x)` | Builds the `xft` dependency with the target, optimize mode, `use-libc`, `sanitize`, `lto`, `fast-math` and `llc` of `x`, and returns it |
+| `addHarness(x, name, lib, files, includes, extra)` | Compiles `files` (`.c` or `.cpp`) into an installed executable linked against `lib`; `includes` are include directories, `extra` are additional C flags |
+| `xftModule(x, lib)` | A module with the target, optimize mode, sanitizers, include paths, macros and Windows import libraries of `lib` |
+| `addSrcs(x, mod, lib, files)` | Adds C sources to `mod` with the flags of `xft` |
+| `cflags(x, lib, cxx)` | The full C or C++ flag list for `lib` |
+
+`-Dtests`, `-Dfuzz` and `-Dbenches` do not reach the dependency; the consumer reads them from `x.cfg` to gate its own targets. `-Dbootstrap` exists only in `xft`.
+
 In the freestanding flavor, do not link libc.
 
 In the hosted flavor, threads go through pthreads. The freestanding flavor creates threads with `clone(2)`. See [INSTALL.md](INSTALL.md#linking-the-archives-by-hand) when linking `libxft.a` by hand.

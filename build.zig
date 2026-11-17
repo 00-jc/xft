@@ -1074,7 +1074,7 @@ pub const WARNS = [_][]const u8{
     "-Werror",
 };
 
-const xft_config = struct {
+pub const xft_config = struct {
     use_libc:   bool,
     sanitize:   bool,
     lto:        bool,
@@ -1082,19 +1082,20 @@ const xft_config = struct {
     benches:    bool,
     tests:      bool,
     fuzz:       bool,
-    bootstrap:  bool,
+    bootstrap:  bool = false,
     llc:        u64,
 };
 
-const xft_ctx = struct {
+pub const xft_ctx = struct {
     b:      *std.Build,
     target: std.Build.ResolvedTarget,
     opt:    std.lang.Optimize,
     cfg:    xft_config,
 };
 
-const xft_variant = struct {
+pub const xft_variant = struct {
     name:       []const u8,
+    owner:      *std.Build,
     lib:        *std.Build.Step.Compile,
     perf:       ?*std.Build.Step.Compile = null,
     tailor:     ?*std.Build.Step.Compile = null,
@@ -1138,7 +1139,7 @@ fn hasStackCheck(x: xft_ctx) bool {
     return x.target.result.cpu.arch != .x86 and x.target.result.cpu.arch != .arm and x.target.result.cpu.arch != .thumb;
 }
 
-fn cflags(x: xft_ctx, v: xft_variant, cxx: bool) ![]const []const u8 {
+pub fn cflags(x: xft_ctx, v: xft_variant, cxx: bool) ![]const []const u8 {
     const a = x.b.allocator;
     var flags: std.ArrayList([]const u8) = .empty;
     try flags.appendSlice(a, if (cxx) &CXXFLAGS_STD else &CFLAGS_STD);
@@ -1169,7 +1170,7 @@ fn cflags(x: xft_ctx, v: xft_variant, cxx: bool) ![]const []const u8 {
     return flags.items;
 }
 
-fn xftModule(x: xft_ctx, v: xft_variant) *std.Build.Module {
+pub fn xftModule(x: xft_ctx, v: xft_variant) *std.Build.Module {
     const b = x.b;
     const mod = b.createModule(.{
         .target = x.target,
@@ -1181,10 +1182,10 @@ fn xftModule(x: xft_ctx, v: xft_variant) *std.Build.Module {
         .omit_frame_pointer = !v.sanitize,
         .no_builtin = if (v.libc) null else true,
     });
-    mod.addIncludePath(b.path("include"));
-    for (INTERNAL_DIRS) |d| mod.addIncludePath(b.path(d));
+    mod.addIncludePath(v.owner.path("include"));
+    for (INTERNAL_DIRS) |d| mod.addIncludePath(v.owner.path(d));
     if (isLinux(x))
-        for (SUBPROJECT_INCLUDES) |d| mod.addIncludePath(b.path(d));
+        for (SUBPROJECT_INCLUDES) |d| mod.addIncludePath(v.owner.path(d));
     mod.addCMacro("XFT_LLC", b.fmt("{d}", .{x.cfg.llc}));
     mod.addCMacro("XFT_LLC_SIZE", b.fmt("{d}ULL", .{x.cfg.llc}));
     if (v.libc) {
@@ -1203,7 +1204,7 @@ fn xftModule(x: xft_ctx, v: xft_variant) *std.Build.Module {
     return mod;
 }
 
-fn addSrcs(x: xft_ctx, mod: *std.Build.Module, v: xft_variant, files: []const []const u8) !void {
+pub fn addSrcs(x: xft_ctx, mod: *std.Build.Module, v: xft_variant, files: []const []const u8) !void {
     mod.addCSourceFiles(.{
         .files = files,
         .flags = try cflags(x, v, false),
@@ -1214,6 +1215,7 @@ fn addSrcs(x: xft_ctx, mod: *std.Build.Module, v: xft_variant, files: []const []
 fn addXft(x: xft_ctx, name: []const u8, libc: bool, sanitize: bool) !xft_variant {
     var v: xft_variant = .{
         .name = name,
+        .owner = x.b,
         .lib = undefined,
         .libc = libc or sanitize,
         .sanitize = sanitize,
@@ -1287,7 +1289,7 @@ fn addSubproject(x: xft_ctx, v: xft_variant, name: []const u8, files: []const []
     return lib;
 }
 
-fn addHarness(x: xft_ctx, name: []const u8, v: xft_variant, files: []const []const u8, includes: []const []const u8, extra: []const []const u8) !*std.Build.Step.Compile {
+pub fn addHarness(x: xft_ctx, name: []const u8, v: xft_variant, files: []const []const u8, includes: []const []const u8, extra: []const []const u8) !*std.Build.Step.Compile {
     const b = x.b;
     const a = b.allocator;
     const mod = xftModule(x, v);
@@ -1322,7 +1324,7 @@ fn addHarness(x: xft_ctx, name: []const u8, v: xft_variant, files: []const []con
     return exe;
 }
 
-pub fn build(b: *std.Build) !void {
+pub fn options(b: *std.Build) !xft_ctx {
     const opt = b.standardOptimizeOption(.{});
     const target = b.standardTargetOptions(.{});
 
@@ -1335,8 +1337,7 @@ pub fn build(b: *std.Build) !void {
         .benches      = b.option(bool, "benches",   "Build benchmarks")                   orelse false,
         .tests        = b.option(bool, "tests",     "Build tests")                        orelse false,
         .fuzz         = b.option(bool, "fuzz",      "Build fuzz targets")                 orelse false,
-        .bootstrap    = b.option(bool, "bootstrap", "Build xft without xid and regenerate its table") orelse false,
-        .llc           = b.option(u64,  "llc",       "Last level cache size in bytes")     orelse 16777216,
+        .llc          = b.option(u64,  "llc",       "Last level cache size in bytes")     orelse 16777216,
     };
 
     if (cfg.sanitize and cfg.use_libc == false)         return error.CannotCompileSanitizedWithoutLibc;
@@ -1344,12 +1345,39 @@ pub fn build(b: *std.Build) !void {
     if (cfg.benches and cfg.sanitize)                   return error.CannotBenchmarkWithSanitizers;
     if (cfg.benches and opt != .fast)                   return error.CannotBenchmarkWithDebug;
     if (cfg.benches and target.result.os.tag != .linux) return error.CannotBenchmarkOutsideLinux;
+
+    return .{ .b = b, .target = target, .opt = opt, .cfg = cfg };
+}
+
+pub fn dependency(x: xft_ctx) xft_variant {
+    const dep = x.b.dependency("xft", .{
+        .target         = x.target,
+        .optimize       = x.opt,
+        .@"use-libc"    = x.cfg.use_libc,
+        .sanitize       = x.cfg.sanitize,
+        .lto            = x.cfg.lto,
+        .@"fast-math"   = x.cfg.fast_math,
+        .llc            = x.cfg.llc,
+    });
+    return .{
+        .name = "xft",
+        .owner = dep.builder,
+        .lib = dep.artifact("xft"),
+        .libc = x.cfg.use_libc or x.cfg.sanitize,
+        .sanitize = x.cfg.sanitize,
+        .lto = x.cfg.lto and !x.cfg.sanitize,
+    };
+}
+
+pub fn build(b: *std.Build) !void {
+    var x = try options(b);
+    x.cfg.bootstrap = b.option(bool, "bootstrap", "Build xft without xid and regenerate its table") orelse false;
+    const cfg = x.cfg;
+
     if (cfg.bootstrap and cfg.tests)                    return error.CannotTestWithoutXid;
     if (cfg.bootstrap)
         std.Io.Dir.cwd().access(b.graph.io, try b.root.joinString(b.allocator, "DerivedCoreProperties.txt"), .{}) catch
             return error.MissingDerivedCoreProperties;
-
-    const x: xft_ctx = .{ .b = b, .target = target, .opt = opt, .cfg = cfg };
 
     const xft = try addXft(x, "xft", cfg.use_libc, cfg.sanitize);
     xft.lib.installHeadersDirectory(b.path("include"), "", .{});
