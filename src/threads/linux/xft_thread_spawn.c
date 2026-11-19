@@ -76,6 +76,20 @@ static inline t_i32	xft__thread_clone(t_u8 *__restrict__ const map,
 	return (xft_clone(&args));
 }
 
+__attribute__((__always_inline__, __nonnull__(1, 2)))
+static inline t_result	xft__thread_guard(t_u8 *__restrict__ const map,
+	const t_ts_offsets *__restrict__ const offsets)
+{
+	t_result	res;
+
+	res = (t_result){.err = xft_err_retry};
+	while (xft_should_retry(res))
+		res = xft_mprotect(map + offsets->guard_offset,
+				offsets->bytes - offsets->guard_offset,
+				xft_prot_read | xft_prot_write);
+	return (res);
+}
+
 __attribute__((__flatten__, __nonnull__(1)))
 t_result	xft_thread_spawn(t_thread *__restrict__ const thread,
 	t_sysinfo sysinfo, t_thread_opts opts)
@@ -83,27 +97,25 @@ t_result	xft_thread_spawn(t_thread *__restrict__ const thread,
 	t_u8				*map;
 	t_thread_instance	*instance;
 	const t_ts_offsets	offsets = xft__thread_layout(sysinfo, opts);
-	t_xft_sysres		res;
+	t_result			res;
+	t_i32				tid;
 
 	map = xft_mmap(offsets.bytes,
 			xft_prot_none, xft_map_private | xft_map_anonymous);
-	if (__builtin_expect(xft_map_failed(map), 0))
-		return (KO);
-	res = xft_sys_repeat;
-	while (res == xft_sys_repeat)
-		res = xft_mprotect(map + offsets.guard_offset,
-				offsets.bytes - offsets.guard_offset,
-				xft_prot_read | xft_prot_write);
-	if (__builtin_expect(res != xft_sys_ok, 0))
-		return ((void)(xft_munmap(map, offsets.bytes)), KO);
+	if (__builtin_expect(xft_map_failed(map).ok, 0))
+		return ((t_result){.ok = KO, .err = -(t_uptr)map});
+	res = xft__thread_guard(map, &offsets);
+	if (__builtin_expect(!res.ok, 0))
+		return ((void)(xft_munmap(map, offsets.bytes)), res);
 	instance = (t_thread_instance *)(map + offsets.instance_offset);
 	*instance = (t_thread_instance){.size = offsets.bytes, .fn = opts.fn,
 		.argument = opts.argument, .status = THREAD_RUNNING, .base = map};
-	if (__builtin_expect(xft__thread_clone(map, &offsets, &sysinfo._linux,
-				instance) < 0, 0))
-		return ((void)(xft_munmap(map, offsets.bytes)), KO);
+	tid = xft__thread_clone(map, &offsets, &sysinfo._linux, instance);
+	if (__builtin_expect(tid < 0, 0))
+		return ((void)(xft_munmap(map, offsets.bytes)),
+			(t_result){.ok = KO, .err = -(t_u64a)tid});
 	thread->instance = instance;
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 
 #endif

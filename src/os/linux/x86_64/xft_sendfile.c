@@ -18,12 +18,11 @@
 # if defined(__x86_64__) && !defined(XFT_REQUIRE_LIBC)
 
 __attribute__((__nonnull__(4), __always_inline__, __used__))
-inline t_xft_sysres	xft_sendfile(int out_fd, int in_fd, t_i64a *restrict offset,
+inline t_result	xft_sendfile(int out_fd, int in_fd, t_i64a *restrict offset,
 	t_size *restrict const count)
 {
 	t_ssize				ret;
 	register long r10	__asm__("r10");
-	t_u64a				r;
 
 	r10 = (long)*count;
 	__asm__ volatile (
@@ -37,9 +36,8 @@ inline t_xft_sysres	xft_sendfile(int out_fd, int in_fd, t_i64a *restrict offset,
 		: "rcx", "r11", "memory"
 	);
 	*count = (t_size)xft_tern(ret < 0, 0, (t_u64a)ret);
-	r = xft_tern(ret < 0, xft_sys_ko, xft_sys_ok);
-	r = xft_tern(ret == -xft_eintr || ret == -xft_eagain, xft_sys_repeat, r);
-	return ((t_xft_sysres)r);
+	return ((t_result){.ok = ret >= 0,
+		.err = xft_tern(ret < 0, (t_u64a)-ret, 0)});
 }
 
 # endif

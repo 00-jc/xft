@@ -21,10 +21,10 @@ t_result	xft_str_remove(t_str *restrict const v, t_size i)
 	if (v->buf.mem == nullptr)
 		__builtin_unreachable();
 	if (v->buf.size <= i)
-		return (KO);
+		return ((t_result){.ok = KO, .err = xft_err_inval});
 	start = v->buf.mem + i;
 	len = v->buf.size - i;
 	xft_memmove(start, start + 1, len);
 	--v->buf.size;
-	return (OK);
+	return ((t_result){.ok = OK});
 }

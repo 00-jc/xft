@@ -20,7 +20,7 @@ static t_result	fair_leaf(t_any arg)
 		atomic_fetch_add_explicit(&s->bad_self, 1, xft_relaxed);
 	pool_spin();
 	atomic_fetch_add_explicit(&s->count, 1, xft_relaxed);
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 
 static void	fair_round(t_pool_test *__restrict__ const s, t_sysinfo sysinfo,
@@ -29,7 +29,7 @@ static void	fair_round(t_pool_test *__restrict__ const s, t_sysinfo sysinfo,
 	t_u32a	it;
 
 	pool_assert(xft_threadpool_init(s->alloc, sysinfo,
-			xft_threadpool_default(), &s->tp) == OK,
+			xft_threadpool_default(), &s->tp).ok == OK,
 		"pool fair: init");
 	s->count = 0;
 	s->bad_self = 0;
@@ -57,7 +57,7 @@ static void	fair_wait_all(t_pool_test *__restrict__ const s, t_sysinfo sysinfo)
 	t_u32a	it;
 
 	pool_assert(xft_threadpool_init(s->alloc, sysinfo,
-			xft_threadpool_default(), &s->tp) == OK,
+			xft_threadpool_default(), &s->tp).ok == OK,
 		"pool fair: init");
 	s->count = 0;
 	s->bad_self = 0;

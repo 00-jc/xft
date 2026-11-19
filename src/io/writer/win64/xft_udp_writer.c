@@ -31,7 +31,22 @@ t_result	xft__udp_writer_send(t_writer_ctx_udp *ctx, t_buffer data)
 	len = (int)xft__sockaddr_from_ip(&ctx->ip, &sa);
 	n = sendto(s, (const char *)data.mem, (int)data.size, 0,
 			(SOCKADDR *)&sa, len);
-	return ((t_result)(n >= 0 && (t_size)n == data.size));
+	return ((t_result){.ok = (n >= 0 && (t_size)n == data.size)});
+}
+
+__attribute__((__nonnull__(1, 4), __always_inline__))
+static inline t_result	xft__udp_writer_refill(t_writer *w, t_fd fd,
+	t_size want, DWORD *n)
+{
+	t_writer_ctx_udp *const	ctx = w->writer_ctx;
+	t_result				ret;
+	BOOL					ok;
+
+	ret = xft__udp_writer_flush(w);
+	if (__builtin_expect(!ret.ok, 0))
+		return (ret);
+	ok = ReadFile((HANDLE)fd, ctx->buf.mem, (DWORD)want, n, nullptr);
+	return ((t_result){.ok = ok || GetLastError() == ERROR_BROKEN_PIPE});
 }
 
 __attribute__((__nonnull__(1, 4)))
@@ -42,7 +57,7 @@ t_result	xft__udp_writer_drain_fd(t_writer *w, t_fd fd, t_size limit,
 	t_size					cap;
 	t_size					left;
 	DWORD					n;
-	BOOL					ok;
+	t_result				ret;
 
 	cap = ctx->buf.capacity;
 	cap = xft_tern_s(cap < MAXDWORD, cap, MAXDWORD);
@@ -50,17 +65,15 @@ t_result	xft__udp_writer_drain_fd(t_writer *w, t_fd fd, t_size limit,
 	n = 1;
 	while (left != 0 && n != 0)
 	{
-		if (__builtin_expect(!xft__udp_writer_flush(w), 0))
-			return (KO);
-		ok = ReadFile((HANDLE)fd, ctx->buf.mem,
-				(DWORD)xft_tern_s(left < cap, left, cap), &n, nullptr);
-		if (__builtin_expect(!ok && GetLastError() != ERROR_BROKEN_PIPE, 0))
-			return (KO);
+		ret = xft__udp_writer_refill(w, fd,
+				xft_tern_s(left < cap, left, cap), &n);
+		if (__builtin_expect(!ret.ok, 0))
+			return (ret);
 		ctx->buf.size = n;
 		left -= n;
 	}
 	*size = limit - left;
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 
 #endif

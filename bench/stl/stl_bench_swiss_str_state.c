@@ -18,12 +18,12 @@ static void	swiss_str_fill(t_swissmap *map, t_stl_str *keys, t_size n)
 	const t_allocator	a = xft_gpa_allocator(xft_get_bench_swiss_gpa());
 	t_size				i;
 
-	xft_pin_invariant(xft_new_swissmap_with(a, map, n));
+	xft_pin_invariant(xft_new_swissmap_with(a, map, n).ok);
 	i = 0;
 	while (i < n)
 	{
 		xft_pin_invariant(xft_swissmap_insert(a, map,
-				xft_swiss_str_key(&keys[i]), (t_u8 *)&keys[i ^ 1]));
+				xft_swiss_str_key(&keys[i]), (t_u8 *)&keys[i ^ 1]).ok);
 		++i;
 	}
 }
@@ -82,7 +82,7 @@ void	xft_swiss_str_delete_insert(t_any ptr, t_swissmap *map,
 		i = xft_tailor_get_random_num(ptr) % range;
 		xft_swissmap_delete(map, xft_swiss_str_key(&keys[i]));
 		xft_pin_invariant(xft_swissmap_insert(a, map,
-				xft_swiss_str_key(&keys[i]), (t_u8 *)&keys[i ^ 1]));
+				xft_swiss_str_key(&keys[i]), (t_u8 *)&keys[i ^ 1]).ok);
 		bytes += keys[i].size;
 	}
 	xft_tailor_add_processed_bytes(ptr, bytes);

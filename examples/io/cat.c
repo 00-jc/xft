@@ -24,12 +24,12 @@ static t_result	cat_file(t_writer *out, const t_u8 *path)
 	t_size					n;
 
 	if (!xft_open_file(path, mode, &fd))
-		return (KO);
+		return ((t_result){.ok = KO});
 	r = xft_fs_reader(&rctx, fd, xft_fatptr(g_rbuf, sizeof(g_rbuf)));
 	if (!xft_reader_stream(&r, out, (t_size)-1, &n))
 	{
 		(void)xft_close_file(fd);
-		return (KO);
+		return ((t_result){.ok = KO});
 	}
 	return (xft_close_file(fd));
 }

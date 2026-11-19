@@ -19,7 +19,7 @@ void	test_gpa_freelist(void)
 	t_buffer	buf;
 	t_buffer	buf2;
 
-	xft_pin_invariant(xft_new_gpa(&gpa));
+	xft_pin_invariant(xft_new_gpa(&gpa).ok);
 	alloc = xft_gpa_allocator(&gpa);
 	buf = alloc.vtable->allocate(alloc.allocator, 64, 8);
 	xft_pin_invariant_msg(buf.mem != nullptr,

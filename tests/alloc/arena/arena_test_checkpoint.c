@@ -20,7 +20,7 @@ void	test_arena_checkpoint(void)
 	t_any				p2;
 	t_any				p3;
 
-	xft_pin_invariant(xft_new_arena(&a));
+	xft_pin_invariant(xft_new_arena(&a).ok);
 	p1 = xft_arena_alloc(&a, 64, 8);
 	cp = xft_arena_checkpoint(&a);
 	p2 = xft_arena_alloc(&a, 128, 8);

@@ -44,14 +44,14 @@ inline t_size	xft_match_hugepage(t_size requested_size)
 __attribute__((__always_inline__, const, __used__))
 inline t_result	xft_is_hugepage(t_u64 page_size)
 {
-	return ((t_result)((page_size == HUGEPAGE_2MB)
-		| (page_size == HUGEPAGE_8MB)
-		| (page_size == HUGEPAGE_16MB)
-		| (page_size == HUGEPAGE_256MB)
-		| (page_size == HUGEPAGE_512MB)
-		| (page_size == HUGEPAGE_1GB)
-		| (page_size == HUGEPAGE_2GB)
-		| (page_size == HUGEPAGE_16GB)));
+	return ((t_result){.ok = ((page_size == HUGEPAGE_2MB)
+			| (page_size == HUGEPAGE_8MB)
+			| (page_size == HUGEPAGE_16MB)
+			| (page_size == HUGEPAGE_256MB)
+			| (page_size == HUGEPAGE_512MB)
+			| (page_size == HUGEPAGE_1GB)
+			| (page_size == HUGEPAGE_2GB)
+			| (page_size == HUGEPAGE_16GB))});
 }
 
 #endif

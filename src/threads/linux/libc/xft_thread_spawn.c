@@ -50,10 +50,10 @@ t_result	xft_thread_spawn(t_thread *__restrict__ const thread,
 	ret = pthread_create(&tid, &attr, xft__thread_entry, &start);
 	pthread_attr_destroy(&attr);
 	if (__builtin_expect(ret != 0, 0))
-		return (KO);
+		return ((t_result){.ok = KO, .err = (t_u64a)ret});
 	xft_mutex_lock(&start.started, xft_lock_fast);
 	thread->handle = (t_thread_id)tid;
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 
 # endif

@@ -18,12 +18,12 @@ void	test_vec_push_get(t_allocator a)
 	int			val;
 	const int	*got;
 
-	xft_pin_invariant(xft_new_vec(a, &v, 4, sizeof(int)));
+	xft_pin_invariant(xft_new_vec(a, &v, 4, sizeof(int)).ok);
 	xft_pin_invariant(xft_vec_len(&v, sizeof(int)) == 0);
 	val = 42;
-	xft_pin_invariant(xft_vec_push_back(a, &v, (t_u8 *)&val, sizeof(int)));
+	xft_pin_invariant(xft_vec_push_back(a, &v, (t_u8 *)&val, sizeof(int)).ok);
 	val = 99;
-	xft_pin_invariant(xft_vec_push_back(a, &v, (t_u8 *)&val, sizeof(int)));
+	xft_pin_invariant(xft_vec_push_back(a, &v, (t_u8 *)&val, sizeof(int)).ok);
 	xft_pin_invariant(xft_vec_len(&v, sizeof(int)) == 2);
 	got = xft_vec_get(&v, 0, sizeof(int));
 	xft_pin_invariant(got && *got == 42);

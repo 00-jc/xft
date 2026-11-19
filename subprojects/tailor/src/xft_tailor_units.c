@@ -25,39 +25,11 @@ static inline t_result	xft__units_alloc(t_tailor *t, t_tailor_units *u,
 	u->uid = xft_arena_alloc(&t->arena, sizeof(t_size) * size, 64);
 	if (__builtin_expect(u->units == nullptr || u->tasks == nullptr
 			|| u->order == nullptr || u->uid == nullptr, 0))
-		return (KO);
+		return ((t_result){.ok = KO, .err = xft_err_oom});
 	xft_memset(u->units, 0, sizeof(t_tailor_unit) * size);
 	u->n = 0;
 	return (xft_new_indexmap_with(xft_arena_allocator(&t->arena), &u->map,
 			size));
-}
-
-__attribute__((__nonnull__(1, 2, 3), __always_inline__))
-static inline t_result	xft__units_assign(t_tailor *t, t_tailor_units *u,
-	const t_tailor_job *jobs, t_size size)
-{
-	t_buffer	key;
-	t_size		i;
-
-	i = 0;
-	while (i < size)
-	{
-		u->uid[i] = u->n;
-		if (jobs[i].result.group != nullptr)
-		{
-			key = xft_fatptr((const t_u8 *)jobs[i].result.group,
-					xft_strlen(jobs[i].result.group));
-			u->uid[i] = xft_indexmap_lookup(&u->map, key);
-			if (u->uid[i] == INDEXMAP_NPOS && !xft_indexmap_insert(
-					xft_arena_allocator(&t->arena), &u->map, key, u->n))
-				return (KO);
-		}
-		if (u->uid[i] == INDEXMAP_NPOS || u->uid[i] == u->n)
-			u->uid[i] = u->n++;
-		u->units[u->uid[i]].n++;
-		++i;
-	}
-	return (OK);
 }
 
 __attribute__((__nonnull__(1, 2), __always_inline__))
@@ -103,11 +75,15 @@ __attribute__((__nonnull__(1, 2)))
 t_result	xft_tailor_units(t_tailor *t, t_tailor_units *u, t_size size)
 {
 	t_tailor_job *const	jobs = (t_tailor_job *)t->jobs.buf.mem;
+	t_result			ret;
 
-	if (__builtin_expect(!xft__units_alloc(t, u, size)
-			|| !xft__units_assign(t, u, jobs, size), 0))
-		return (KO);
+	ret = xft__units_alloc(t, u, size);
+	if (__builtin_expect(!ret.ok, 0))
+		return (ret);
+	ret = xft__units_assign(t, u, jobs, size);
+	if (__builtin_expect(!ret.ok, 0))
+		return (ret);
 	xft__units_fill(u, jobs, size);
 	xft__units_tasks(t, u);
-	return (OK);
+	return ((t_result){.ok = OK});
 }

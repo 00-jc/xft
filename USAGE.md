@@ -102,7 +102,7 @@ xft_main(const t_any *__restrict__ const sp)
 ## Design
 
 - **Prefixed.** Every public symbol is `xft_`. There are no macro aliases into the global namespace except the weak `memcpy`/`memset` symbols emitted for the compiler's benefit in freestanding builds.
-- **Explicit error handling.** Fallible functions return `t_result` (`OK` / `KO`). There is no `errno`, and no hidden global state.
+- **Explicit error handling.** Fallible functions return a `t_result`: `.ok` is `OK` or `KO`, and `.err` carries the cause of a failure (`xft_err_retry`, `xft_err_wouldblock`, `xft_err_oom`, ...). There is no `errno`, and no hidden global state.
 - **Fixed-width, aligned types.** Integer and floating-point typedefs are fixed-width and encode alignment in the name: the plain type has alignment 1 and is safe for unaligned access, the `a` suffix carries natural alignment. Every primitive is `may_alias`.
 - **Allocators are values.** Containers take a `t_allocator` by value and call through a vtable. The backend (arena, GPA, page allocator, reporting allocator) is chosen by the caller; nothing allocates behind your back.
 

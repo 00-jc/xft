@@ -18,14 +18,14 @@ void	test_vec_pop(t_allocator a)
 	int		val;
 	int		out;
 
-	xft_pin_invariant(xft_new_vec(a, &v, 4, sizeof(int)));
+	xft_pin_invariant(xft_new_vec(a, &v, 4, sizeof(int)).ok);
 	val = 10;
 	xft_vec_push_back(a, &v, (t_u8 *)&val, sizeof(int));
 	val = 20;
 	xft_vec_push_back(a, &v, (t_u8 *)&val, sizeof(int));
 	val = 30;
 	xft_vec_push_back(a, &v, (t_u8 *)&val, sizeof(int));
-	xft_pin_invariant(xft_vec_popmv(&v, &out, sizeof(int)));
+	xft_pin_invariant(xft_vec_popmv(&v, &out, sizeof(int)).ok);
 	xft_pin_invariant(out == 30);
 	xft_pin_invariant(xft_vec_len(&v, sizeof(int)) == 2);
 	xft_vec_pop(&v, sizeof(int));

@@ -68,7 +68,7 @@ void	test_thread_ring_buffer_backoff(t_sysinfo sysinfo)
 	t_rb_backoff_test	s;
 
 	xft_bzero(&s, sizeof(s));
-	xft_pin_invariant_msg(xft_new_ring_buffer(alloc, &s.rb, RB_BACKOFF_SIZE)
+	xft_pin_invariant_msg(xft_new_ring_buffer(alloc, &s.rb, RB_BACKOFF_SIZE).ok
 		&& s.rb.size == RB_BACKOFF_SIZE,
 		xft_fatptr((t_u8 *)"ring buffer: new", sizeof("ring buffer: new") - 1));
 	rb_backoff_steal(sysinfo, &s);

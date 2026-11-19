@@ -56,9 +56,9 @@ static t_result	particles_fill(t_allocator a, t_soa *soa,
 		p = (t_particle){.id = soa->occupied_elements,
 			.vx = (t_i32)soa->occupied_elements, .vy = -1};
 		if (__builtin_expect(!xft_soa_append_from_struct(a, soa, &p, ctx), 0))
-			return (KO);
+			return ((t_result){.ok = KO});
 	}
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 
 //	the soa payoff: each column is a dense array, so the update loop

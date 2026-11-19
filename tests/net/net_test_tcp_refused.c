@@ -17,9 +17,9 @@ void	test_net_tcp_refused(void)
 	const t_ip_addr	lo = net_lo4(47208);
 	t_fd			fd;
 
-	net_check(xft_open_socket(xft_ipv4, xft_socket_tcp, &fd),
+	net_check(xft_open_socket(xft_ipv4, xft_socket_tcp, &fd).ok,
 		"xft_open_socket");
-	net_check(!xft_connect_socket(fd, &lo, (t_connect_options){0}),
+	net_check(!xft_connect_socket(fd, &lo, (t_connect_options){0}).ok,
 		"connect to a closed port fails");
-	net_check(xft_close_socket(fd), "close refused socket");
+	net_check(xft_close_socket(fd).ok, "close refused socket");
 }

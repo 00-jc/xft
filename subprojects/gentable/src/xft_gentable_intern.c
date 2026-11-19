@@ -100,5 +100,5 @@ inline t_result	gt_classify_and_intern(t_gt_classes classes,
 		else
 			step = gt__jmpline(acc);
 	}
-	return ((t_result)xft_tern(step == GT_FAIL, KO, OK));
+	return ((t_result){.ok = xft_tern(step == GT_FAIL, KO, OK)});
 }

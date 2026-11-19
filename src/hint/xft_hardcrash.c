@@ -29,7 +29,7 @@ void	xft_hardcrash_with_message(t_buffer msg)
 
 	if (msg.mem == nullptr)
 		__builtin_unreachable();
-	while (xft_write(xft_get_stderr(), msg.mem, msg.size, &n) == xft_sys_repeat)
+	while (xft_should_retry(xft_write(xft_get_stderr(), msg.mem, msg.size, &n)))
 		;
 	xft_exit_group(1);
 }

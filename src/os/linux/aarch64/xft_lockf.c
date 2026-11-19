@@ -18,14 +18,13 @@
 # if defined(__aarch64__) && !defined(XFT_REQUIRE_LIBC)
 
 __attribute__((__nonnull__(3), __always_inline__, __used__))
-inline t_xft_sysres	xft_fcntl(t_u32a fd, t_u32a cmd,
+inline t_result	xft_fcntl(t_u32a fd, t_u32a cmd,
 		const t_flock *restrict const arg)
 {
 	register long x8	__asm__("x8");
 	register long x0	__asm__("x0");
 	register long x1	__asm__("x1");
 	register long x2	__asm__("x2");
-	t_u64a				r;
 
 	x8 = xft_sys_fcntl;
 	x1 = cmd;
@@ -37,12 +36,11 @@ inline t_xft_sysres	xft_fcntl(t_u32a fd, t_u32a cmd,
 		: "r"(x8), "r"(x1), "r"(x2)
 		: "memory", "cc"
 	);
-	r = xft_tern(x0 < 0, xft_sys_ko, xft_sys_ok);
-	r = xft_tern(x0 == -xft_eintr || x0 == -xft_eagain, xft_sys_repeat, r);
-	return ((t_xft_sysres)r);
+	return ((t_result){.ok = x0 >= 0,
+		.err = xft_tern(x0 < 0, (t_u64a)-x0, 0)});
 }
 
-t_xft_sysres	xft_lockf(int fd)
+t_result	xft_lockf(int fd)
 {
 	t_flock		fl;
 
@@ -56,7 +54,7 @@ t_xft_sysres	xft_lockf(int fd)
 	return (xft_fcntl((t_u32a)fd, xft_f_setlkw, &fl));
 }
 
-t_xft_sysres	xft_unlockf(int fd)
+t_result	xft_unlockf(int fd)
 {
 	t_flock		fl;
 

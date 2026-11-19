@@ -25,15 +25,15 @@ void	test_net_udp_discard_stream(void)
 	s.r = xft_udp_reader(&s.udp_r, s.fds[0],
 			xft_fatptr(s.rbuf, sizeof(s.rbuf)));
 	net_check(xft_writer_drain_all(&s.w, xft_fatptr((const t_u8 *)"123456789",
-				9)) && xft_writer_flush(&s.w)
-		&& xft_reader_discard(&s.r, 4, &s.n) && s.n == 4,
+				9)).ok && xft_writer_flush(&s.w).ok
+		&& xft_reader_discard(&s.r, 4, &s.n).ok && s.n == 4,
 		"udp discard reports at most limit");
 	net_check(xft_writer_drain_all(&s.w, xft_fatptr((const t_u8 *)"stream!",
-				7)) && xft_writer_flush(&s.w), "udp send for stream");
+				7)).ok && xft_writer_flush(&s.w).ok, "udp send for stream");
 	mw = xft_mem_writer(&m, xft_fatptr(s.got, 32));
-	net_check(xft_reader_stream(&s.r, &mw, 100, &s.n) && s.n == 7
+	net_check(xft_reader_stream(&s.r, &mw, 100, &s.n).ok && s.n == 7
 		&& xft_memcmp(s.got, "stream!", 7) == 0,
 		"udp discard dropped the whole datagram, stream gets the next");
-	net_check(xft_close_socket(s.fds[0]) && xft_close_socket(s.fds[1]),
+	net_check(xft_close_socket(s.fds[0]).ok && xft_close_socket(s.fds[1]).ok,
 		"close udp sockets");
 }

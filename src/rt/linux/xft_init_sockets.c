@@ -17,7 +17,7 @@
 __attribute__((const))
 t_result	xft_init_sockets(void)
 {
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 
 #endif

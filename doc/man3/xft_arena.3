@@ -168,6 +168,8 @@ returns
 on success.
 If the first mapping fails it returns
 .Dv KO
+with
+.Dv xft_err_oom
 and leaves
 .Fa *arena
 untouched.
@@ -199,11 +201,11 @@ t_result	scratch_loop(t_arena *arena, t_size rounds)
 		cp = xft_arena_checkpoint(arena);
 		scratch = xft_arena_alloc(arena, 4096, 64);
 		if (scratch == nullptr)
-			return (KO);
+			return ((t_result){.ok = KO});
 		xft_memset(scratch, 0, 4096);
 		xft_arena_rewind(arena, cp);
 	}
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 
 t_result	run(void)
@@ -211,8 +213,8 @@ t_result	run(void)
 	t_arena		arena;
 	t_result	res;
 
-	if (!xft_new_arena(&arena))
-		return (KO);
+	if (!xft_new_arena(&arena).ok)
+		return ((t_result){.ok = KO});
 	res = scratch_loop(&arena, 100);
 	xft_destroy_arena(&arena);
 	return (res);

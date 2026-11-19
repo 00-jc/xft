@@ -25,7 +25,7 @@ inline t_buffer	xft_palloc(t_size size)
 	t_buffer	b;
 
 	b = xft_palloc_reserve(size);
-	if (b.mem && !xft_palloc_commit(b.mem, b.size))
+	if (b.mem && !xft_palloc_commit(b.mem, b.size).ok)
 	{
 		xft_palloc_free(b);
 		b.mem = nullptr;
@@ -38,12 +38,12 @@ inline t_buffer	xft_palloc(t_size size)
 __attribute__((__nonnull__(1), __always_inline__, __used__))
 inline t_result	xft_palloc_discard(t_any ptr, t_size size)
 {
-	t_xft_sysres	res;
+	t_result		res;
 
-	res = xft_sys_repeat;
-	while (res == xft_sys_repeat)
+	res = (t_result){.err = xft_err_retry};
+	while (xft_should_retry(res))
 		res = xft_madvise(ptr, size, xft_madv_free);
-	return ((t_result)(res == xft_sys_ok));
+	return (res);
 }
 
 #elif defined(_WIN32)
@@ -51,8 +51,8 @@ inline t_result	xft_palloc_discard(t_any ptr, t_size size)
 __attribute__((__nonnull__(1), __always_inline__, __used__))
 inline t_result	xft_palloc_discard(t_any ptr, t_size size)
 {
-	return ((t_result)(VirtualAlloc(ptr, size, MEM_RESET, PAGE_READWRITE)
-		!= nullptr));
+	return ((t_result){.ok = (VirtualAlloc(ptr, size, MEM_RESET, PAGE_READWRITE)
+			!= nullptr)});
 }
 
 #endif

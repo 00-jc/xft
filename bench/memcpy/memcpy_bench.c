@@ -48,7 +48,7 @@ void	xft_bench_memcpy(t_tailor *t)
 	};
 
 	if (!xft_tailor_buffers(t, bufsizes, bufalign,
-			sizeof(bufsizes) / sizeof(*bufsizes)))
+			sizeof(bufsizes) / sizeof(*bufsizes)).ok)
 		xft_exit_process(1);
 	memcpy_bench_queue(t);
 }

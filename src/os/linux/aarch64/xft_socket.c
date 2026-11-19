@@ -18,14 +18,13 @@
 # if defined(__aarch64__) && !defined(XFT_REQUIRE_LIBC)
 
 __attribute__((__nonnull__(4), __always_inline__, __used__))
-inline t_xft_sysres	xft_socket(int domain, int type, int protocol,
+inline t_result	xft_socket(int domain, int type, int protocol,
 	int *restrict const fd)
 {
 	register long x8	__asm__("x8");
 	register long x0	__asm__("x0");
 	register long x1	__asm__("x1");
 	register long x2	__asm__("x2");
-	t_u64a				r;
 
 	x8 = xft_sys_socket;
 	x1 = type;
@@ -38,9 +37,8 @@ inline t_xft_sysres	xft_socket(int domain, int type, int protocol,
 		: "memory", "cc"
 	);
 	*fd = (int)xft_tern(x0 < 0, (t_u64a)-1, (t_u64a)x0);
-	r = xft_tern(x0 < 0, xft_sys_ko, xft_sys_ok);
-	r = xft_tern(x0 == -xft_eintr || x0 == -xft_eagain, xft_sys_repeat, r);
-	return ((t_xft_sysres)r);
+	return ((t_result){.ok = x0 >= 0,
+		.err = xft_tern(x0 < 0, (t_u64a)-x0, 0)});
 }
 
 # endif

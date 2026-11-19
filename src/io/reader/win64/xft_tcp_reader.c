@@ -34,11 +34,11 @@ t_result	xft__tcp_reader_discard(t_reader *r, t_size limit, t_size *size)
 		n = recv((SOCKET)ctx.socket, (char *)ctx.buf.mem,
 				(int)xft_tern_s(left < cap, left, cap), 0);
 		if (__builtin_expect(n < 0, 0))
-			return (KO);
+			return ((t_result){.ok = KO, .err = xft_err_none});
 		left -= (t_size)n;
 	}
 	*size = limit - left;
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 
 __attribute__((__nonnull__(1, 3)))
@@ -53,9 +53,9 @@ t_result	xft__tcp_reader_read(t_reader *r, t_buffer dst, t_size *size)
 	len = xft_tern_s(dst.size < MAXLONG, dst.size, MAXLONG);
 	n = recv((SOCKET)ctx.socket, (char *)dst.mem, (int)len, 0);
 	if (__builtin_expect(n < 0, 0))
-		return (KO);
+		return ((t_result){.ok = KO, .err = xft_err_none});
 	*size = (t_size)n;
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 
 __attribute__((__nonnull__(1)))
@@ -76,10 +76,10 @@ t_result	xft__tcp_reader_read_all(t_reader *r, t_buffer dst)
 		n = recv((SOCKET)ctx.socket, (char *)dst.mem + done, (int)len,
 				MSG_WAITALL);
 		if (__builtin_expect(n <= 0, 0))
-			return (KO);
+			return ((t_result){.ok = KO, .err = xft_err_none});
 		done += (t_size)n;
 	}
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 
 #endif

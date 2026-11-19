@@ -27,25 +27,26 @@ t_result	xft_str_reserve(t_allocator allocator,
 			xft_fatptr(str->buf.mem, str->buf.capacity), new_cap,
 			__GCC_CONSTRUCTIVE_SIZE);
 	if (__builtin_expect(new_buf.mem == nullptr, 0))
-		return (KO);
+		return ((t_result){.ok = KO, .err = xft_err_oom});
 	str->buf.mem = new_buf.mem;
 	str->buf.capacity = new_buf.size;
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 
 __attribute__((__nonnull__(2, 3)))
 t_result	xft_str_extend(t_allocator allocator, t_str *restrict const str,
 		const t_u8 *restrict const mem, t_size n)
 {
-	t_u8	should_extend;
+	t_result	ret;
 
 	if (str->buf.mem == nullptr)
 		__builtin_unreachable();
-	should_extend = str->buf.capacity < str->buf.size + n + 1;
-	if (__builtin_expect(should_extend
-			&& !xft_str_reserve(allocator, str, n), 0))
-		return (KO);
+	ret = (t_result){.ok = OK};
+	if (__builtin_expect(str->buf.capacity < str->buf.size + n + 1, 0))
+		ret = xft_str_reserve(allocator, str, n);
+	if (__builtin_expect(!ret.ok, 0))
+		return (ret);
 	xft_memcpy(str->buf.mem + str->buf.size, mem, n + 1);
 	str->buf.size += n;
-	return (OK);
+	return ((t_result){.ok = OK});
 }

@@ -21,7 +21,8 @@ t_result	xft__reader_stream_all(t_reader *r, t_writer *w, t_size limit)
 	if (r->vtable.stream == nullptr)
 		__builtin_unreachable();
 	ok = r->vtable.stream(r, w, limit, &n);
-	return ((t_result)(ok && n == limit));
+	return ((t_result){.ok = ok.ok && n == limit,
+		.err = xft_tern(ok.ok && n != limit, xft_err_eof, ok.err)});
 }
 
 __attribute__((__nonnull__(1)))
@@ -33,7 +34,8 @@ t_result	xft__reader_read_all(t_reader *r, t_buffer dst)
 	if (r->vtable.read == nullptr)
 		__builtin_unreachable();
 	ok = r->vtable.read(r, dst, &n);
-	return ((t_result)(ok && n == dst.size));
+	return ((t_result){.ok = ok.ok && n == dst.size,
+		.err = xft_tern(ok.ok && n != dst.size, xft_err_eof, ok.err)});
 }
 
 __attribute__((__nonnull__(1)))
@@ -45,5 +47,6 @@ t_result	xft__reader_discard_all(t_reader *r, t_size limit)
 	if (r->vtable.discard == nullptr)
 		__builtin_unreachable();
 	ok = r->vtable.discard(r, limit, &n);
-	return ((t_result)(ok && n == limit));
+	return ((t_result){.ok = ok.ok && n == limit,
+		.err = xft_tern(ok.ok && n != limit, xft_err_eof, ok.err)});
 }

@@ -43,12 +43,12 @@ t_stl_str	*xft_get_bench_str_keys(void)
 {
 	static t_stl_str	keys[STL_BENCH_KEYS] = {0};
 	static t_u8			pool[STL_BENCH_KEYS * STL_STR_MAX] = {0};
-	static t_result		ready = KO;
+	static t_result		ready = (t_result){.ok = KO};
 
-	if (ready)
+	if (ready.ok)
 		return (keys);
 	xft_bench_str_gen(keys, pool, STL_BENCH_KEYS);
-	ready = OK;
+	ready = (t_result){.ok = OK};
 	return (keys);
 }
 
@@ -56,11 +56,11 @@ t_stl_str	*xft_get_bench_str_large_keys(void)
 {
 	static t_stl_str	keys[STL_BENCH_LARGE_FILL * 2] = {0};
 	static t_u8			pool[STL_BENCH_LARGE_FILL * 2 * STL_STR_MAX] = {0};
-	static t_result		ready = KO;
+	static t_result		ready = (t_result){.ok = KO};
 
-	if (ready)
+	if (ready.ok)
 		return (keys);
 	xft_bench_str_gen(keys, pool, STL_BENCH_LARGE_FILL * 2);
-	ready = OK;
+	ready = (t_result){.ok = OK};
 	return (keys);
 }

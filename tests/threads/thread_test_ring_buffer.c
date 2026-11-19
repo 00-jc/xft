@@ -21,7 +21,7 @@ static void	ring_buffer_producer(t_any arg)
 	while (i < RB_TEST_ITEMS)
 	{
 		s->items[i] = (t_u8)i;
-		while (xft_ring_buffer_submit(&s->rb, &s->items[i]) == KO)
+		while (xft_ring_buffer_submit(&s->rb, &s->items[i]).ok == KO)
 			atomic_fetch_add_explicit(&s->full, 1, xft_relaxed);
 		i = atomic_fetch_add_explicit(&s->next, 1, xft_relaxed);
 	}
@@ -60,7 +60,7 @@ static void	ring_buffer_spawn(t_thread *__restrict__ const thread,
 	opts.fn = fn;
 	opts.stack_size = XFT_THREAD_STACKSIZE;
 	opts.argument = s;
-	xft_pin_invariant_msg(xft_thread_spawn(thread, sysinfo, opts) == OK,
+	xft_pin_invariant_msg(xft_thread_spawn(thread, sysinfo, opts).ok == OK,
 		xft_fatptr((t_u8 *)"thread spawn", sizeof("thread spawn") - 1));
 }
 
@@ -89,7 +89,7 @@ void	test_thread_ring_buffer(t_sysinfo sysinfo)
 	t_u32a						i;
 
 	xft_bzero(&s, sizeof(s));
-	xft_pin_invariant_msg(xft_new_ring_buffer(alloc, &s.rb, RB_TEST_SIZE),
+	xft_pin_invariant_msg(xft_new_ring_buffer(alloc, &s.rb, RB_TEST_SIZE).ok,
 		xft_fatptr((t_u8 *)"ring buffer: new", sizeof("ring buffer: new") - 1));
 	i = 0;
 	while (i < RB_TEST_THREADS)

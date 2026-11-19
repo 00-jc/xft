@@ -16,19 +16,21 @@ __attribute__((__nonnull__(1)))
 t_result	xft_new_gpa(t_gpa *gpa)
 {
 	t_buffer	buf;
+	t_result	ret;
 
 	buf = xft_palloc_reserve(GPA_SLABSIZE);
 	if (__builtin_expect(!buf.mem, 0))
-		return (KO);
-	if (__builtin_expect(!xft_palloc_commit(buf.mem, sizeof(t_any *)), 0))
-		return (xft_palloc_free(buf), KO);
+		return ((t_result){.ok = KO, .err = xft_err_oom});
+	ret = xft_palloc_commit(buf.mem, sizeof(t_any *));
+	if (__builtin_expect(!ret.ok, 0))
+		return (xft_palloc_free(buf), ret);
 	xft_memset((t_any)gpa->free, 0, sizeof(t_uptr) * GPA_FREELISTS);
 	gpa->slab = buf.mem;
 	*(t_any *)gpa->slab = nullptr;
 	gpa->bmp = (t_blk8w)gpa->slab + sizeof(t_any *);
 	gpa->slabsize = buf.size;
 	gpa->bigpages = 0;
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 
 __attribute__((__nonnull__(1)))

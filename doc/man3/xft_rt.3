@@ -350,12 +350,16 @@ returns
 .Dv OK ,
 or
 .Dv KO
-when the block cannot be mapped or the thread pointer cannot be set.
+when the block cannot be mapped or the thread pointer cannot be set, with
+the errno of the failing call in
+.Fa err .
 .Fn xft_init_sockets
 returns
 .Dv OK ,
 or
 .Dv KO
+with
+.Dv xft_err_none
 when
 .Ql WSAStartup
 fails.

@@ -22,7 +22,8 @@ void	xft_vec_bench_remove_front(t_any ptr)
 	t_u64		val;
 
 	a = xft_gpa_allocator(xft_get_bench_vec_gpa());
-	xft_pin_invariant(xft_new_vec(a, &vec, VEC_BENCH_RMF_LEN, sizeof(t_u64)));
+	xft_pin_invariant(xft_new_vec(a, &vec, VEC_BENCH_RMF_LEN,
+			sizeof(t_u64)).ok);
 	n = xft_tailor_getcount(ptr);
 	val = 0;
 	while (val < VEC_BENCH_RMF_LEN)

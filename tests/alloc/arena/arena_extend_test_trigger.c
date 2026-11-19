@@ -19,7 +19,7 @@ void	test_extend_trigger(void)
 	t_any		p;
 	t_size		big;
 
-	xft_pin_invariant(xft_new_arena(&a));
+	xft_pin_invariant(xft_new_arena(&a).ok);
 	first = a.current;
 	xft_pin_invariant_msg(first->next == nullptr,
 		xft_fatptr((t_u8 *)"no next yet", sizeof("no next yet") - 1));

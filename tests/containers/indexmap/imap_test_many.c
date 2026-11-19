@@ -22,13 +22,13 @@ void	test_imap_many(t_allocator a)
 	t_size		i;
 
 	xft_xoshiro_init(rng);
-	xft_pin_invariant(xft_new_indexmap(a, &m));
+	xft_pin_invariant(xft_new_indexmap(a, &m).ok);
 	i = 0;
 	while (i < IMAP_TEST_MANY)
 	{
 		keys[i] = xft_xoshiro256ss(rng);
 		xft_pin_invariant(xft_indexmap_insert(a, &m,
-				xft_fatptr((t_u8 *)&keys[i], sizeof(t_u64a)), i * 7));
+				xft_fatptr((t_u8 *)&keys[i], sizeof(t_u64a)), i * 7).ok);
 		++i;
 	}
 	xft_pin_invariant(m.count == IMAP_TEST_MANY);

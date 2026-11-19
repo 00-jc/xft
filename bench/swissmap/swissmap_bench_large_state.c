@@ -16,17 +16,17 @@
 t_u64a	*xft_get_bench_swiss_large_keys(void)
 {
 	static t_u64a	keys[SWISS_BENCH_LARGE_FILL * 2] = {0};
-	static t_result	ready = KO;
+	static t_result	ready = (t_result){.ok = KO};
 	t_xoshiro		rng;
 	t_size			i;
 
-	if (ready)
+	if (ready.ok)
 		return (keys);
 	xft_xoshiro_init(rng);
 	i = 0;
 	while (i < SWISS_BENCH_LARGE_FILL * 2)
 		keys[i++] = xft_xoshiro256ss(rng);
-	ready = OK;
+	ready = (t_result){.ok = OK};
 	return (keys);
 }
 
@@ -45,13 +45,14 @@ t_swissmap	*xft_get_bench_swiss_large_filled(void)
 	if (map.soa.ptr != nullptr)
 		return (&map);
 	a = xft_gpa_allocator(xft_get_bench_swiss_gpa());
-	xft_pin_invariant(xft_new_swissmap_with(a, &map, SWISS_BENCH_LARGE_FILL));
+	xft_pin_invariant(xft_new_swissmap_with(a, &map,
+			SWISS_BENCH_LARGE_FILL).ok);
 	i = 0;
 	while (i < SWISS_BENCH_LARGE_FILL)
 	{
 		xft_pin_invariant(xft_swissmap_insert(a, &map,
 				xft_swiss_bench_large_key(i),
-				(t_u8 *)xft_get_bench_swiss_large_keys()));
+				(t_u8 *)xft_get_bench_swiss_large_keys()).ok);
 		++i;
 	}
 	return (&map);

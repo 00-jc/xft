@@ -18,7 +18,7 @@
 # if defined(__aarch64__) && !defined(XFT_REQUIRE_LIBC)
 
 __attribute__((__always_inline__, __used__))
-inline t_xft_sysres	xft_close(int fd)
+inline t_result	xft_close(int fd)
 {
 	register long x8	__asm__("x8");
 	register long x0	__asm__("x0");
@@ -31,7 +31,8 @@ inline t_xft_sysres	xft_close(int fd)
 		: "r"(x8)
 		: "memory", "cc"
 	);
-	return ((t_xft_sysres)(x0 >= 0 || x0 == -xft_eintr));
+	return ((t_result){.ok = x0 >= 0 || x0 == -xft_eintr,
+		.err = xft_tern(x0 < 0 && x0 != -xft_eintr, (t_u64a)-x0, 0)});
 }
 
 # endif

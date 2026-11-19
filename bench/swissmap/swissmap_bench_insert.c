@@ -21,7 +21,7 @@ static void	swiss_bench_insert(t_any ptr, t_allocator a, t_swissmap *map)
 	while (n-- > 0)
 		xft_pin_invariant(xft_swissmap_insert(a, map,
 				xft_swiss_bench_key(n % SWISS_BENCH_KEYS),
-				(t_u8 *)xft_get_bench_swiss_keys()));
+				(t_u8 *)xft_get_bench_swiss_keys()).ok);
 	xft_tailor_add_processed_bytes(ptr,
 		xft_tailor_getcount(ptr) * sizeof(t_u64));
 }
@@ -32,7 +32,7 @@ void	xft_swiss_bench_insert_grow(t_any ptr)
 	const t_allocator	a = xft_gpa_allocator(xft_get_bench_swiss_gpa());
 	t_swissmap			map;
 
-	xft_pin_invariant(xft_new_swissmap(a, &map));
+	xft_pin_invariant(xft_new_swissmap(a, &map).ok);
 	swiss_bench_insert(ptr, a, &map);
 	xft_swissmap_destroy(a, &map);
 }
@@ -47,7 +47,7 @@ void	xft_swiss_bench_insert_reserved(t_any ptr)
 	cap = xft_tailor_getcount(ptr);
 	if (cap > SWISS_BENCH_KEYS)
 		cap = SWISS_BENCH_KEYS;
-	xft_pin_invariant(xft_new_swissmap_with(a, &map, cap));
+	xft_pin_invariant(xft_new_swissmap_with(a, &map, cap).ok);
 	swiss_bench_insert(ptr, a, &map);
 	xft_swissmap_destroy(a, &map);
 }

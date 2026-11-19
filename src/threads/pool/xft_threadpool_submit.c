@@ -40,7 +40,7 @@ void	xft_threadpool_submit_fair(t_threadpool *__restrict__ const tp,
 		tasks[it].alloc_task = alloc_task;
 		tasks[it].completion = 0;
 		if (xft_ring_buffer_submit(
-				&tp->worker_rings[idx], &tasks[it]) == KO)
+				&tp->worker_rings[idx], &tasks[it]).ok == KO)
 			xft__global_push(tp, &tasks[it]);
 		xft__notify(tp);
 		it++;
@@ -57,7 +57,7 @@ void	xft_threadpool_submit(t_threadpool *__restrict__ const tp,
 	task->completion = 0;
 	atomic_fetch_add_explicit(&tp->n_pending, 1, xft_relaxed);
 	if (self->tp != tp || xft_ring_buffer_submit_1ton(
-			&tp->worker_rings[self->idx], task) == KO)
+			&tp->worker_rings[self->idx], task).ok == KO)
 		xft__global_push(tp, task);
 	xft__notify(tp);
 }

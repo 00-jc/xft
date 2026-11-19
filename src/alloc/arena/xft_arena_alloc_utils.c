@@ -44,7 +44,7 @@ inline t_hugepage	*new_hugepage(t_hugepage *restrict const prev, t_size size)
 	b = xft_palloc_reserve(size);
 	if (!b.mem)
 		return (nullptr);
-	if (!xft_palloc_commit(b.mem, sizeof(t_hugepage)))
+	if (!xft_palloc_commit(b.mem, sizeof(t_hugepage)).ok)
 		return (xft_palloc_free(b), nullptr);
 	page = (t_hugepage *)b.mem;
 	*page = (t_hugepage){.page_size = b.size, .prev = prev,
@@ -85,7 +85,7 @@ inline t_u32a	xft_arena_try_resize(t_hugepage *page, t_buffer old,
 		|| new_size > (t_size)(page->data + page->total - old.mem))
 		return (0);
 	if (new_size > old.size
-		&& !xft_palloc_commit(top, new_size - old.size))
+		&& !xft_palloc_commit(top, new_size - old.size).ok)
 		return (0);
 	page->used = (t_size)(old.mem + new_size - page->data);
 	return (1);

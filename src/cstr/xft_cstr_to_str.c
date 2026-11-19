@@ -15,12 +15,15 @@
 __attribute__((__nonnull__(2, 3)))
 t_result	xft_cstr_to_str(t_allocator allocator, t_str *str, const char *cstr)
 {
-	t_size	n;
+	t_size		n;
+	t_result	ret;
 
 	n = xft_strlen(cstr);
-	if (__builtin_expect(!xft_new_str(allocator, str, n), 0))
-		return (KO);
-	if (__builtin_expect(!xft_str_extend(allocator, str, (t_any)cstr, n), 0))
-		return (xft_str_destroy(allocator, str), KO);
-	return (OK);
+	ret = xft_new_str(allocator, str, n);
+	if (__builtin_expect(!ret.ok, 0))
+		return (ret);
+	ret = xft_str_extend(allocator, str, (t_any)cstr, n);
+	if (__builtin_expect(!ret.ok, 0))
+		return (xft_str_destroy(allocator, str), ret);
+	return ((t_result){.ok = OK});
 }

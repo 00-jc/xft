@@ -37,22 +37,22 @@ inline t_result	xft_open_file(t_blk8r path, t_fileopen_mode mode, t_fd *fd)
 {
 	const int		flags = xft__open_flags(mode);
 	int				raw;
-	t_xft_sysres	ret;
+	t_result		ret;
 
 	raw = -1;
-	ret = xft_sys_repeat;
-	while (ret == xft_sys_repeat)
+	ret = (t_result){.err = xft_err_retry};
+	while (xft_should_retry(ret))
 		ret = xft_open((const char *)path, flags, xft_open_0666, &raw);
-	if (__builtin_expect(ret != xft_sys_ok, 0))
-		return (KO);
+	if (__builtin_expect(!ret.ok, 0))
+		return (ret);
 	*fd = (t_fd)raw;
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 
 __attribute__((__always_inline__, __used__))
 inline t_result	xft_close_file(t_fd fd)
 {
-	return ((t_result)(xft_close((int)fd) == xft_sys_ok));
+	return (xft_close((int)fd));
 }
 
 #endif

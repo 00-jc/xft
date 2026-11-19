@@ -19,7 +19,7 @@ void	test_bulk_reuse(void)
 	t_buffer	b;
 	int			i;
 
-	xft_pin_invariant_msg(xft_new_gpa(&gpa),
+	xft_pin_invariant_msg(xft_new_gpa(&gpa).ok,
 		xft_fatptr((t_u8 *)"gpa init reuse", sizeof("gpa init reuse") - 1));
 	i = -1;
 	while (++i < BULK_N)

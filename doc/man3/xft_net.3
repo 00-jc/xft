@@ -202,6 +202,14 @@ on failure.
 None of them closes
 .Fa sock
 on failure; the caller closes it.
+On Linux
+.Fa err
+holds the errno of the failing call, except when
+.Fn xft_connect_socket
+has a timeout and setting it or the connection fails, which gives
+.Dv xft_err_none ;
+on Windows it is
+.Dv xft_err_none .
 .Fn xft_connect_socket
 fails when the connection is refused, unreachable or times out, and a
 stream socket that failed to connect is only good for
@@ -225,13 +233,13 @@ void	xft_main(const t_any *__restrict__ const sp)
 	t_size				n;
 
 	(void)sp;
-	if (!xft_init_sockets()
-		|| !xft_open_socket(xft_ipv4, xft_socket_tcp, &server))
+	if (!xft_init_sockets().ok
+		|| !xft_open_socket(xft_ipv4, xft_socket_tcp, &server).ok)
 		xft_exit_process(1);
-	if (!xft_bind_socket(server, &any, (t_ip_bind_opts){0})
-		|| !xft_listen_socket(server, 0))
+	if (!xft_bind_socket(server, &any, (t_ip_bind_opts){0}).ok
+		|| !xft_listen_socket(server, 0).ok)
 		xft_exit_process(1);
-	while (xft_accept_socket(server, nullptr, &conn))
+	while (xft_accept_socket(server, nullptr, &conn).ok)
 	{
 		r = xft_tcp_reader(&rctx, conn, xft_fatptr(rbuf, sizeof(rbuf)));
 		w = xft_tcp_writer(&wctx, conn, xft_fatptr(wbuf, sizeof(wbuf)));
@@ -257,16 +265,16 @@ t_result	ping(const t_ip_addr *local, const t_ip_addr *server,
 	t_fd				sock;
 	t_size				n;
 
-	if (!xft_open_socket(server->family, xft_socket_udp, &sock))
-		return (KO);
-	if (!xft_bind_socket(sock, local, (t_ip_bind_opts){0})
-		|| !xft_connect_socket(sock, server, (t_connect_options){0}))
-		return (xft_close_socket(sock), KO);
+	if (!xft_open_socket(server->family, xft_socket_udp, &sock).ok)
+		return ((t_result){.ok = KO});
+	if (!xft_bind_socket(sock, local, (t_ip_bind_opts){0}).ok
+		|| !xft_connect_socket(sock, server, (t_connect_options){0}).ok)
+		return (xft_close_socket(sock), (t_result){.ok = KO});
 	w = xft_udp_writer(&wctx, sock, xft_fatptr(buf, sizeof(buf)), server);
 	r = xft_udp_reader(&rctx, sock, reply);
-	if (!xft_writer_drain_all(&w, msg) || !xft_writer_flush(&w)
-		|| !xft_reader_read(&r, reply, &n))
-		return (xft_close_socket(sock), KO);
+	if (!xft_writer_drain_all(&w, msg).ok || !xft_writer_flush(&w).ok
+		|| !xft_reader_read(&r, reply, &n).ok)
+		return (xft_close_socket(sock), (t_result){.ok = KO});
 	return (xft_close_socket(sock));
 }
 .Ed

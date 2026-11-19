@@ -58,16 +58,16 @@ void	test_imap_seeded(t_allocator a)
 	t_buffer	k;
 	t_size		i;
 
-	xft_pin_invariant(xft_new_indexmap(a, &m));
+	xft_pin_invariant(xft_new_indexmap(a, &m).ok);
 	i = 0;
 	while (i < IMAP_TEST_SEEDED)
 	{
 		keys[i] = i;
 		k = xft_fatptr((t_u8 *)&keys[i], sizeof(t_u64a));
 		xft_pin_invariant(xft_indexmap_insert_seeded(a, &m,
-				(t_imap_key){.key = k, .seed = 1}, i));
+				(t_imap_key){.key = k, .seed = 1}, i).ok);
 		xft_pin_invariant(xft_indexmap_insert_seeded(a, &m,
-				(t_imap_key){.key = k, .seed = 2}, i * 3));
+				(t_imap_key){.key = k, .seed = 2}, i * 3).ok);
 		++i;
 	}
 	xft_pin_invariant(m.count == IMAP_TEST_SEEDED * 2);

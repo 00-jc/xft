@@ -101,7 +101,7 @@ returns the result of
 static t_result	work(t_any arg)
 {
 	*(t_u64 *)arg *= 2;
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 
 void	double_it(t_async *as, t_allocator a, t_u64 *value)

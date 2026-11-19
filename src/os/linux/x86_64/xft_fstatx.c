@@ -18,12 +18,11 @@
 # if defined(__x86_64__) && !defined(XFT_REQUIRE_LIBC)
 
 __attribute__((__nonnull__(3), __always_inline__, __used__))
-inline t_xft_sysres	xft_fstatx(int fd, t_u32a mask, t_statx *statxbuf)
+inline t_result	xft_fstatx(int fd, t_u32a mask, t_statx *statxbuf)
 {
 	int					ret;
 	register long r10	__asm__("r10");
 	register long r8	__asm__("r8");
-	t_u64a				r;
 
 	r10 = mask;
 	r8 = (long)statxbuf;
@@ -37,9 +36,8 @@ inline t_xft_sysres	xft_fstatx(int fd, t_u32a mask, t_statx *statxbuf)
 		"r"(r10), "r"(r8)
 		: "rcx", "r11", "memory"
 	);
-	r = xft_tern(ret < 0, xft_sys_ko, xft_sys_ok);
-	r = xft_tern(ret == -xft_eintr || ret == -xft_eagain, xft_sys_repeat, r);
-	return ((t_xft_sysres)r);
+	return ((t_result){.ok = ret >= 0,
+		.err = xft_tern(ret < 0, (t_u64a)-ret, 0)});
 }
 
 # endif

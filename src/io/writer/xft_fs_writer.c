@@ -19,6 +19,7 @@ static t_result	xft__fs_writer_drain_all(t_writer *w, t_buffer data)
 	t_writer_fs *const				ctx = w->writer_ctx;
 	const t_buffer_with_capacity	buf = ctx->buffer;
 	t_iovec							iov[2];
+	t_result						ret;
 
 	if (buf.mem == nullptr || data.mem == nullptr)
 		__builtin_unreachable();
@@ -26,14 +27,15 @@ static t_result	xft__fs_writer_drain_all(t_writer *w, t_buffer data)
 	{
 		xft_memcpy(buf.mem + buf.size, data.mem, data.size);
 		ctx->buffer.size = buf.size + data.size;
-		return (OK);
+		return ((t_result){.ok = OK});
 	}
 	iov[0] = (t_iovec){.mem = buf.mem, .size = buf.size};
 	iov[1] = (t_iovec){.mem = data.mem, .size = data.size};
-	if (__builtin_expect(!xft__fs_writer_writev(ctx, iov, 2), 0))
-		return (KO);
+	ret = xft__fs_writer_writev(ctx, iov, 2);
+	if (__builtin_expect(!ret.ok, 0))
+		return (ret);
 	ctx->buffer.size = 0;
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 
 __attribute__((__nonnull__(1), __always_inline__, __used__))

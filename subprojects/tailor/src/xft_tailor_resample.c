@@ -39,7 +39,7 @@ static inline t_result	xft_bootstrap_ci(t_tailor_job *j, t_buffer surv,
 	medres[0] = xft_arena_alloc(j->arena, sizeof(t_u64a) * plan.b, 64);
 	medres[1] = xft_arena_alloc(j->arena, sizeof(t_u64a) * surv.size, 64);
 	if (__builtin_expect(medres[0] == nullptr || medres[1] == nullptr, 0))
-		return (KO);
+		return ((t_result){.ok = KO, .err = xft_err_oom});
 	xft_xoshiro_init(xo);
 	src = (const t_u64a *)surv.mem;
 	ctx = (t_qsort_ctx){(t_u8 *)&j->swap, sizeof(t_u64a), xft_cmp_u64};
@@ -52,7 +52,7 @@ static inline t_result	xft_bootstrap_ci(t_tailor_job *j, t_buffer surv,
 		xft_qsort((t_any)medres[1], &ctx, 0, surv.size);
 		medres[0][ij[0]++] = medres[1][surv.size >> 1];
 	}
-	return (xft_finalmix(j, medres[0], hilo, plan), OK);
+	return (xft_finalmix(j, medres[0], hilo, plan), (t_result){.ok = OK});
 }
 
 __attribute__((__nonnull__(1)))
@@ -60,16 +60,18 @@ t_result	xft_bootstrap(t_tailor_job *j, t_buffer surv, t_plankb plan)
 {
 	t_u64a			hilo[2];
 	t_qsort_ctx		ctx;
+	t_result		ret;
 
 	if (surv.mem == nullptr)
 		__builtin_unreachable();
-	if (__builtin_expect(xft_bootstrap_ci(j, surv, hilo, plan) == KO, 0))
-		return (KO);
+	ret = xft_bootstrap_ci(j, surv, hilo, plan);
+	if (__builtin_expect(ret.ok == KO, 0))
+		return (ret);
 	ctx = (t_qsort_ctx){(t_u8 *)&j->swap, sizeof(t_u64a), xft_cmp_u64};
 	xft_qsort(surv.mem, &ctx, 0, surv.size);
 	j->result.med = ((t_blk64ra)surv.mem)[surv.size >> 1] / plan.dp.iters;
 	j->result.min = ((t_blk64ra)surv.mem)[0] / plan.dp.iters;
 	j->result.lo = hilo[0] / plan.dp.iters;
 	j->result.hi = hilo[1] / plan.dp.iters;
-	return (OK);
+	return ((t_result){.ok = OK});
 }

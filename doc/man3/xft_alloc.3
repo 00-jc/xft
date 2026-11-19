@@ -413,7 +413,7 @@ void	xft_main(const t_any *const __restrict__ sp)
 	t_buffer	copy;
 
 	(void)sp;
-	if (!xft_new_gpa(&gpa))
+	if (!xft_new_gpa(&gpa).ok)
 		xft_exit_process(1);
 	allocator = xft_gpa_allocator(&gpa);
 	memory = allocator.vtable->allocate(allocator.allocator, 1000, 64);

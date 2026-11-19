@@ -16,11 +16,11 @@ void	test_imap_insert_lookup(t_allocator a)
 {
 	t_indexmap	m;
 
-	xft_pin_invariant(xft_new_indexmap(a, &m));
+	xft_pin_invariant(xft_new_indexmap(a, &m).ok);
 	xft_pin_invariant(xft_indexmap_insert(a, &m,
-			xft_fatptr((t_u8 *)"key1", 4), 42));
+			xft_fatptr((t_u8 *)"key1", 4), 42).ok);
 	xft_pin_invariant(xft_indexmap_insert(a, &m,
-			xft_fatptr((t_u8 *)"key0", 4), 0));
+			xft_fatptr((t_u8 *)"key0", 4), 0).ok);
 	xft_pin_invariant(xft_indexmap_lookup(&m,
 			xft_fatptr((t_u8 *)"key1", 4)) == 42);
 	xft_pin_invariant(xft_indexmap_lookup(&m,

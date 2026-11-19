@@ -47,7 +47,7 @@ void	xft_libc_bench_memcpy(t_tailor *t)
 		64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
 	};
 
-	if (!xft_tailor_buffers(t, bufsizes, bufalign, 28))
+	if (!xft_tailor_buffers(t, bufsizes, bufalign, 28).ok)
 		xft_exit_process(1);
 	libc_memcpy_queue(t);
 }
@@ -70,7 +70,7 @@ void	xft_libc_bench_strlen(t_tailor *t)
 		"strlen_large_unaligned"},
 	};
 
-	if (!xft_strlen_bench_buffers(t))
+	if (!xft_strlen_bench_buffers(t).ok)
 		xft_exit_process(1);
 	(void)xft_tailor_bench(t, benches, sizeof(benches) / sizeof(*benches));
 }

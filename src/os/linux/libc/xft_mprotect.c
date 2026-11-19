@@ -18,15 +18,13 @@
 # ifdef XFT_REQUIRE_LIBC
 
 __attribute__((__nonnull__(1)))
-t_xft_sysres	xft_mprotect(t_any addr, t_size size, int prot)
+t_result	xft_mprotect(t_any addr, t_size size, int prot)
 {
 	t_ssize	ret;
-	t_u64a	r;
 
 	ret = syscall(SYS_mprotect, addr, size, prot);
-	r = xft_tern(errno == EINTR || errno == EAGAIN, xft_sys_repeat, xft_sys_ko);
-	r = xft_tern(ret < 0, r, xft_sys_ok);
-	return ((t_xft_sysres)r);
+	return ((t_result){.ok = ret >= 0,
+		.err = xft_tern(ret < 0, (t_u64a)errno, 0)});
 }
 
 # endif

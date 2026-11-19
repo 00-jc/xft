@@ -18,13 +18,13 @@ static t_result	cancel_leaf(t_any arg)
 
 	pool_spin();
 	atomic_fetch_add_explicit(&s->count, 1, xft_relaxed);
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 
 static t_result	cancel_owned(t_any arg)
 {
 	(void)arg;
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 
 static void	cancel_submit_owned(t_pool_test *__restrict__ const s)
@@ -56,7 +56,7 @@ static void	cancel_check(t_pool_test *__restrict__ const s)
 	while (it < POOL_TEST_TASKS)
 	{
 		pool_assert(s->inner[it].completion != 0, "pool: cancel completion");
-		ran += s->inner[it++].result == OK;
+		ran += s->inner[it++].result.ok == OK;
 	}
 	pool_assert(ran == s->count, "pool: cancel ran");
 	pool_assert(s->tp.global_q_head == nullptr && s->tp.q_len == 0,
@@ -68,7 +68,7 @@ void	pool_round_cancel(t_pool_test *__restrict__ const s, t_sysinfo sysinfo)
 	t_u32a	it;
 
 	pool_assert(xft_threadpool_init(s->alloc, sysinfo,
-			xft_threadpool_default(), &s->tp) == OK,
+			xft_threadpool_default(), &s->tp).ok == OK,
 		"pool: init");
 	s->count = 0;
 	it = 0;

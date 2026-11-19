@@ -18,10 +18,10 @@ void	test_map_insert_lookup(t_allocator a)
 	int			val;
 	int			*got;
 
-	xft_pin_invariant(xft_new_swissmap(a, &m));
+	xft_pin_invariant(xft_new_swissmap(a, &m).ok);
 	val = 42;
 	xft_pin_invariant(xft_swissmap_insert(a, &m,
-			xft_fatptr((t_u8 *)"key1", 4), (t_u8 *)&val));
+			xft_fatptr((t_u8 *)"key1", 4), (t_u8 *)&val).ok);
 	got = xft_swissmap_lookup(&m, xft_fatptr((t_u8 *)"key1", 4));
 	xft_pin_invariant(got != nullptr);
 	xft_pin_invariant(*got == 42);

@@ -41,7 +41,7 @@ void	test_imap_churn(t_allocator a)
 	t_size		i;
 
 	xft_xoshiro_init(rng);
-	xft_pin_invariant(xft_new_indexmap(a, &m));
+	xft_pin_invariant(xft_new_indexmap(a, &m).ok);
 	i = 0;
 	while (i < IMAP_TEST_CHURN)
 	{
@@ -50,7 +50,7 @@ void	test_imap_churn(t_allocator a)
 				== i % IMAP_TEST_LIVE);
 		keys[i % IMAP_TEST_LIVE] = xft_xoshiro256ss(rng);
 		xft_pin_invariant(xft_indexmap_insert(a, &m, churn_key(keys, i),
-				i % IMAP_TEST_LIVE));
+				i % IMAP_TEST_LIVE).ok);
 		xft_pin_invariant((m.count + m.tombstones) * 20
 			< m.soa.capacity_elements * 17 + 20);
 		++i;

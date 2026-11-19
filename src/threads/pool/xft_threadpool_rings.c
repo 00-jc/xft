@@ -33,6 +33,7 @@ inline t_result	xft__init_rings(t_allocator allocator, t_threadpool *tp)
 	t_size			it;
 	const t_size	upper_bound = tp->n_workers;
 	t_buffer		buffer;
+	t_result		ret;
 
 	if (allocator.allocator == nullptr || allocator.vtable == nullptr
 		|| allocator.vtable->allocate == nullptr)
@@ -40,16 +41,16 @@ inline t_result	xft__init_rings(t_allocator allocator, t_threadpool *tp)
 	buffer = allocator.vtable->allocate(allocator.allocator,
 			upper_bound * sizeof(t_ring_buffer), _Alignof(t_ring_buffer));
 	if (__builtin_expect(buffer.mem == nullptr, 0))
-		return (KO);
+		return ((t_result){.ok = KO, .err = xft_err_oom});
 	tp->rings_alloc_size = buffer.size;
 	tp->worker_rings = (t_any)buffer.mem;
 	it = 0;
 	while (it < upper_bound)
 	{
-		if (__builtin_expect(!xft_new_ring_buffer(allocator,
-					&tp->worker_rings[it], 256), 0))
-			return ((void)(xft__free_rings(allocator, tp, it)), KO);
+		ret = xft_new_ring_buffer(allocator, &tp->worker_rings[it], 256);
+		if (__builtin_expect(!ret.ok, 0))
+			return ((void)(xft__free_rings(allocator, tp, it)), ret);
 		it++;
 	}
-	return (OK);
+	return ((t_result){.ok = OK});
 }

@@ -152,7 +152,9 @@ pass through.
 .Fn xft_mmap_commit
 does nothing on Linux.
 .Fn xft_map_failed
-is true when a returned address lies in the last 4095 bytes of the address
+sets
+.Fa ok
+when a returned address lies in the last 4095 bytes of the address
 space, which covers both
 .Dv MAP_FAILED
 and the negative error codes of the freestanding backends.
@@ -203,8 +205,7 @@ and
 .Dv ARCH_SET_FS
 on x86_64 and by writing
 .Ql tpidr_el0
-on aarch64, exists only on freestanding x86_64 and aarch64 and returns 0 or
-\-1,
+on aarch64, exists only on freestanding x86_64 and aarch64,
 and
 .Fn xft_clone ,
 which takes a
@@ -269,7 +270,13 @@ return
 .Dv OK ,
 or
 .Dv KO
-if the affinity mask cannot be read.
+if the affinity mask cannot be read, with the errno of
+.Xr sched_getaffinity 2
+in
+.Fa err
+on Linux and
+.Dv xft_err_none
+on Windows.
 .Pp
 .Fn xft_pin_process_to_cpu
 and
@@ -284,12 +291,33 @@ does not fit the mask, 1024 CPUs on Linux and the bits of a
 .Vt DWORD_PTR
 on Windows, or the system refuses the mask, as for a CPU that is offline or
 outside the allowed set.
+A
+.Fa cpu
+that does not fit gives
+.Dv xft_err_inval ;
+a refused mask gives the errno of
+.Xr sched_setaffinity 2
+on Linux and
+.Dv xft_err_none
+on Windows.
 .Pp
-The private wrappers that return an integer give the non-negative result of
-the call on success and \-1 on failure.
-The error code is dropped by the freestanding backends and left in
+The private wrappers that return
+.Vt t_result
+give
+.Dv OK
+on success and
+.Dv KO
+with the call's errno in
+.Fa err
+on failure, from the negative return of the freestanding backends or from
 .Va errno
-by the libc backend.
+in the libc backend.
+.Dv xft_err_retry
+and
+.Dv xft_err_wouldblock
+are left to the caller to retry.
+A value the call produces, such as a file descriptor or a byte count, is
+written through the last argument.
 .Sh SEE ALSO
 .Xr xft_files 3 ,
 .Xr xft_io 3 ,

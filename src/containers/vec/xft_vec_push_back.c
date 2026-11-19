@@ -17,16 +17,19 @@ inline t_result	xft_vec_push_back(t_allocator allocator,
 		t_vec *restrict const vec,
 		const t_u8 *restrict const data, t_size type_size)
 {
+	t_result	ret;
+
 	if (vec->buf.mem == nullptr || allocator.allocator == nullptr)
 		__builtin_unreachable();
 	{
-		if (__builtin_expect(vec->buf.size + type_size > vec->buf.capacity
-				&& !xft_vec_reserve(allocator, vec,
-					xft_tern_s(vec->buf.capacity,
-						vec->buf.capacity << 1, 4)), 0))
-			return (KO);
+		ret = (t_result){.ok = OK};
+		if (__builtin_expect(vec->buf.size + type_size > vec->buf.capacity, 0))
+			ret = xft_vec_reserve(allocator, vec,
+					xft_tern_s(vec->buf.capacity, vec->buf.capacity << 1, 4));
+		if (__builtin_expect(!ret.ok, 0))
+			return (ret);
 		__builtin_memcpy(vec->buf.mem + vec->buf.size, data, type_size);
 		vec->buf.size += type_size;
-		return (OK);
+		return ((t_result){.ok = OK});
 	}
 }

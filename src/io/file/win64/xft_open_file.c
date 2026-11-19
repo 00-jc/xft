@@ -53,15 +53,15 @@ inline t_result	xft_open_file(t_blk8r path, t_fileopen_mode mode, t_fd *fd)
 	file = CreateFileA((LPCSTR)path, xft__access(mode), share, nullptr,
 			xft__disposition(mode), FILE_ATTRIBUTE_NORMAL, nullptr);
 	if (__builtin_expect(file == INVALID_HANDLE_VALUE, 0))
-		return (KO);
+		return ((t_result){.ok = KO, .err = xft_err_none});
 	*fd = (t_fd)file;
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 
 __attribute__((__always_inline__, __used__))
 inline t_result	xft_close_file(t_fd fd)
 {
-	return ((t_result)(CloseHandle((HANDLE)fd) != 0));
+	return ((t_result){.ok = (CloseHandle((HANDLE)fd) != 0)});
 }
 
 #endif

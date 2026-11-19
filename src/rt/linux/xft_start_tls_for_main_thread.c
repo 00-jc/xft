@@ -39,11 +39,10 @@ t_result	xft_start_tls_for_main_thread(t_sysinfo sysinfo)
 	if (__builtin_expect(l->tls_size + l->tls_align > sizeof(page), 0))
 		area = xft_mmap(l->tls_size + l->tls_align, xft_prot_read
 				| xft_prot_write, xft_map_private | xft_map_anonymous);
-	if (__builtin_expect(xft_map_failed(area), 0))
-		return (KO);
+	if (__builtin_expect(xft_map_failed(area).ok, 0))
+		return ((t_result){.ok = KO, .err = -(t_uptr)area});
 	area = xft_align_fwd(area, l->tls_align);
-	return ((t_result)(xft_set_thread_pointer(xft_tls_fill(area, l))
-		== xft_sys_ok));
+	return (xft_set_thread_pointer(xft_tls_fill(area, l)));
 }
 
 #elif defined(__linux__)
@@ -52,7 +51,7 @@ __attribute__((const))
 t_result	xft_start_tls_for_main_thread(t_sysinfo sysinfo)
 {
 	(void)sysinfo;
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 
 #endif

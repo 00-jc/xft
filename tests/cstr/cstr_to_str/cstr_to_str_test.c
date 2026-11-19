@@ -16,11 +16,11 @@ void	test_cstr_to_str(t_allocator a)
 {
 	t_str	s;
 
-	xft_pin_invariant(xft_cstr_to_str(a, &s, "hello"));
+	xft_pin_invariant(xft_cstr_to_str(a, &s, "hello").ok);
 	xft_pin_invariant(s.buf.size == 5);
 	xft_pin_invariant(xft_memcmp(s.buf.mem, "hello", 6) == 0);
 	xft_str_destroy(a, &s);
-	xft_pin_invariant(!xft_cstr_to_str(a, &s, ""));
+	xft_pin_invariant(!xft_cstr_to_str(a, &s, "").ok);
 }
 
 void	test_cstr(t_test *t)
@@ -28,7 +28,7 @@ void	test_cstr(t_test *t)
 	t_gpa		gpa;
 	t_allocator	a;
 
-	xft_pin_invariant(xft_new_gpa(&gpa));
+	xft_pin_invariant(xft_new_gpa(&gpa).ok);
 	a = xft_gpa_allocator(&gpa);
 	xft_test_print(t, "Testing xft_cstr_to_str...\n");
 	test_cstr_to_str(a);

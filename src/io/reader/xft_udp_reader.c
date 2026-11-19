@@ -21,17 +21,19 @@ static t_result	xft__udp_reader_stream(t_reader *r, t_writer *w, t_size limit,
 	t_reader_ctx_udp *const	ctx = r->reader_ctx;
 	const t_buffer			buf = ctx->buf;
 	t_size					n;
+	t_result				ret;
 
 	if (w->vtable.drain_all == nullptr)
 		__builtin_unreachable();
 	n = xft_tern_s(limit < buf.size, limit, buf.size);
-	if (__builtin_expect(!xft__udp_reader_read(r, xft_fatptr(buf.mem, n), &n),
-			0))
-		return (KO);
-	if (__builtin_expect(!w->vtable.drain_all(w, xft_fatptr(buf.mem, n)), 0))
-		return (KO);
+	ret = xft__udp_reader_read(r, xft_fatptr(buf.mem, n), &n);
+	if (__builtin_expect(!ret.ok, 0))
+		return (ret);
+	ret = w->vtable.drain_all(w, xft_fatptr(buf.mem, n));
+	if (__builtin_expect(!ret.ok, 0))
+		return (ret);
 	*size = n;
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 
 __attribute__((__nonnull__(1), __flatten__, __always_inline__, __used__))

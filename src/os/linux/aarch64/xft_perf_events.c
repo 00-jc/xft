@@ -19,12 +19,11 @@
 # if defined(__aarch64__) && !defined(XFT_REQUIRE_LIBC)
 
 __attribute__((__nonnull__(1, 3), __always_inline__, __used__))
-inline t_xft_sysres	xft_perf_event_open(const t_perf_event_attr *restrict attr,
+inline t_result	xft_perf_event_open(const t_perf_event_attr *restrict attr,
 	int group_fd, int *restrict const fd)
 {
 	t_u64a	args[6];
 	t_i64a	ret;
-	t_u64a	r;
 
 	args[0] = (t_u64a)attr;
 	args[1] = 0;
@@ -34,9 +33,8 @@ inline t_xft_sysres	xft_perf_event_open(const t_perf_event_attr *restrict attr,
 	args[5] = 0;
 	ret = xft_syscall6(xft_sys_perf_event_open, args);
 	*fd = (int)xft_tern(ret < 0, (t_u64a)-1, (t_u64a)ret);
-	r = xft_tern(ret < 0, xft_sys_ko, xft_sys_ok);
-	r = xft_tern(ret == -xft_eintr || ret == -xft_eagain, xft_sys_repeat, r);
-	return ((t_xft_sysres)r);
+	return ((t_result){.ok = ret >= 0,
+		.err = xft_tern(ret < 0, (t_u64a)-ret, 0)});
 }
 
 # endif

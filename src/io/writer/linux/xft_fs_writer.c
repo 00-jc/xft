@@ -21,7 +21,7 @@ __attribute__((__nonnull__(1, 2)))
 t_result	xft__fs_writer_writev(t_writer_fs *ctx, t_iovec *iov, t_size count)
 {
 	t_size			n;
-	t_xft_sysres	ret;
+	t_result		ret;
 
 	n = 0;
 	while (true)
@@ -33,12 +33,12 @@ t_result	xft__fs_writer_writev(t_writer_fs *ctx, t_iovec *iov, t_size count)
 			--count;
 		}
 		if (count == 0)
-			return (OK);
+			return ((t_result){.ok = OK});
 		iov->mem += n;
 		iov->size -= n;
 		ret = xft_writev((int)ctx->fd, iov, count, &n);
-		if (__builtin_expect(ret != xft_sys_repeat && n == 0, 0))
-			return (KO);
+		if (__builtin_expect(!xft_should_retry(ret) && n == 0, 0))
+			return ((t_result){.ok = KO, .err = ret.err});
 	}
 }
 
@@ -49,7 +49,7 @@ t_result	xft__fs_writer_flush(t_writer *w)
 	const t_buffer_with_capacity	buf = ctx->buffer;
 	t_size							done;
 	t_size							n;
-	t_xft_sysres					ret;
+	t_result						ret;
 
 	if (buf.mem == nullptr)
 		__builtin_unreachable();
@@ -57,12 +57,25 @@ t_result	xft__fs_writer_flush(t_writer *w)
 	while (done != buf.size)
 	{
 		ret = xft_write((int)ctx->fd, buf.mem + done, buf.size - done, &n);
-		if (__builtin_expect(ret != xft_sys_repeat && n == 0, 0))
-			return (KO);
+		if (__builtin_expect(!xft_should_retry(ret) && n == 0, 0))
+			return ((t_result){.ok = KO, .err = ret.err});
 		done += n;
 	}
 	ctx->buffer.size = 0;
-	return (OK);
+	return ((t_result){.ok = OK});
+}
+
+__attribute__((__nonnull__(1, 4), __always_inline__))
+static inline t_result	xft__fs_writer_refill(t_writer *w, t_fd fd, t_size want,
+	t_size *n)
+{
+	t_writer_fs *const	ctx = w->writer_ctx;
+	t_result			ret;
+
+	ret = xft__fs_writer_flush(w);
+	if (__builtin_expect(!ret.ok, 0))
+		return (ret);
+	return (xft_read((int)fd, ctx->buffer.mem, want, n));
 }
 
 __attribute__((__nonnull__(1, 4)))
@@ -73,24 +86,22 @@ t_result	xft__fs_writer_drain_fd(t_writer *w, t_fd fd, t_size limit,
 	const t_size		cap = ctx->buffer.capacity;
 	t_size				left;
 	t_size				n;
-	t_xft_sysres		ret;
+	t_result			ret;
 
 	left = limit;
 	n = 0;
-	ret = xft_sys_repeat;
-	while (left != 0 && (ret == xft_sys_repeat || n != 0))
+	ret = (t_result){.err = xft_err_retry};
+	while (left != 0 && (xft_should_retry(ret) || n != 0))
 	{
-		if (__builtin_expect(!xft__fs_writer_flush(w), 0))
-			return (KO);
-		ret = xft_read((int)fd, ctx->buffer.mem,
+		ret = xft__fs_writer_refill(w, fd,
 				xft_tern_s(left < cap, left, cap), &n);
-		if (__builtin_expect(ret == xft_sys_ko, 0))
-			return (KO);
+		if (__builtin_expect(!ret.ok && !xft_should_retry(ret), 0))
+			return (ret);
 		ctx->buffer.size = n;
 		left -= n;
 	}
 	*size = limit - left;
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 
 #endif

@@ -18,7 +18,7 @@ __attribute__((const))
 t_result	xft_start_tls_for_main_thread(t_sysinfo sysinfo)
 {
 	(void)sysinfo;
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 
 #endif

@@ -17,7 +17,7 @@ void	test_vec(t_test *t)
 	t_gpa		gpa;
 	t_allocator	a;
 
-	xft_pin_invariant(xft_new_gpa(&gpa));
+	xft_pin_invariant(xft_new_gpa(&gpa).ok);
 	a = xft_gpa_allocator(&gpa);
 	xft_test_print(t, "Testing t_vec...\n");
 	test_vec_push_get(a);

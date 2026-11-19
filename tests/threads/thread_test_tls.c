@@ -54,7 +54,7 @@ static void	thread_tls_spawn(t_thread *__restrict__ const thread,
 	opts.fn = thread_tls_hold;
 	opts.stack_size = XFT_THREAD_STACKSIZE;
 	opts.argument = out;
-	xft_pin_invariant_msg(xft_thread_spawn(thread, sysinfo, opts) == OK,
+	xft_pin_invariant_msg(xft_thread_spawn(thread, sysinfo, opts).ok == OK,
 		xft_fatptr((t_u8 *)"thread spawn", sizeof("thread spawn") - 1));
 }
 

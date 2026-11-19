@@ -18,7 +18,7 @@ void	test_bulk_same_size(void)
 	t_gpa		gpa;
 	int			i;
 
-	xft_pin_invariant_msg(xft_new_gpa(&gpa),
+	xft_pin_invariant_msg(xft_new_gpa(&gpa).ok,
 		xft_fatptr((t_u8 *)"gpa init", sizeof("gpa init") - 1));
 	test_bulk_same_size_fill(&gpa, bufs);
 	i = -1;

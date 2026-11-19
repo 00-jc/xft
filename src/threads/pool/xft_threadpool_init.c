@@ -19,6 +19,21 @@ t_thread_opts	xft_threadpool_default(void)
 		.cpu_pinning = true});
 }
 
+__attribute__((__always_inline__, __nonnull__(1)))
+static inline void	xft__threadpool_reset(t_threadpool *__restrict__ const tp,
+	t_size cpu_count)
+{
+	tp->global_lock = xft_unlocked;
+	tp->n_workers = cpu_count;
+	tp->wake_up = 0;
+	tp->shut_down = 0;
+	tp->global_q_head = nullptr;
+	tp->global_q_tail = nullptr;
+	tp->n_maybe_parked = 0;
+	tp->n_pending = 0;
+	tp->q_len = 0;
+}
+
 __attribute__((__nonnull__(4), __flatten__))
 t_result	xft_threadpool_init(t_allocator allocator,
 	const t_sysinfo info, t_thread_opts opts,
@@ -31,20 +46,14 @@ t_result	xft_threadpool_init(t_allocator allocator,
 		res = xft_get_physical_cpu_count(&cpu_count);
 	else
 		res = xft_get_cpu_count(&cpu_count);
-	if (__builtin_expect(res == KO, 0))
-		return (KO);
-	tp->global_lock = xft_unlocked;
-	tp->n_workers = cpu_count;
-	tp->wake_up = 0;
-	tp->shut_down = 0;
-	tp->global_q_head = nullptr;
-	tp->global_q_tail = nullptr;
-	tp->n_maybe_parked = 0;
-	tp->n_pending = 0;
-	tp->q_len = 0;
-	if (__builtin_expect(xft__init_rings(allocator, tp) == KO, 0))
-		return (KO);
-	if (__builtin_expect(xft__init_threads(allocator, info, opts, tp) == KO, 0))
-		return ((void)(xft__free_rings(allocator, tp, tp->n_workers)), KO);
-	return (OK);
+	if (__builtin_expect(res.ok == KO, 0))
+		return (res);
+	xft__threadpool_reset(tp, cpu_count);
+	res = xft__init_rings(allocator, tp);
+	if (__builtin_expect(res.ok == KO, 0))
+		return (res);
+	res = xft__init_threads(allocator, info, opts, tp);
+	if (__builtin_expect(!res.ok, 0))
+		return ((void)(xft__free_rings(allocator, tp, tp->n_workers)), res);
+	return ((t_result){.ok = OK});
 }

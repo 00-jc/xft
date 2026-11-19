@@ -17,7 +17,7 @@ static t_result	wait_all_leaf(t_any arg)
 	t_pool_test *__restrict__ const	s = arg;
 
 	atomic_fetch_add_explicit(&s->count, 1, xft_relaxed);
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 
 static t_result	wait_all_outer(t_any arg)
@@ -35,7 +35,7 @@ static t_result	wait_all_outer(t_any arg)
 		xft_threadpool_submit(&s->tp, t, sizeof(*t));
 	}
 	atomic_fetch_add_explicit(&s->count, 1, xft_relaxed);
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 
 static void	wait_all_owned(t_pool_test *__restrict__ const s)
@@ -85,7 +85,7 @@ void	pool_round_wait_all(t_pool_test *__restrict__ const s,
 	t_u32a	it;
 
 	pool_assert(xft_threadpool_init(s->alloc, sysinfo,
-			xft_threadpool_default(), &s->tp) == OK,
+			xft_threadpool_default(), &s->tp).ok == OK,
 		"pool wait_all: init");
 	xft_threadpool_wait_all(&s->tp);
 	s->n_outer = POOL_TEST_OUTER;

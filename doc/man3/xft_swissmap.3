@@ -139,7 +139,12 @@ on success.
 If
 .Fa capacity
 is zero or the allocation fails, they return
-.Dv KO ;
+.Dv KO ,
+with
+.Dv xft_err_inval
+or
+.Dv xft_err_oom
+respectively;
 the contents of
 .Fa *map
 are then unspecified.
@@ -149,6 +154,8 @@ returns
 .Dv OK
 on success and
 .Dv KO
+with
+.Dv xft_err_oom
 if a required rebuild could not allocate, in which case the map is
 unchanged.
 .Pp
@@ -179,19 +186,19 @@ t_result	demo(t_allocator a)
 	int			val;
 	int			*got;
 
-	if (!xft_new_swissmap(a, &m))
-		return (KO);
+	if (!xft_new_swissmap(a, &m).ok)
+		return ((t_result){.ok = KO});
 	val = 42;
 	if (!xft_swissmap_insert(a, &m,
-			xft_fatptr((t_u8 *)"key1", 4), (t_u8 *)&val))
-		return (xft_swissmap_destroy(a, &m), KO);
+			xft_fatptr((t_u8 *)"key1", 4), (t_u8 *)&val).ok)
+		return (xft_swissmap_destroy(a, &m), (t_result){.ok = KO});
 	got = xft_swissmap_lookup(&m, xft_fatptr((t_u8 *)"key1", 4));
 	xft_pin_invariant(got != nullptr && *got == 42);
 	xft_swissmap_delete(&m, xft_fatptr((t_u8 *)"key1", 4));
 	xft_pin_invariant(xft_swissmap_lookup(&m,
 			xft_fatptr((t_u8 *)"key1", 4)) == nullptr);
 	xft_swissmap_destroy(a, &m);
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 .Ed
 .Sh SEE ALSO

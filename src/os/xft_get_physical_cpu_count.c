@@ -16,10 +16,12 @@
 __attribute__((__nonnull__(1)))
 t_result	xft_get_physical_cpu_count(t_size *count)
 {
-	t_size	cpus;
+	t_size		cpus;
+	t_result	ret;
 
-	if (__builtin_expect(xft_get_cpu_count(&cpus) == KO, 0))
-		return (KO);
+	ret = xft_get_cpu_count(&cpus);
+	if (__builtin_expect(ret.ok == KO, 0))
+		return (ret);
 	*count = xft_tern_s(cpus >> 1 != 0, cpus >> 1, cpus);
-	return (OK);
+	return ((t_result){.ok = OK});
 }

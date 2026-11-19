@@ -30,12 +30,12 @@ void	test_soa_reserve(t_allocator a, const t_soa_context *ctx)
 	t_any	first_ptr;
 	t_size	i;
 
-	xft_pin_invariant(xft_new_soa(a, &soa, 8, ctx));
+	xft_pin_invariant(xft_new_soa(a, &soa, 8, ctx).ok);
 	soa_test_fill(&soa, ctx, 0, 3);
 	first_ptr = soa.ptr;
-	xft_pin_invariant(xft_soa_reserve(a, &soa, ctx, 5));
+	xft_pin_invariant(xft_soa_reserve(a, &soa, ctx, 5).ok);
 	xft_pin_invariant(soa.ptr == first_ptr && soa.capacity_elements == 8);
-	xft_pin_invariant(xft_soa_reserve(a, &soa, ctx, 100));
+	xft_pin_invariant(xft_soa_reserve(a, &soa, ctx, 100).ok);
 	xft_pin_invariant(soa.capacity_elements >= 103);
 	xft_pin_invariant(soa.occupied_elements == 3);
 	soa_test_check_aligned(&soa, ctx);

@@ -24,17 +24,30 @@ t_result	xft__udp_writer_send(t_writer_ctx_udp *ctx, t_buffer data)
 	const int		fd = (int)ctx->socket;
 	t_sockaddr_in6	sa;
 	t_iovec			iov;
-	t_xft_sysres	ret;
+	t_result		ret;
 
 	xft__sockaddr_from_ip(&ctx->ip, &sa);
 	iov = (t_iovec){.mem = data.mem};
-	ret = xft_sys_repeat;
-	while (ret == xft_sys_repeat)
+	ret = (t_result){.err = xft_err_retry};
+	while (xft_should_retry(ret))
 	{
 		iov.size = data.size;
 		ret = xft_sendto(fd, &iov, (t_xft_msg_opts){0}, &sa);
 	}
-	return ((t_result)(ret == xft_sys_ok && iov.size == data.size));
+	return ((t_result){.ok = ret.ok && iov.size == data.size, .err = ret.err});
+}
+
+__attribute__((__nonnull__(1, 4), __always_inline__))
+static inline t_result	xft__udp_writer_refill(t_writer *w, t_fd fd,
+	t_size want, t_size *n)
+{
+	t_writer_ctx_udp *const	ctx = w->writer_ctx;
+	t_result				ret;
+
+	ret = xft__udp_writer_flush(w);
+	if (__builtin_expect(!ret.ok, 0))
+		return (ret);
+	return (xft_read((int)fd, ctx->buf.mem, want, n));
 }
 
 __attribute__((__nonnull__(1, 4)))
@@ -45,24 +58,22 @@ t_result	xft__udp_writer_drain_fd(t_writer *w, t_fd fd, t_size limit,
 	const t_size			cap = ctx->buf.capacity;
 	t_size					left;
 	t_size					n;
-	t_xft_sysres			ret;
+	t_result				ret;
 
 	left = limit;
 	n = 0;
-	ret = xft_sys_repeat;
-	while (left != 0 && (ret == xft_sys_repeat || n != 0))
+	ret = (t_result){.err = xft_err_retry};
+	while (left != 0 && (xft_should_retry(ret) || n != 0))
 	{
-		if (__builtin_expect(!xft__udp_writer_flush(w), 0))
-			return (KO);
-		ret = xft_read((int)fd, ctx->buf.mem,
+		ret = xft__udp_writer_refill(w, fd,
 				xft_tern_s(left < cap, left, cap), &n);
-		if (__builtin_expect(ret == xft_sys_ko, 0))
-			return (KO);
+		if (__builtin_expect(!ret.ok && !xft_should_retry(ret), 0))
+			return (ret);
 		ctx->buf.size = n;
 		left -= n;
 	}
 	*size = limit - left;
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 
 #endif

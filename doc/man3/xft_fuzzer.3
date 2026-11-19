@@ -146,6 +146,8 @@ returns
 .Dv OK
 on success and
 .Dv KO
+with
+.Dv xft_err_oom
 if an arena allocation fails.
 .Fn xft_fuzz_get_rand
 returns a pointer into the pool, valid until
@@ -169,9 +171,9 @@ void	xft_main(const t_any *__restrict__ const sp)
 	t_size		i;
 
 	(void)sp;
-	xft_pin_invariant(xft_new_arena(&fz.arena));
+	xft_pin_invariant(xft_new_arena(&fz.arena).ok);
 	fz = xft_new_fuzzer(fz.arena);
-	xft_pin_invariant(xft_fuzzer_add_rand(&fz));
+	xft_pin_invariant(xft_fuzzer_add_rand(&fz).ok);
 	i = 0;
 	while (i++ < fz.buf_n * 2)
 	{

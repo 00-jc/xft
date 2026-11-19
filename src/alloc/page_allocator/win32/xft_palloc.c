@@ -28,8 +28,11 @@ inline t_buffer	xft_palloc_reserve(t_size size)
 __attribute__((__nonnull__(1), __always_inline__, __used__))
 inline t_result	xft_palloc_commit(t_any ptr, t_size size)
 {
-	return ((t_result)(VirtualAlloc(ptr, size, MEM_COMMIT, PAGE_READWRITE)
-		!= nullptr));
+	t_any	mem;
+
+	mem = VirtualAlloc(ptr, size, MEM_COMMIT, PAGE_READWRITE);
+	return ((t_result){.ok = mem != nullptr,
+		.err = xft_tern(mem == nullptr, xft_err_oom, 0)});
 }
 
 __attribute__((__nonnull__(1), __always_inline__, __used__))
@@ -37,7 +40,8 @@ inline t_result	xft_palloc_guard(t_any ptr, t_size size)
 {
 	DWORD	old;
 
-	return ((t_result)(VirtualProtect(ptr, size, PAGE_NOACCESS, &old) != 0));
+	return ((t_result){.ok = (VirtualProtect(ptr, size, PAGE_NOACCESS, &old)
+			!= 0)});
 }
 
 __attribute__((__always_inline__, __used__))

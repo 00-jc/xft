@@ -18,7 +18,7 @@ static t_result	mp_leaf(t_any arg)
 
 	pool_spin();
 	atomic_fetch_add_explicit(&s->count, 1, xft_relaxed);
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 
 static void	mp_producer(t_any arg)
@@ -60,7 +60,7 @@ void	pool_round_wait_all_mp(t_pool_test *__restrict__ const s,
 	t_u32a		it;
 
 	pool_assert(xft_threadpool_init(s->alloc, sysinfo,
-			xft_threadpool_default(), &s->tp) == OK, "pool wait_all mp: init");
+			xft_threadpool_default(), &s->tp).ok, "pool wait_all mp: init");
 	s->count = 0;
 	s->submitted = 0;
 	s->n_outer = POOL_TEST_PRODUCERS;
@@ -71,7 +71,7 @@ void	pool_round_wait_all_mp(t_pool_test *__restrict__ const s,
 		s->jobs[it] = (t_pool_job){.s = s, .idx = it};
 		pool_assert(xft_thread_spawn(&threads[it], sysinfo, (t_thread_opts){
 				.fn = mp_producer, .argument = &s->jobs[it],
-				.stack_size = XFT_THREAD_STACKSIZE}) == OK,
+				.stack_size = XFT_THREAD_STACKSIZE}).ok == OK,
 			"pool wait_all mp: spawn");
 		it++;
 	}

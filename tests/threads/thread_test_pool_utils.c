@@ -34,7 +34,7 @@ void	pool_task_set(t_task *__restrict__ const t,
 	t->allocator = alloc;
 	t->arg_size = 0;
 	t->arg_model = xft_must_keep_all_alive;
-	t->result = KO;
+	t->result = (t_result){.ok = KO};
 	t->completion = 0;
 }
 
@@ -49,6 +49,6 @@ void	pool_check_tasks(t_task *__restrict__ const t, t_u32a n,
 		if (wait)
 			xft_wait_for_signal(&t[it].completion, 0);
 		pool_assert(t[it].completion != 0, "pool: task completion");
-		pool_assert(t[it++].result == OK, "pool: task result");
+		pool_assert(t[it++].result.ok == OK, "pool: task result");
 	}
 }

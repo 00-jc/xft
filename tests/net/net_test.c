@@ -15,7 +15,7 @@
 void	test_net(t_test *t)
 {
 	xft_test_print(t, "Testing net...\n");
-	net_check(xft_init_sockets(), "xft_init_sockets");
+	net_check(xft_init_sockets().ok, "xft_init_sockets");
 	test_net_tcp_roundtrip();
 	test_net_tcp_peer();
 	test_net_tcp_v6();

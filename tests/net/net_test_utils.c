@@ -30,7 +30,7 @@ void	net_tcp_pair(t_fd *fds, t_u16a port)
 
 	fds[0] = srv;
 	fds[1] = net_connect(&lo);
-	net_check(xft_accept_socket(srv, nullptr, &fds[2]), "xft_accept_socket");
+	net_check(xft_accept_socket(srv, nullptr, &fds[2]).ok, "xft_accept_socket");
 }
 
 void	net_udp_pair(t_fd *fds, t_u16a port)

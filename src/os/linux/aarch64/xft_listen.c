@@ -18,12 +18,11 @@
 # if defined(__aarch64__) && !defined(XFT_REQUIRE_LIBC)
 
 __attribute__((__always_inline__, __used__))
-inline t_xft_sysres	xft_listen(int fd, int backlog)
+inline t_result	xft_listen(int fd, int backlog)
 {
 	register long x8	__asm__("x8");
 	register long x0	__asm__("x0");
 	register long x1	__asm__("x1");
-	t_u64a				r;
 
 	x8 = xft_sys_listen;
 	x1 = backlog;
@@ -34,9 +33,8 @@ inline t_xft_sysres	xft_listen(int fd, int backlog)
 		: "r"(x8), "r"(x1)
 		: "memory", "cc"
 	);
-	r = xft_tern(x0 < 0, xft_sys_ko, xft_sys_ok);
-	r = xft_tern(x0 == -xft_eintr || x0 == -xft_eagain, xft_sys_repeat, r);
-	return ((t_xft_sysres)r);
+	return ((t_result){.ok = x0 >= 0,
+		.err = xft_tern(x0 < 0, (t_u64a)-x0, 0)});
 }
 
 # endif

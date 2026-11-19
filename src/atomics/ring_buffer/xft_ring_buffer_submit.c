@@ -34,7 +34,7 @@ inline t_result	xft_ring_buffer_submit_1ton(
 		slot = atomic_load_explicit(&rb->memory[tail & (size - 1)],
 				xft_acquire);
 		if (__builtin_expect(tail - head == size, 0))
-			return (KO);
+			return ((t_result){.ok = KO, .err = xft_err_wouldblock});
 		else if (slot != nullptr)
 			xft_backoff(++i);
 		else
@@ -42,7 +42,7 @@ inline t_result	xft_ring_buffer_submit_1ton(
 	}
 	atomic_store_explicit(&rb->memory[tail & (size - 1)], ptr, xft_release);
 	atomic_store_explicit(&rb->tail, tail + 1, xft_release);
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 
 __attribute__((__nonnull__(1), __always_inline__, __used__, __flatten__))
@@ -65,7 +65,7 @@ inline t_result	xft_ring_buffer_submit(t_ring_buffer *__restrict__ const rb,
 		slot = atomic_load_explicit(&rb->memory[tail & (size - 1)],
 				xft_acquire);
 		if (__builtin_expect(tail - head == size, 0))
-			return (KO);
+			return ((t_result){.ok = KO, .err = xft_err_wouldblock});
 		else if (slot != nullptr)
 			xft_backoff(++i);
 		else if (__builtin_expect(atomic_compare_exchange_weak_explicit(
@@ -73,5 +73,5 @@ inline t_result	xft_ring_buffer_submit(t_ring_buffer *__restrict__ const rb,
 			break ;
 	}
 	atomic_store_explicit(&rb->memory[tail & (size - 1)], ptr, xft_release);
-	return (OK);
+	return ((t_result){.ok = OK});
 }

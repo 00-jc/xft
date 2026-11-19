@@ -37,11 +37,11 @@ t_result	xft__fs_reader_discard(t_reader *r, t_size limit, t_size *size)
 		ok = ReadFile((HANDLE)ctx.fd, ctx.buffer.mem,
 				(DWORD)xft_tern_s(left < cap, left, cap), &n, nullptr);
 		if (__builtin_expect(!ok && GetLastError() != ERROR_BROKEN_PIPE, 0))
-			return (KO);
+			return ((t_result){.ok = KO, .err = xft_err_none});
 		left -= n;
 	}
 	*size = limit - left;
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 
 __attribute__((__nonnull__(1, 3)))
@@ -57,9 +57,9 @@ t_result	xft__fs_reader_read(t_reader *r, t_buffer dst, t_size *size)
 	len = xft_tern_s(dst.size < MAXDWORD, dst.size, MAXDWORD);
 	ok = ReadFile((HANDLE)ctx.fd, dst.mem, (DWORD)len, &n, nullptr);
 	if (__builtin_expect(!ok && GetLastError() != ERROR_BROKEN_PIPE, 0))
-		return (KO);
+		return ((t_result){.ok = KO, .err = xft_err_none});
 	*size = n;
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 
 __attribute__((__nonnull__(1)))
@@ -80,10 +80,10 @@ t_result	xft__fs_reader_read_all(t_reader *r, t_buffer dst)
 		len = xft_tern_s(len < MAXDWORD, len, MAXDWORD);
 		ok = ReadFile((HANDLE)ctx.fd, dst.mem + done, (DWORD)len, &n, nullptr);
 		if (__builtin_expect(!ok || n == 0, 0))
-			return (KO);
+			return ((t_result){.ok = KO, .err = xft_err_none});
 		done += n;
 	}
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 
 #endif

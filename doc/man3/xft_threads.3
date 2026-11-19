@@ -333,6 +333,12 @@ when the memory cannot be mapped or the thread cannot be created; on failure
 it frees what it allocated and leaves
 .Fa thread
 unchanged.
+On Linux
+.Fa err
+holds the errno of the failing call, or the error number
+.Xr pthread_create 3
+returns in the libc backend; on Windows it is
+.Dv xft_err_none .
 .Pp
 .Fn xft_thread_id
 returns the thread's identifier.
@@ -358,7 +364,7 @@ void	xft_main(const t_any *__restrict__ const sp)
 	value = 0;
 	if (!xft_thread_spawn(&thread, xft_get_sysinfo(sp),
 			(t_thread_opts){.fn = work,
-			.stack_size = XFT_THREAD_STACKSIZE, .argument = &value}))
+			.stack_size = XFT_THREAD_STACKSIZE, .argument = &value}).ok)
 		xft_exit_process(1);
 	xft_thread_join(&thread);
 	xft_exit_process(value != 42);

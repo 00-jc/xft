@@ -20,7 +20,7 @@ static inline void	xft_carve_tail(t_gpa *gpa)
 	t_size	freelist;
 
 	rem = (t_uptr)gpa->slab + gpa->slabsize - (t_uptr)gpa->bmp;
-	if (__builtin_expect(!rem || !xft_palloc_commit(gpa->bmp, rem), 0))
+	if (__builtin_expect(!rem || !xft_palloc_commit(gpa->bmp, rem).ok, 0))
 		return ;
 	while (rem)
 	{
@@ -38,18 +38,20 @@ static inline t_result	xft_advance_slab(t_gpa *gpa)
 {
 	t_buffer	buf;
 	t_any		*prev;
+	t_result	ret;
 
 	buf = xft_palloc_reserve(GPA_SLABSIZE);
 	if (__builtin_expect(!buf.mem, 0))
-		return (KO);
-	if (__builtin_expect(!xft_palloc_commit(buf.mem, sizeof(t_any *)), 0))
-		return (xft_palloc_free(buf), KO);
+		return ((t_result){.ok = KO, .err = xft_err_oom});
+	ret = xft_palloc_commit(buf.mem, sizeof(t_any *));
+	if (__builtin_expect(!ret.ok, 0))
+		return (xft_palloc_free(buf), ret);
 	xft_carve_tail(gpa);
 	prev = (t_any *)gpa->slab;
 	gpa->slab = buf.mem;
 	*(t_any *)gpa->slab = (t_any)prev;
 	gpa->bmp = (t_blk8w)gpa->slab + sizeof(t_any *);
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 
 __attribute__((__nonnull__(1), __always_inline__))
@@ -61,10 +63,10 @@ static inline t_buffer	xft_return_ptr(t_gpa *gpa, t_size snapped, t_size align)
 	if (__builtin_expect(
 			(t_uptr)new_ptr + snapped
 			> (t_uptr)gpa->slab + gpa->slabsize
-			&& KO == xft_advance_slab(gpa), 0))
+			&& xft_advance_slab(gpa).ok == KO, 0))
 		return (xft_fatptr(nullptr, 0));
 	new_ptr = xft_align_fwd(gpa->bmp, align);
-	if (__builtin_expect(!xft_palloc_commit(new_ptr, snapped), 0))
+	if (__builtin_expect(!xft_palloc_commit(new_ptr, snapped).ok, 0))
 		return (xft_fatptr(nullptr, 0));
 	gpa->bmp = (t_any)((t_blk8w)new_ptr + snapped);
 	return (xft_fatptr(new_ptr, snapped));

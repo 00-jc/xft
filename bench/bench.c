@@ -40,13 +40,13 @@ inline void	xft_main(const t_any *__restrict__ const sp)
 {
 	t_tailor	t;
 
-	if (!xft_new_tailor(&t, xft_get_sysinfo(sp), 2, 2000))
+	if (!xft_new_tailor(&t, xft_get_sysinfo(sp), 2, 2000).ok)
 		xft_exit_process(1);
 	bench_queue(&t);
-	if (!xft_tailor_run(&t))
+	if (!xft_tailor_run(&t).ok)
 		xft_exit_process(1);
 	xft_tailor_report(&t);
-	if (!xft_tailor_compare(&t))
+	if (!xft_tailor_compare(&t).ok)
 		xft_exit_process(1);
 	(xft_tailor_destroy(&t), xft_exit_process(0));
 }

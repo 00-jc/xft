@@ -32,10 +32,12 @@ static t_result	xft__imap_rehash(t_allocator allocator,
 	t_indexmap		new;
 	t_imap_slot		slot;
 	t_size			i;
+	t_result		ret;
 
-	if (__builtin_expect(!xft_new_indexmap_with(allocator, &new,
-				(cap << (map->count * 40 >= cap * 17)) * 17 / 20), 0))
-		return (KO);
+	ret = xft_new_indexmap_with(allocator, &new,
+			(cap << (map->count * 40 >= cap * 17)) * 17 / 20);
+	if (__builtin_expect(!ret.ok, 0))
+		return (ret);
 	i = 0;
 	while (i < cap)
 	{
@@ -45,7 +47,7 @@ static t_result	xft__imap_rehash(t_allocator allocator,
 	}
 	xft_destroy_soa(allocator, &map->soa);
 	*map = new;
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 
 __attribute__((__flatten__, __nonnull__(2)))
@@ -55,11 +57,14 @@ t_result	xft_indexmap_insert_seeded(t_allocator allocator,
 {
 	t_imap_probe	probe;
 	t_size			idx;
+	t_result		ret;
 
+	ret = (t_result){.ok = OK};
 	if (__builtin_expect((map->count + map->tombstones) * 20
-			>= map->soa.capacity_elements * 17, 0)
-		&& !xft__imap_rehash(allocator, map))
-		return (KO);
+			>= map->soa.capacity_elements * 17, 0))
+		ret = xft__imap_rehash(allocator, map);
+	if (__builtin_expect(!ret.ok, 0))
+		return (ret);
 	probe = xft__imap_probe_seeded(map, key.key, key.seed);
 	idx = xft__imap_find(map, key.key, probe);
 	if (idx == INDEXMAP_NPOS)
@@ -71,7 +76,7 @@ t_result	xft_indexmap_insert_seeded(t_allocator allocator,
 	}
 	xft__imap_set(map, idx, (t_imap_slot){.meta = probe.h2,
 		.key = key.key, .value = value, .seed = key.seed});
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 
 __attribute__((__flatten__, __nonnull__(2)))

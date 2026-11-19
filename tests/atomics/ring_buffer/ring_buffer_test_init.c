@@ -18,7 +18,7 @@ static void	ring_buffer_init_size(t_u32a min_size, t_u32a expect)
 	t_ring_buffer		rb;
 	t_u32a				i;
 
-	xft_pin_invariant_msg(xft_new_ring_buffer(alloc, &rb, min_size)
+	xft_pin_invariant_msg(xft_new_ring_buffer(alloc, &rb, min_size).ok
 		&& rb.size == expect,
 		xft_fatptr((t_u8 *)"ring buffer: init size",
 			sizeof("ring buffer: init size") - 1));
@@ -41,7 +41,7 @@ static void	ring_buffer_init_reject(t_u32a min_size)
 	t_ring_buffer	rb;
 
 	xft_pin_invariant_msg(!xft_new_ring_buffer(xft_page_allocator(), &rb,
-			min_size),
+			min_size).ok,
 		xft_fatptr((t_u8 *)"ring buffer: init reject",
 			sizeof("ring buffer: init reject") - 1));
 }

@@ -20,7 +20,7 @@ void	test_extend_clean_releases(void)
 	t_size				big;
 	int					i;
 
-	xft_pin_invariant(xft_new_arena(&a));
+	xft_pin_invariant(xft_new_arena(&a).ok);
 	base = a.current;
 	cp = xft_arena_checkpoint(&a);
 	big = base->total - base->used - 128;

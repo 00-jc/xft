@@ -18,17 +18,15 @@
 # ifdef XFT_REQUIRE_LIBC
 
 __attribute__((__nonnull__(4), __always_inline__, __used__))
-inline t_xft_sysres	xft_prlimit64(t_i32a pid, t_xft_rlimit resource,
+inline t_result	xft_prlimit64(t_i32a pid, t_xft_rlimit resource,
 		const t_rlimit *new_limit, t_rlimit *__restrict__ old_limit)
 {
 	t_ssize	ret;
-	t_u64a	r;
 
 	ret = syscall(SYS_prlimit64, (long)pid, (long)resource, new_limit,
 			old_limit);
-	r = xft_tern(errno == EINTR || errno == EAGAIN, xft_sys_repeat, xft_sys_ko);
-	r = xft_tern(ret < 0, r, xft_sys_ok);
-	return ((t_xft_sysres)r);
+	return ((t_result){.ok = ret >= 0,
+		.err = xft_tern(ret < 0, (t_u64a)errno, 0)});
 }
 
 # endif

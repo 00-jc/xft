@@ -16,10 +16,13 @@
 __attribute__((__nonnull__(1)))
 t_result	xft_new_ts_reporta(t_ts_reporta *gpa)
 {
-	if (__builtin_expect(xft_new_reporta(&gpa->reporta) == KO, 0))
-		return (KO);
+	t_result	ret;
+
+	ret = xft_new_reporta(&gpa->reporta);
+	if (__builtin_expect(ret.ok == KO, 0))
+		return (ret);
 	xft_mutex_init(&gpa->mutex);
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 
 __attribute__((__flatten__, __nonnull__(1)))

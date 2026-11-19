@@ -33,7 +33,7 @@ void	xft_bench_strlen(t_tailor *t)
 		"strlen_large_unaligned"},
 	};
 
-	if (!xft_strlen_bench_buffers(t))
+	if (!xft_strlen_bench_buffers(t).ok)
 		xft_exit_process(1);
 	(void)xft_tailor_bench(t, benches, sizeof(benches) / sizeof(*benches));
 }

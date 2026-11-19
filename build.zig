@@ -291,6 +291,7 @@ const SRCS = [_][]const u8{
     "src/io/writer/win64/xft_udp_writer.c",
     "src/io/writer/xft_fs_writer.c",
     "src/io/writer/xft_growable_writer.c",
+    "src/io/writer/xft_growable_writer_fd.c",
     "src/io/writer/xft_mem_writer.c",
     "src/io/writer/xft_tcp_writer.c",
     "src/io/writer/xft_udp_writer.c",
@@ -366,6 +367,7 @@ const SRCS = [_][]const u8{
     "src/threads/pool/xft_threadpool_workers.c",
     "src/os/linux/xft_mmap_commit.c",
     "src/os/linux/xft_map_failed.c",
+    "src/os/linux/xft_should_retry.c",
     "src/os/xft_get_cpu_count.c",
     "src/os/xft_get_physical_cpu_count.c",
     "src/os/xft_pin_process_to_cpu.c",
@@ -533,6 +535,16 @@ fn syscallSrcs(comptime dir: []const u8, comptime names: []const []const u8) [na
 const SRCS_FREESTANDING_x86_64 = syscallSrcs("src/os/linux/x86_64", &(XFT_SYSCALLS ++ .{"set_thread_pointer"}));
 const SRCS_FREESTANDING_aarch64 = syscallSrcs("src/os/linux/aarch64", &(XFT_SYSCALLS ++ .{ "syscall6", "set_thread_pointer" }));
 const SRCS_LIBC = syscallSrcs("src/os/linux/libc", &XFT_SYSCALLS);
+
+const XFT_URING_SYSCALLS = [_][]const u8{
+    "io_uring_enter",
+    "io_uring_register",
+    "io_uring_setup",
+};
+
+const SRCS_URING_x86_64 = syscallSrcs("src/os/linux/uring/x86_64", &XFT_URING_SYSCALLS);
+const SRCS_URING_aarch64 = syscallSrcs("src/os/linux/uring/aarch64", &XFT_URING_SYSCALLS);
+const SRCS_URING_LIBC = syscallSrcs("src/os/linux/uring/libc", &XFT_URING_SYSCALLS);
 
 const SRCS_TEST = [_][]const u8{
     "tests/alloc/arena/arena_extend_test.c",
@@ -867,6 +879,7 @@ const SRCS_TAILOR = [_][]const u8{
     "subprojects/tailor/src/xft_tailor_survivors.c",
     "subprojects/tailor/src/xft_tailor_top.c",
     "subprojects/tailor/src/xft_tailor_units.c",
+    "subprojects/tailor/src/xft_tailor_units_assign.c",
 };
 
 const SRCS_GENTABLE = [_][]const u8{
@@ -1192,6 +1205,10 @@ pub fn xftModule(x: xft_ctx, v: xft_variant) *std.Build.Module {
         mod.addCMacro("XFT_REQUIRE_LIBC", "1");
         if (!isWin32(x)) mod.addCMacro("_GNU_SOURCE", "1");
     }
+    if (isLinux(x) and !v.libc) {
+        mod.addSystemIncludePath(std.Build.LazyPath.zig_lib.path(b, b.fmt("libc/include/{s}-linux-any", .{std.zig.target.osArchName(&x.target.result)})));
+        mod.addSystemIncludePath(std.Build.LazyPath.zig_lib.path(b, "libc/include/any-linux-any"));
+    }
     if (isWin32(x)) {
         if (!v.libc)
             mod.addSystemIncludePath(std.Build.LazyPath.zig_lib.path(b, "libc/include/any-windows-any"));
@@ -1240,14 +1257,17 @@ fn addXft(x: xft_ctx, name: []const u8, libc: bool, sanitize: bool) !xft_variant
     } else if (v.libc) {
         try addSrcs(x, mod, v, &SRCS_RT_linux);
         try addSrcs(x, mod, v, &SRCS_LIBC);
+        try addSrcs(x, mod, v, &SRCS_URING_LIBC);
         try addSrcs(x, mod, v, &SRCS_RT_ENTRY_libc);
         try addSrcs(x, mod, v, &SRCS_THREADS_libc);
         try addSrcs(x, mod, v, &SRCS_FUTEX_libc);
     } else {
         try addSrcs(x, mod, v, &SRCS_RT_linux);
         try addSrcs(x, mod, v, &SRCS_FREESTANDING_x86_64);
+        try addSrcs(x, mod, v, &SRCS_URING_x86_64);
         try addSrcs(x, mod, v, &SRCS_RT_ENTRY_x86_64);
         try addSrcs(x, mod, v, &SRCS_FREESTANDING_aarch64);
+        try addSrcs(x, mod, v, &SRCS_URING_aarch64);
         try addSrcs(x, mod, v, &SRCS_RT_ENTRY_aarch64);
         try addSrcs(x, mod, v, &SRCS_THREADS_linux);
         try addSrcs(x, mod, v, &SRCS_THREADS_x86_64);

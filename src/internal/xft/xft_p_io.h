@@ -88,4 +88,8 @@ t_result		xft__udp_writer_drain_fd(t_writer *w, t_fd fd, t_size limit,\
 				t_size *size)\
 				__attribute__((__nonnull__(1, 4)));
 
+t_result		xft__growable_writer_drain_fd(t_writer *w, t_fd fd,\
+				t_size limit, t_size *size)\
+				__attribute__((__nonnull__(1, 4)));
+
 #endif

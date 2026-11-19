@@ -15,13 +15,16 @@
 __attribute__((__nonnull__(1)))
 t_result	xft_tailor_prepare(t_tailor_job *j)
 {
+	t_result	ret;
+
 	j->plan = xft_get_kb(j);
-	if (__builtin_expect(!xft_new_soa(xft_arena_allocator(j->arena), &j->soa,
-				j->plan.k_runs, xft__tailor_ctx()), 0))
-		return (KO);
+	ret = xft_new_soa(xft_arena_allocator(j->arena), &j->soa, j->plan.k_runs,
+			xft__tailor_ctx());
+	if (__builtin_expect(!ret.ok, 0))
+		return (ret);
 	j->arg = (t_tailor_arg){.iters = j->plan.dp.iters, .buffers = j->buffers};
 	xft_xoshiro_init(j->arg.xoshiro);
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 
 __attribute__((__nonnull__(1)))
@@ -29,18 +32,19 @@ t_result	xft_tailor_sample(t_tailor_job *j)
 {
 	t_tailor_arg	arg;
 	t_perf_sample	s;
+	t_result		ret;
 
 	if (j->soa.occupied_elements >= j->plan.k_runs)
-		return (OK);
+		return ((t_result){.ok = OK});
 	arg = j->arg;
 	xft_perf_start_sample(j->counters, &s);
 	j->fn(&arg);
-	if (__builtin_expect(!xft_perf_collect_sample(arg.iters, j->counters, &s),
-			0))
-		return (KO);
+	ret = xft_perf_collect_sample(arg.iters, j->counters, &s);
+	if (__builtin_expect(!ret.ok, 0))
+		return (ret);
 	j->arg = arg;
 	xft_soa_append_from_struct_unchecked(&j->soa, &s, xft__tailor_ctx());
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 
 __attribute__((__nonnull__(1, 4), __always_inline__))
@@ -75,13 +79,13 @@ static inline t_result	xft_calc(t_tailor_job *j, t_buffer ns, t_u64a *medmad)
 		__builtin_unreachable();
 	arr = xft_arena_alloc(j->arena, sizeof(t_u64a) * ns.size, 64);
 	if (__builtin_expect(arr == nullptr, 0))
-		return (KO);
+		return ((t_result){.ok = KO, .err = xft_err_oom});
 	xft_memcpy(arr, ns.mem, sizeof(t_u64a) * ns.size);
 	ctx = (t_qsort_ctx){(t_u8 *)&j->swap, sizeof(t_u64a), xft_cmp_u64};
 	xft_qsort((t_any)arr, &ctx, 0, ns.size);
 	medmad[0] = arr[ns.size >> 1];
 	xft_calc_mad(j, xft_fatptr((t_any)arr, ns.size), medmad[0], medmad + 1);
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 
 __attribute__((__nonnull__(1)))
@@ -89,17 +93,19 @@ t_result	xft_tailor_finish(t_tailor_job *j)
 {
 	t_buffer	surv;
 	t_u64a		medmad[2];
+	t_result	ret;
 
 	j->plan.dp.bytes_processed = j->arg.bytes_processed;
 	surv = xft_fatptr((t_u8 *)((t_u64a *)xft_soa_fields(&j->soa,
 					xft__tailor_ctx(), TAILOR_NS) + K_WARMUP),
 			j->soa.occupied_elements - K_WARMUP);
-	if (__builtin_expect(xft_calc(j, surv, medmad) == KO, 0))
-		return (KO);
+	ret = xft_calc(j, surv, medmad);
+	if (__builtin_expect(ret.ok == KO, 0))
+		return (ret);
 	medmad[1] = xft_tern(medmad[1] == 0, 1, medmad[1]);
 	surv = xft_tailor_survivors(j, &j->soa,
 			medmad[0] + (medmad[1] * 7413ULL) / 1000ULL, j->plan);
 	if (__builtin_expect(surv.mem == nullptr, 0))
-		return (KO);
+		return ((t_result){.ok = KO, .err = xft_err_oom});
 	return (xft_bootstrap(j, surv, j->plan));
 }

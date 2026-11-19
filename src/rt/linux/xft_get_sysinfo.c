@@ -121,7 +121,7 @@ inline t_sysinfo	xft_get_sysinfo(const t_any *__restrict__ sp)
 	xft_prlimit64(0, xft_rlimit_stack, nullptr, &lim);
 	info.stack_size = (t_size)lim.rlim_cur;
 	res = xft_get_cpu_count(&cpus);
-	info.cpu_count = (t_u32a)xft_tern(res == OK, cpus, 1);
+	info.cpu_count = (t_u32a)xft_tern(res.ok == OK, cpus, 1);
 	info.cache_line_size = (t_u32a)xft_tern_s(info.cache_line_size == 0,
 			xft_cache_line_size(), info.cache_line_size);
 	return (info);

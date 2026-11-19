@@ -29,26 +29,27 @@ inline t_result	xft_vec_reserve(t_allocator allocator,
 	{
 		vec->buf.mem = new_buf.mem;
 		vec->buf.capacity = new_buf.size;
-		return (OK);
+		return ((t_result){.ok = OK});
 	}
-	return (KO);
+	return ((t_result){.ok = KO, .err = xft_err_oom});
 }
 
 __attribute__((__nonnull__(2)))
 t_result	xft_vec_extend(t_allocator allocator,
 		t_vec *restrict const vec, t_buffer data)
 {
-	t_u8	should_extend;
+	t_result	ret;
 
 	if (vec->buf.mem == nullptr)
 		__builtin_unreachable();
 	{
-		should_extend = vec->buf.capacity < vec->buf.size + data.size;
-		if (__builtin_expect(should_extend
-				&& !xft_vec_reserve(allocator, vec, data.size), 0))
-			return (KO);
+		ret = (t_result){.ok = OK};
+		if (__builtin_expect(vec->buf.capacity < vec->buf.size + data.size, 0))
+			ret = xft_vec_reserve(allocator, vec, data.size);
+		if (__builtin_expect(!ret.ok, 0))
+			return (ret);
 		xft_memcpy(vec->buf.mem + vec->buf.size, data.mem, data.size);
 		vec->buf.size += data.size;
 	}
-	return (OK);
+	return ((t_result){.ok = OK});
 }

@@ -23,7 +23,7 @@ void	test_map_many(t_allocator a)
 	int			i;
 
 	xft_xoshiro_init(rng);
-	xft_pin_invariant(xft_new_swissmap(a, &m));
+	xft_pin_invariant(xft_new_swissmap(a, &m).ok);
 	i = -1;
 	while (++i < MAP_TEST_MANY)
 	{
@@ -31,7 +31,7 @@ void	test_map_many(t_allocator a)
 		keys[i] = xft_xoshiro256ss(rng);
 		xft_pin_invariant(xft_swissmap_insert(a, &m,
 				xft_fatptr((t_u8 *)&keys[i], sizeof(t_u64a)),
-				(t_u8 *)&vals[i]));
+				(t_u8 *)&vals[i]).ok);
 	}
 	xft_pin_invariant(m.count == MAP_TEST_MANY);
 	xft_pin_invariant(m.soa.capacity_elements > SWISS_INITIAL_SIZE);

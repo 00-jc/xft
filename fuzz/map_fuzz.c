@@ -37,7 +37,7 @@ static void	fuzz_map_case(t_fuzzer *fz, t_allocator a,
 	i = xft_fuzz_get_rand_u(fz) % FUZZ_KEY_SLOTS;
 	val = (int)xft_fuzz_get_rand_u(fz);
 	key = xft_fatptr(keys[i], 2);
-	xft_pin_invariant(xft_swissmap_insert(a, m, key, (t_u8 *)&val));
+	xft_pin_invariant(xft_swissmap_insert(a, m, key, (t_u8 *)&val).ok);
 	x = xft_swissmap_lookup(m, key);
 	xft_pin_invariant(x != nullptr);
 	xft_pin_invariant(*x == val);
@@ -54,11 +54,11 @@ void	xft_main(const t_any *__restrict__ const sp)
 	t_size		i;
 
 	(void)sp;
-	xft_pin_invariant(xft_new_arena(&fz.arena));
+	xft_pin_invariant(xft_new_arena(&fz.arena).ok);
 	fz = xft_new_fuzzer(fz.arena);
-	xft_pin_invariant(xft_fuzzer_add_rand(&fz));
+	xft_pin_invariant(xft_fuzzer_add_rand(&fz).ok);
 	a = xft_page_allocator();
-	xft_pin_invariant(xft_new_swissmap(a, &m));
+	xft_pin_invariant(xft_new_swissmap(a, &m).ok);
 	init_keys(keys);
 	i = 0;
 	while (i++ < fz.buf_n * 2)

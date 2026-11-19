@@ -20,14 +20,14 @@ t_result	xft_new_str(t_allocator allocator, t_str *str, t_size size)
 	if (allocator.vtable == nullptr || allocator.vtable->allocate == nullptr)
 		__builtin_unreachable();
 	if (__builtin_expect(size == 0, 0))
-		return (KO);
+		return ((t_result){.ok = KO, .err = xft_err_inval});
 	buf = allocator.vtable->allocate(allocator.allocator, size + 1,
 			__GCC_CONSTRUCTIVE_SIZE);
 	if (__builtin_expect(buf.mem == nullptr, 0))
-		return (KO);
+		return ((t_result){.ok = KO, .err = xft_err_oom});
 	buf.mem[0] = 0;
 	*str = (t_str){.buf = {.size = 0, .capacity = buf.size, .mem = buf.mem}};
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 
 __attribute__((__nonnull__(2)))

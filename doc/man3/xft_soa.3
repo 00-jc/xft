@@ -151,9 +151,15 @@ or
 .Fa max_alignment
 is zero,
 .Fa max_alignment
-is not a power of two, or the allocation fails, it returns
+is not a power of two, it returns
 .Dv KO
-and leaves
+with
+.Dv xft_err_inval ,
+and if the allocation fails it returns
+.Dv KO
+with
+.Dv xft_err_oom ;
+either way it leaves
 .Fa *soa
 untouched.
 .Pp
@@ -164,6 +170,8 @@ return
 .Dv OK
 on success and
 .Dv KO
+with
+.Dv xft_err_oom
 if reallocation fails, in which case the container is unchanged.
 .Pp
 .Fn xft_soa_fields
@@ -227,14 +235,14 @@ static t_result	step(t_allocator a, const t_soa_context *ctx)
 	const t_i32a	*vx;
 	t_size		i;
 
-	if (!xft_new_soa(a, &soa, 4, ctx))
-		return (KO);
+	if (!xft_new_soa(a, &soa, 4, ctx).ok)
+		return ((t_result){.ok = KO});
 	while (soa.occupied_elements < 16)
 	{
 		p = (t_particle){.id = soa.occupied_elements,
 			.vx = (t_i32)soa.occupied_elements, .vy = -1};
-		if (!xft_soa_append_from_struct(a, &soa, &p, ctx))
-			return (xft_destroy_soa(a, &soa), KO);
+		if (!xft_soa_append_from_struct(a, &soa, &p, ctx).ok)
+			return (xft_destroy_soa(a, &soa), (t_result){.ok = KO});
 	}
 	x = xft_soa_fields(&soa, ctx, 1);
 	vx = xft_soa_fields(&soa, ctx, 3);
@@ -245,7 +253,7 @@ static t_result	step(t_allocator a, const t_soa_context *ctx)
 		++i;
 	}
 	xft_destroy_soa(a, &soa);
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 .Ed
 .Sh SEE ALSO

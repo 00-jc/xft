@@ -211,6 +211,18 @@ return
 or
 .Dv KO
 on failure.
+On Linux
+.Fn xft_palloc_commit
+always succeeds, and the other two pass on the errno of
+.Xr mprotect 2
+or
+.Xr madvise 2
+in
+.Fa err .
+On Windows a failed commit gives
+.Dv xft_err_oom
+and a failed guard or discard
+.Dv xft_err_none .
 .Sh EXAMPLES
 Place input flush against a guard page, so that reading one byte past it
 faults:
@@ -220,7 +232,7 @@ t_u8		*end;
 
 page = xft_palloc(8192);
 if (page.mem == nullptr
-	|| !xft_palloc_guard((t_u8 *)page.mem + 4096, 4096))
+	|| !xft_palloc_guard((t_u8 *)page.mem + 4096, 4096).ok)
 	xft_exit_process(1);
 end = (t_u8 *)page.mem + 4096;
 xft_memcpy(end - 3, "abc", 3);

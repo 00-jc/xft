@@ -18,24 +18,24 @@ t_gpa	*xft_get_bench_imap_gpa(void)
 	static _Thread_local t_gpa	gpa = {0};
 
 	if (gpa.slab == nullptr)
-		xft_pin_invariant(xft_new_gpa(&gpa));
+		xft_pin_invariant(xft_new_gpa(&gpa).ok);
 	return (&gpa);
 }
 
 t_u64a	*xft_get_bench_imap_keys(void)
 {
 	static t_u64a	keys[IMAP_BENCH_KEYS] = {0};
-	static t_result	ready = KO;
+	static t_result	ready = (t_result){.ok = KO};
 	t_xoshiro		rng;
 	t_size			i;
 
-	if (ready)
+	if (ready.ok)
 		return (keys);
 	xft_xoshiro_init(rng);
 	i = 0;
 	while (i < IMAP_BENCH_KEYS)
 		keys[i++] = xft_xoshiro256ss(rng);
-	ready = OK;
+	ready = (t_result){.ok = OK};
 	return (keys);
 }
 
@@ -54,12 +54,12 @@ t_indexmap	*xft_get_bench_imap_filled(void)
 	if (map.soa.ptr != nullptr)
 		return (&map);
 	a = xft_gpa_allocator(xft_get_bench_imap_gpa());
-	xft_pin_invariant(xft_new_indexmap_with(a, &map, IMAP_BENCH_FILL));
+	xft_pin_invariant(xft_new_indexmap_with(a, &map, IMAP_BENCH_FILL).ok);
 	i = 0;
 	while (i < IMAP_BENCH_FILL)
 	{
 		xft_pin_invariant(xft_indexmap_insert(a, &map,
-				xft_imap_bench_key(i), i));
+				xft_imap_bench_key(i), i).ok);
 		++i;
 	}
 	return (&map);

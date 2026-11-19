@@ -45,9 +45,13 @@ inline t_result	xft_soa_append_from_struct(
 	t_any __restrict__ const _struct,
 	const t_soa_context *__restrict__ const ctx)
 {
-	if (__builtin_expect(soa->occupied_elements == soa->capacity_elements
-			&& !xft_soa_reserve(allocator, soa, ctx, 1), 0))
-		return (KO);
+	t_result	ret;
+
+	ret = (t_result){.ok = OK};
+	if (__builtin_expect(soa->occupied_elements == soa->capacity_elements, 0))
+		ret = xft_soa_reserve(allocator, soa, ctx, 1);
+	if (__builtin_expect(!ret.ok, 0))
+		return (ret);
 	xft_soa_append_from_struct_unchecked(soa, _struct, ctx);
-	return (OK);
+	return ((t_result){.ok = OK});
 }

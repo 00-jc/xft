@@ -48,7 +48,7 @@ void	test_bulk_align(void)
 	t_gpa		gpa;
 	t_size		size;
 
-	xft_pin_invariant_msg(xft_new_gpa(&gpa),
+	xft_pin_invariant_msg(xft_new_gpa(&gpa).ok,
 		xft_fatptr((t_u8 *)"gpa init align", sizeof("gpa init align") - 1));
 	size = 8;
 	while (size <= 4096)

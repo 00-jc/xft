@@ -16,7 +16,7 @@
 static void	ring_buffer_push(t_ring_buffer *__restrict__ const rb,
 	t_u8 *__restrict__ const items, t_u32a *__restrict__ const in)
 {
-	xft_pin_invariant_msg(xft_ring_buffer_submit(rb, &items[*in & 15]) == OK,
+	xft_pin_invariant_msg(xft_ring_buffer_submit(rb, &items[*in & 15]).ok == OK,
 		xft_fatptr((t_u8 *)"ring buffer: submit",
 			sizeof("ring buffer: submit") - 1));
 	*in += 1;
@@ -50,7 +50,7 @@ static void	ring_buffer_lap(t_ring_buffer *__restrict__ const rb,
 	i = 0;
 	while (i++ < rb->size)
 		ring_buffer_push(rb, items, in);
-	xft_pin_invariant_msg(xft_ring_buffer_submit(rb, items) == KO,
+	xft_pin_invariant_msg(xft_ring_buffer_submit(rb, items).ok == KO,
 		xft_fatptr((t_u8 *)"ring buffer: submit full",
 			sizeof("ring buffer: submit full") - 1));
 	while (*out != *in)
@@ -66,7 +66,7 @@ void	test_ring_buffer_fifo(void)
 	t_u32a				in;
 	t_u32a				out;
 
-	xft_pin_invariant(xft_new_ring_buffer(alloc, &rb, 5));
+	xft_pin_invariant(xft_new_ring_buffer(alloc, &rb, 5).ok);
 	ring_buffer_empty(&rb);
 	in = 0;
 	out = 0;

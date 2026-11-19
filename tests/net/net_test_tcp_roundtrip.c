@@ -21,13 +21,14 @@ void	test_net_tcp_roundtrip(void)
 			xft_fatptr(s.wbuf, sizeof(s.wbuf)));
 	s.r = xft_tcp_reader(&s.tcp_r, s.fds[2],
 			xft_fatptr(s.rbuf, sizeof(s.rbuf)));
-	net_check(xft_writer_drain_all(&s.w, xft_fatptr((const t_u8 *)"hello ", 6))
-		&& xft_writer_drain_all(&s.w, xft_fatptr((const t_u8 *)"world", 5))
-		&& xft_writer_flush(&s.w), "tcp writer drain_all + flush");
-	net_check(xft_reader_read_all(&s.r, xft_fatptr(s.got, 11)),
+	net_check(xft_writer_drain_all(&s.w,
+			xft_fatptr((const t_u8 *)"hello ", 6)).ok
+		&& xft_writer_drain_all(&s.w, xft_fatptr((const t_u8 *)"world", 5)).ok
+		&& xft_writer_flush(&s.w).ok, "tcp writer drain_all + flush");
+	net_check(xft_reader_read_all(&s.r, xft_fatptr(s.got, 11)).ok,
 		"tcp reader read_all");
 	net_check(xft_memcmp(s.got, "hello world", 11) == 0, "tcp roundtrip bytes");
-	net_check(xft_close_socket(s.fds[2]), "close conn");
-	net_check(xft_close_socket(s.fds[1]), "close client");
-	net_check(xft_close_socket(s.fds[0]), "close server");
+	net_check(xft_close_socket(s.fds[2]).ok, "close conn");
+	net_check(xft_close_socket(s.fds[1]).ok, "close client");
+	net_check(xft_close_socket(s.fds[0]).ok, "close server");
 }

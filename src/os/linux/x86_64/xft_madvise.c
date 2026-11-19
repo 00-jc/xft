@@ -18,10 +18,9 @@
 # if defined(__x86_64__) && !defined(XFT_REQUIRE_LIBC)
 
 __attribute__((__nonnull__(1)))
-t_xft_sysres	xft_madvise(t_any addr, t_size size, int advice)
+t_result	xft_madvise(t_any addr, t_size size, int advice)
 {
 	int		ret;
-	t_u64a	r;
 
 	__asm__ volatile (
 		"syscall"
@@ -32,9 +31,8 @@ t_xft_sysres	xft_madvise(t_any addr, t_size size, int advice)
 		"d"(advice)
 		: "rcx", "r11", "memory"
 	);
-	r = xft_tern(ret < 0, xft_sys_ko, xft_sys_ok);
-	r = xft_tern(ret == -xft_eintr || ret == -xft_eagain, xft_sys_repeat, r);
-	return ((t_xft_sysres)r);
+	return ((t_result){.ok = ret >= 0,
+		.err = xft_tern(ret < 0, (t_u64a)-ret, 0)});
 }
 
 # endif

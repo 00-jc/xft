@@ -40,8 +40,8 @@ t_result	xft_strlen_bench_buffers(t_tailor *t)
 		64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
 	};
 
-	if (!xft_tailor_buffers(t, bufsizes, bufalign, 28))
-		return (KO);
+	if (!xft_tailor_buffers(t, bufsizes, bufalign, 28).ok)
+		return ((t_result){.ok = KO});
 	xft_fill_strings((t_buffer *)t->rand_buffers.mem, t->rand_buffers.size);
-	return (OK);
+	return ((t_result){.ok = OK});
 }

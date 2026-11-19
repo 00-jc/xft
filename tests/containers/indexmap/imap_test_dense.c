@@ -33,7 +33,7 @@ static void	dense_swap_remove(t_allocator a, t_indexmap *m, t_u64a *keys,
 	if (idx == *n)
 		return ;
 	keys[idx] = keys[*n];
-	xft_pin_invariant(xft_indexmap_insert(a, m, dense_key(keys, idx), idx));
+	xft_pin_invariant(xft_indexmap_insert(a, m, dense_key(keys, idx), idx).ok);
 	xft_pin_invariant(xft_indexmap_lookup(m,
 			xft_fatptr((t_u8 *)&gone, sizeof(gone))) == INDEXMAP_NPOS);
 }
@@ -47,12 +47,12 @@ void	test_imap_dense(t_allocator a)
 	t_size		i;
 
 	xft_xoshiro_init(rng);
-	xft_pin_invariant(xft_new_indexmap(a, &m));
+	xft_pin_invariant(xft_new_indexmap(a, &m).ok);
 	n = 0;
 	while (n < IMAP_TEST_DENSE)
 	{
 		keys[n] = xft_xoshiro256ss(rng);
-		xft_pin_invariant(xft_indexmap_insert(a, &m, dense_key(keys, n), n));
+		xft_pin_invariant(xft_indexmap_insert(a, &m, dense_key(keys, n), n).ok);
 		++n;
 	}
 	while (n > IMAP_TEST_DENSE / 4)

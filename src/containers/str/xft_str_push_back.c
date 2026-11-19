@@ -16,13 +16,17 @@ __attribute__((__nonnull__(2)))
 t_result	xft_str_push_back(t_allocator allocator,
 		t_str *restrict const str, const t_u8 byte)
 {
+	t_result	ret;
+
 	if (str->buf.mem == nullptr || allocator.allocator == nullptr)
 		__builtin_unreachable();
-	if (__builtin_expect(str->buf.size + 1 >= str->buf.capacity
-			&& !xft_str_reserve(allocator, str,
-				xft_tern_s(str->buf.capacity, str->buf.capacity << 1, 4)), 0))
-		return (KO);
+	ret = (t_result){.ok = OK};
+	if (__builtin_expect(str->buf.size + 1 >= str->buf.capacity, 0))
+		ret = xft_str_reserve(allocator, str,
+				xft_tern_s(str->buf.capacity, str->buf.capacity << 1, 4));
+	if (__builtin_expect(!ret.ok, 0))
+		return (ret);
 	str->buf.mem[str->buf.size++] = byte;
 	str->buf.mem[str->buf.size] = 0;
-	return (OK);
+	return ((t_result){.ok = OK});
 }

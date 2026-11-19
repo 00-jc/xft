@@ -18,12 +18,11 @@
 # if defined(__x86_64__) && !defined(XFT_REQUIRE_LIBC)
 
 __attribute__((__nonnull__(3, 4), __always_inline__, __used__))
-inline t_xft_sysres	xft_sched_getaffinity(t_i32a pid, t_size cpusetsize,
+inline t_result	xft_sched_getaffinity(t_i32a pid, t_size cpusetsize,
 	const t_u64a *__restrict__ mask,
 	t_size *__restrict__ const written)
 {
 	int		ret;
-	t_u64a	r;
 
 	__asm__ volatile (
 		"syscall"
@@ -35,9 +34,8 @@ inline t_xft_sysres	xft_sched_getaffinity(t_i32a pid, t_size cpusetsize,
 		: "r11", "rcx", "memory"
 	);
 	*written = (t_size)xft_tern(ret < 0, 0, (t_u64a)ret);
-	r = xft_tern(ret < 0, xft_sys_ko, xft_sys_ok);
-	r = xft_tern(ret == -xft_eintr || ret == -xft_eagain, xft_sys_repeat, r);
-	return ((t_xft_sysres)r);
+	return ((t_result){.ok = ret >= 0,
+		.err = xft_tern(ret < 0, (t_u64a)-ret, 0)});
 }
 
 # endif

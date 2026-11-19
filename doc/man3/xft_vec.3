@@ -212,7 +212,13 @@ returns
 .Dv OK
 on success and
 .Dv KO
-on failure.
+on failure, with
+.Fa err
+set to
+.Dv xft_err_inval
+when the size or element size is zero or their product overflows, and to
+.Dv xft_err_oom
+when the allocation fails.
 .Pp
 .Fn xft_vec_push_back ,
 .Fn xft_vec_extend
@@ -222,6 +228,8 @@ return
 .Dv OK
 on success and
 .Dv KO
+with
+.Dv xft_err_oom
 if the allocator could not grow the buffer, in which case the vector is
 unchanged.
 .Pp
@@ -241,7 +249,11 @@ if
 is out of range.
 All four return
 .Dv OK
-otherwise.
+otherwise, and set
+.Fa err
+to
+.Dv xft_err_inval
+when they fail.
 .Pp
 .Fn xft_vec_len
 returns the element count.
@@ -266,21 +278,21 @@ t_result	demo(t_allocator a)
 	int			out;
 	const int	*got;
 
-	if (!xft_new_vec(a, &v, 4, sizeof(int)))
-		return (KO);
+	if (!xft_new_vec(a, &v, 4, sizeof(int)).ok)
+		return ((t_result){.ok = KO});
 	val = 42;
-	if (!xft_vec_push_back(a, &v, (t_u8 *)&val, sizeof(int)))
-		return (xft_vec_destroy(a, &v), KO);
+	if (!xft_vec_push_back(a, &v, (t_u8 *)&val, sizeof(int)).ok)
+		return (xft_vec_destroy(a, &v), (t_result){.ok = KO});
 	val = 99;
-	if (!xft_vec_push_back(a, &v, (t_u8 *)&val, sizeof(int)))
-		return (xft_vec_destroy(a, &v), KO);
+	if (!xft_vec_push_back(a, &v, (t_u8 *)&val, sizeof(int)).ok)
+		return (xft_vec_destroy(a, &v), (t_result){.ok = KO});
 	got = xft_vec_get(&v, 1, sizeof(int));
 	xft_pin_invariant(got != nullptr && *got == 99);
 	xft_pin_invariant(xft_vec_get(&v, 2, sizeof(int)) == nullptr);
-	xft_pin_invariant(xft_vec_popmv(&v, &out, sizeof(int)) && out == 99);
+	xft_pin_invariant(xft_vec_popmv(&v, &out, sizeof(int)).ok && out == 99);
 	xft_pin_invariant(xft_vec_len(&v, sizeof(int)) == 1);
 	xft_vec_destroy(a, &v);
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 .Ed
 .Sh SEE ALSO

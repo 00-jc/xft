@@ -30,6 +30,12 @@ inline static t_nvec	gt__load(t_buffer src, t_size it, t_u64a full)
 	return (*(t_blknr)(src.mem + it));
 }
 
+__attribute__((__always_inline__, __flatten__, __hot__))
+inline static t_nvec	gt__load_at(t_buffer src, t_size it)
+{
+	return (gt__load(src, it, xft_tern(sizeof(t_nvec) <= src.size - it, 1, 0)));
+}
+
 __attribute__((__nonnull__(3)))
 t_result	gt_iterate(t_allocator allocator, t_buffer src,
 				t_vec *__restrict__ const vec)
@@ -37,7 +43,7 @@ t_result	gt_iterate(t_allocator allocator, t_buffer src,
 	t_size			it;
 	t_nvec			wide;
 	t_gt_acc		acc;
-	t_u64a			full;
+	t_result		ret;
 	t_carry			c;
 
 	if (src.mem == nullptr)
@@ -49,13 +55,12 @@ t_result	gt_iterate(t_allocator allocator, t_buffer src,
 	{
 		acc.base = (t_u32)it;
 		acc.next = (t_u32)(it + sizeof(t_nvec));
-		full = xft_tern(sizeof(t_nvec) <= src.size - it, 1, 0);
-		wide = gt__load(src, it, full);
-		if (__builtin_expect(gt_classify_and_intern(gt_classify(wide, &c),
-					vec, &acc) == KO, 0))
-			return (KO);
+		wide = gt__load_at(src, it);
+		ret = gt_classify_and_intern(gt_classify(wide, &c), vec, &acc);
+		if (__builtin_expect(ret.ok == KO, 0))
+			return (ret);
 		if (__builtin_expect(acc.next >= src.size, 0))
-			return (OK);
+			return ((t_result){.ok = OK});
 		c = (t_carry)xft_tern(acc.next == it + sizeof(t_nvec), c, 0);
 		it = acc.next;
 	}

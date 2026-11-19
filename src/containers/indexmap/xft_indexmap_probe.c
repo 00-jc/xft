@@ -29,8 +29,8 @@ static inline t_result	xft__imap_key_eq(
 	const t_u64a *const		seeds = xft_soa_fields(soa, xft__imap_ctx(),
 			IMAP_SEED);
 
-	return (seeds[idx] == seed && keys[idx].size == key.size
-		&& !xft_memcmp(key.mem, keys[idx].mem, key.size));
+	return ((t_result){.ok = seeds[idx] == seed && keys[idx].size == key.size
+		&& !xft_memcmp(key.mem, keys[idx].mem, key.size)});
 }
 
 __attribute__((__always_inline__, pure, __nonnull__(1), __used__))
@@ -49,7 +49,7 @@ inline t_size	xft__imap_find(const t_indexmap *__restrict__ const map,
 		while (mask)
 		{
 			idx = probe.group * IMAP_GROUP + xft_memctz_u64(mask);
-			if (xft__imap_key_eq(&map->soa, idx, key, probe.seed))
+			if (xft__imap_key_eq(&map->soa, idx, key, probe.seed).ok)
 				return (idx);
 			mask &= mask - 1;
 		}

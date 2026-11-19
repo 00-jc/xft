@@ -42,10 +42,10 @@ void	xft_main(const t_any *__restrict__ const sp)
 	if (__builtin_expect(!gt__init_state(&state, (t_any)kp.argv[1]), 0))
 		xft_exit(1);
 	ret = gt_iterate(state.allocator, state.database, &state.set);
-	if (__builtin_expect(ret == OK, 1))
+	if (__builtin_expect(ret.ok == OK, 1))
 		ret = gt_emit(state.database, &state.set, GT_XID_PATH);
 	xft_vec_destroy(state.allocator, &state.set);
 	xft_unmap_file_from_memory(state.database);
 	xft_gpa_destroy(&state.gpa);
-	xft_exit((int)xft_tern(ret == KO, 1, 0));
+	xft_exit((int)xft_tern(ret.ok == KO, 1, 0));
 }

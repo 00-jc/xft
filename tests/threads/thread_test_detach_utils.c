@@ -41,6 +41,6 @@ void	thread_detach_spawn(t_thread *__restrict__ const thread,
 	opts.fn = thread_detach_fn;
 	opts.stack_size = XFT_THREAD_STACKSIZE;
 	opts.argument = flags;
-	xft_pin_invariant_msg(xft_thread_spawn(thread, sysinfo, opts) == OK,
+	xft_pin_invariant_msg(xft_thread_spawn(thread, sysinfo, opts).ok == OK,
 		xft_fatptr((t_u8 *)"thread spawn", sizeof("thread spawn") - 1));
 }

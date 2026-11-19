@@ -90,11 +90,13 @@ is an error.
 returns
 .Dv OK
 if every write succeeded.
-It returns
-.Dv KO
-if a write to
+If a write to
 .Fa writer
-fails or an unknown conversion is found.
+fails it returns that write's result, and if an unknown conversion is found
+it returns
+.Dv KO
+with
+.Dv xft_err_inval .
 Output produced before the failure has already been passed to
 .Fa writer .
 .Sh EXAMPLES

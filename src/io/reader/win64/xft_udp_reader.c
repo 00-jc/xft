@@ -37,10 +37,10 @@ t_result	xft__udp_reader_read(t_reader *r, t_buffer dst, t_size *size)
 	n = recvfrom((SOCKET)ctx->socket, (char *)dst.mem, cap, 0,
 			(SOCKADDR *)&sa, &len);
 	if (__builtin_expect(n < 0 && WSAGetLastError() != WSAEMSGSIZE, 0))
-		return (KO);
+		return ((t_result){.ok = KO, .err = xft_err_none});
 	xft__ip_from_sockaddr(&sa, &ctx->ip);
 	*size = xft_tern_s(n < 0, (t_size)cap, (t_size)n);
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 
 __attribute__((__nonnull__(1, 3)))

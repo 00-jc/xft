@@ -18,11 +18,10 @@
 # if defined(__x86_64__) && !defined(XFT_REQUIRE_LIBC)
 
 __attribute__((__nonnull__(2, 4), __always_inline__, __used__))
-inline t_xft_sysres	xft_read(int fd, t_u8 *restrict const buffer, t_size len,
+inline t_result	xft_read(int fd, t_u8 *restrict const buffer, t_size len,
 	t_size *restrict const got)
 {
 	t_ssize	ret;
-	t_u64a	r;
 
 	__asm__ volatile (
 		"syscall"
@@ -34,9 +33,8 @@ inline t_xft_sysres	xft_read(int fd, t_u8 *restrict const buffer, t_size len,
 		: "rcx", "r11", "memory"
 	);
 	*got = (t_size)xft_tern(ret < 0, 0, (t_u64a)ret);
-	r = xft_tern(ret < 0, xft_sys_ko, xft_sys_ok);
-	r = xft_tern(ret == -xft_eintr || ret == -xft_eagain, xft_sys_repeat, r);
-	return ((t_xft_sysres)r);
+	return ((t_result){.ok = ret >= 0,
+		.err = xft_tern(ret < 0, (t_u64a)-ret, 0)});
 }
 
 # endif

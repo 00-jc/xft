@@ -17,15 +17,15 @@ static void	test_soa_new_invalid(t_allocator a, const t_soa_context *ctx)
 	t_soa_context	bad;
 	t_soa			soa;
 
-	xft_pin_invariant(!xft_new_soa(a, &soa, 0, ctx));
+	xft_pin_invariant(!xft_new_soa(a, &soa, 0, ctx).ok);
 	bad = (t_soa_context){.total_struct_size = ctx->total_struct_size,
 		.max_alignment = 3, .fields_count = 0};
-	xft_pin_invariant(!xft_new_soa(a, &soa, 4, &bad));
+	xft_pin_invariant(!xft_new_soa(a, &soa, 4, &bad).ok);
 	bad.max_alignment = 0;
-	xft_pin_invariant(!xft_new_soa(a, &soa, 4, &bad));
+	xft_pin_invariant(!xft_new_soa(a, &soa, 4, &bad).ok);
 	bad.max_alignment = SOA_TEST_ALIGN;
 	bad.total_struct_size = 0;
-	xft_pin_invariant(!xft_new_soa(a, &soa, 4, &bad));
+	xft_pin_invariant(!xft_new_soa(a, &soa, 4, &bad).ok);
 }
 
 void	test_soa_new(t_allocator a, const t_soa_context *ctx)
@@ -33,7 +33,7 @@ void	test_soa_new(t_allocator a, const t_soa_context *ctx)
 	t_soa	soa;
 
 	test_soa_new_invalid(a, ctx);
-	xft_pin_invariant(xft_new_soa(a, &soa, 5, ctx));
+	xft_pin_invariant(xft_new_soa(a, &soa, 5, ctx).ok);
 	xft_pin_invariant(soa.occupied_elements == 0);
 	xft_pin_invariant(soa.capacity_elements == 8);
 	xft_pin_invariant(soa.allocator_bytes_given

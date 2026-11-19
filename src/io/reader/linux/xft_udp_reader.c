@@ -24,21 +24,21 @@ t_result	xft__udp_reader_discard(t_reader *r, t_size limit, t_size *size)
 	t_reader_ctx_udp *const	ctx = r->reader_ctx;
 	t_sockaddr_in6			sa;
 	t_iovec					iov;
-	t_xft_sysres			ret;
+	t_result				ret;
 
 	iov = (t_iovec){.mem = ctx->buf.mem};
-	ret = xft_sys_repeat;
-	while (ret == xft_sys_repeat)
+	ret = (t_result){.err = xft_err_retry};
+	while (xft_should_retry(ret))
 	{
 		iov.size = 0;
 		ret = xft_recvfrom((int)ctx->socket, &iov,
 				(t_xft_msg_opts){.trunc = 1}, &sa);
 	}
-	if (__builtin_expect(ret != xft_sys_ok, 0))
-		return (KO);
+	if (__builtin_expect(!ret.ok, 0))
+		return (ret);
 	xft__ip_from_sockaddr(&sa, &ctx->ip);
 	*size = xft_tern_s(iov.size < limit, iov.size, limit);
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 
 __attribute__((__nonnull__(1, 3)))
@@ -47,22 +47,22 @@ t_result	xft__udp_reader_read(t_reader *r, t_buffer dst, t_size *size)
 	t_reader_ctx_udp *const	ctx = r->reader_ctx;
 	t_sockaddr_in6			sa;
 	t_iovec					iov;
-	t_xft_sysres			ret;
+	t_result				ret;
 
 	if (dst.mem == nullptr)
 		__builtin_unreachable();
 	iov = (t_iovec){.mem = dst.mem};
-	ret = xft_sys_repeat;
-	while (ret == xft_sys_repeat)
+	ret = (t_result){.err = xft_err_retry};
+	while (xft_should_retry(ret))
 	{
 		iov.size = dst.size;
 		ret = xft_recvfrom((int)ctx->socket, &iov, (t_xft_msg_opts){0}, &sa);
 	}
-	if (__builtin_expect(ret != xft_sys_ok, 0))
-		return (KO);
+	if (__builtin_expect(!ret.ok, 0))
+		return (ret);
 	xft__ip_from_sockaddr(&sa, &ctx->ip);
 	*size = iov.size;
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 
 #endif

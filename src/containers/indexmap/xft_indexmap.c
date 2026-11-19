@@ -17,15 +17,17 @@ __attribute__((__nonnull__(2)))
 t_result	xft_new_indexmap_with(t_allocator allocator,
 	t_indexmap *__restrict__ const map, t_size capacity)
 {
+	t_result	ret;
+
 	if (__builtin_expect(capacity == 0, 0))
-		return (KO);
+		return ((t_result){.ok = KO, .err = xft_err_inval});
 	*map = (t_indexmap){0};
-	if (__builtin_expect(!xft_new_soa(allocator, &map->soa,
-				xft_next_pow2((capacity - 1) * 20 / 17 + 1),
-				xft__imap_ctx()), 0))
-		return (KO);
+	ret = xft_new_soa(allocator, &map->soa,
+			xft_next_pow2((capacity - 1) * 20 / 17 + 1), xft__imap_ctx());
+	if (__builtin_expect(!ret.ok, 0))
+		return (ret);
 	xft_memset(xft__imap_meta(map), IMAP_EMPTY, map->soa.capacity_elements);
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 
 __attribute__((__nonnull__(2)))

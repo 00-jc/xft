@@ -111,8 +111,12 @@ on success.
 If
 .Fa size
 is zero or the allocation fails it returns
-.Dv KO
-and leaves
+.Dv KO ,
+with
+.Dv xft_err_inval
+or
+.Dv xft_err_oom
+respectively, and leaves
 .Fa *str
 untouched.
 .Pp
@@ -124,12 +128,16 @@ return
 .Dv OK
 on success and
 .Dv KO
+with
+.Dv xft_err_oom
 if the allocator could not grow the buffer, in which case the string is
 unchanged.
 .Pp
 .Fn xft_str_remove
 returns
 .Dv KO
+with
+.Dv xft_err_inval
 if
 .Fa i
 is not less than
@@ -156,16 +164,16 @@ t_result	demo(t_allocator a)
 {
 	t_str	s;
 
-	if (!xft_new_str(a, &s, 1))
-		return (KO);
-	if (!xft_str_extend(a, &s, (const t_u8 *)"abc", 3)
-		|| !xft_str_push_back(a, &s, 'd'))
-		return (xft_str_destroy(a, &s), KO);
-	xft_pin_invariant(xft_str_remove(&s, 1));
+	if (!xft_new_str(a, &s, 1).ok)
+		return ((t_result){.ok = KO});
+	if (!xft_str_extend(a, &s, (const t_u8 *)"abc", 3).ok
+		|| !xft_str_push_back(a, &s, 'd').ok)
+		return (xft_str_destroy(a, &s), (t_result){.ok = KO});
+	xft_pin_invariant(xft_str_remove(&s, 1).ok);
 	/* s.buf.mem is "acd", s.buf.size is 3 */
-	xft_pin_invariant(!xft_str_remove(&s, 5));
+	xft_pin_invariant(!xft_str_remove(&s, 5).ok);
 	xft_str_destroy(a, &s);
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 .Ed
 .Sh SEE ALSO

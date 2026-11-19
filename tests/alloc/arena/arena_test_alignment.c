@@ -26,7 +26,7 @@ void	test_arena_alignment(void)
 	aligns[4] = 16;
 	aligns[5] = 32;
 	aligns[6] = 64;
-	xft_pin_invariant(xft_new_arena(&a));
+	xft_pin_invariant(xft_new_arena(&a).ok);
 	i = -1;
 	while (++i < 7)
 	{

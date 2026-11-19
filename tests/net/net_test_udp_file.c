@@ -17,7 +17,7 @@ static int	udp_expect(t_reader *r, t_buffer scratch, const t_u8 *want,
 {
 	t_size	got;
 
-	return (xft_reader_read(r, scratch, &got) && got == n
+	return (xft_reader_read(r, scratch, &got).ok && got == n
 		&& xft_memcmp(scratch.mem, want, n) == 0);
 }
 
@@ -29,12 +29,13 @@ void	test_net_udp_file(void)
 
 	file = xft_map_file_into_memory("LICENSE");
 	net_check(file.size >= 150 && xft_open_file((const t_u8 *)"LICENSE",
-			(t_fileopen_mode){.read = 1}, &s.fd), "open LICENSE");
+			(t_fileopen_mode){.read = 1}, &s.fd).ok, "open LICENSE");
 	net_udp_pair(s.fds, 47213);
 	s.w = xft_udp_writer(&s.udp_w, s.fds[1],
 			xft_fatptr(s.wbuf, sizeof(s.wbuf)), &dst);
 	s.r = xft_fs_reader(&s.fs_r, s.fd, xft_fatptr(s.data, sizeof(s.data)));
-	net_check(xft_reader_stream_all(&s.r, &s.w, 150) && xft_writer_flush(&s.w),
+	net_check(xft_reader_stream_all(&s.r, &s.w, 150).ok
+		&& xft_writer_flush(&s.w).ok,
 		"file -> udp writer");
 	s.r = xft_udp_reader(&s.udp_r, s.fds[0],
 			xft_fatptr(s.rbuf, sizeof(s.rbuf)));
@@ -42,7 +43,7 @@ void	test_net_udp_file(void)
 		&& udp_expect(&s.r, xft_fatptr(s.got, sizeof(s.got)), file.mem + 64,
 			64) && udp_expect(&s.r, xft_fatptr(s.got, sizeof(s.got)),
 			file.mem + 128, 22), "file arrives as 64 + 64 + 22 byte datagrams");
-	net_check(xft_close_file(s.fd) && xft_close_socket(s.fds[0])
-		&& xft_close_socket(s.fds[1]), "close file and udp sockets");
+	net_check(xft_close_file(s.fd).ok && xft_close_socket(s.fds[0]).ok
+		&& xft_close_socket(s.fds[1]).ok, "close file and udp sockets");
 	xft_unmap_file_from_memory(file);
 }

@@ -24,19 +24,19 @@ t_result	xft_new_ring_buffer(t_allocator allocator,
 		__builtin_unreachable();
 	if (__builtin_expect((1ull << 31) < min_size || min_size == 0
 			|| (t_u64)min_size * sizeof(t_atomicptr) > SIZE_MAX / 2 + 1, 0))
-		return (KO);
+		return ((t_result){.ok = KO, .err = xft_err_inval});
 	size = (t_u32a)xft_next_pow2((t_size)min_size);
 	buf = allocator.vtable->allocate(allocator.allocator,
 			size * sizeof(t_atomicptr), __GCC_CONSTRUCTIVE_SIZE);
 	if (__builtin_expect(buf.mem == nullptr, 0))
-		return (KO);
+		return ((t_result){.ok = KO, .err = xft_err_oom});
 	xft_memset(buf.mem, 0, buf.size);
 	rb->memory = (t_atomicptr *)buf.mem;
 	rb->alloc_bytes = buf.size;
 	rb->size = size;
 	rb->head = 0;
 	rb->tail = 0;
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 
 __attribute__((__nonnull__(2), __flatten__))

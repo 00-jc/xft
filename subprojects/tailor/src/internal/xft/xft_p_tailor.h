@@ -28,6 +28,10 @@ t_result			xft_tailor_units(t_tailor *t, t_tailor_units *u,\
 						t_size size)\
 						__attribute__((__nonnull__(1, 2)));
 
+t_result			xft__units_assign(t_tailor *t, t_tailor_units *u,\
+						const t_tailor_job *jobs, t_size size)\
+						__attribute__((__nonnull__(1, 2, 3)));
+
 t_result			xft_tailor_unit(t_any unit)\
 						__attribute__((__nonnull__(1)));
 

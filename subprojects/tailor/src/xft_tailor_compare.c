@@ -30,21 +30,23 @@ static inline t_result	xft__tailor_link(t_tailor *t, t_tailor_groups *g,
 	const t_buffer	key = xft_fatptr((const t_u8 *)r->group,
 			xft_strlen(r->group));
 	t_size			gid;
+	t_result		ret;
 
 	gid = xft_indexmap_lookup(&g->map, key);
 	if (gid == INDEXMAP_NPOS)
 	{
 		gid = g->count++;
-		if (!xft_indexmap_insert(xft_arena_allocator(&t->arena), &g->map,
-				key, gid))
-			return (KO);
+		ret = xft_indexmap_insert(xft_arena_allocator(&t->arena), &g->map,
+				key, gid);
+		if (!ret.ok)
+			return (ret);
 		g->head[gid] = i;
 	}
 	else
 		g->next[g->tail[gid]] = i;
 	g->tail[gid] = i;
 	g->next[i] = INDEXMAP_NPOS;
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 
 __attribute__((__nonnull__(1, 2), __always_inline__))
@@ -53,25 +55,29 @@ static inline t_result	xft__tailor_groups(t_tailor *t, t_tailor_groups *g,
 {
 	const t_tailor_result	*r;
 	t_size					i;
+	t_result				ret;
 
 	g->count = 0;
 	g->next = xft_arena_alloc(&t->arena, sizeof(t_size) * n * 3, 64);
 	if (__builtin_expect(g->next == nullptr, 0))
-		return (KO);
+		return ((t_result){.ok = KO, .err = xft_err_oom});
 	g->head = g->next + n;
 	g->tail = g->head + n;
-	if (__builtin_expect(!xft_new_indexmap_with(xft_arena_allocator(&t->arena),
-				&g->map, n), 0))
-		return (KO);
+	ret = xft_new_indexmap_with(xft_arena_allocator(&t->arena), &g->map, n);
+	if (__builtin_expect(!ret.ok, 0))
+		return (ret);
 	i = 0;
 	while (i < n)
 	{
 		r = xft_vec_get(&t->results, i, sizeof(t_tailor_result));
-		if (r->group != nullptr && !xft__tailor_link(t, g, r, i))
-			return (KO);
+		ret = (t_result){.ok = OK};
+		if (r->group != nullptr)
+			ret = xft__tailor_link(t, g, r, i);
+		if (!ret.ok)
+			return (ret);
 		++i;
 	}
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 
 __attribute__((__nonnull__(1, 2, 3), __always_inline__))
@@ -129,15 +135,17 @@ t_result	xft_tailor_compare(t_tailor *t)
 			sizeof(t_tailor_result));
 	t_tailor_groups				g;
 	t_size						gid;
+	t_result					ret;
 
 	if (n == 0)
-		return (OK);
-	if (__builtin_expect(!xft__tailor_groups(t, &g, n), 0))
-		return (xft_arena_rewind(&t->arena, c), KO);
+		return ((t_result){.ok = OK});
+	ret = xft__tailor_groups(t, &g, n);
+	if (__builtin_expect(!ret.ok, 0))
+		return (xft_arena_rewind(&t->arena, c), ret);
 	gid = 0;
 	while (gid < g.count)
 		xft__tailor_print_group(t, &g, gid++);
 	xft_arena_rewind(&t->arena, c);
 	xft_writer_flush(&t->writer);
-	return (OK);
+	return ((t_result){.ok = OK});
 }

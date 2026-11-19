@@ -18,10 +18,9 @@
 # if defined(__aarch64__) && !defined(XFT_REQUIRE_LIBC)
 
 __attribute__((__nonnull__(1), __always_inline__, __used__))
-inline t_xft_sysres	xft_fork(t_i32 *restrict const pid)
+inline t_result	xft_fork(t_i32 *restrict const pid)
 {
 	register long x0	__asm__("x0");
-	t_u64a				r;
 
 	x0 = XFT_SIGCHLD;
 	__asm__ volatile (
@@ -33,9 +32,8 @@ inline t_xft_sysres	xft_fork(t_i32 *restrict const pid)
 		: "memory", "cc", "x1", "x2", "x3", "x4", "x8"
 	);
 	*pid = (t_i32)xft_tern(x0 < 0, (t_u64a)-1, (t_u64a)x0);
-	r = xft_tern(x0 < 0, xft_sys_ko, xft_sys_ok);
-	r = xft_tern(x0 == -xft_eintr || x0 == -xft_eagain, xft_sys_repeat, r);
-	return ((t_xft_sysres)r);
+	return ((t_result){.ok = x0 >= 0,
+		.err = xft_tern(x0 < 0, (t_u64a)-x0, 0)});
 }
 
 # endif

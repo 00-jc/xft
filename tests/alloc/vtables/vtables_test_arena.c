@@ -18,7 +18,7 @@ void	test_arena_vtable(void)
 	t_allocator	alloc;
 	t_buffer	buf;
 
-	xft_pin_invariant(xft_new_arena(&arena));
+	xft_pin_invariant(xft_new_arena(&arena).ok);
 	alloc = xft_arena_allocator(&arena);
 	buf = alloc.vtable->allocate(alloc.allocator, 128, 16);
 	xft_pin_invariant_msg(buf.mem != nullptr,

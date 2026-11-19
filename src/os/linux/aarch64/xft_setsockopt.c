@@ -18,11 +18,10 @@
 # if defined(__aarch64__) && !defined(XFT_REQUIRE_LIBC)
 
 __attribute__((__always_inline__, __used__))
-inline t_xft_sysres	xft_setsockopt(int fd, int level, int name, t_iovec value)
+inline t_result	xft_setsockopt(int fd, int level, int name, t_iovec value)
 {
 	t_u64a	args[6];
 	t_i64a	ret;
-	t_u64a	r;
 
 	args[0] = (t_u64a)fd;
 	args[1] = (t_u64a)level;
@@ -31,9 +30,8 @@ inline t_xft_sysres	xft_setsockopt(int fd, int level, int name, t_iovec value)
 	args[4] = value.size;
 	args[5] = 0;
 	ret = xft_syscall6(xft_sys_setsockopt, args);
-	r = xft_tern(ret < 0, xft_sys_ko, xft_sys_ok);
-	r = xft_tern(ret == -xft_eintr || ret == -xft_eagain, xft_sys_repeat, r);
-	return ((t_xft_sysres)r);
+	return ((t_result){.ok = ret >= 0,
+		.err = xft_tern(ret < 0, (t_u64a)-ret, 0)});
 }
 
 # endif

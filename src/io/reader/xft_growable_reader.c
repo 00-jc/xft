@@ -21,17 +21,18 @@ static t_result	xft__growable_reader_stream(t_reader *r, t_writer *w,
 	t_reader_ctx_growable *const	ctx = r->reader_ctx;
 	const t_buffer_with_capacity	buf = ctx->vec.buf;
 	t_size							hoist;
+	t_result						ret;
 
 	if (buf.mem == nullptr || w->vtable.drain_all == nullptr)
 		__builtin_unreachable();
 	hoist = xft_tern_s(limit < buf.size, limit, buf.size);
-	if (__builtin_expect(!w->vtable.drain_all(w, xft_fatptr(buf.mem, hoist)),
-			0))
-		return (KO);
+	ret = w->vtable.drain_all(w, xft_fatptr(buf.mem, hoist));
+	if (__builtin_expect(!ret.ok, 0))
+		return (ret);
 	ctx->vec.buf.size = buf.size - hoist;
 	xft_memmove(buf.mem, buf.mem + hoist, buf.size - hoist);
 	*size = hoist;
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 
 __attribute__((__nonnull__(1, 3)))
@@ -48,7 +49,7 @@ static t_result	xft__growable_reader_discard(t_reader *r, t_size limit,
 	ctx->vec.buf.size = buf.size - hoist;
 	xft_memmove(buf.mem, buf.mem + hoist, buf.size - hoist);
 	*size = hoist;
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 
 __attribute__((__nonnull__(1, 3)))
@@ -66,7 +67,7 @@ static t_result	xft__growable_reader_read(t_reader *r, t_buffer dst,
 	ctx->vec.buf.size = buf.size - hoist;
 	xft_memmove(buf.mem, buf.mem + hoist, buf.size - hoist);
 	*size = hoist;
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 
 __attribute__((__nonnull__(1), __always_inline__, __used__))

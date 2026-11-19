@@ -102,10 +102,32 @@ typedef struct s_buffer_with_capacity
 
 # endif
 
-typedef enum e_result
+typedef enum e_ok : t_u64
 {
-	OK = 1,
 	KO = 0,
+	OK = 1,
+}	t_ok;
+
+typedef enum e_err : t_u64
+{
+	xft_err_none = 0,
+	xft_err_retry = 4,
+	xft_err_wouldblock = 11,
+	xft_err_oom = 12,
+	xft_err_busy = 16,
+	xft_err_inval = 22,
+	xft_err_nospace = 28,
+	xft_err_nodata = 61,
+	xft_err_time = 62,
+	xft_err_inprogress = 115,
+	xft_err_canceled = 125,
+	xft_err_eof = 4096,
+}	t_err;
+
+typedef struct s_result
+{
+	t_ok		ok	: 1;
+	t_err		err	: 63;
 }	t_result;
 
 typedef struct s_span

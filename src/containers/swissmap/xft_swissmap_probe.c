@@ -30,8 +30,8 @@ static inline t_result	xft__swiss_key_eq(
 	const t_buffer *const	keys = xft_soa_fields(soa, xft__swiss_ctx(),
 			SWISS_KEY);
 
-	return (keys[idx].size == key.size
-		&& !xft_memcmp(key.mem, keys[idx].mem, key.size));
+	return ((t_result){.ok = keys[idx].size == key.size
+		&& !xft_memcmp(key.mem, keys[idx].mem, key.size)});
 }
 
 __attribute__((__always_inline__, pure, __nonnull__(1), __used__))
@@ -50,7 +50,7 @@ inline t_size	xft__swiss_find(const t_swissmap *__restrict__ const map,
 		while (mask)
 		{
 			idx = probe.group * SWISS_GROUP + xft_memctz_u64(mask);
-			if (xft__swiss_key_eq(&map->soa, idx, key))
+			if (xft__swiss_key_eq(&map->soa, idx, key).ok)
 				return (idx);
 			mask &= mask - 1;
 		}

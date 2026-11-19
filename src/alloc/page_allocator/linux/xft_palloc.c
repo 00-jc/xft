@@ -25,12 +25,12 @@ inline t_buffer	xft_palloc_reserve(t_size size)
 	snapped = xft_match_hugepage(size);
 	mem = xft_mmap(snapped, xft_prot_read | xft_prot_write,
 			xft_map_private | xft_map_anonymous);
-	if (!xft_map_failed(mem) && xft_is_hugepage(snapped))
-		while (xft_madvise(mem, snapped, xft_madv_hugepage) == xft_sys_repeat)
+	if (!xft_map_failed(mem).ok && xft_is_hugepage(snapped).ok)
+		while (xft_should_retry(xft_madvise(mem, snapped, xft_madv_hugepage)))
 			;
 	return ((t_buffer){
 		.size = snapped,
-		.mem = (t_any)xft_tern(!xft_map_failed(mem), (t_u64a)mem, 0),
+		.mem = (t_any)xft_tern(!xft_map_failed(mem).ok, (t_u64a)mem, 0),
 	});
 }
 
@@ -39,18 +39,18 @@ inline t_result	xft_palloc_commit(t_any ptr, t_size size)
 {
 	(void)ptr;
 	(void)size;
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 
 __attribute__((__nonnull__(1), __always_inline__, __used__))
 inline t_result	xft_palloc_guard(t_any ptr, t_size size)
 {
-	t_xft_sysres	res;
+	t_result		res;
 
-	res = xft_sys_repeat;
-	while (res == xft_sys_repeat)
+	res = (t_result){.err = xft_err_retry};
+	while (xft_should_retry(res))
 		res = xft_mprotect(ptr, size, xft_prot_none);
-	return ((t_result)(res == xft_sys_ok));
+	return (res);
 }
 
 __attribute__((__always_inline__, __used__))
@@ -63,7 +63,7 @@ inline t_buffer	xft_palloc_resize(t_buffer b, t_size new_size)
 	if (__builtin_expect(new_size == b.size, 1))
 		return (b);
 	ptr = xft_mremap(b.size, new_size, b.mem, 0);
-	if (__builtin_expect(!xft_map_failed(ptr), 1))
+	if (__builtin_expect(!xft_map_failed(ptr).ok, 1))
 		return (xft_fatptr(ptr, new_size));
 	n = xft_palloc(new_size);
 	if (__builtin_expect(n.mem == nullptr, 0))

@@ -20,12 +20,12 @@ void	test_soa_grow(t_allocator a, const t_soa_context *ctx)
 	t_soa_test_elem	e;
 	t_size			i;
 
-	xft_pin_invariant(xft_new_soa(a, &soa, 1, ctx));
+	xft_pin_invariant(xft_new_soa(a, &soa, 1, ctx).ok);
 	i = 0;
 	while (i < SOA_TEST_GROW_N)
 	{
 		e = soa_test_make(i);
-		xft_pin_invariant(xft_soa_append_from_struct(a, &soa, &e, ctx));
+		xft_pin_invariant(xft_soa_append_from_struct(a, &soa, &e, ctx).ok);
 		soa_test_check(&soa, ctx, i);
 		soa_test_check(&soa, ctx, i / 2);
 		++i;

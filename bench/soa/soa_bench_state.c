@@ -18,7 +18,7 @@ t_gpa	*xft_get_bench_soa_gpa(void)
 	static _Thread_local t_gpa	gpa = {0};
 
 	if (gpa.slab == nullptr)
-		xft_pin_invariant(xft_new_gpa(&gpa));
+		xft_pin_invariant(xft_new_gpa(&gpa).ok);
 	return (&gpa);
 }
 
@@ -73,7 +73,7 @@ t_soa	xft_soa_bench_filled(t_allocator a)
 	t_soa					soa;
 	t_soa_bench_particle	p;
 
-	xft_pin_invariant(xft_new_soa(a, &soa, SOA_BENCH_FILL, ctx));
+	xft_pin_invariant(xft_new_soa(a, &soa, SOA_BENCH_FILL, ctx).ok);
 	while (soa.occupied_elements < SOA_BENCH_FILL)
 	{
 		p = xft_soa_bench_make(soa.occupied_elements);

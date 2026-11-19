@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <xft/bmi.h>
 #include <xft/xft_p_syscalls.h>
 
 #ifdef __linux__
@@ -17,9 +18,13 @@
 # ifdef XFT_REQUIRE_LIBC
 
 __attribute__((__always_inline__, __used__))
-inline t_xft_sysres	xft_close(int fd)
+inline t_result	xft_close(int fd)
 {
-	return ((t_xft_sysres)(syscall(SYS_close, fd) == 0 || errno == EINTR));
+	t_ssize	ret;
+
+	ret = syscall(SYS_close, fd);
+	return ((t_result){.ok = ret == 0 || errno == EINTR,
+		.err = xft_tern(ret < 0 && errno != EINTR, (t_u64a)errno, 0)});
 }
 
 # endif

@@ -24,7 +24,7 @@ inline t_result	xft_mmap_commit(t_any ptr, t_size size,
 	(void)size;
 	(void)prot;
 	(void)flags_extra;
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 
 #endif

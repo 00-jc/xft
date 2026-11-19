@@ -23,12 +23,12 @@ void	xft_soa_bench_append(t_any ptr)
 	t_size					n;
 
 	a = xft_gpa_allocator(xft_get_bench_soa_gpa());
-	xft_pin_invariant(xft_new_soa(a, &soa, 64, ctx));
+	xft_pin_invariant(xft_new_soa(a, &soa, 64, ctx).ok);
 	n = xft_tailor_getcount(ptr);
 	while (n-- > 0)
 	{
 		p = xft_soa_bench_make(n);
-		xft_pin_invariant(xft_soa_append_from_struct(a, &soa, &p, ctx));
+		xft_pin_invariant(xft_soa_append_from_struct(a, &soa, &p, ctx).ok);
 	}
 	xft_tailor_add_processed_bytes(ptr,
 		xft_tailor_getcount(ptr) * ctx->total_struct_size);
@@ -46,11 +46,11 @@ void	xft_soa_bench_append_reserved(t_any ptr)
 
 	a = xft_gpa_allocator(xft_get_bench_soa_gpa());
 	n = xft_tailor_getcount(ptr);
-	xft_pin_invariant(xft_new_soa(a, &soa, n, ctx));
+	xft_pin_invariant(xft_new_soa(a, &soa, n, ctx).ok);
 	while (n-- > 0)
 	{
 		p = xft_soa_bench_make(n);
-		xft_pin_invariant(xft_soa_append_from_struct(a, &soa, &p, ctx));
+		xft_pin_invariant(xft_soa_append_from_struct(a, &soa, &p, ctx).ok);
 	}
 	xft_tailor_add_processed_bytes(ptr,
 		xft_tailor_getcount(ptr) * ctx->total_struct_size);
@@ -68,7 +68,7 @@ void	xft_soa_bench_append_unchecked(t_any ptr)
 
 	a = xft_gpa_allocator(xft_get_bench_soa_gpa());
 	n = xft_tailor_getcount(ptr);
-	xft_pin_invariant(xft_new_soa(a, &soa, n, ctx));
+	xft_pin_invariant(xft_new_soa(a, &soa, n, ctx).ok);
 	while (n-- > 0)
 	{
 		p = xft_soa_bench_make(n);

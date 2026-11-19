@@ -20,9 +20,9 @@ t_result	xft_new_arena(t_arena *arena)
 
 	initial_page = new_hugepage(nullptr, xft_match_paging(1ULL << 25));
 	if (__builtin_expect(initial_page == nullptr, 0))
-		return (KO);
+		return ((t_result){.ok = KO, .err = xft_err_oom});
 	*arena = (t_arena){.current = initial_page};
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 
 __attribute__((__nonnull__(1)))

@@ -31,15 +31,18 @@ static inline t_result	xft__tailor_collect(t_tailor *t, t_size size)
 	const t_tailor_job *const	jobs = (const t_tailor_job *)t->jobs.buf.mem;
 	t_size						i;
 	t_result					r;
+	t_result					pushed;
 
-	r = OK;
+	r = (t_result){.ok = OK};
 	i = 0;
 	while (i < size)
 	{
-		if (jobs[i].status == KO
-			|| !xft_vec_push_back(xft_gpa_allocator(&t->gpa), &t->results,
-				(const t_u8 *)&jobs[i].result, sizeof(t_tailor_result)))
-			r = KO;
+		pushed = jobs[i].status;
+		if (pushed.ok == OK)
+			pushed = xft_vec_push_back(xft_gpa_allocator(&t->gpa), &t->results,
+					(const t_u8 *)&jobs[i].result, sizeof(t_tailor_result));
+		if (!pushed.ok)
+			r = pushed;
 		++i;
 	}
 	xft_vec_clear(&t->jobs);
@@ -55,10 +58,11 @@ t_result	xft_tailor_run(t_tailor *t)
 	t_result			r;
 
 	if (size == 0)
-		return (OK);
+		return ((t_result){.ok = OK});
 	c = xft_arena_checkpoint(&t->arena);
-	if (__builtin_expect(!xft_tailor_units(t, &u, size), 0))
-		return (xft_arena_rewind(&t->arena, c), KO);
+	r = xft_tailor_units(t, &u, size);
+	if (__builtin_expect(!r.ok, 0))
+		return (xft_arena_rewind(&t->arena, c), r);
 	xft__tailor_dispatch(t, &u);
 	r = xft__tailor_collect(t, size);
 	xft_arena_rewind(&t->arena, c);

@@ -18,17 +18,19 @@ t_result	xft_tailor_bench(t_tailor *t, t_tailor_bench benches[], t_size size)
 {
 	t_tailor_job	job;
 	t_size			i;
+	t_result		ret;
 
 	i = 0;
 	while (i < size)
 	{
-		job = (t_tailor_job){.t = t, .fn = benches[i].fn, .status = KO,
+		job = (t_tailor_job){.t = t, .fn = benches[i].fn, .status = {.ok = KO},
 			.buffers = t->rand_buffers,
 			.result = {.name = benches[i].name, .group = benches[i].group}};
-		if (__builtin_expect(!xft_vec_push_back(xft_gpa_allocator(&t->gpa),
-					&t->jobs, (const t_u8 *)&job, sizeof(job)), 0))
-			return (KO);
+		ret = xft_vec_push_back(xft_gpa_allocator(&t->gpa), &t->jobs,
+				(const t_u8 *)&job, sizeof(job));
+		if (__builtin_expect(!ret.ok, 0))
+			return (ret);
 		++i;
 	}
-	return (OK);
+	return ((t_result){.ok = OK});
 }

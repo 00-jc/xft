@@ -221,7 +221,12 @@ on success.
 If
 .Fa capacity
 is zero or the allocation fails, they return
-.Dv KO ;
+.Dv KO ,
+with
+.Dv xft_err_inval
+or
+.Dv xft_err_oom
+respectively;
 the contents of
 .Fa *map
 are then unspecified.
@@ -233,6 +238,8 @@ return
 .Dv OK
 on success and
 .Dv KO
+with
+.Dv xft_err_oom
 if a required rebuild could not allocate, in which case the map is
 unchanged.
 .Pp
@@ -275,11 +282,11 @@ t_result	demo(t_allocator a)
 {
 	t_indexmap	m;
 
-	if (!xft_new_indexmap(a, &m))
-		return (KO);
-	if (!xft_indexmap_insert(a, &m, xft_fatptr((t_u8 *)"del", 3), 10)
-		|| !xft_indexmap_insert(a, &m, xft_fatptr((t_u8 *)"keep", 4), 11))
-		return (xft_indexmap_destroy(a, &m), KO);
+	if (!xft_new_indexmap(a, &m).ok)
+		return ((t_result){.ok = KO});
+	if (!xft_indexmap_insert(a, &m, xft_fatptr((t_u8 *)"del", 3), 10).ok
+		|| !xft_indexmap_insert(a, &m, xft_fatptr((t_u8 *)"keep", 4), 11).ok)
+		return (xft_indexmap_destroy(a, &m), (t_result){.ok = KO});
 	xft_pin_invariant(xft_indexmap_delete(&m,
 			xft_fatptr((t_u8 *)"del", 3)) == 10);
 	xft_pin_invariant(xft_indexmap_lookup(&m,
@@ -288,7 +295,7 @@ t_result	demo(t_allocator a)
 			xft_fatptr((t_u8 *)"keep", 4)) == 11);
 	xft_pin_invariant(m.count == 1);
 	xft_indexmap_destroy(a, &m);
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 .Ed
 .Sh SEE ALSO

@@ -526,7 +526,13 @@ returns
 .Dv OK
 on success and
 .Dv KO
-on failure.
+on failure, with
+.Dv xft_err_inval
+when
+.Fa min_size
+is zero or too large and
+.Dv xft_err_oom
+when the allocation fails.
 .Pp
 .Fn xft_ring_buffer_submit
 and
@@ -537,6 +543,8 @@ when
 .Fa ptr
 has been stored and
 .Dv KO
+with
+.Dv xft_err_wouldblock
 when the buffer is full.
 .Pp
 .Fn xft_ring_buffer_steal
@@ -569,9 +577,9 @@ void	queue(t_any job)
 	t_ring_buffer		rb;
 	t_any				out;
 
-	if (!xft_new_ring_buffer(alloc, &rb, 64))
+	if (!xft_new_ring_buffer(alloc, &rb, 64).ok)
 		return ;
-	while (xft_ring_buffer_submit(&rb, job) == KO)
+	while (xft_ring_buffer_submit(&rb, job).ok == KO)
 		xft_backoff(1);
 	out = xft_ring_buffer_steal(&rb);
 	/* ... */

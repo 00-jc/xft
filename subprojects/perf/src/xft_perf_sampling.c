@@ -29,10 +29,10 @@ static inline t_result	xft__get_sample_plexed(t_perf_counters c, t_u64 *v)
 	t_u8			adjust;
 	t_f64			scale;
 
-	while (xft_read((int)c[0], (t_u8 *)&t, sizeof(t), &i) == xft_sys_repeat)
+	while (xft_should_retry(xft_read((int)c[0], (t_u8 *)&t, sizeof(t), &i)))
 		;
 	if (__builtin_expect(i != sizeof(t) || t.running == 0, 0))
-		return (KO);
+		return ((t_result){.ok = KO, .err = xft_err_nodata});
 	i = 0;
 	adjust = t.running != t.enabled;
 	if (adjust)
@@ -46,21 +46,23 @@ static inline t_result	xft__get_sample_plexed(t_perf_counters c, t_u64 *v)
 	}
 	else
 		xft_memcpy(v, t.val, sizeof(t_u64) * (SW_COUNTERS_N + HW_COUNTERS_N));
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 
 __attribute__((__nonnull__(2, 3)))
 t_result	xft_perf_collect_sample(t_size n,
 	t_perf_counters c, t_perf_sample *s)
 {
-	t_u64a	v[SW_COUNTERS_N + HW_COUNTERS_N];
-	t_u64a	t;
+	t_u64a		v[SW_COUNTERS_N + HW_COUNTERS_N];
+	t_u64a		t;
+	t_result	ret;
 
 	xft_perf_counters_stop(c);
 	t = xft_get_nanos();
 	xft_memset(v, 0, (SW_COUNTERS_N + HW_COUNTERS_N) * sizeof(t_u64a));
-	if (__builtin_expect(xft__get_sample_plexed(c, v) == KO, 0))
-		return (KO);
+	ret = xft__get_sample_plexed(c, v);
+	if (__builtin_expect(ret.ok == KO, 0))
+		return (ret);
 	s->n = n;
 	s->ns = t - s->ns;
 	s->alignment_faults = v[1];
@@ -71,5 +73,5 @@ t_result	xft_perf_collect_sample(t_size n,
 	s->cache_miss = v[6];
 	s->branches = v[7];
 	s->branch_miss = v[8];
-	return (OK);
+	return ((t_result){.ok = OK});
 }

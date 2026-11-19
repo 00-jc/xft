@@ -43,10 +43,10 @@ t_result	xft_thread_spawn(t_thread *__restrict__ const thread,
 	handle = CreateThread(nullptr, opts.stack_size, xft__thread_entry,
 			&start, STACK_SIZE_PARAM_IS_A_RESERVATION, nullptr);
 	if (__builtin_expect(handle == nullptr, 0))
-		return (KO);
+		return ((t_result){.ok = KO, .err = xft_err_none});
 	xft_mutex_lock(&start.started, xft_lock_fast);
 	thread->handle = (t_thread_id)handle;
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 
 #endif

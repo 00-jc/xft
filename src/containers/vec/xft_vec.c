@@ -24,13 +24,13 @@ t_result	xft_new_vec(t_allocator allocator, t_vec *v, t_size size,
 		__builtin_unreachable();
 	if ((size == 0) || (type_size == 0)
 		|| __builtin_mul_overflow(size, type_size, &res))
-		return (KO);
+		return ((t_result){.ok = KO, .err = xft_err_inval});
 	buf = allocator.vtable->allocate(allocator.allocator, res,
 			__GCC_CONSTRUCTIVE_SIZE);
 	if (__builtin_expect(buf.mem == nullptr, 0))
-		return (KO);
+		return ((t_result){.ok = KO, .err = xft_err_oom});
 	*v = (t_vec){.buf = {.size = 0, .capacity = buf.size, .mem = buf.mem}};
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 
 __attribute__((__always_inline__, __nonnull__(2), __used__))

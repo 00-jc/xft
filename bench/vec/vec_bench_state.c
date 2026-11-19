@@ -18,6 +18,6 @@ t_gpa	*xft_get_bench_vec_gpa(void)
 	static _Thread_local t_gpa	gpa = {0};
 
 	if (gpa.slab == nullptr)
-		xft_pin_invariant(xft_new_gpa(&gpa));
+		xft_pin_invariant(xft_new_gpa(&gpa).ok);
 	return (&gpa);
 }

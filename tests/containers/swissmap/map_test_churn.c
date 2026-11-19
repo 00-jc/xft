@@ -41,7 +41,7 @@ void	test_map_churn(t_allocator a)
 	t_size		i;
 
 	xft_xoshiro_init(rng);
-	xft_pin_invariant(xft_new_swissmap(a, &m));
+	xft_pin_invariant(xft_new_swissmap(a, &m).ok);
 	i = 0;
 	while (i < MAP_TEST_CHURN)
 	{
@@ -49,7 +49,7 @@ void	test_map_churn(t_allocator a)
 			xft_swissmap_delete(&m, churn_key(keys, i));
 		keys[i % MAP_TEST_LIVE] = xft_xoshiro256ss(rng);
 		xft_pin_invariant(xft_swissmap_insert(a, &m, churn_key(keys, i),
-				(t_u8 *)keys));
+				(t_u8 *)keys).ok);
 		xft_pin_invariant((m.count + m.tombstones) * 20
 			< m.soa.capacity_elements * 17 + 20);
 		++i;

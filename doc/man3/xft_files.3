@@ -158,6 +158,14 @@ return
 on success and
 .Dv KO
 on failure.
+On Linux
+.Fa err
+holds the errno of
+.Xr open 2
+or
+.Xr close 2 ;
+on Windows it is
+.Dv xft_err_none .
 .Fn xft_open_file
 leaves
 .Pf * Fa fd
@@ -172,8 +180,8 @@ t_result	create_new(const char *path)
 	t_fd	fd;
 
 	if (!xft_open_file((t_blk8r)path,
-			(t_fileopen_mode){.write = 1, .exclusive = 1}, &fd))
-		return (KO);
+			(t_fileopen_mode){.write = 1, .exclusive = 1}, &fd).ok)
+		return ((t_result){.ok = KO});
 	return (xft_close_file(fd));
 }
 .Ed

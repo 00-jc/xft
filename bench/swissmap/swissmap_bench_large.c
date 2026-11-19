@@ -65,7 +65,7 @@ void	xft_swiss_bench_large_delete_insert(t_any ptr)
 		xft_swissmap_delete(map, xft_swiss_bench_large_key(i));
 		xft_pin_invariant(xft_swissmap_insert(a, map,
 				xft_swiss_bench_large_key(i),
-				(t_u8 *)xft_get_bench_swiss_large_keys()));
+				(t_u8 *)xft_get_bench_swiss_large_keys()).ok);
 	}
 	xft_tailor_add_processed_bytes(ptr,
 		xft_tailor_getcount(ptr) * sizeof(t_u64));

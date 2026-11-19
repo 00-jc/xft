@@ -29,7 +29,7 @@ static void	rb_backoff_submitter(t_any arg)
 	t_u32a									i;
 
 	i = atomic_fetch_add_explicit(&s->started, 1, xft_relaxed);
-	xft_pin_invariant_msg(xft_ring_buffer_submit(&s->rb, &s->items[i]) == OK,
+	xft_pin_invariant_msg(xft_ring_buffer_submit(&s->rb, &s->items[i]).ok == OK,
 		xft_fatptr((t_u8 *)"ring buffer: backoff submit",
 			sizeof("ring buffer: backoff submit") - 1));
 	atomic_fetch_add_explicit(&s->returned, 1, xft_release);
@@ -52,7 +52,7 @@ void	thread_rb_backoff_start(t_rb_backoff_test *__restrict__ const s,
 	i = 0;
 	while (i < RB_BACKOFF_THREADS)
 		xft_pin_invariant_msg(xft_thread_spawn(&s->threads[i++], sysinfo,
-				opts) == OK, xft_fatptr((t_u8 *)"thread spawn",
+				opts).ok == OK, xft_fatptr((t_u8 *)"thread spawn",
 				sizeof("thread spawn") - 1));
 	while (atomic_load_explicit(&s->started, xft_acquire) < RB_BACKOFF_THREADS)
 		xft_backoff(1);

@@ -42,7 +42,7 @@ static inline t_any	xft_arena_commit(t_arena *restrict const allocator,
 {
 	t_size	waste;
 
-	if (__builtin_expect(!xft_palloc_commit(next_ptr, size), 0))
+	if (__builtin_expect(!xft_palloc_commit(next_ptr, size).ok, 0))
 		return (nullptr);
 	waste = (t_size)((t_u8 *)next_ptr - (allocator->current->data
 				+ allocator->current->used));

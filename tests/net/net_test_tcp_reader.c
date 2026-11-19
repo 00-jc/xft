@@ -21,22 +21,22 @@ void	test_net_tcp_reader(void)
 	net_tcp_pair(s.fds, 47205);
 	s.w = xft_tcp_writer(&s.tcp_w, s.fds[1],
 			xft_fatptr(s.wbuf, sizeof(s.wbuf)));
-	net_check(xft_writer_drain_all(&s.w, xft_fatptr(s.data, 3000))
-		&& xft_writer_flush(&s.w) && xft_close_socket(s.fds[1]),
+	net_check(xft_writer_drain_all(&s.w, xft_fatptr(s.data, 3000)).ok
+		&& xft_writer_flush(&s.w).ok && xft_close_socket(s.fds[1]).ok,
 		"tcp send 3000 then close");
 	s.r = xft_tcp_reader(&s.tcp_r, s.fds[2],
 			xft_fatptr(s.rbuf, sizeof(s.rbuf)));
-	net_check(xft_reader_read_all(&s.r, xft_fatptr(s.got, 1000))
-		&& xft_reader_discard_all(&s.r, 1000), "tcp read_all + discard_all");
+	net_check(xft_reader_read_all(&s.r, xft_fatptr(s.got, 1000)).ok
+		&& xft_reader_discard_all(&s.r, 1000).ok, "tcp read_all + discard_all");
 	s.w = xft_mem_writer(&m, xft_fatptr(s.got + 1000, 2000));
-	net_check(xft_reader_stream(&s.r, &s.w, 1000, &s.n) && s.n == 1000,
+	net_check(xft_reader_stream(&s.r, &s.w, 1000, &s.n).ok && s.n == 1000,
 		"tcp stream the rest into a mem writer");
 	net_check(xft_memcmp(s.got, s.data, 1000) == 0
 		&& xft_memcmp(s.got + 1000, s.data + 2000, 1000) == 0,
 		"tcp reader skips exactly the discarded bytes");
-	net_check(xft_reader_read(&s.r, xft_fatptr(s.got, 8), &s.n) && s.n == 0
-		&& !xft_reader_stream(&s.r, &s.w, 1, &s.n),
+	net_check(xft_reader_read(&s.r, xft_fatptr(s.got, 8), &s.n).ok && s.n == 0
+		&& !xft_reader_stream(&s.r, &s.w, 1, &s.n).ok,
 		"tcp read and mem writer stream at end of stream");
-	net_check(xft_close_socket(s.fds[2]) && xft_close_socket(s.fds[0]),
+	net_check(xft_close_socket(s.fds[2]).ok && xft_close_socket(s.fds[0]).ok,
 		"close conn and server");
 }

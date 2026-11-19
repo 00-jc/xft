@@ -21,49 +21,54 @@ static inline t_result	xft__tailor_own_buffers(t_tailor_job *j)
 	t_size			i;
 
 	if (j->buffers.size == 0)
-		return (OK);
+		return ((t_result){.ok = OK});
 	dst = xft_arena_alloc(j->arena, j->buffers.size * sizeof(t_buffer), 64);
 	if (__builtin_expect(dst == nullptr, 0))
-		return (KO);
+		return ((t_result){.ok = KO, .err = xft_err_oom});
 	i = 0;
 	while (i < j->buffers.size)
 	{
 		mem = xft_arena_alloc(j->arena, src[i].size + 64, 64);
 		if (__builtin_expect(mem == nullptr, 0))
-			return (KO);
+			return ((t_result){.ok = KO, .err = xft_err_oom});
 		mem += (t_uptr)src[i].mem & 63;
 		xft_memcpy(mem, src[i].mem, src[i].size);
 		dst[i] = xft_fatptr(mem, src[i].size);
 		++i;
 	}
 	j->buffers.mem = (t_u8 *)dst;
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 
 __attribute__((__nonnull__(1), __always_inline__))
 static inline t_result	xft__tailor_unit_prepare(t_tailor_unit *u)
 {
-	t_size	m;
+	t_size		m;
+	t_result	ret;
 
 	m = 0;
 	while (m < u->n)
 	{
 		u->jobs[m]->arena = &u->arena;
 		u->jobs[m]->counters = u->counters;
-		if (__builtin_expect(!xft__tailor_own_buffers(u->jobs[m])
-				|| !xft_tailor_prepare(u->jobs[m]), 0))
-			return (KO);
+		ret = xft__tailor_own_buffers(u->jobs[m]);
+		if (__builtin_expect(!ret.ok, 0))
+			return (ret);
+		ret = xft_tailor_prepare(u->jobs[m]);
+		if (__builtin_expect(!ret.ok, 0))
+			return (ret);
 		++m;
 	}
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 
 __attribute__((__nonnull__(1), __always_inline__))
 static inline t_result	xft__tailor_unit_rounds(t_tailor_unit *u)
 {
-	t_size	rounds;
-	t_size	round;
-	t_size	m;
+	t_size		rounds;
+	t_size		round;
+	t_size		m;
+	t_result	ret;
 
 	rounds = 0;
 	m = 0;
@@ -78,11 +83,12 @@ static inline t_result	xft__tailor_unit_rounds(t_tailor_unit *u)
 		m = 0;
 		while (m < u->n)
 		{
-			if (__builtin_expect(!xft_tailor_sample(u->jobs[m++]), 0))
-				return (KO);
+			ret = xft_tailor_sample(u->jobs[m++]);
+			if (__builtin_expect(!ret.ok, 0))
+				return (ret);
 		}
 	}
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 
 __attribute__((__nonnull__(1)))
@@ -93,15 +99,17 @@ t_result	xft_tailor_unit(t_any unit)
 	t_result				r;
 	t_size					m;
 
-	if (__builtin_expect(!xft_new_arena(&u->arena), 0))
-		return (KO);
-	if (__builtin_expect(!xft_perf_create_counters(u->counters), 0))
-		return (xft_destroy_arena(&u->arena), KO);
+	r = xft_new_arena(&u->arena);
+	if (__builtin_expect(!r.ok, 0))
+		return (r);
+	r = xft_perf_create_counters(u->counters);
+	if (__builtin_expect(!r.ok, 0))
+		return (xft_destroy_arena(&u->arena), r);
 	r = xft__tailor_unit_prepare(u);
-	if (r == OK)
+	if (r.ok == OK)
 		r = xft__tailor_unit_rounds(u);
 	m = 0;
-	while (r == OK && m < u->n)
+	while (r.ok == OK && m < u->n)
 	{
 		c = xft_arena_checkpoint(&u->arena);
 		u->jobs[m]->status = xft_tailor_finish(u->jobs[m]);

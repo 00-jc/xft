@@ -103,12 +103,12 @@ t_result	parse_u64(const char *s, t_u64 *out)
 
 	i = skip_blanks(s, 0);
 	if (!xft_isdigit((t_u8)s[i]))
-		return (KO);
+		return ((t_result){.ok = KO});
 	n = 0;
 	while (xft_isdigit((t_u8)s[i]))
 		n = n * 10 + (t_u64)(s[i++] - '0');
 	*out = n;
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 .Ed
 .Sh SEE ALSO

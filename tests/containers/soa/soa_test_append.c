@@ -19,13 +19,13 @@ void	test_soa_append(t_allocator a, const t_soa_context *ctx)
 	t_any			first_ptr;
 	t_size			i;
 
-	xft_pin_invariant(xft_new_soa(a, &soa, 8, ctx));
+	xft_pin_invariant(xft_new_soa(a, &soa, 8, ctx).ok);
 	first_ptr = soa.ptr;
 	i = 0;
 	while (i < 8)
 	{
 		e = soa_test_make(i);
-		xft_pin_invariant(xft_soa_append_from_struct(a, &soa, &e, ctx));
+		xft_pin_invariant(xft_soa_append_from_struct(a, &soa, &e, ctx).ok);
 		xft_pin_invariant(soa.occupied_elements == ++i);
 	}
 	xft_pin_invariant(soa.ptr == first_ptr);

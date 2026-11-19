@@ -21,15 +21,17 @@ static t_result	xft__mem_reader_stream(t_reader *r, t_writer *w, t_size limit,
 	t_reader_ctx_memory *const	ctx = r->reader_ctx;
 	const t_buffer				src = ctx->buffer;
 	t_size						n;
+	t_result					ret;
 
 	if (w->vtable.drain_all == nullptr)
 		__builtin_unreachable();
 	n = xft_tern_s(limit < src.size, limit, src.size);
-	if (__builtin_expect(!w->vtable.drain_all(w, xft_fatptr(src.mem, n)), 0))
-		return (KO);
+	ret = w->vtable.drain_all(w, xft_fatptr(src.mem, n));
+	if (__builtin_expect(!ret.ok, 0))
+		return (ret);
 	ctx->buffer = xft_fatptr(src.mem + n, src.size - n);
 	*size = n;
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 
 __attribute__((__nonnull__(1, 3)))
@@ -42,7 +44,7 @@ static t_result	xft__mem_reader_discard(t_reader *r, t_size limit, t_size *size)
 	n = xft_tern_s(limit < src.size, limit, src.size);
 	ctx->buffer = xft_fatptr(src.mem + n, src.size - n);
 	*size = n;
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 
 __attribute__((__nonnull__(1, 3)))
@@ -56,7 +58,7 @@ static t_result	xft__mem_reader_read(t_reader *r, t_buffer dst, t_size *size)
 	xft_memcpy(dst.mem, src.mem, n);
 	ctx->buffer = xft_fatptr(src.mem + n, src.size - n);
 	*size = n;
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 
 __attribute__((__nonnull__(1), __always_inline__, __used__))

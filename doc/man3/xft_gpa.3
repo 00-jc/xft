@@ -205,7 +205,9 @@ and
 return
 .Dv OK
 on success and
-.Dv KO ,
+.Dv KO
+with
+.Dv xft_err_oom ,
 leaving
 .Fa *gpa
 untouched, if the first slab cannot be reserved.
@@ -229,7 +231,7 @@ valid.
 t_gpa		gpa;
 t_buffer	b;
 
-if (!xft_new_gpa(&gpa))
+if (!xft_new_gpa(&gpa).ok)
 	xft_exit_process(1);
 b = xft_gpa_alloc(&gpa, 100, 8);
 if (b.mem != nullptr)

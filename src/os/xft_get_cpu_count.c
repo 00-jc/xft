@@ -53,16 +53,16 @@ inline t_result	xft_get_cpu_count(t_size *__restrict__ const count)
 {
 	t_u64a			set[128 / sizeof(t_u64a)];
 	t_size			n;
-	t_xft_sysres	res;
+	t_result		res;
 
 	n = 0;
-	res = xft_sys_repeat;
-	while (res == xft_sys_repeat)
+	res = (t_result){.err = xft_err_retry};
+	while (xft_should_retry(res))
 		res = xft_sched_getaffinity(xft_getpid(), sizeof(set), set, &n);
-	if (__builtin_expect(res != xft_sys_ok, 0))
-		return (KO);
+	if (__builtin_expect(!res.ok, 0))
+		return (res);
 	*count = xft__cpu_count(set, n);
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 
 #elif defined(_WIN32)
@@ -75,11 +75,11 @@ inline t_result	xft_get_cpu_count(t_size *__restrict__ const count)
 
 	if (__builtin_expect(!GetProcessAffinityMask(GetCurrentProcess(),
 				&proc, &sys), 0))
-		return (KO);
+		return ((t_result){.ok = KO, .err = xft_err_none});
 	*count = xft_tern_s(proc == 0,
 			GetActiveProcessorCount(ALL_PROCESSOR_GROUPS),
 			(t_size)xft_popcount_u64(proc));
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 
 #endif

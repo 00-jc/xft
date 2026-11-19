@@ -32,10 +32,10 @@ void	test_soa(t_test *t)
 	t_arena	arena;
 
 	xft_test_print(t, "Testing t_soa...\n");
-	xft_pin_invariant(xft_new_gpa(&gpa));
+	xft_pin_invariant(xft_new_gpa(&gpa).ok);
 	test_soa_with(xft_gpa_allocator(&gpa));
 	xft_gpa_destroy(&gpa);
-	xft_pin_invariant(xft_new_arena(&arena));
+	xft_pin_invariant(xft_new_arena(&arena).ok);
 	test_soa_with(xft_arena_allocator(&arena));
 	xft_destroy_arena(&arena);
 	xft_test_print(t, "  t_soa: OK\n");

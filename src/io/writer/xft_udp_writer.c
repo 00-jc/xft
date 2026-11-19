@@ -18,14 +18,15 @@ t_result	xft__udp_writer_flush(t_writer *w)
 {
 	t_writer_ctx_udp *const			ctx = w->writer_ctx;
 	const t_buffer_with_capacity	buf = ctx->buf;
+	t_result						ret;
 
 	if (buf.size == 0)
-		return (OK);
-	if (__builtin_expect(!xft__udp_writer_send(ctx,
-				xft_fatptr(buf.mem, buf.size)), 0))
-		return (KO);
+		return ((t_result){.ok = OK});
+	ret = xft__udp_writer_send(ctx, xft_fatptr(buf.mem, buf.size));
+	if (__builtin_expect(!ret.ok, 0))
+		return (ret);
 	ctx->buf.size = 0;
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 
 __attribute__((__nonnull__(1)))
@@ -33,6 +34,7 @@ static t_result	xft__udp_writer_drain_all(t_writer *w, t_buffer data)
 {
 	t_writer_ctx_udp *const			ctx = w->writer_ctx;
 	const t_buffer_with_capacity	buf = ctx->buf;
+	t_result						ret;
 
 	if (buf.mem == nullptr || data.mem == nullptr)
 		__builtin_unreachable();
@@ -40,15 +42,16 @@ static t_result	xft__udp_writer_drain_all(t_writer *w, t_buffer data)
 	{
 		xft_memcpy(buf.mem + buf.size, data.mem, data.size);
 		ctx->buf.size = buf.size + data.size;
-		return (OK);
+		return ((t_result){.ok = OK});
 	}
-	if (__builtin_expect(!xft__udp_writer_flush(w), 0))
-		return (KO);
+	ret = xft__udp_writer_flush(w);
+	if (__builtin_expect(!ret.ok, 0))
+		return (ret);
 	if (data.size > buf.capacity)
 		return (xft__udp_writer_send(ctx, data));
 	xft_memcpy(buf.mem, data.mem, data.size);
 	ctx->buf.size = data.size;
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 
 __attribute__((__nonnull__(1, 4), __flatten__, __always_inline__, __used__))

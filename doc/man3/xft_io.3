@@ -484,6 +484,28 @@ A tcp or udp handle fails when a send or receive fails; a udp writer also
 fails when a datagram is sent short.
 Mem and growable readers never fail.
 .Pp
+On Linux,
+.Fa err
+is the errno of the read, write, send or receive that failed.
+A write or send that makes no progress, and a udp datagram sent short, give
+.Dv xft_err_none .
+A read that hits the end of the input before
+.Fn xft_reader_read_all ,
+.Fn xft_reader_stream_all
+or
+.Fn xft_reader_discard_all
+has its full amount gives
+.Dv xft_err_eof ,
+and so does a mem writer's
+.Fa drain_fd
+that ends early.
+A mem writer out of room gives
+.Dv xft_err_nospace
+and a growable writer that cannot grow
+.Dv xft_err_oom .
+Failures on Windows give
+.Dv xft_err_none .
+.Pp
 The constructors return the handle and cannot fail.
 .Pp
 .Fn xft_fileinfo_from_name
@@ -493,7 +515,13 @@ return
 .Dv OK ,
 or
 .Dv KO
-if the file or handle cannot be queried.
+if the file or handle cannot be queried, with the errno of
+.Xr statx 2
+in
+.Fa err
+on Linux and
+.Dv xft_err_none
+on Windows.
 .Pp
 .Fn xft_map_file_into_memory
 returns the mapped bytes and the file size, or a zeroed
@@ -520,9 +548,9 @@ void	xft_main(const t_any *__restrict__ const sp)
 			xft_fatptr(inbuf, sizeof(inbuf)));
 	w = xft_fs_writer(&wctx, xft_get_stdout(),
 			xft_fatptr(outbuf, sizeof(outbuf)));
-	if (!xft_reader_stream(&r, &w, (t_size)-1, &n))
+	if (!xft_reader_stream(&r, &w, (t_size)-1, &n).ok)
 		xft_exit_process(1);
-	xft_exit_process(!xft_writer_flush(&w));
+	xft_exit_process(!xft_writer_flush(&w).ok);
 }
 .Ed
 .Pp
@@ -534,12 +562,12 @@ t_result	slurp(t_allocator a, t_reader *r, t_writer_ctx_growable *ctx)
 	t_writer	w;
 	t_size		n;
 
-	if (!xft_new_vec(a, &vec, 4096, 1))
-		return (KO);
+	if (!xft_new_vec(a, &vec, 4096, 1).ok)
+		return ((t_result){.ok = KO});
 	w = xft_growable_writer(ctx, a, vec);
-	if (!xft_reader_stream(r, &w, (t_size)-1, &n))
-		return (xft_vec_destroy(a, &ctx->vec), KO);
-	return (OK);
+	if (!xft_reader_stream(r, &w, (t_size)-1, &n).ok)
+		return (xft_vec_destroy(a, &ctx->vec), (t_result){.ok = KO});
+	return ((t_result){.ok = OK});
 }
 .Ed
 .Sh SEE ALSO

@@ -32,10 +32,12 @@ static t_result	xft__swiss_rehash(t_allocator allocator,
 	t_swissmap		new;
 	t_swiss_slot	slot;
 	t_size			i;
+	t_result		ret;
 
-	if (__builtin_expect(!xft_new_swissmap_with(allocator, &new,
-				(cap << (map->count * 40 >= cap * 17)) * 17 / 20), 0))
-		return (KO);
+	ret = xft_new_swissmap_with(allocator, &new,
+			(cap << (map->count * 40 >= cap * 17)) * 17 / 20);
+	if (__builtin_expect(!ret.ok, 0))
+		return (ret);
 	i = 0;
 	while (i < cap)
 	{
@@ -45,7 +47,7 @@ static t_result	xft__swiss_rehash(t_allocator allocator,
 	}
 	xft_destroy_soa(allocator, &map->soa);
 	*map = new;
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 
 __attribute__((__flatten__, __nonnull__(2, 4)))
@@ -55,11 +57,14 @@ t_result	xft_swissmap_insert(t_allocator allocator,
 {
 	t_swiss_probe	probe;
 	t_size			idx;
+	t_result		ret;
 
+	ret = (t_result){.ok = OK};
 	if (__builtin_expect((map->count + map->tombstones) * 20
-			>= map->soa.capacity_elements * 17, 0)
-		&& !xft__swiss_rehash(allocator, map))
-		return (KO);
+			>= map->soa.capacity_elements * 17, 0))
+		ret = xft__swiss_rehash(allocator, map);
+	if (__builtin_expect(!ret.ok, 0))
+		return (ret);
 	probe = xft__swiss_probe(map, key);
 	idx = xft__swiss_find(map, key, probe);
 	if (idx == SWISS_NPOS)
@@ -71,5 +76,5 @@ t_result	xft_swissmap_insert(t_allocator allocator,
 	}
 	xft__swiss_set(map, idx, (t_swiss_slot){.meta = probe.h2,
 		.key = key, .value = value});
-	return (OK);
+	return ((t_result){.ok = OK});
 }

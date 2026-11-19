@@ -51,7 +51,7 @@ t_result	xft_soa_reserve(t_allocator allocator,
 		|| allocator.vtable->realloc == nullptr)
 		__builtin_unreachable();
 	if (soa->capacity_elements - soa->occupied_elements >= elements_to_reserve)
-		return (OK);
+		return ((t_result){.ok = OK});
 	new_size = xft_max_s(soa->capacity_elements << 1,
 			soa->occupied_elements + elements_to_reserve);
 	new_size = (new_size + ctx->max_alignment - 1) & ~(ctx->max_alignment - 1);
@@ -60,12 +60,12 @@ t_result	xft_soa_reserve(t_allocator allocator,
 			new_size * ctx->total_struct_size,
 			xft_max_s(ctx->max_alignment, __GCC_CONSTRUCTIVE_SIZE));
 	if (__builtin_expect(new_buffer.mem == nullptr, 0))
-		return (KO);
+		return ((t_result){.ok = KO, .err = xft_err_oom});
 	soa->ptr = new_buffer.mem;
 	new_size = xft_max_s(new_size, (new_buffer.size / ctx->total_struct_size)
 			& ~(ctx->max_alignment - 1));
 	xft__soa_reposition(soa, ctx, new_size);
 	soa->capacity_elements = new_size;
 	soa->allocator_bytes_given = new_buffer.size;
-	return (OK);
+	return ((t_result){.ok = OK});
 }

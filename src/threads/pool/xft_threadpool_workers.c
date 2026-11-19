@@ -43,10 +43,10 @@ static inline t_result	xft__alloc_handles(t_allocator allocator,
 	buffer = allocator.vtable->allocate(allocator.allocator,
 			tp->n_workers * sizeof(t_thread), _Alignof(t_thread));
 	if (__builtin_expect(buffer.mem == nullptr, 0))
-		return (KO);
+		return ((t_result){.ok = KO, .err = xft_err_oom});
 	tp->handle_alloc_size = buffer.size;
 	tp->worker_handles = (t_any)buffer.mem;
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 
 __attribute__((__nonnull__(4), __always_inline__, __used__))
@@ -56,9 +56,11 @@ inline t_result	xft__init_threads(t_allocator allocator, t_sysinfo sysinfo,
 	t_size				it;
 	const t_size		upper_bound = tp->n_workers;
 	t_threadpool_arg	arg;
+	t_result			ret;
 
-	if (__builtin_expect(xft__alloc_handles(allocator, tp) == KO, 0))
-		return (KO);
+	ret = xft__alloc_handles(allocator, tp);
+	if (__builtin_expect(ret.ok == KO, 0))
+		return (ret);
 	opts.fn = xft__thread_routine;
 	opts.argument = &arg;
 	it = 0;
@@ -66,12 +68,12 @@ inline t_result	xft__init_threads(t_allocator allocator, t_sysinfo sysinfo,
 	{
 		arg = (t_threadpool_arg){.tp = tp, .idx = (t_u32a)it,
 			.claimed = 0, .pin = opts.cpu_pinning};
-		if (__builtin_expect(xft_thread_spawn(&tp->worker_handles[it],
-					sysinfo, opts) == KO, 0))
+		ret = xft_thread_spawn(&tp->worker_handles[it], sysinfo, opts);
+		if (__builtin_expect(ret.ok == KO, 0))
 			return ((void)(xft__stop_threads(allocator, tp, it,
-					xft_tp_cancel)), KO);
+					xft_tp_cancel)), ret);
 		xft_wait_for_signal(&arg.claimed, 0);
 		it++;
 	}
-	return (OK);
+	return ((t_result){.ok = OK});
 }

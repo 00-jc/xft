@@ -64,7 +64,7 @@ void	xft_imap_bench_large_delete_insert(t_any ptr)
 		i = xft_tailor_get_random_num(ptr) % IMAP_BENCH_LARGE_FILL;
 		xft_pin_invariant(xft_indexmap_insert(a, map,
 				xft_imap_bench_large_key(i),
-				xft_indexmap_delete(map, xft_imap_bench_large_key(i))));
+				xft_indexmap_delete(map, xft_imap_bench_large_key(i))).ok);
 	}
 	xft_tailor_add_processed_bytes(ptr,
 		xft_tailor_getcount(ptr) * sizeof(t_u64));

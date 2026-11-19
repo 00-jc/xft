@@ -31,9 +31,9 @@ inline t_result	xft_vec_popmv(t_vec *restrict const v, t_any const dest,
 	{
 		xft_memcpy(dest, last, type_size);
 		xft_vec_pop(v, type_size);
-		return (OK);
+		return ((t_result){.ok = OK});
 	}
-	return (KO);
+	return ((t_result){.ok = KO, .err = xft_err_inval});
 }
 
 __attribute__((__always_inline__, __nonnull__(2), __used__))
@@ -50,7 +50,7 @@ inline t_result	xft_vec_pop_managed(t_allocator allocator,
 	{
 		allocator.vtable->free(allocator.allocator, *(t_buffer *)last);
 		xft_vec_pop(v, type_size);
-		return (OK);
+		return ((t_result){.ok = OK});
 	}
-	return (KO);
+	return ((t_result){.ok = KO, .err = xft_err_inval});
 }

@@ -79,12 +79,17 @@ Every public symbol is prefixed
 .Ql xft_ .
 .It
 Fallible functions return
-.Vt t_result ,
-which is
+.Vt t_result :
+its
+.Fa ok
+field is
 .Dv OK
 (1) or
 .Dv KO
-(0).
+(0), and its
+.Fa err
+field gives the cause of a
+.Dv KO .
 There is no
 .Va errno .
 .It
@@ -138,13 +143,72 @@ typedef struct s_buffer_with_capacity {
 	t_u8	*mem;		/* counted_by(capacity) under clang */
 } t_buffer_with_capacity;
 
-typedef enum e_result { OK = 1, KO = 0 } t_result;
+typedef enum e_ok : t_u64 { KO = 0, OK = 1 } t_ok;
+
+typedef enum e_err : t_u64 {
+	xft_err_none = 0,
+	xft_err_retry = 4,
+	xft_err_wouldblock = 11,
+	xft_err_oom = 12,
+	xft_err_busy = 16,
+	xft_err_inval = 22,
+	xft_err_nospace = 28,
+	xft_err_nodata = 61,
+	xft_err_time = 62,
+	xft_err_inprogress = 115,
+	xft_err_canceled = 125,
+	xft_err_eof = 4096,
+} t_err;
+
+typedef struct s_result {
+	t_ok	ok	: 1;	/* OK or KO */
+	t_err	err	: 63;	/* cause of a KO, xft_err_none otherwise */
+} t_result;
 
 typedef struct s_span {
 	t_size	typesize;
 	t_size	n;
 } t_span;
 .Ed
+.Pp
+On Linux, a
+.Dv KO
+from a system call carries that call's errno number in
+.Fa err ,
+whether or not
+.Vt t_err
+names it;
+.Dv xft_err_busy ,
+.Dv xft_err_time
+and
+.Dv xft_err_inprogress
+only reach the caller this way.
+A failed Windows API call gives
+.Dv xft_err_none .
+The library sets the other codes itself:
+.Bl -tag -width xft_err_wouldblock
+.It Dv xft_err_retry , xft_err_wouldblock
+The call was interrupted or would block.
+System call wrappers return them and the library's own loops retry on them;
+a full ring buffer also reports
+.Dv xft_err_wouldblock .
+.It Dv xft_err_oom
+An allocation, mapping or commit failed.
+.It Dv xft_err_inval
+An argument is out of range, such as a zero capacity or element size, an
+index past the end, an empty container, an unknown conversion in a format
+string or a CPU outside the affinity mask.
+.It Dv xft_err_nospace
+A mem writer has no room left for the data.
+.It Dv xft_err_nodata
+A performance counter read came back short or the counters never ran.
+.It Dv xft_err_canceled
+.Fn xft_threadpool_cancel
+completed the task without running it.
+.It Dv xft_err_eof
+The input ended before the requested amount was read.
+Its value, 4096, is above every errno number.
+.El
 .Pp
 .In xft/macros.h
 defines ANSI escape strings:

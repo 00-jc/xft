@@ -99,7 +99,7 @@ inline static t_result	gt__emit_table(t_writer *__restrict__ const w,
 	ret = xft_fmt_writer(w, xft_fatptr((t_u8 *)GT_HEADER_FMT,
 				sizeof(GT_HEADER_FMT) - 1), args);
 	i = 0;
-	while (ret == OK && i < set->buf.size)
+	while (ret.ok == OK && i < set->buf.size)
 	{
 		e = (const t_gentable_entry *)(set->buf.mem + i);
 		if (e->type & tbl->tag)
@@ -107,8 +107,8 @@ inline static t_result	gt__emit_table(t_writer *__restrict__ const w,
 		args[2] += (e->type & tbl->tag) != 0;
 		i += sizeof(t_gentable_entry);
 	}
-	if (__builtin_expect(ret == KO, 0))
-		return (KO);
+	if (__builtin_expect(ret.ok == KO, 0))
+		return (ret);
 	return (xft_fmt_writer(w, xft_fatptr((t_u8 *)GT_EPILOGUE_FMT,
 				sizeof(GT_EPILOGUE_FMT) - 1), args));
 }
@@ -125,7 +125,7 @@ inline static t_result	gt__emit_body(t_writer *__restrict__ const w,
 	ret = xft_writer_drain_all(w, xft_fatptr((t_u8 *)g_prologue,
 				sizeof(g_prologue) - 1));
 	i = 0;
-	while (ret == OK && i < sizeof(g_tables) / sizeof(*g_tables))
+	while (ret.ok == OK && i < sizeof(g_tables) / sizeof(*g_tables))
 		ret = gt__emit_table(w, src, set, &g_tables[i++]);
 	return (ret);
 }
@@ -138,18 +138,18 @@ t_result	gt_emit(t_buffer src, const t_vec *__restrict__ const set,
 	t_writer_fs		ctx;
 	t_writer		w;
 	t_result		ret;
-	t_xft_sysres	res;
+	t_result		res;
 
 	fd = -1;
-	res = xft_sys_repeat;
-	while (res == xft_sys_repeat)
+	res = (t_result){.err = xft_err_retry};
+	while (xft_should_retry(res))
 		res = xft_open(path, xft_o_wronly | xft_o_creat | xft_o_trunc, 0644,
 				&fd);
-	if (__builtin_expect(res != xft_sys_ok, 0))
-		return (KO);
+	if (__builtin_expect(!res.ok, 0))
+		return (res);
 	w = xft_fs_writer(&ctx, (t_fd)fd, xft_fatptr(g_buf, GT_BUFFER_SIZE));
 	ret = gt__emit_body(&w, src, set);
-	if (__builtin_expect(ret == OK, 1))
+	if (__builtin_expect(ret.ok == OK, 1))
 		ret = xft_writer_flush(&w);
 	xft_close(fd);
 	return (ret);

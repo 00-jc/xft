@@ -20,11 +20,21 @@ static t_result	xft__mem_writer_drain_all(t_writer *w, t_buffer data)
 	t_writer_ctx_memory *const	ctx = w->writer_ctx;
 
 	if (__builtin_expect(data.size > ctx->buffer.size, 0))
-		return (KO);
+		return ((t_result){.ok = KO, .err = xft_err_nospace});
 	xft_memcpy(ctx->buffer.mem, data.mem, data.size);
 	ctx->buffer.mem += data.size;
 	ctx->buffer.size -= data.size;
-	return (OK);
+	return ((t_result){.ok = OK});
+}
+
+__attribute__((__always_inline__))
+static inline t_result	xft__mem_writer_read_fd(t_fd fd, t_buffer dst)
+{
+	t_reader_fs	fs;
+	t_reader	r;
+
+	r = xft_fs_reader(&fs, fd, dst);
+	return (xft_reader_read_all(&r, fs.buffer));
 }
 
 __attribute__((__nonnull__(1, 4)))
@@ -33,28 +43,27 @@ static t_result	xft__mem_writer_drain_fd(t_writer *w, t_fd fd, t_size limit,
 {
 	t_writer_ctx_memory *const	ctx = w->writer_ctx;
 	const t_buffer				dst = ctx->buffer;
-	t_reader_fs					fs;
-	t_reader					r;
 	t_size						n;
+	t_result					ret;
 
 	n = 0;
 	if (limit != 0 && dst.size != 0)
 	{
 		n = xft_tern_s(limit < dst.size, limit, dst.size);
-		r = xft_fs_reader(&fs, fd, xft_fatptr(dst.mem, n));
-		if (__builtin_expect(!xft_reader_read_all(&r, fs.buffer), 0))
-			return (KO);
+		ret = xft__mem_writer_read_fd(fd, xft_fatptr(dst.mem, n));
+		if (__builtin_expect(!ret.ok, 0))
+			return (ret);
 	}
 	ctx->buffer = xft_fatptr(dst.mem + n, dst.size - n);
 	*size = n;
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 
 __attribute__((__nonnull__(1)))
 static t_result	xft__mem_writer_flush(t_writer *w)
 {
 	(void)w;
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 
 __attribute__((__nonnull__(1), __always_inline__, __used__))

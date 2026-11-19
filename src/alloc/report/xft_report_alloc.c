@@ -21,7 +21,7 @@ static inline int	xft_advance_slab(t_reporta *gpa)
 	buf = xft_palloc_reserve(GPA_SLABSIZE);
 	if (__builtin_expect(!buf.mem, 0))
 		return (0);
-	if (__builtin_expect(!xft_palloc_commit(buf.mem, sizeof(t_any *)), 0))
+	if (__builtin_expect(!xft_palloc_commit(buf.mem, sizeof(t_any *)).ok, 0))
 		return (xft_palloc_free(buf), 0);
 	xft_reporta_carve_tail(gpa);
 	prev = gpa->slab;
@@ -46,7 +46,7 @@ static inline t_buffer	xft_return_ptr(t_reporta *gpa,
 			&& !xft_advance_slab(gpa), 0))
 		return (xft_fatptr(nullptr, 0));
 	new_ptr = xft_align_fwd(gpa->bmp, align);
-	if (__builtin_expect(!xft_palloc_commit(new_ptr, sizes[1]), 0))
+	if (__builtin_expect(!xft_palloc_commit(new_ptr, sizes[1]).ok, 0))
 		return (xft_fatptr(nullptr, 0));
 	gpa->avg_frag += (t_f64)((t_f64)((sizes[1] - sizes[0])
 				+ (t_uptr)new_ptr - (t_uptr)gpa->bmp)

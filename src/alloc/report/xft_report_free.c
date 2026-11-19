@@ -46,7 +46,7 @@ void	xft_reporta_carve_tail(t_reporta *gpa)
 	t_size	freelist;
 
 	rem = (t_uptr)gpa->slab + gpa->slabsize - (t_uptr)gpa->bmp;
-	if (__builtin_expect(!rem || !xft_palloc_commit(gpa->bmp, rem), 0))
+	if (__builtin_expect(!rem || !xft_palloc_commit(gpa->bmp, rem).ok, 0))
 		return ;
 	while (rem)
 	{

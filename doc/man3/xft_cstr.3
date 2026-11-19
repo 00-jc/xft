@@ -70,7 +70,12 @@ holds the copy.
 If the allocation fails, or if
 .Fa cstr
 is empty, it returns
-.Dv KO ;
+.Dv KO ,
+with
+.Dv xft_err_oom
+or
+.Dv xft_err_inval
+respectively;
 no memory is allocated for an empty string.
 .Sh EXAMPLES
 .Bd -literal -offset indent
@@ -84,7 +89,7 @@ void	copy_name(void)
 
 	xft_new_gpa(&gpa);
 	a = xft_gpa_allocator(&gpa);
-	xft_pin_invariant(xft_cstr_to_str(a, &s, "hello"));
+	xft_pin_invariant(xft_cstr_to_str(a, &s, "hello").ok);
 	xft_pin_invariant(s.buf.size == xft_strlen("hello"));
 	xft_pin_invariant(xft_memcmp(s.buf.mem, "hello", 6) == 0);
 	xft_str_destroy(a, &s);

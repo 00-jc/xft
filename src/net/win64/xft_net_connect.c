@@ -52,9 +52,9 @@ t_result	xft_connect_socket(t_fd sock, const t_ip_addr *addr,
 
 	len = (int)xft__sockaddr_from_ip(addr, &sa);
 	if (opts.has_timeout)
-		return ((t_result)xft__connect_timeout(s, (SOCKADDR *)&sa, len,
-				opts.timeout_ms));
-	return ((t_result)(connect(s, (SOCKADDR *)&sa, len) == 0));
+		return ((t_result){.ok = xft__connect_timeout(s, (SOCKADDR *)&sa, len,
+				opts.timeout_ms)});
+	return ((t_result){.ok = (connect(s, (SOCKADDR *)&sa, len) == 0)});
 }
 
 __attribute__((__nonnull__(3), __flatten__))
@@ -67,11 +67,11 @@ t_result	xft_accept_socket(t_fd server, t_ip_addr *peer, t_fd *conn)
 	len = sizeof(sa);
 	s = accept((SOCKET)server, (SOCKADDR *)&sa, &len);
 	if (__builtin_expect(s == INVALID_SOCKET, 0))
-		return (KO);
+		return ((t_result){.ok = KO, .err = xft_err_none});
 	if (peer != nullptr)
 		xft__ip_from_sockaddr(&sa, peer);
 	*conn = (t_fd)s;
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 
 #endif

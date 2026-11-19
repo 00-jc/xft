@@ -102,11 +102,11 @@ t_result	xft_fileinfo_from_fd(t_fd fd, t_file_info *fileinfo)
 
 	*fileinfo = (t_file_info){.type = xft__file_type(file, 0)};
 	if (__builtin_expect(fileinfo->type == F_T_UNKNOWN, 0))
-		return (KO);
+		return ((t_result){.ok = KO, .err = xft_err_none});
 	if (fileinfo->type != F_T_DISK)
-		return (OK);
+		return ((t_result){.ok = OK});
 	ok = xft__times(file, fileinfo) && xft__sizes(file, fileinfo);
-	return ((t_result)ok);
+	return ((t_result){.ok = ok});
 }
 
 __attribute__((__nonnull__(1, 2)))
@@ -122,7 +122,7 @@ t_result	xft_fileinfo_from_name(const char *name, t_file_info *fileinfo)
 	file = CreateFileA(name, FILE_READ_ATTRIBUTES, share, nullptr,
 			OPEN_EXISTING, flags, nullptr);
 	if (__builtin_expect(file == INVALID_HANDLE_VALUE, 0))
-		return (KO);
+		return ((t_result){.ok = KO, .err = xft_err_none});
 	ok = xft_fileinfo_from_fd((t_fd)file, fileinfo);
 	CloseHandle(file);
 	return (ok);

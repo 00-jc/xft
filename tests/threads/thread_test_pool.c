@@ -20,7 +20,7 @@ static t_result	pool_leaf(t_any arg)
 		atomic_fetch_add_explicit(&s->bad_self, 1, xft_relaxed);
 	pool_spin();
 	atomic_fetch_add_explicit(&s->count, 1, xft_relaxed);
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 
 static t_result	pool_outer(t_any arg)
@@ -40,7 +40,7 @@ static t_result	pool_outer(t_any arg)
 		xft_threadpool_submit(&s->tp, t, sizeof(*t));
 	}
 	atomic_fetch_add_explicit(&s->count, 1, xft_relaxed);
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 
 static void	pool_check(t_pool_test *__restrict__ const s, bool drain)
@@ -60,7 +60,7 @@ static void	pool_round(t_pool_test *__restrict__ const s, t_sysinfo sysinfo,
 	t_u32a	it;
 
 	pool_assert(xft_threadpool_init(s->alloc, sysinfo,
-			xft_threadpool_default(), &s->tp) == OK,
+			xft_threadpool_default(), &s->tp).ok == OK,
 		"pool: init");
 	s->count = 0;
 	s->bad_self = 0;

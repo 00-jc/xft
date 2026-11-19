@@ -25,11 +25,12 @@ static inline t_result	xft_fuzzer_init__internal(t_fuzzer *fuzz, t_size i,
 		align = 1 << (xft_xoshiro256ss(fuzz->xo) & 6);
 		fuzz->buffers[i].mem = xft_arena_alloc(&fuzz->arena, len, align);
 		if (fuzz->buffers[i].mem == nullptr)
-			return (xft_arena_rewind(&fuzz->arena, c), KO);
+			return (xft_arena_rewind(&fuzz->arena, c),
+				(t_result){.ok = KO, .err = xft_err_oom});
 		fuzz->buffers[i].size = len;
 		++i;
 	}
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 
 __attribute__((__nonnull__(1)))
@@ -43,7 +44,7 @@ t_result	xft_fuzzer_add_rand(t_fuzzer *fuzz)
 	c = xft_arena_checkpoint(&fuzz->arena);
 	fuzz->buffers = xft_arena_alloc(&fuzz->arena, sizeof(t_buffer) * n, 64);
 	if (!fuzz->buffers)
-		return (KO);
+		return ((t_result){.ok = KO, .err = xft_err_oom});
 	i = fuzz->buf_n;
 	fuzz->buf_n = n;
 	return (xft_fuzzer_init__internal(fuzz, i, n, c));

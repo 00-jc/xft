@@ -60,15 +60,15 @@ t_result	xft_fileinfo_from_name(const char *name, t_file_info *fileinfo)
 {
 	const t_u32a	mask = xft_statx_basic_stats | xft_statx_btime;
 	t_statx			st;
-	t_xft_sysres	ret;
+	t_result		ret;
 
-	ret = xft_sys_repeat;
-	while (ret == xft_sys_repeat)
+	ret = (t_result){.err = xft_err_retry};
+	while (xft_should_retry(ret))
 		ret = xft_statx(name, xft_at_symlink_nofollow, mask, &st);
-	if (__builtin_expect(ret != xft_sys_ok, 0))
-		return (KO);
+	if (__builtin_expect(!ret.ok, 0))
+		return (ret);
 	xft__from_statx(&st, fileinfo);
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 
 __attribute__((__nonnull__(2)))
@@ -76,15 +76,15 @@ t_result	xft_fileinfo_from_fd(t_fd fd, t_file_info *fileinfo)
 {
 	const t_u32a	mask = xft_statx_basic_stats | xft_statx_btime;
 	t_statx			st;
-	t_xft_sysres	ret;
+	t_result		ret;
 
-	ret = xft_sys_repeat;
-	while (ret == xft_sys_repeat)
+	ret = (t_result){.err = xft_err_retry};
+	while (xft_should_retry(ret))
 		ret = xft_fstatx((int)fd, mask, &st);
-	if (__builtin_expect(ret != xft_sys_ok, 0))
-		return (KO);
+	if (__builtin_expect(!ret.ok, 0))
+		return (ret);
 	xft__from_statx(&st, fileinfo);
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 
 #endif

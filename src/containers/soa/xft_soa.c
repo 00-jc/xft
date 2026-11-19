@@ -27,7 +27,7 @@ t_result	xft_new_soa(t_allocator allocator, t_soa *__restrict__ const soa,
 			|| context->max_alignment == 0
 			|| (context->max_alignment
 				& (context->max_alignment - 1)) != 0, 0))
-		return (KO);
+		return ((t_result){.ok = KO, .err = xft_err_inval});
 	element_size_capacity = (element_size_capacity
 			+ context->max_alignment - 1)
 		& ~(context->max_alignment - 1);
@@ -35,12 +35,12 @@ t_result	xft_new_soa(t_allocator allocator, t_soa *__restrict__ const soa,
 			element_size_capacity * context->total_struct_size,
 			xft_max_s(context->max_alignment, __GCC_CONSTRUCTIVE_SIZE));
 	if (__builtin_expect(buf.mem == nullptr, 0))
-		return (KO);
+		return ((t_result){.ok = KO, .err = xft_err_oom});
 	*soa = (t_soa){.ptr = buf.mem,
 		.allocator_bytes_given = buf.size,
 		.capacity_elements = element_size_capacity,
 		.occupied_elements = 0};
-	return (OK);
+	return ((t_result){.ok = OK});
 }
 
 __attribute__((__nonnull__(2)))

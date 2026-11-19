@@ -153,14 +153,6 @@ typedef enum e_xft_errno : t_u16
 	xft_max_errno = 4095,
 }	t_xft_errno;
 
-typedef enum e_xft_sysres : t_u8
-{
-	xft_sys_ko = 0,
-	xft_sys_ok = 1,
-	xft_sys_repeat = 2,
-	xft_sys_pending = 3,
-}	t_xft_sysres;
-
 typedef enum e_xft_prot : t_u8
 {
 	xft_prot_none = 0x0,

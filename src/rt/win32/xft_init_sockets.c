@@ -21,7 +21,7 @@ t_result	xft_init_sockets(void)
 {
 	WSADATA	wsa;
 
-	return ((t_result)(WSAStartup(MAKEWORD(2, 2), &wsa) == 0));
+	return ((t_result){.ok = (WSAStartup(MAKEWORD(2, 2), &wsa) == 0)});
 }
 
 #endif

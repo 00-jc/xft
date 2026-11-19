@@ -438,13 +438,19 @@ returns
 .Dv OK ,
 or
 .Dv KO
-when an allocation fails or the pool cannot start; it frees what it set up.
+when an allocation fails, with
+.Dv xft_err_oom ,
+or the pool cannot start, with the result of
+.Fn xft_threadpool_init ;
+it frees what it set up.
 .Pp
 .Fn xft_tailor_buffers
 returns
 .Dv OK ,
 or
 .Dv KO
+with
+.Dv xft_err_oom
 when an allocation fails; the arena is rewound to where it was and
 .Fa t->rand_buffers
 is unchanged.
@@ -454,6 +460,8 @@ returns
 .Dv OK ,
 or
 .Dv KO
+with
+.Dv xft_err_oom
 when the queue cannot grow; the benchmarks before the failing one stay
 queued.
 .Pp
@@ -468,13 +476,24 @@ opened, an allocation fails or a counter read fails; its members then leave
 no result, the members of the other units are stored.
 When the units cannot be built, for lack of scratch memory, nothing runs,
 the queue is kept and it returns
-.Dv KO .
+.Dv KO
+with
+.Dv xft_err_oom .
+Otherwise
+.Fa err
+comes from the last benchmark that left no result:
+.Dv xft_err_oom
+when its summary or its stored result could not be allocated, and
+.Dv xft_err_none
+when its unit failed before it was summarised.
 .Pp
 .Fn xft_tailor_compare
 returns
 .Dv OK ,
 or
 .Dv KO
+with
+.Dv xft_err_oom
 when its scratch memory cannot be allocated; it then prints nothing.
 .Pp
 .Fn xft_tailor_getcount
@@ -545,13 +564,13 @@ void	xft_main(const t_any *__restrict__ const sp)
 	};
 	t_tailor				t;
 
-	if (!xft_new_tailor(&t, xft_get_sysinfo(sp), 2, 2000)
-		|| !xft_tailor_buffers(&t, sizes, align, 2)
-		|| !xft_tailor_bench(&t, benches, 2)
-		|| !xft_tailor_run(&t))
+	if (!xft_new_tailor(&t, xft_get_sysinfo(sp), 2, 2000).ok
+		|| !xft_tailor_buffers(&t, sizes, align, 2).ok
+		|| !xft_tailor_bench(&t, benches, 2).ok
+		|| !xft_tailor_run(&t).ok)
 		xft_exit_process(1);
 	xft_tailor_report(&t);
-	if (!xft_tailor_compare(&t))
+	if (!xft_tailor_compare(&t).ok)
 		xft_exit_process(1);
 	xft_tailor_destroy(&t);
 	xft_exit_process(0);

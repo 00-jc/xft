@@ -27,7 +27,7 @@ void	test_thread_join(t_sysinfo sysinfo)
 	opts.fn = thread_join_fn;
 	opts.stack_size = XFT_THREAD_STACKSIZE;
 	opts.argument = &value;
-	xft_pin_invariant_msg(xft_thread_spawn(&thread, sysinfo, opts) == OK,
+	xft_pin_invariant_msg(xft_thread_spawn(&thread, sysinfo, opts).ok == OK,
 		xft_fatptr((t_u8 *)"thread spawn", sizeof("thread spawn") - 1));
 	xft_thread_join(&thread);
 	xft_pin_invariant_msg(value == 42,

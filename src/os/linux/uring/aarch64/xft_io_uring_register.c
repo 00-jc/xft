@@ -1,0 +1,48 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   xft_io_uring_register.c                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jaicastr <jaicastr@student.42madrid.com>   +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/11/19 12:00:00 by jaicastr          #+#    #+#             */
+/*   Updated: 2026/11/19 12:00:00 by jaicastr         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include <xft/bmi.h>
+#include <xft/linux/uring.h>
+#include <xft/xft_p_syscalls.h>
+
+#ifdef __linux__
+
+# if defined(__aarch64__) && !defined(XFT_REQUIRE_LIBC)
+
+__attribute__((__nonnull__(3), __always_inline__, __used__))
+inline t_result	xft_io_uring_register(int fd, t_io_uring_register reg,
+	int *restrict const ret)
+{
+	register long x0	__asm__("x0");
+	register long x1	__asm__("x1");
+	register long x2	__asm__("x2");
+	register long x3	__asm__("x3");
+
+	x0 = (long)fd;
+	x1 = (long)reg.opcode;
+	x2 = (long)reg.arg;
+	x3 = (long)reg.nr_args;
+	__asm__ volatile (
+		"mov x8, %[nr]\n\t"
+		"svc #0"
+		: "+r"(x0)
+		: "r"(x1), "r"(x2), "r"(x3), [nr] "i"(xft_sys_io_uring_register)
+		: "memory", "cc", "x8"
+	);
+	*ret = (int)xft_tern(x0 < 0, (t_u64a)-1, (t_u64a)x0);
+	return ((t_result){.ok = x0 >= 0,
+		.err = xft_tern(x0 < 0, (t_u64a)-x0, 0)});
+}
+
+# endif
+
+#endif
