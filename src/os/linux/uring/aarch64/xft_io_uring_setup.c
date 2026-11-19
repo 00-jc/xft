@@ -35,7 +35,7 @@ inline t_result	xft_io_uring_setup(t_u32 entries,
 		: "r"(x8), "r"(x1)
 		: "memory", "cc"
 	);
-	*fd = (int)xft_tern(x0 < 0, (t_u64a)-1, (t_u64a)x0);
+	*fd = (int)x0;
 	return ((t_result){.ok = x0 >= 0,
 		.err = xft_tern(x0 < 0, (t_u64a)-x0, 0)});
 }

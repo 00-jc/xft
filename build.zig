@@ -497,6 +497,7 @@ const XFT_SYSCALLS = [_][]const u8{
     "exit",
     "exit_group",
     "fmap",
+    "fmap_at",
     "fork",
     "fstatx",
     "getpid",
@@ -540,6 +541,15 @@ const XFT_URING_SYSCALLS = [_][]const u8{
     "io_uring_enter",
     "io_uring_register",
     "io_uring_setup",
+};
+
+const SRCS_URING = [_][]const u8{
+    "src/os/linux/uring/xft_new_io_uring.c",
+    "src/os/linux/uring/xft_io_uring_destroy.c",
+    "src/os/linux/uring/xft_read_completion.c",
+    "src/os/linux/uring/xft_queue_submission.c",
+    "src/os/linux/uring/xft_flush_submissions.c",
+    "src/os/linux/uring/xft_write_submission.c",
 };
 
 const SRCS_URING_x86_64 = syscallSrcs("src/os/linux/uring/x86_64", &XFT_URING_SYSCALLS);
@@ -1258,6 +1268,7 @@ fn addXft(x: xft_ctx, name: []const u8, libc: bool, sanitize: bool) !xft_variant
         try addSrcs(x, mod, v, &SRCS_RT_linux);
         try addSrcs(x, mod, v, &SRCS_LIBC);
         try addSrcs(x, mod, v, &SRCS_URING_LIBC);
+        try addSrcs(x, mod, v, &SRCS_URING);
         try addSrcs(x, mod, v, &SRCS_RT_ENTRY_libc);
         try addSrcs(x, mod, v, &SRCS_THREADS_libc);
         try addSrcs(x, mod, v, &SRCS_FUTEX_libc);
@@ -1268,6 +1279,7 @@ fn addXft(x: xft_ctx, name: []const u8, libc: bool, sanitize: bool) !xft_variant
         try addSrcs(x, mod, v, &SRCS_RT_ENTRY_x86_64);
         try addSrcs(x, mod, v, &SRCS_FREESTANDING_aarch64);
         try addSrcs(x, mod, v, &SRCS_URING_aarch64);
+        try addSrcs(x, mod, v, &SRCS_URING);
         try addSrcs(x, mod, v, &SRCS_RT_ENTRY_aarch64);
         try addSrcs(x, mod, v, &SRCS_THREADS_linux);
         try addSrcs(x, mod, v, &SRCS_THREADS_x86_64);

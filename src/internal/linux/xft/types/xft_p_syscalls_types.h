@@ -161,10 +161,12 @@ typedef enum e_xft_prot : t_u8
 	xft_prot_exec = 0x4,
 }	t_xft_prot;
 
-typedef enum e_xft_map : t_u8
+typedef enum e_xft_map : t_u16
 {
+	xft_map_shared = 0x01,
 	xft_map_private = 0x02,
 	xft_map_anonymous = 0x20,
+	xft_map_populate = 0x8000,
 }	t_xft_map;
 
 typedef enum e_xft_map_ret : t_i8

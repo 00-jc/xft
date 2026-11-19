@@ -25,7 +25,7 @@ inline t_result	xft_io_uring_register(int fd, t_io_uring_register reg,
 	t_ssize	res;
 
 	res = syscall(SYS_io_uring_register, fd, reg.opcode, reg.arg, reg.nr_args);
-	*ret = (int)xft_tern(res < 0, (t_u64a)-1, (t_u64a)res);
+	*ret = (int)res;
 	return ((t_result){.ok = res >= 0,
 		.err = xft_tern(res < 0, (t_u64a)errno, 0)});
 }

@@ -38,7 +38,7 @@ inline t_result	xft_io_uring_register(int fd, t_io_uring_register reg,
 		: "r"(x1), "r"(x2), "r"(x3), [nr] "i"(xft_sys_io_uring_register)
 		: "memory", "cc", "x8"
 	);
-	*ret = (int)xft_tern(x0 < 0, (t_u64a)-1, (t_u64a)x0);
+	*ret = (int)x0;
 	return ((t_result){.ok = x0 >= 0,
 		.err = xft_tern(x0 < 0, (t_u64a)-x0, 0)});
 }

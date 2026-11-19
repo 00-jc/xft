@@ -32,7 +32,7 @@ inline t_result	xft_io_uring_setup(t_u32 entries,
 		"S"(params)
 		: "rcx", "r11", "memory"
 	);
-	*fd = (int)xft_tern(ret < 0, (t_u64a)-1, (t_u64a)ret);
+	*fd = (int)ret;
 	return ((t_result){.ok = ret >= 0,
 		.err = xft_tern(ret < 0, (t_u64a)-ret, 0)});
 }

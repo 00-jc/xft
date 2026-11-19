@@ -42,7 +42,7 @@ inline t_result	xft_io_uring_enter(int fd, t_io_uring_enter enter,
 		"r"(r9)
 		: "rcx", "r11", "memory"
 	);
-	*submitted = (int)xft_tern(ret < 0, (t_u64a)-1, (t_u64a)ret);
+	*submitted = (int)ret;
 	return ((t_result){.ok = ret >= 0,
 		.err = xft_tern(ret < 0, (t_u64a)-ret, 0)});
 }

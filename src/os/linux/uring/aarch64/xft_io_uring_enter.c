@@ -32,7 +32,7 @@ inline t_result	xft_io_uring_enter(int fd, t_io_uring_enter enter,
 	args[4] = (t_u64a)enter.arg;
 	args[5] = (t_u64a)enter.argsz;
 	ret = xft_syscall6(xft_sys_io_uring_enter, args);
-	*submitted = (int)xft_tern(ret < 0, (t_u64a)-1, (t_u64a)ret);
+	*submitted = (int)ret;
 	return ((t_result){.ok = ret >= 0,
 		.err = xft_tern(ret < 0, (t_u64a)-ret, 0)});
 }

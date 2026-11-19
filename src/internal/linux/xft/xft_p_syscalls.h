@@ -20,6 +20,9 @@ t_result		xft_mmap_commit(t_any ptr, t_size size,\
 					t_u64a prot, t_u64a flags_extra)\
 					__attribute__((__nonnull__(1)));
 t_any			xft_fmap(t_size size, t_u64a prot, t_u64a flags, int fd);
+t_any			xft_fmap_at(t_size size, t_u64a prot, t_u64a flags,\
+					const t_u64a at[2])\
+					__attribute__((__nonnull__(4)));
 t_result		xft_map_failed(t_cany ptr)\
 					__attribute__((const));
 bool			xft_should_retry(t_result res)\
