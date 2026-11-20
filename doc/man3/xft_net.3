@@ -80,6 +80,8 @@ typedef struct s_ip_addr {
 typedef struct s_ip_bind_opts {
 	bool	allow_broadcast	: 1;
 	bool	ipv6_only		: 1;
+	bool	reuse_addr		: 1;
+	bool	reuse_port		: 1;
 } t_ip_bind_opts;
 
 typedef struct s_connect_options {
@@ -116,10 +118,16 @@ binds
 to
 .Fa addr ,
 whose family must match the socket's.
-It always sets
-.Dv SO_REUSEADDR
-first, so a port whose previous connections are in TIME_WAIT can be bound
-again at once.
+.Fa opts Ns .reuse_addr
+sets
+.Dv SO_REUSEADDR ,
+so a port whose previous connections are in TIME_WAIT can be bound again at
+once.
+.Fa opts Ns .reuse_port
+sets
+.Dv SO_REUSEPORT ,
+so several sockets can bind the same address and port and the kernel spreads
+incoming connections or datagrams among them.
 .Fa opts Ns .allow_broadcast
 sets
 .Dv SO_BROADCAST .
@@ -305,12 +313,16 @@ set means no limit on Linux, where a zero
 .Dv SO_SNDTIMEO
 disables the timeout, and an immediate check on Windows.
 .Pp
-On Windows
-.Dv SO_REUSEADDR
-also lets a socket bind a port another socket is actively listening on,
-which Linux does not allow, and
-.Fn xft_bind_socket
-always sets it.
+Windows has no
+.Dv SO_REUSEPORT ;
+either
+.Fa reuse_addr
+or
+.Fa reuse_port
+sets
+.Dv SO_REUSEADDR ,
+which there also lets a socket bind a port another socket is actively
+listening on, which Linux does not allow.
 .Pp
 There is no way to read back the port the system picked when binding to
 port 0, and no name resolution; addresses are given as bytes.

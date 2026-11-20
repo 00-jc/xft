@@ -45,7 +45,13 @@ static inline t_result	xft__set_bind_opts(int fd, t_ip_bind_opts opts,
 	t_result		ret;
 
 	on = 1;
-	ret = xft_setsockopt(fd, xft_sol_socket, xft_so_reuseaddr, val);
+	ret = (t_result){.ok = OK};
+	if (opts.reuse_addr)
+		ret = xft_setsockopt(fd, xft_sol_socket, xft_so_reuseaddr, val);
+	if (!ret.ok)
+		return (ret);
+	if (opts.reuse_port)
+		ret = xft_setsockopt(fd, xft_sol_socket, xft_so_reuseport, val);
 	if (!ret.ok)
 		return (ret);
 	if (opts.allow_broadcast)

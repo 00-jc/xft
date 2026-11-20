@@ -32,6 +32,8 @@ typedef struct s_ip_bind_opts
 {
 	bool	allow_broadcast	: 1;
 	bool	ipv6_only		: 1;
+	bool	reuse_addr		: 1;
+	bool	reuse_port		: 1;
 }	t_ip_bind_opts;
 
 typedef struct s_connect_options

@@ -44,8 +44,8 @@ t_result	xft_bind_socket(t_fd sock, const t_ip_addr *addr,
 
 	len = (int)xft__sockaddr_from_ip(addr, &sa);
 	on = 1;
-	if (setsockopt(s, SOL_SOCKET, SO_REUSEADDR, (const char *)&on,
-			sizeof(on)) != 0)
+	if ((opts.reuse_addr || opts.reuse_port) && setsockopt(s, SOL_SOCKET,
+			SO_REUSEADDR, (const char *)&on, sizeof(on)) != 0)
 		return ((t_result){.ok = KO, .err = xft_err_none});
 	if (opts.allow_broadcast && setsockopt(s, SOL_SOCKET, SO_BROADCAST,
 			(const char *)&on, sizeof(on)) != 0)
