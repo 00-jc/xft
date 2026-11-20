@@ -502,6 +502,7 @@ const XFT_SYSCALLS = [_][]const u8{
     "fstatx",
     "getpid",
     "ioctl",
+    "kill",
     "listen",
     "lockf",
     "madvise",

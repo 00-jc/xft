@@ -69,6 +69,8 @@ t_result		xft_clock_gettime(t_timespec *__restrict__ const ts)\
 
 int				xft_getpid(void);
 
+t_result		xft_kill(t_i32a pid, t_xft_signal sig);
+
 t_result		xft_sched_setaffinity(int pid, t_size cpusetsize,\
 					const t_u64a *restrict const mask)\
 					__attribute__((__nonnull__(3)));
