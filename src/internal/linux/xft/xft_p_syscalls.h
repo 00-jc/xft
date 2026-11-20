@@ -85,6 +85,13 @@ t_result		xft_prlimit64(t_i32a pid, t_xft_rlimit resource,\
 t_result		xft_setrlimit(t_xft_rlimit resource, const t_rlimit *limit)\
 					__attribute__((__nonnull__(2)));
 
+t_result		xft_rt_sigprocmask(t_xft_sighow how, const t_u64a *set,\
+					t_u64a *oldset);
+
+t_result		xft_signalfd(int fd, const t_u64a *mask, int flags,\
+					int *restrict const sfd)\
+					__attribute__((__nonnull__(2, 4)));
+
 t_result		xft_writev(int fd, t_iovec *buffers, t_size len,\
 					t_size *restrict const written)\
 					__attribute__((__nonnull__(2, 4)));

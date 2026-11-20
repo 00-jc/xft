@@ -34,28 +34,6 @@ static inline void	xft__set_tid_address(t_any address)
 	);
 }
 
-__attribute__((__always_inline__, __unused__, __flatten__))
-static inline void	xft__block_signals(void)
-{
-	t_u64a				all;
-	register long x8	__asm__("x8");
-	register long x0	__asm__("x0");
-	register long x1	__asm__("x1");
-	register long x3	__asm__("x3");
-
-	all = ~(t_u64a)0;
-	x8 = xft_sys_rt_sigprocmask;
-	x0 = XFT_BLOCK;
-	x1 = (long)&all;
-	x3 = XFT_SIGSET_SIZE;
-	__asm__ volatile (
-		"mov x2, xzr\n\tsvc #0"
-		: "+r"(x0)
-		: "r"(x8), "r"(x1), "r"(x3)
-		: "memory", "cc", "x2"
-	);
-}
-
 __attribute__((__always_inline__, __unused__, __flatten__, __noreturn__))
 static inline void	xft__unmap_exit(t_any base, t_size size)
 {
@@ -76,8 +54,11 @@ static inline void	xft__unmap_exit(t_any base, t_size size)
 __attribute__((__nonnull__(1), __noreturn__, __flatten__))
 void	xft_thread_destroy(t_thread_instance *__restrict__ const instance)
 {
+	t_u64a	all;
+
+	all = ~(t_u64a)0;
 	xft__set_tid_address(nullptr);
-	xft__block_signals();
+	xft_rt_sigprocmask(XFT_BLOCK, &all, nullptr);
 	xft__unmap_exit(instance->base, instance->size);
 }
 

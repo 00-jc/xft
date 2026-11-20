@@ -389,6 +389,12 @@ typedef enum e_xft_epoll_flag : t_u32
 	xft_epoll_cloexec = 02000000,
 }	t_xft_epoll_flag;
 
+typedef enum e_xft_sfd_flag : t_u32
+{
+	xft_sfd_nonblock = 04000,
+	xft_sfd_cloexec = 02000000,
+}	t_xft_sfd_flag;
+
 typedef enum e_xft_epoll_op : t_u8
 {
 	xft_epoll_ctl_add = 1,
