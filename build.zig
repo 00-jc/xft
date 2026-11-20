@@ -519,6 +519,7 @@ const XFT_SYSCALLS = [_][]const u8{
     "sendfile",
     "sendto",
     "set_tid_address",
+    "setrlimit",
     "setsockopt",
     "socket",
     "statx",

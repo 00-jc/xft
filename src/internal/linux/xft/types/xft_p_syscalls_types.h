@@ -256,6 +256,7 @@ typedef enum e_xft_wait_opt : t_u8
 typedef enum e_xft_rlimit : t_u8
 {
 	xft_rlimit_stack = 3,
+	xft_rlimit_nofile = 7,
 }	t_xft_rlimit;
 
 typedef struct s_rlimit
